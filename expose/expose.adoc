@@ -1,0 +1,7 @@
+= Document Title
+:reproducible:
+
+This is a basic AsciiDoc document by {author}.
+
+This document contains two paragraphs.
+It also has a header that specifies the document title.

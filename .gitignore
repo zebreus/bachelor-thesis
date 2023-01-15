@@ -1,0 +1,5 @@
+# Nix output path
+result
+
+# Generated files
+*.html
