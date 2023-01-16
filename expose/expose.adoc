@@ -1,7 +1,67 @@
-= Document Title
-:reproducible:
+= Outline
+:toc:
 
-This is a basic AsciiDoc document by {author}.
+== Issue
 
-This document contains two paragraphs.
-It also has a header that specifies the document title.
+* Which scientifically relevant problem is the starting point of the work and why is this a problem?
+* What is the relevance of the problem under investigation?
+* Why is it worth to pursue his problem?
+* How can the individual aspects of the problem be presented systematically?
+
+== Interest in Knowledge
+
+* Why should this particular problem be addressed?
+* Why this topic?
+* What is original about your approach? (e.g. independence of the concept; presentation, consolidation or linking of individual aspects; commenting on existing knowledge, etc.).
+* What additional scientific knowledge does the processing of the problem bring? Usually this expectation is only made for dissertations.
+
+== Question
+
+* To which central question should an answer be found or given in the work?
+* Which concrete problem should be dealt with from which perspective and under what circumstances?
+
+== Objectives and hypothesis
+
+* What is the aim of the explanations?
+* What should be proved or disproved?
+
+== Theoretical reference
+
+* Which theories, models or explanatory approaches should be referenced?
+* Is there a focus on a specific theory/model that is just supplemented by others.
+* Why are the selected theories/models/explanatory approaches used? Why does the application make sense and what is the explanatory power?
+
+== State of research
+
+* What scientific findings are already available on the subject?
+* Which aspects of the topic have not yet been adequately or successfully dealt with?
+* Can the topic be scientifically processed with reasonable effort?
+* Are there conflicting or competing statements or statements in the literature? Interpretations? What are the most important positions there? This list must be as exhaustive as possible. No interpretations may be intentionally left out.
+* Which position will be joined or which position will be developed?
+
+== Method
+
+* Which scientifc methods will be used to process the problem?
+* Which methods can be used to appropriately process the (main) questions and hypotheses? (theoretical or empirical, primary or secondary analysis, qualitative or quantitative, discourse analysis or inquiry, a combination of methods, etc.).
+* Why are the selected methods suitable for working on the topic?
+* What level of knowledge does the writer/researcher have regarding the chosen methods?
+
+== Materials
+
+* Which material (eg which hardware or software), which data, which source should be used and why?
+* Which material and which sources or data are already available?
+* What information still needs to be determined in order to at least meet the minimum requirements for the topic?
+
+== Outline
+
+* Which aspects of the work should be dealt with and in which order?
+* Why does this order make sense?
+
+== Bibliography
+
+* A provisional bibliography
+
+== Schedule
+
+* How much time is planned for the individual central work steps?  (Research, implementation, data collection/evaluation, writing the raw text, revision and final correction)
+* By when should the work be completed?
