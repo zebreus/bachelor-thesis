@@ -65,6 +65,22 @@ Searched google scholar for `llvm high level synthesis. <<Rog20>> <<Li20>> <<Lia
 
 Searched google scholar for `high level synthesis. <<Rot10>> <<Fer21>>
 
+https://crates.io is the primary rust package registry. If someone has already done some work in rust it will be on there. I list crates with their name, description from cargo.toml, and date of last commit.
+
+I tried to find projects that already do HLS from rust.
+
+For all https://crates.io searches I looked at all results, selected everything that is related to generating RTL from rust, is not hardware specific, is not a opencl wrapper, is not related to interfacing with FPGAs, and is not a extension for another already listed result.
+
+
+Searched https://crates.io 
+
+* `high level synthesis`: <<verugent>>
+* `hls`: -
+* `fpga`: <<rust-hdl>> <<kaze>>
+* `hld`: -
+
+The only one of these crates that does something that is similar to HLS is rust-hdl, but that is more like a HDL and less HLS, because it only supports a limited subset of rust.
+
 [bibliography]
 == Bibliography
 
@@ -117,11 +133,32 @@ University of Haifa,
 2010.
 https://llvm.org/devmtg/2010-11/Rotem-CToVerilog.pdf[🔗^]
 
+* [[[verugent]]]
+_VeRuGent_,
+Rust to Verilog: Hardware Discription DSL library,
+2020.
+https://github.com/RuSys/Verugent[🔗^]
+
+* [[[rust-hdl]]]
+_rust-hdl_,
+Write firmware for FPGAs in Rust,
+2023.
+https://github.com/samitbasu/rust-hdl[🔗^]
+
+* [[[kaze]]]
+_rust-hdl_,
+Generate and simulate verilog from Rust,
+2022.
+https://github.com/yupferris/kaze[🔗^]
+
+
 == Temporary notes
 
 * https://mlir.llvm.org/[MLIR^]: something from llvm, I need to look into this
 * https://llhd.io/[LLHD^]: an IR for logic. VHDL <> LLHD  is like C <> LLVM IR
- 
+
+* https://github.com/YosysHQ/yosys[Yosys^]: This is a framework for RTL synthesis tools. It currently has extensive Verilog-2005 support and provides a basic set of synthesis algorithms for various application domains.
+
 == Schedule
 
 * How much time is planned for the individual central work steps?  (Research, implementation, data collection/evaluation, writing the raw text, revision and final correction)
