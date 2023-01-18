@@ -35,3 +35,10 @@ There are a lot of proprietary tools by FPGA manufacturers that can be used for 
 ## Do I want to generate RTL or gate level circuits?
 
 For now I want to generate RTL, because the tooling to translate RTL circuits to gate level is mostly proprietary and manufacturer specific.
+
+## How do I limit my scope?
+
+- Normal Rust as a source language; Macros for annotating stuff are ok, but nothing that uses a builder.
+- I will not write any new software for this project. It is just focused on combining existing tooling
+- Focus on real HLS. So something like running normal rust binaries on a generic CPU that is deployed to an FPGA is not in scope.
+- Only generate register transfer level circuits, not gate level.
