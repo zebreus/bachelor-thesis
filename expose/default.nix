@@ -9,7 +9,7 @@ stdenv.mkDerivation {
   src = ./.;
 
   nativeBuildInputs = [
-    asciidoctor
+    asciidoctor-with-extensions
     nixpkgs-fmt
   ];
 

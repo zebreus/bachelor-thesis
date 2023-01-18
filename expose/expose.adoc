@@ -57,10 +57,71 @@
 * Which aspects of the work should be dealt with and in which order?
 * Why does this order make sense?
 
+== About Bibliography
+
+Searched google scholar for `rust high level synthesis`, looked at first 5 pages, copied all entries related to rust programming and HLS to bibliography. <<Har22>> <<Tak20>>
+
+Searched google scholar for `llvm high level synthesis. <<Rog20>> <<Li20>> <<Lia23>>
+
+Searched google scholar for `high level synthesis. <<Rot10>> <<Fer21>>
+
+[bibliography]
 == Bibliography
 
-* A provisional bibliography
+* [[[Har22]]]
+Hardin, David,
+_Hardware/Software Co-Assurance using the Rust Programming Language and ACL2_,
+arXiv preprint arXiv:2205.11709,
+2022.
+https://arxiv.org/abs/2205.11709v1[🔗^]
 
+* [[[Tak20]]]
+Takano, Keisuke and Oda, Tetsuya and Kohata, Masaki,
+_Design of a DSL for converting rust programming language into RTL_,
+International Conference on Emerging Internetworking, Data & Web Technologies, 342-350,
+2020.
+https://link.springer.com/chapter/10.1007/978-3-030-39746-3_36[🔗^]
+
+* [[[Rog20]]]
+Rogers, Samuel and Slycord, Joshua and Baharani, Mohammadreza and Tabkhi, Hamed,
+_gem5-SALAM: A System Architecture for LLVM-based Accelerator Modeling_,
+2020 53rd Annual IEEE/ACM International Symposium on Microarchitecture (MICRO), 471-482,
+2020.
+https://ieeexplore.ieee.org/abstract/document/9251937[🔗^]
+
+* [[[Li21]]]
+Li, Rui and Berkley, Lincoln and Yang, Yihang and Manohar, Rajit,
+_Fluid: An Asynchronous High-level Synthesis Tool for Complex Program Structures_,
+2021 27th IEEE International Symposium on Asynchronous Circuits and Systems (ASYNC), 1-8,
+2020.
+https://ieeexplore.ieee.org/abstract/document/9565447[🔗^]
+
+* [[[Lia23]]]
+Liang, Geng-Ming and Yuan, Chuan-Yue and Yuan, Meng-Shiun and Chen, Tai-Liang and Chen, Kuan-Hsun and Lee, Jenq-Kuen,
+_The Support of MLIR HLS Adaptor for LLVM IR_,
+Workshop Proceedings of the 51st International Conference on Parallel Processing, 1-8,
+2020.
+https://doi.org/10.1145/3547276.3548515[🔗^]
+
+* [[[Fer21]]]
++F. Ferrandi et al.,+
+_Invited: Bambu: an Open-Source Research Framework for the High-Level Synthesis of Complex Applications_,
+2021 58th ACM/IEEE Design Automation Conference (DAC), 1327-1330,
+2021.
+https://ieeexplore.ieee.org/abstract/document/9586110[🔗^]
+
+* [[[Rot10]]]
++F. Ferrandi et al.,+
+_C-to-Verilog. com: High-Level Synthesis Using LLVM_,
+University of Haifa,
+2010.
+https://llvm.org/devmtg/2010-11/Rotem-CToVerilog.pdf[🔗^]
+
+== Temporary notes
+
+* https://mlir.llvm.org/[MLIR^]: something from llvm, I need to look into this
+* https://llhd.io/[LLHD^]: an IR for logic. VHDL <> LLHD  is like C <> LLVM IR
+ 
 == Schedule
 
 * How much time is planned for the individual central work steps?  (Research, implementation, data collection/evaluation, writing the raw text, revision and final correction)
