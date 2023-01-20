@@ -7,3 +7,4 @@ I want to write about high level synthesis from rust. The title could be somethi
 ## Links
 
 - [I asked myself some questions about what the scope of the thesis should be](questions-about-scope.md)
+- [Outline](expose/expose.adoc)
