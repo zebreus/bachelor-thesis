@@ -49,76 +49,6 @@ Until recently HLS was only possible from C/C++ based languages <<Nan16>>. Recen
 
 There also is research on performing HLS from LLVM IR. Specifically the LLVM CIRCT project has worked on HLS.
 
-== About Bibliography
-
-Searched google scholar for `rust high level synthesis`, looked at first 5 pages, copied all entries related to rust programming and HLS to bibliography. <<Har22>> <<Tak20>>
-
-Searched google scholar for `llvm high level synthesis. <<Rog20>> <<Li20>> <<Lia23>>
-
-Searched google scholar for `high level synthesis. <<Rot10>> <<Fer21>>
-
-https://crates.io is the primary rust package registry. If someone has already done some work in rust it will be on there. I list crates with their name, description from cargo.toml, and date of last commit.
-
-I tried to find projects that already do HLS from rust.
-
-For all https://crates.io searches I looked at all results, selected everything that is related to generating RTL from rust, is not hardware specific, is not a opencl wrapper, is not related to interfacing with FPGAs, and is not a extension for another already listed result.
-
-
-Searched https://crates.io 
-
-* `high level synthesis`: <<verugent>>
-* `hls`: -
-* `fpga`: <<rust-hdl>> <<kaze>>
-* `hld`: -
-
-The only one of these crates that does something that is similar to HLS is rust-hdl, but that is more like a HDL and less HLS, because it only supports a limited subset of rust.
-
-So there is no tool for performing HLS from rust on crates.io.
-
-I tried to search google for other ways of performing HLS directly from rust.
-
-.Google searches
-[%collapsible]
-====
-I visited the following pages:
-
-* https://users.rust-lang.org/t/rust-and-fpgas-is-it-possible/50033/5
-** Reference to <<Tak20>>
-** Reference to https://google.github.io/xls/[XLS^] which is a more generic solution
-** Reference to https://github.com/llvm/circt[CIRCT^] which is a llvm project about Circuit IR Compilers and Tools. LLHD belongs to CIRCT.
-** There apparently are already a few llvm ir to fpga tools. Very interesting link: https://llvm.org/devmtg/2014-10/Slides/Baker-CustomHardwareStateMachines.pdf
-* https://www.reddit.com/r/rust/comments/fyd57q/q_rust_as_a_hardware_description_language_to_be/
-** LLVM is probably the easiest way.
-** _"My thinking is that Rust code would be much more efficient than OpenCL since it should naturally prevent latching."_
-** https://www.chisel-lang.org/firrtl/[FIRRTL^] is called the _"most developed low-level HDL intermediate language"_ (2020)
-** Also references <<Tak20>>
-** Link the LLHD paper. I added it to my bib <<Sch20>>
-* https://www.youtube.com/watch?v=TUDkKxAdeWk
-** Maybe there is something interesting in this video, but I dont think so.
-** TODO: watch
-* https://ieeexplore.ieee.org/document/9292032
-** The paper is related to <<verugent>>. Horrible english.
-** Same author as <<Tak20>>
-** Not related, because verugent is just a verilog builder, but does not do HLS.
-* https://news.ycombinator.com/item?id=24354083
-** About XLS
-** XLS is a HDL that is based on Rust, I think
-** https://google.github.io/xls/dslx_reference/[DSLX] is the language, XLS is just the framework
-** https://github.com/google/xls/blob/main/xls/examples/dslx_intro/prefix_scan_equality.x[Some code]
-====
-
-Through the google search I found XLS, which is probably similar to <<rust-hdl>>, but may have more HLS capabilities. It is not real Rust, but syntactically and semantically inspired by Rust.
-
-TODO: investigate XLS
-
-The only remaining way of synthesizing Rust I can think of is maybe with some port of opencl that also has a FPGA backend. If that would be the case than I probably would have found it in the previous google search. Most HPC frameworks like openmp build on top of opencl, so if opencl cannot bring Rust to FPGAs, they also wont be able to do that. Anyway I will now specifically search for `rust opencl`.
-
-opencl has a rust port, but the kernels still have to be written in C++. Maybe there is another path to fpgas by compiling to a shader language and then to fpga somehow. trisycl.
-
-There is currently no way of synthesising RTL from normal Rust directly. With rust-hdl and XLS there are two approaches, but both are limited indifferent ways. I dont think I missed anything.
-
-Next step would be to look at some intermediate representations.
-
 [bibliography]
 == Bibliography
 
@@ -226,9 +156,3 @@ _DSLX Reference_
 https://google.github.io/xls/dslx_reference/[🔗^]
 
 
-== Temporary notes
-
-* https://mlir.llvm.org/[MLIR^]: something from llvm, I need to look into this
-* https://llhd.io/[LLHD^]: an IR for logic. VHDL <> LLHD  is like C <> LLVM IR
-
-* https://github.com/YosysHQ/yosys[Yosys^]: This is a framework for RTL synthesis tools. It currently has extensive Verilog-2005 support and provides a basic set of synthesis algorithms for various application domains.
