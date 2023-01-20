@@ -1,9 +1,10 @@
-= Outline
-:toc:
+:last-update-label!:
+
+= High-Level Synthesis from Rust
 
 == Background
 
-Digital circuits are typically designed using hardware description languages (HDLs) like Verilog or VHDL. These hardware description High-level synthesis (HLS) is a process that enables the design of digital circuits in a high-level language, such as C or C++. HLS allows designers to write their design at a higher level of abstraction which can be more natural and familiar to software developers.
+Digital circuits are typically designed using hardware description languages (HDLs) like Verilog or VHDL. High-level synthesis (HLS) is a process that enables the design of digital circuits in a high-level language, such as C or C++. HLS allows designers to write their design at a higher level of abstraction which can be more natural and familiar to software developers.
 
 The generated circuits can be deployed to FPGAs. That can offer higher performance and lower power consumption, which can be particularly useful for applications such as video processing, image processing, and telecommunications.
 
