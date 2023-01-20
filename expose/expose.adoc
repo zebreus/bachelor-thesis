@@ -7,54 +7,41 @@ Currently the source languages for HLS are usually limited subsets of C/CPP with
 
 There are some ways how toolchains for HLS from Rust can be build with currently existing tooling. However it is currently not known how viable these different toolchains would be for practical application specifically what restrictions would apply, if and how they could benefit from the additional information provided by Rust.
 
-== Interest in Knowledge
-
-* Why should this particular problem be addressed?
-* Why this topic?
-* What is original about your approach? (e.g. independence of the concept; presentation, consolidation or linking of individual aspects; commenting on existing knowledge, etc.).
-* What additional scientific knowledge does the processing of the problem bring? Usually this expectation is only made for dissertations.
-
-== Question
-
-* To which central question should an answer be found or given in the work?
-* Which concrete problem should be dealt with from which perspective and under what circumstances?
-
 == Objectives and hypothesis
 
-* What is the aim of the explanations?
-* What should be proved or disproved?
+The main objective is to create an overview about how HLS from Rust can be achieved with state of the art technologies.
 
-== Theoretical reference
+Objectives
+* Create and document toolchains for HLS from Rust.
+* Evaluate and compare the toolchains.
+* Package the toolchains in some reusable way.
+* Figure out how to leverage Rust to improve the toolchains. (maybe)
 
-* Which theories, models or explanatory approaches should be referenced?
-* Is there a focus on a specific theory/model that is just supplemented by others.
-* Why are the selected theories/models/explanatory approaches used? Why does the application make sense and what is the explanatory power?
+Hypotheses:
+* There are ways to build toolchains for HLS from Rust by using existing tools.
+* Rust can be used to improve HLS in some way.
+
+If these objectives are fulfilled a next step could be to analyze how specific features of Rust could be used to improved.
+
+== What needs to be done
+
+I identified five main tasks that need to be done. 
+
+1. Discovering possible pathways to perform HLS from Rust with existing tools.
+2. Building and documenting one or more toolchains for each pathway.
+3. Defining a methodology for comparing the toolchains.
+4. Comparing the toolchains.
+5. Analyze the results.
+
+They could be divided into a group for creating toolchains (1, 2) and for evaluating toolchains (3, 4, 5).
 
 == State of research
 
-* What scientific findings are already available on the subject?
-* Which aspects of the topic have not yet been adequately or successfully dealt with?
-* Can the topic be scientifically processed with reasonable effort?
-* Are there conflicting or competing statements or statements in the literature? Interpretations? What are the most important positions there? This list must be as exhaustive as possible. No interpretations may be intentionally left out.
-* Which position will be joined or which position will be developed?
+There is currently one report investigating the viability of Rust as a source for HLS <<Har22>>. The DSLX language for HLS is similar to Rust but has some limitations <<DSLX>>.
 
-== Method
+Until recently HLS was only possible from C/CPP based languages <<Nan16>>. Recently the CIRCT project from LLVM and the XLS project from google also started on building creating flexible systems for HLS <<XLS>> <<Nor18>>.
 
-* Which scientifc methods will be used to process the problem?
-* Which methods can be used to appropriately process the (main) questions and hypotheses? (theoretical or empirical, primary or secondary analysis, qualitative or quantitative, discourse analysis or inquiry, a combination of methods, etc.).
-* Why are the selected methods suitable for working on the topic?
-* What level of knowledge does the writer/researcher have regarding the chosen methods?
-
-== Materials
-
-* Which material (eg which hardware or software), which data, which source should be used and why?
-* Which material and which sources or data are already available?
-* What information still needs to be determined in order to at least meet the minimum requirements for the topic?
-
-== Outline
-
-* Which aspects of the work should be dealt with and in which order?
-* Why does this order make sense?
+There also is research on performing HLS from LLVM IR. Specifically the LLVM CIRCT project has worked on HLS.
 
 == About Bibliography
 
@@ -203,14 +190,39 @@ In Proceedings of the 41st ACM SIGPLAN Conference on Programming Language Design
 2020.
 https://doi.org/10.1145/3385412.3386024[🔗^]
 
+* [[[Nan16]]]
+R. Nane et al.,
+_A Survey and Evaluation of FPGA High-Level Synthesis Tools_,
+IEEE Transactions on Computer-Aided Design of Integrated Circuits and Systems, 1591-1604,
+2016.
+https://ieeexplore.ieee.org/abstract/document/7368920[🔗^]
+
+* [[[Nor18]]]
+D. H. Noronha, B. Salehpour and S. J. E. Wilton,
+_LeFlow: Enabling Flexible FPGA High-Level Synthesis of Tensorflow Deep Neural Networks_,
+Fifth International Workshop on FPGAs for Software Programmers, 1-8,
+2018.
+https://ieeexplore.ieee.org/abstract/document/8470462[🔗^]
+
+* [[Soz22]]
+Sozzo, Emanuele Del, et al.,
+_Pushing the level of abstraction of digital system design: A survey on how to program FPGAs_,
+ACM Computing Surveys, 1-48,
+2022.
+https://dl.acm.org/doi/abs/10.1145/3532989[🔗^]
+
+* [[XLS]]
+_XLS project page_
+https://google.github.io/xls/[🔗^]
+
+* [[DSLX]]
+_DSLX Reference_
+https://google.github.io/xls/dslx_reference/[🔗^]
+
+
 == Temporary notes
 
 * https://mlir.llvm.org/[MLIR^]: something from llvm, I need to look into this
 * https://llhd.io/[LLHD^]: an IR for logic. VHDL <> LLHD  is like C <> LLVM IR
 
 * https://github.com/YosysHQ/yosys[Yosys^]: This is a framework for RTL synthesis tools. It currently has extensive Verilog-2005 support and provides a basic set of synthesis algorithms for various application domains.
-
-== Schedule
-
-* How much time is planned for the individual central work steps?  (Research, implementation, data collection/evaluation, writing the raw text, revision and final correction)
-* By when should the work be completed?
