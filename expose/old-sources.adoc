@@ -1,0 +1,35 @@
+= Old sources
+
+Some sources seemed relevant at first, but are actually not relevant for the expose. They are listed here for reference.
+
+[bibliography]
+== Old Bibliography
+
+* [[[Tak20]]]
+Takano, Keisuke and Oda, Tetsuya and Kohata, Masaki,
+_Design of a DSL for converting rust programming language into RTL_,
+International Conference on Emerging Internetworking, Data & Web Technologies, 342-350,
+2020.
+https://link.springer.com/chapter/10.1007/978-3-030-39746-3_36[🔗^]
+** Not related to HLS
+
+* [[[verugent]]]
+_VeRuGent_,
+Rust to Verilog: Hardware Discription DSL library,
+2020.
+https://github.com/RuSys/Verugent[🔗^]
+** Using rust to generate HDL, no HLS
+
+* [[[rust-hdl]]]
+_rust-hdl_,
+Write firmware for FPGAs in Rust,
+2023.
+https://github.com/samitbasu/rust-hdl[🔗^]
+** Using rust as a HDL, no HLS
+
+* [[[kaze]]]
+_rust-hdl_,
+Generate and simulate verilog from Rust,
+2022.
+https://github.com/yupferris/kaze[🔗^]
+** Using rust as a HDL, no HLS 

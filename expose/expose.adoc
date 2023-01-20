@@ -59,13 +59,6 @@ arXiv preprint arXiv:2205.11709,
 2022.
 https://arxiv.org/abs/2205.11709v1[🔗^]
 
-* [[[Tak20]]]
-Takano, Keisuke and Oda, Tetsuya and Kohata, Masaki,
-_Design of a DSL for converting rust programming language into RTL_,
-International Conference on Emerging Internetworking, Data & Web Technologies, 342-350,
-2020.
-https://link.springer.com/chapter/10.1007/978-3-030-39746-3_36[🔗^]
-
 * [[[Rog20]]]
 Rogers, Samuel and Slycord, Joshua and Baharani, Mohammadreza and Tabkhi, Hamed,
 _gem5-SALAM: A System Architecture for LLVM-based Accelerator Modeling_,
@@ -100,24 +93,6 @@ _C-to-Verilog. com: High-Level Synthesis Using LLVM_,
 University of Haifa,
 2010.
 https://llvm.org/devmtg/2010-11/Rotem-CToVerilog.pdf[🔗^]
-
-* [[[verugent]]]
-_VeRuGent_,
-Rust to Verilog: Hardware Discription DSL library,
-2020.
-https://github.com/RuSys/Verugent[🔗^]
-
-* [[[rust-hdl]]]
-_rust-hdl_,
-Write firmware for FPGAs in Rust,
-2023.
-https://github.com/samitbasu/rust-hdl[🔗^]
-
-* [[[kaze]]]
-_rust-hdl_,
-Generate and simulate verilog from Rust,
-2022.
-https://github.com/yupferris/kaze[🔗^]
 
 * [[[Sch20]]]
 Fabian Schuiki, Andreas Kurth, Tobias Grosser, and Luca Benini,
