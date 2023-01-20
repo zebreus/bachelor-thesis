@@ -9,7 +9,7 @@ The generated circuits can be deployed to FPGAs. That can offer higher performan
 
 == Issue
 
-Currently the source languages for HLS are usually limited subsets of C/C++ with some additional restrictions. Rust could be a better source for HLS, because it already has some restrictions for dealing with memory that could proof beneficial for HLS. For example its semantics define memory and ownership more clearly than C/C++.
+Currently the source languages for HLS are usually limited subsets of C/C\++ with some additional restrictions. Rust could be a better source for HLS, because it already has some restrictions for dealing with memory that could proof beneficial for HLS. For example its semantics define memory and ownership more clearly than C/C++.
 
 There are some ways how toolchains for HLS from Rust can be build with currently existing tooling. However it is currently not known how viable these different toolchains would be for practical application specifically what restrictions would apply, if and how they could benefit from the additional information provided by Rust.
 
@@ -37,7 +37,7 @@ I identified five main tasks that need to be done.
 2. Building and documenting one or more toolchains for each pathway.
 3. Defining a methodology for comparing the toolchains.
 4. Comparing the toolchains.
-5. Analyze the results.
+5. Analyzing the results.
 
 They could be divided into a group for creating toolchains (1, 2) and for evaluating toolchains (3, 4, 5).
 
@@ -127,31 +127,31 @@ In Proceedings of the 41st ACM SIGPLAN Conference on Programming Language Design
 https://doi.org/10.1145/3385412.3386024[🔗^]
 
 * [[[Nan16]]]
-R. Nane et al.,
++R. Nane et al.+,
 _A Survey and Evaluation of FPGA High-Level Synthesis Tools_,
 IEEE Transactions on Computer-Aided Design of Integrated Circuits and Systems, 1591-1604,
 2016.
 https://ieeexplore.ieee.org/abstract/document/7368920[🔗^]
 
 * [[[Nor18]]]
-D. H. Noronha, B. Salehpour and S. J. E. Wilton,
++D. H. Noronha, B. Salehpour and S. J. E. Wilton+,
 _LeFlow: Enabling Flexible FPGA High-Level Synthesis of Tensorflow Deep Neural Networks_,
 Fifth International Workshop on FPGAs for Software Programmers, 1-8,
 2018.
 https://ieeexplore.ieee.org/abstract/document/8470462[🔗^]
 
-* [[Soz22]]
+* [[[Soz22]]]
 Sozzo, Emanuele Del, et al.,
 _Pushing the level of abstraction of digital system design: A survey on how to program FPGAs_,
 ACM Computing Surveys, 1-48,
 2022.
 https://dl.acm.org/doi/abs/10.1145/3532989[🔗^]
 
-* [[XLS]]
+* [[[XLS]]]
 _XLS project page_
 https://google.github.io/xls/[🔗^]
 
-* [[DSLX]]
+* [[[DSLX]]]
 _DSLX Reference_
 https://google.github.io/xls/dslx_reference/[🔗^]
 
