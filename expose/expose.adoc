@@ -3,10 +3,9 @@
 
 == Issue
 
-* Which scientifically relevant problem is the starting point of the work and why is this a problem?
-* What is the relevance of the problem under investigation?
-* Why is it worth to pursue his problem?
-* How can the individual aspects of the problem be presented systematically?
+Currently the source languages for HLS are usually limited subsets of C/CPP with soe additional restrictions. Rust could be a better source for HLS, because it already has some restrictions for dealing with memory that could proof beneficial for HLS. For example its semantics define memory and ownership more clearly than C/CPP.
+
+There are some ways how toolchains for HLS from Rust can be build with currently existing tooling. However it is currently not known how viable these different toolchains would be for practical application specifically what restrictions would apply, if and how they could benefit from the additional information provided by Rust.
 
 == Interest in Knowledge
 
