@@ -1,4 +1,5 @@
 :last-update-label!:
+:stylesheet!:
 
 = High-Level Synthesis from Rust
 
@@ -6,17 +7,17 @@
 
 Digital circuits are typically designed using hardware description languages (HDLs) like Verilog or VHDL. High-level synthesis (HLS) is a process that enables the design of digital circuits in a high-level language, such as C or C++. HLS allows designers to write their design at a higher level of abstraction which can be more natural and familiar to software developers.
 
-The generated circuits can be deployed to FPGAs. That can offer higher performance and lower power consumption, which can be particularly useful for applications such as video processing, image processing, and telecommunications.
+The generated circuits can be deployed to FPGAs. That can offer higher performance and lower power consumption, which can be particularly useful for applications such as high performance computing, image processing, and telecommunications.
 
 == Issue
 
-Currently the source languages for HLS are usually limited subsets of C/C\++ with some additional restrictions. Rust could be a better source for HLS, because it already has some restrictions for dealing with memory that could proof beneficial for HLS. For example its semantics define memory and ownership more clearly than C/C++.
+The source languages used for HLS are usually limited subsets of C/C\++ with some additional restrictions. Rust could be a better source for HLS, because it already has some restrictions for dealing with memory that could proof beneficial for HLS. For example its semantics define memory and ownership more clearly than C/C++.
 
-There are some ways how toolchains for HLS from Rust can be build with currently existing tooling. However it is currently not known how viable these different toolchains would be for practical application specifically what restrictions would apply, if and how they could benefit from the additional information provided by Rust.
+There are some ways how toolchains for HLS from Rust can be built with currently existing tooling. However, it is currently not known how viable these different toolchains would be for practical application specifically what restrictions would apply, if and how they could benefit from the additional information provided by Rust.
 
 == Objectives and hypothesis
 
-The main objective is to create an overview about how HLS from Rust can be achieved with state of the art technologies.
+The main objective is to create an overview about how HLS from Rust can be achieved with state-of-the-art technologies.
 
 Objectives
 * Create and document toolchains for HLS from Rust.
@@ -42,13 +43,11 @@ I identified five main tasks that need to be done.
 
 They could be divided into a group for creating toolchains (1, 2) and for evaluating toolchains (3, 4, 5).
 
-== State of research
+== Related work
 
-There is currently one report investigating the viability of Rust as a source for HLS <<Har22>>. The DSLX language for HLS is similar to Rust but has some limitations <<DSLX>>.
+There is currently one article investigating the viability of Rust as a source for HLS <<Har22>>. There does not seem to be any other research on this topic.
 
-Until recently HLS was only possible from C/C++ based languages <<Nan16>>. Recently the CIRCT project from LLVM and the XLS project from google also started on building creating flexible systems for HLS <<XLS>> <<Nor18>>.
-
-There also is research on performing HLS from LLVM IR. Specifically the LLVM CIRCT project has worked on HLS.
+Until recently HLS was only possible from C/C++ based languages <<Nan16>>. There is research on performing HLS from intermediate languages/representations such as LLVM IR <<Rog20>> <<Li21>> <<Lia23>> <<Fer21>> <<Sch20>>. Recently google created the XLS project which is building a flexible system for HLS <<XLS>> <<Nor18>>. They also maintain a language called DSLX <<DSLX>> which is similar to Rust, but designed for HLS <<DSLX>>.
 
 [bibliography]
 == Bibliography
@@ -82,7 +81,7 @@ Workshop Proceedings of the 51st International Conference on Parallel Processing
 https://doi.org/10.1145/3547276.3548515[🔗^]
 
 * [[[Fer21]]]
-+F. Ferrandi et al.,+
++F. Ferrandi et al.+,
 _Invited: Bambu: an Open-Source Research Framework for the High-Level Synthesis of Complex Applications_,
 2021 58th ACM/IEEE Design Automation Conference (DAC), 1327-1330,
 2021.
