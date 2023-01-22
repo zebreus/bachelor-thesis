@@ -19,13 +19,13 @@ There are some ways how toolchains for HLS from Rust can be built with currently
 
 The main objective is to create an overview about how HLS from Rust can be achieved with state-of-the-art technologies.
 
-Objectives
+.Objectives
 * Create and document toolchains for HLS from Rust.
 * Evaluate and compare the toolchains.
 * Package the toolchains in some reusable way.
 * Figure out how to leverage Rust to improve the toolchains. (maybe)
 
-Hypotheses:
+.Hypotheses
 * There are ways to build toolchains for HLS from Rust by using existing tools.
 * Rust can be used to improve HLS in some way.
 
