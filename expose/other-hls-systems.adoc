@@ -11,3 +11,12 @@ LLVM subproject. Goal is to apply the benefits of modular library based design l
 == MLIR
 
 MLIR is a multi-paradigm IR for representing and manipulating hardware designs. It is a library that provides a common IR, a set of transformations, and a set of tools to build tools for hardware design and verification. MLIR is a part of the LLVM project.
+
+== MHAL ?
+
+== ahaHLS
+
+Research prototype for HLS from LLVM IR. Inactive project for four years, but still seems to work. Maybe worth a look. Has no CLI, but can be used as a library. Afaik no documentation except for a https://www.dillonbhuff.com/?p=1907[blog post]. Maybe there is a paper somewhere. Seems to support algorithmic C only, but I am not sure.
+
+== PandA bambu
+
