@@ -11,6 +11,7 @@
       rec {
         name = "thesis";
         packages.expose = import ./expose/default.nix { pkgs = nixpkgs.legacyPackages.${system}; };
+        packages.toolchain = import ./toolchain-test/default.nix { pkgs = nixpkgs.legacyPackages.${system}; };
         packages.default = packages.expose;
       }
     );
