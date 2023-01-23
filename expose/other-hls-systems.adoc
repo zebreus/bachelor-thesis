@@ -1,0 +1,13 @@
+= Other HLS systems/frameworks/toolchains
+
+== Chisel
+
+Chisel is a hardware construction language for constructing digital circuits. It is a Scala library that allows you to write hardware descriptions in a Scala-like language. Compiles scala files to FIRRTL IR files, which can be converted to Verilog using FIRRTL. FIRRTL also provides some transformations that can be used to transform and optimize the IR before converting to Verilog.
+
+== CIRCT
+
+LLVM subproject. Goal is to apply the benefits of modular library based design learned from LLVM to hardware design. MLIR based tech for Hardware design and verification.
+
+== MLIR
+
+MLIR is a multi-paradigm IR for representing and manipulating hardware designs. It is a library that provides a common IR, a set of transformations, and a set of tools to build tools for hardware design and verification. MLIR is a part of the LLVM project.
