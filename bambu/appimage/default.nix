@@ -18,5 +18,10 @@ appimageTools.wrapType2 rec {
   # runScript = ''env ARGV0="bambu" COOL="${pkgs.appimageTools.extract { inherit name src; }}" /bin/sh --'';
   # runScript = ''env ARGV0="bambu" appimage-exec.sh -d -w ${pkgs.appimageTools.extract { inherit name src; }} --'';
   runScript = ''env ARGV0="bambu" APPIMAGE_SILENT_INSTALL=1 APPDIR=${pkgs.appimageTools.extract { inherit name src; }} OWD=$PWD ${pkgs.appimageTools.extract { inherit name src; }}/AppRun '';
-  extraPkgs = pkgs: with pkgs; [ ];
+  extraPkgs = pkgs: with pkgs; [
+    # Bambu needs a testing framework
+    verilator
+    # Bambu clang to process llvm
+    llvmPackages.clang
+  ];
 }

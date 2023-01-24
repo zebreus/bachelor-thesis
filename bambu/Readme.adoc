@@ -1,0 +1,15 @@
+= BambU HLS
+
+BambU can perform High-Level Synthesis (HLS) of LLVM IR. It is packaged as a nix derivation based on the upstream appimage release.
+
+You can convert an LLVM file to verilog using:
+
+```bash
+nix run github:zebreus/bachelor-thesis#bambu-appimage -- --compiler=I386_CLANG12 --top-fname=NAME_OF_THE_FUNCTION_IN_YOUR_LLVM_IR  FILE.ll 
+```
+
+This will produce a NAME_OF_THE_FUNCTION_IN_YOUR_LLVM_IR.v file. It will also generate a bunch of other files, but you can ignore them.
+
+== Compiling BambU from source
+
+I failed to compile bambu from source on nixos. I left my current attempt in the `default.nix` file.
