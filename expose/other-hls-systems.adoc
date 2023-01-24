@@ -20,3 +20,37 @@ Research prototype for HLS from LLVM IR. Inactive project for four years, but st
 
 == PandA bambu
 
+FOSS hls framework. Can process llvm. Installing is difficult.
+
+== Gaut
+
+FOSS hls framework. Cannot process llvm.
+
+== Dynamatic
+
+toolchain and LLVM passes to convert llvm IR to VHDL. No cli tool, I think.
+
+https://github.com/lana555/dynamatic
+
+== Hastlayer
+
+Something like HLS for .NET binaries. Does not use LLVM, at least searching their repo for "llvm" does not yield any results.
+
+== LegUp
+
+HLS tool. Only source-available, not FOSS. idk if it can process LLVM IR.
+
+== Roccc
+
+HLS tool I think. FOSS. Should be based on LLVM. Last commit was in 2015, but it looks like it could work.
+
+https://github.com/nxt4hll/roccc-2.0
+
+== XLS
+
+HLS tool. FOSS. Active development. Has own HLS language, DSLX. Uses LLVM somewhere in the process.
+
+== Shang
+
+
+HLS tool. No license. Based on LLVM. Last commit was 10 years ago.
