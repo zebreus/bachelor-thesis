@@ -1,5 +1,12 @@
 # Nix output path
 result
 
-# Generated files
+# Asciidoctor generated files
 *.html
+
+# Asciidoctor-diagram temp files
+diag-*.*
+
+# bambu HLS output
+HLS_output
+synthesize_Synthesis_*.sh

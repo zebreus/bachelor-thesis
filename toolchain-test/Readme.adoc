@@ -1,0 +1,23 @@
+= Toolchain bambu
+
+== Introduction
+
+A toolchain is a set of tools that are used to build a project.
+
+This toolchain uses rustc to compile rust code to LLVM IR, then uses the bambu to generate Verilog, then uses the yosys to generate a bitstream for the FPGA.
+
+[graphviz]
+....
+digraph {
+    rustcode -> llvmir [label="rustc"]
+    llvmir -> verilog [label="PandA bambu"]
+    verilog -> bitstream [label="yosys, nextpnr & icestorm"]
+
+    rustcode [shape=note,label="Rust source"]
+    llvmir [shape=note,label="LLVM IR"]
+    verilog [shape=note,label="Verilog"]
+    bitstream [shape=note,label="FPGA bitstream"]
+}
+....
+
+

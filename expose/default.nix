@@ -11,6 +11,7 @@ stdenv.mkDerivation {
   nativeBuildInputs = [
     asciidoctor-with-extensions
     nixpkgs-fmt
+    graphviz
   ];
 
   buildInputs = [
