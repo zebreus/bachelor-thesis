@@ -11,7 +11,7 @@ clean:
 	rm -f rotate.json rotate.asc rotate.bin abc.history
 
 obj_dir/Vrotate: rotate.v addition.v
-	verilator --cc --exe --build --trace -j 0 -Wall sim_main.cpp rotate.v
+	verilator --cc --exe --build --trace -j 0  sim_main.cpp rotate.v
 
 sim: obj_dir/Vrotate
 	./obj_dir/Vrotate

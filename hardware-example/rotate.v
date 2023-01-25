@@ -1,13 +1,21 @@
 `include "addition.v"
 module rotate(input clk, output D1, output D2, output D3, output D4, output D5);   
    reg ready = 0;
-   reg [23:0]     divider;
+   reg [63:0]     divider;
    reg [3:0]      rot;
-   wire [23:0]     next;
+   wire [63:0]     next;
+
+   wire done;
 
    addition myaddition(
-      .a (divider),
-      .done (next)
+  .clock (clk),
+  .reset (0'b0),
+  .start_port (ready),
+  .Pd5 (divider),
+  .Pd6 (1),
+  // OUT
+  .done_port (done),
+  .return_port (next)
    );
    
    always @(posedge clk) begin
