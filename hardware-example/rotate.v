@@ -1,20 +1,25 @@
-
-module top(input clk, output D1, output D2, output D3, output D4, output D5);
-   
+`include "addition.v"
+module rotate(input clk, output D1, output D2, output D3, output D4, output D5);   
    reg ready = 0;
    reg [23:0]     divider;
    reg [3:0]      rot;
+   wire [23:0]     next;
+
+   addition myaddition(
+      .a (divider),
+      .done (next)
+   );
    
    always @(posedge clk) begin
       if (ready) 
         begin
-           if (divider == 1000000) 
+           if (divider == 10) 
              begin
                 divider <= 0;
                 rot <= {rot[2:0], rot[3]};
              end
            else 
-             divider <= divider + 1;
+             divider <= next;
         end
       else 
         begin
@@ -30,3 +35,5 @@ module top(input clk, output D1, output D2, output D3, output D4, output D5);
    assign D4 = rot[3];
    assign D5 = 1;
 endmodule // top
+
+

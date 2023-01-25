@@ -1,4 +1,6 @@
-rot.json
-rot.bin
-rot.asc
+*.json
+*.bin
+*.asc
 abc.history
+obj_dir
+waveform.vcd

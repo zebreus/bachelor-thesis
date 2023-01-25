@@ -1,11 +1,17 @@
 
-rot.bin: rot.v rot.pcf
-	yosys -q -p "synth_ice40 -json rot.json" rot.v
-	nextpnr-ice40 --hx1k --json rot.json --pcf rot.pcf --asc rot.asc
-	icepack rot.asc rot.bin
+rotate.bin: rotate.v rotate.pcf
+	yosys -q -p "synth_ice40 -json rotate.json" rotate.v
+	nextpnr-ice40 --hx1k --json rotate.json --pcf rotate.pcf --asc rotate.asc
+	icepack rotate.asc rotate.bin
 
-flash: rot.bin
-	iceprog rot.bin
+flash: rotate.bin
+	iceprog rotate.bin
 
 clean:
-	rm -f rot.json rot.asc rot.bin abc.history
+	rm -f rotate.json rotate.asc rotate.bin abc.history
+
+obj_dir/Vrotate: rotate.v addition.v
+	verilator --cc --exe --build --trace -j 0 -Wall sim_main.cpp rotate.v
+
+sim: obj_dir/Vrotate
+	./obj_dir/Vrotate

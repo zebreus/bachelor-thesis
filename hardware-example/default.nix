@@ -13,6 +13,7 @@ stdenv.mkDerivation {
     nextpnrWithGui
     icestorm
     python3
+    verilator
   ];
 
   installPhase = ''
