@@ -13,6 +13,7 @@
         packages.expose = import ./expose/default.nix { pkgs = nixpkgs.legacyPackages.${system}; };
         packages.toolchain = import ./toolchain-test/default.nix { pkgs = nixpkgs.legacyPackages.${system}; };
         packages.bambu = import ./bambu/default.nix { pkgs = nixpkgs.legacyPackages.${system}; };
+        packages.hardware-example = import ./hardware-example/default.nix { pkgs = nixpkgs.legacyPackages.${system}; };
         packages.bambu-appimage = import ./bambu/appimage/default.nix { pkgs = nixpkgs.legacyPackages.${system}; };
 
         packages.default = packages.expose;
