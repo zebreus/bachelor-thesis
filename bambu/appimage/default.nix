@@ -21,7 +21,15 @@ appimageTools.wrapType2 rec {
   extraPkgs = pkgs: with pkgs; [
     # Bambu needs a testing framework
     verilator
+    # Lets also pack icarus verilog
+    verilog
     # Bambu clang to process llvm
     llvmPackages.clang
+
+    # Bambu requires glibc to compile verilator files
+    glibc.static
+    glibc.dev
+    glibc_multi
+    glibc_multi.dev
   ];
 }
