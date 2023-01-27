@@ -15,6 +15,7 @@ stdenv.mkDerivation {
     gnuplot
     nodePackages.vega-cli
     nodePackages.vega-lite
+    pikchr
   ];
 
   buildInputs = [

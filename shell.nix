@@ -8,6 +8,7 @@ mkShell {
     gnuplot
     nodePackages.vega-cli
     nodePackages.vega-lite
+    pikchr
     python3
 
     # Utils
