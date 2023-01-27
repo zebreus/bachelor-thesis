@@ -1,4 +1,10 @@
 = Running Rust on an FPGA
+:last-update-label!:
+:imagesdir: images
+:source-highlighter: rouge
+:rouge-style: github
+// :source-highlighter: highlight.js
+// :highlightjs-languages: rust, cpp, console
 
 == Introduction: Begin by introducing the topic of High-level synthesis (HLS) and its importance in the field of FPGA programming. Explain why you've chosen to focus on Rust as the programming language for HLS.
 
@@ -18,6 +24,7 @@ HLS is a process that allows developers to write high-level code, such as C/C++ 
 == Future work: Discuss future work for your toolchain. This can include additional features or improvements that you plan to make.
 
 == Conclusion: Summarize the key points of the blog post and explain why HLS is an important technology for FPGA programming.
+
 
 == References: Include any references you used while writing the blog post.
 
@@ -122,6 +129,7 @@ It is probably good idea to tell the rust compiler that we are not targeting a s
 
 The final command to compile the rust code to LLVM IR is:
 
+[source,bash]
 ----
 rustc --emit=llvm-ir --crate-type=lib src/min_max_rust.rs -o min_max_rust.ll -C opt-level=0 -C overflow-checks=off -C no-vectorize-loops -C target-cpu=generic -C panic=abort
 ----
@@ -361,6 +369,8 @@ $ nix run github:zebreus/bachelor-thesis#bambu-appimage -- min_max_rust_idiomati
   Number of executions     : 2
   Average execution        : 10 cycles
 ----
+====
+
 
 .Idiomatic rust with `-O5` and `-C opt-level=3`
 [%collapsible]
@@ -383,3 +393,112 @@ $ nix run github:zebreus/bachelor-thesis#bambu-appimage -- min_max_rust_idiomati
   Number of executions     : 2
   Average execution        : 10 cycles
 ----
+====
+
+While the idiomatic version is not faster than the non-idiomatic version, it takes up the smallest area of all synthesized design. It is also more readable and easier to understand.
+
+[gnuplot]
+....
+set xlabel "x"
+set ylabel "f(x)"
+set grid
+set key right top
+set xrange[0:6.28]
+set yrange[-1:1]
+set output 'sinx.pdf'
+
+
+set boxwidth 0.5
+set style fill solid
+set datafile separator ","
+plot 'results/total_cycles.csv' using 0:1 with boxes
+....
+
+[vegalite]
+....
+{
+  "data": {
+        "values": [
+          {"id": "min_max_cpp_clang_size", "Setup": "C++ clang -Os"},
+          {"id": "min_max_cpp_clang_speed", "Setup": "C++ clang -O3"},
+          {"id": "min_max_cpp_gcc_size", "Setup": "C++ gcc -Os"},
+          {"id": "min_max_cpp_gcc_speed", "Setup": "C++ gcc -O3"},
+          {"id": "min_max_rust_size", "Setup": "Rust -Os"},
+          {"id": "min_max_rust_speed", "Setup": "Rust -O3"},
+          {"id": "min_max_rust_idiomatic_size", "Setup": "Idiomatic Rust -Os"},
+          {"id": "min_max_rust_idiomatic_speed", "Setup": "Idiomatic Rust -O3"}
+        ] 
+      },
+  "title": "Average cycles",
+  "width": 500,
+  "height": 300,
+  "autosize": "fit",
+  "mark": "bar",
+  "transform": [{
+    "lookup": "id",
+    "as": "Cycles",
+    "from": {
+      "data":  {"url": "results/average_cycles.csv"},
+      "key": "id",
+      "fields": ["value"]
+    }
+  }],
+  "encoding": {
+    "x": {
+      "field": "Setup",
+      "axis": {"labelAngle": 45},
+      "scale": {"padding": 0.2}
+    },
+    "y": {
+      "field": "Cycles",
+      "type": "quantitative"
+    }
+  }
+}
+....
+
+[vegalite]
+....
+{
+  "data": {
+        "values": [
+          {"id": "min_max_cpp_clang_size", "Setup": "C++ clang -Os"},
+          {"id": "min_max_cpp_clang_speed", "Setup": "C++ clang -O3"},
+          {"id": "min_max_cpp_gcc_size", "Setup": "C++ gcc -Os"},
+          {"id": "min_max_cpp_gcc_speed", "Setup": "C++ gcc -O3"},
+          {"id": "min_max_rust_size", "Setup": "Rust -Os"},
+          {"id": "min_max_rust_speed", "Setup": "Rust -O3"},
+          {"id": "min_max_rust_idiomatic_size", "Setup": "Idiomatic Rust -Os"},
+          {"id": "min_max_rust_idiomatic_speed", "Setup": "Idiomatic Rust -O3"}
+        ] 
+
+      },
+  "title": "Estimated area",
+  "width": 500,
+  "height": 300,
+  "autosize": "fit",
+  "mark": "bar",
+  "transform": [{
+    "lookup": "id",
+    "as": "Estimated area",
+    "from": {
+      "data":  {"url": "results/total_estimated_area.csv"},
+      "key": "id",
+      "fields": ["value"]
+    }
+  }],
+  "encoding": {
+    "x": {
+      "field": "Setup",
+      "axis": {"labelAngle": 45},
+      "scale": {"padding": 0.2}
+    },
+    "y": {
+      "field": "Estimated area",
+      "type": "quantitative"
+    }
+  }
+}
+....
+// plot "results/total_cycles.csv" using 2:3:xtic(2) with boxes
+
