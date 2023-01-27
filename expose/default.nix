@@ -12,6 +12,7 @@ stdenv.mkDerivation {
     asciidoctor-with-extensions
     nixpkgs-fmt
     graphviz
+    gnuplot
   ];
 
   buildInputs = [

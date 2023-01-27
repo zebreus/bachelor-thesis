@@ -17,6 +17,7 @@
         packages.bambu-appimage = import ./bambu/appimage/default.nix { pkgs = nixpkgs.legacyPackages.${system}; };
 
         packages.default = packages.expose;
+        devShells.default = import ./shell.nix { pkgs = nixpkgs.legacyPackages.${system}; };
       }
     );
 }
