@@ -3,9 +3,6 @@ $ nix run .#bambu-appimage -- src/min_max_cpp.cpp --top-fname=min_max_cpp --gene
     Number of control steps: 10
     Minimum slack: 3.0949999999999998
     Estimated max frequency (MHz): 144.82259232440259
-  Time to perform scheduling: 0.00 seconds
-
-
 
   Module binding information for function min_max_cpp:
     Number of modules instantiated: 21

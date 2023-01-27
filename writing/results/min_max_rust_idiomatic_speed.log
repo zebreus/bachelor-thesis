@@ -4,9 +4,6 @@ $ nix run .#bambu-appimage -- build/min_max_rust_idiomatic_speed.ll --top-fname=
     Number of control steps: 13
     Minimum slack: 0.3782639969999988
     Estimated max frequency (MHz): 103.93134873875212
-  Time to perform scheduling: 0.01 seconds
-
-
 
   Module binding information for function min_max_rust_idiomatic:
     Number of modules instantiated: 98

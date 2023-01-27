@@ -93,7 +93,7 @@ $(OUT_DIR)/%.log: $(BUILD_DIR)/%.raw.out $(BUILD_DIR)/%.sh
 	rm -f $@
 	cat $(word 2,$^) | sed "s/^/$$ /" >> $@
 	echo '' >> $@
-	grep -A6 --color=never "Scheduling Information of function" $< >> $@
+	grep -A3 --color=never "Scheduling Information of function" $< >> $@
 	echo '' >> $@
 	grep -A6 --color=never "Module binding information for" $< >> $@
 	echo '' >> $@

@@ -4,9 +4,6 @@ $ nix run .#bambu-appimage -- build/min_max_rust_size.ll --top-fname=min_max_rus
     Number of control steps: 8
     Minimum slack: 2.6688639990000036
     Estimated max frequency (MHz): 136.40450809582526
-  Time to perform scheduling: 0.00 seconds
-
-
 
   Module binding information for function min_max_rust:
     Number of modules instantiated: 28
