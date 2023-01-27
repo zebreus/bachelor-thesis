@@ -1,4 +1,12 @@
 $ nix run .#bambu-appimage -- src/min_max_cpp.cpp --top-fname=min_max_cpp --generate-tb=src/testbench.xml --simulate --simulator=VERILATOR --compiler=I386_CLANG12 -O5
+  Scheduling Information of function min_max_cpp:
+    Number of control steps: 15
+    Minimum slack: 0.3782639969999988
+    Estimated max frequency (MHz): 103.93134873875212
+  Time to perform scheduling: 0.01 seconds
+
+
+
   Module binding information for function min_max_cpp:
     Number of modules instantiated: 112
     Number of performance conflicts: 12

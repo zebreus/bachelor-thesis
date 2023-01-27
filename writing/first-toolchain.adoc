@@ -325,5 +325,49 @@ While the idiomatic version is not faster than the non-idiomatic version, it tak
   }
 }
 ....
+
+[vegalite]
+....
+{
+  "data": {
+        "values": [
+          {"id": "min_max_cpp_clang_size", "Setup": "C++ clang -Os"},
+          {"id": "min_max_cpp_clang_speed", "Setup": "C++ clang -O3"},
+          {"id": "min_max_cpp_gcc_size", "Setup": "C++ gcc -Os"},
+          {"id": "min_max_cpp_gcc_speed", "Setup": "C++ gcc -O3"},
+          {"id": "min_max_rust_size", "Setup": "Rust -Os"},
+          {"id": "min_max_rust_speed", "Setup": "Rust -O3"},
+          {"id": "min_max_rust_idiomatic_size", "Setup": "Idiomatic Rust -Os"},
+          {"id": "min_max_rust_idiomatic_speed", "Setup": "Idiomatic Rust -O3"}
+        ] 
+
+      },
+  "title": "Estimated maximum frequency",
+  "width": 500,
+  "height": 300,
+  "autosize": "fit",
+  "mark": "bar",
+  "transform": [{
+    "lookup": "id",
+    "as": "Frequency (MHz)",
+    "from": {
+      "data":  {"url": "results/estimated_max_frequency.csv"},
+      "key": "id",
+      "fields": ["value"]
+    }
+  }],
+  "encoding": {
+    "x": {
+      "field": "Setup",
+      "axis": {"labelAngle": 45},
+      "scale": {"padding": 0.2}
+    },
+    "y": {
+      "field": "Frequency (MHz)",
+      "type": "quantitative"
+    }
+  }
+}
+....
 // plot "results/total_cycles.csv" using 2:3:xtic(2) with boxes
 

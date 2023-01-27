@@ -29,7 +29,8 @@ INTRO_LOG_FILES = $(addprefix $(OUT_DIR)/,$(addsuffix .log,$(INTRO_CASES)))
 TOTAL_ESTIMATED_AREA_CSV = $(OUT_DIR)/total_estimated_area.csv
 AVERAGE_CYCLES_CSV = $(OUT_DIR)/average_cycles.csv
 TOTAL_CYCLES_CSV = $(OUT_DIR)/total_cycles.csv
-CSV_FILES = $(TOTAL_ESTIMATED_AREA_CSV) $(AVERAGE_CYCLES_CSV) $(TOTAL_CYCLES_CSV)
+ESTIMATED_MAX_FREQUENCY_CSV = $(OUT_DIR)/estimated_max_frequency.csv
+CSV_FILES = $(TOTAL_ESTIMATED_AREA_CSV) $(AVERAGE_CYCLES_CSV) $(TOTAL_CYCLES_CSV) $(ESTIMATED_MAX_FREQUENCY_CSV)
 
 RESULTS = $(LOG_FILES) $(CSV_FILES) $(INTRO_LOG_FILES)
 .SECONDARY:
@@ -92,6 +93,8 @@ $(OUT_DIR)/%.log: $(BUILD_DIR)/%.raw.out $(BUILD_DIR)/%.sh
 	rm -f $@
 	cat $(word 2,$^) | sed "s/^/$$ /" >> $@
 	echo '' >> $@
+	grep -A6 --color=never "Scheduling Information of function" $< >> $@
+	echo '' >> $@
 	grep -A6 --color=never "Module binding information for" $< >> $@
 	echo '' >> $@
 	grep -A2 --color=never "Total cycles" $< >> $@
@@ -118,6 +121,14 @@ $(TOTAL_CYCLES_CSV): $(LOG_FILES)
 	for LOGFILE in  $^ ; do \
 	    echo -ne "$$(basename --suffix='.log' $$LOGFILE)," >> $@ ; \
 		grep --color=never "Total cycles" $$LOGFILE | sed 's/[^0-9]*//g' >> $@ ; \
+	done
+
+$(ESTIMATED_MAX_FREQUENCY_CSV): $(LOG_FILES)
+	rm -f $@
+	echo "id,value" > $@
+	for LOGFILE in  $^ ; do \
+	    echo -ne "$$(basename --suffix='.log' $$LOGFILE)," >> $@ ; \
+		grep --color=never "Estimated max frequency" $$LOGFILE | sed 's/[^0-9.]*//g' >> $@ ; \
 	done
 
 clean:
