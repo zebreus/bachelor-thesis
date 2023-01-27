@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<function>
+	<testbench input="{0,1,2,3,4}" num_elements="5" out_max="{0}" out_min="{0}" />
+	<testbench input="{15,10,5}" num_elements="3" out_max="{15}" out_min="{5}" />
+</function>

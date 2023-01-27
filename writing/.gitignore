@@ -1,0 +1,10 @@
+# Asciidoctor generated diagrams
+images
+.asciidoctor
+
+# Bambu artifacts
+HLS_output
+synthesize_Synthesis_*.sh
+bambu_results_*.xml
+simulate_*.sh
+*.v

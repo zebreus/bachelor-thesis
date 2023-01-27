@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<function>
+	<testbench Pd5="{0,1,2,3,4}" Pd6="5" />
+	<testbench Pd5="{15,10,5}" Pd6="3" />
+</function>
