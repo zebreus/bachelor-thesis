@@ -4,10 +4,16 @@ mkShell {
   buildInputs = [
     # For docs
     asciidoctor-with-extensions
-    nixpkgs-fmt
     graphviz
     gnuplot
+    nodePackages.vega-cli
+    nodePackages.vega-lite
     python3
+
+    # Utils
+    gnumake
+    nixpkgs-fmt
+    nil
 
     # For rust
     rust.packages.stable.rustPlatform.rust.rustc
@@ -22,6 +28,11 @@ mkShell {
     icestorm
     python3
     verilator
+
+    # For C/CPP
+    gcc
+    clang
+    clang-tools
   ];
 
   RUST_SRC_PATH = "${pkgs.rust.packages.stable.rustPlatform.rustLibSrc}";

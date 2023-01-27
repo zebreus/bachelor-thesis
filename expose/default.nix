@@ -13,6 +13,8 @@ stdenv.mkDerivation {
     nixpkgs-fmt
     graphviz
     gnuplot
+    nodePackages.vega-cli
+    nodePackages.vega-lite
   ];
 
   buildInputs = [
