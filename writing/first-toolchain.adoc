@@ -48,29 +48,21 @@ We synthesize the function using bambu and use bambus integrated test runner to 
 * input=[0,1,2,3,4] num_elements=5 out_max=0 out_min=4
 * input=[15,10,5] num_elements=3 out_max=15 out_min=5 
 
-The tests are executed using verilator, so they are not completly representative of the actual hardware, because Verilator does not simulate timings beyond the clock cycles. I think comparing clock cycles is a good enough approximation for now.
 
-.Output of synthesizing the cpp function
+
+.Synthesizing and testing the C++ function
 [%collapsible]
 ====
 [source,console]
 ----
-$ nix run github:zebreus/bachelor-thesis#bambu-appimage -- min_max_cpp.c --top-fname=min_max --compiler=I386_CLANG12 --generate-tb=testbench.xml --simulate --simulator=VERILATOR -O2
-  Module binding information for function min_max_cpp:
-    Number of modules instantiated: 112
-    Number of performance conflicts: 12
-    Estimated resources area (no Muxes and address logic): 1034
-    Estimated area of MUX21: 72
-    Total estimated area: 1106
-    Estimated number of DSPs: 0
-  Time to perform module binding: 0.00 seconds
-
-  Total number of flip-flops in function min_max_cpp: 1062
-  Total cycles             : 22 cycles
-  Number of executions     : 2
-  Average execution        : 11 cycles
+include::results/min_max_cpp_clang_intro.log[]
 ----
 ====
+
+
+The most relevant aspects of the output are the average number of clock cycles and the total area used. The area is an important metric, because it is the most expensive resource on FPGAs. The number of clock cycles is also important, because it is a reasonable indicator of how fast the function is. 
+
+The tests are executed using verilator, so they are not completly representative of the actual hardware, because Verilator does not simulate timings beyond the clock cycles. So it could be that a design requires fewer cycles, but can only be run at a lower clock frequency. That said, comparing clock cycles should be a somewhat accurate.
 
 Translating this to Rust is not very difficult. We need to access the input array in rust using `array.get_unchecked(i)` instead of `array[i]`, because the latter is always bounds checked. If we used the checked version, our code could panic, which is not synthesizable. Finally, we need to mark the function as `#[no_mangle]`, so that the function name is preserved.
 
@@ -104,20 +96,7 @@ Bambu fails to synthesize the rust code if optimizations are disabled. Enabling 
 ====
 [source,console]
 ----
-$ nix run github:zebreus/bachelor-thesis#bambu-appimage -- min_max_rust.ll --top-fname=min_max_rust --compiler=I386_CLANG12 --generate-tb=testbench_llvm.xml --simulate --simulator=VERILATOR -O2
-  Module binding information for function min_max_rust:
-    Number of modules instantiated: 112
-    Number of performance conflicts: 12
-    Estimated resources area (no Muxes and address logic): 1034
-    Estimated area of MUX21: 72
-    Total estimated area: 1106
-    Estimated number of DSPs: 0
-  Time to perform module binding: 0.00 seconds
-
-  Total number of flip-flops in function min_max_rust: 1062
-  Total cycles             : 22 cycles
-  Number of executions     : 2
-  Average execution        : 11 cycles
+include::results/min_max_rust_intro.log[]
 ----
 ====
 

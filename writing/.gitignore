@@ -8,3 +8,6 @@ synthesize_Synthesis_*.sh
 bambu_results_*.xml
 simulate_*.sh
 *.v
+
+# Testing artifacts
+build
