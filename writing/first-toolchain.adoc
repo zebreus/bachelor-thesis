@@ -1,8 +1,11 @@
+
 = Running Rust on an FPGA
 :last-update-label!:
 :imagesdir: images
 :source-highlighter: rouge
 :rouge-style: github
+// We define C++ here, because the ++ is also used as a delimiter in asciidoc
+:cpp: C++
 // :source-highlighter: highlight.js
 // :highlightjs-languages: rust, cpp, console
 
@@ -31,6 +34,12 @@ HLS is a process that allows developers to write high-level code, such as C/C++ 
 
 == Writing Code that synthesizes well
 
+Here should be some text
+
+//TODO: Add some text here
+
+=== Using bambu for C++
+
 Bambu is build to synthesize C/C++ code.
 
 The example for a function that finds that minimum or maximum in an array is a good example of how to write code that synthesizes well. It is just very C-like code, that mutates its inputs and has a interface that is not very Rust-like.
@@ -42,13 +51,11 @@ include::src/min_max_cpp.cpp[]
 
 The function takes a pointer to an array of integers, the number of elements in the array, and two pointers to integers. The function will find the minimum and maximum in the array and write them to the memory locations pointed to by `out_max` and `out_min`.
 
-We synthesize the function using bambu and use bambus integrated test runner to test the function against some testcases. Later we will use the same testcases for the Rust version of the function. The optimization level is set to `-O2` for now.
+We synthesize the function using bambu and use bambus integrated test runner to test the function against some testcases. Later we will use the same testcases for the Rust version of the function. The optimization level is set to `-O2` for now, which is the lowest we can go, because the Rust version requires at least some optimizations to be enabled.
 
 .Testcases:
 * input=[0,1,2,3,4] num_elements=5 out_max=0 out_min=4
 * input=[15,10,5] num_elements=3 out_max=15 out_min=5 
-
-
 
 .Synthesizing and testing the C++ function
 [%collapsible]
@@ -59,39 +66,54 @@ include::results/min_max_cpp_clang_intro.log[]
 ----
 ====
 
-
 The most relevant aspects of the output are the average number of clock cycles and the total area used. The area is an important metric, because it is the most expensive resource on FPGAs. The number of clock cycles is also important, because it is a reasonable indicator of how fast the function is. 
 
 The tests are executed using verilator, so they are not completly representative of the actual hardware, because Verilator does not simulate timings beyond the clock cycles. So it could be that a design requires fewer cycles, but can only be run at a lower clock frequency. That said, comparing clock cycles should be a somewhat accurate.
 
-Translating this to Rust is not very difficult. We need to access the input array in rust using `array.get_unchecked(i)` instead of `array[i]`, because the latter is always bounds checked. If we used the checked version, our code could panic, which is not synthesizable. Finally, we need to mark the function as `#[no_mangle]`, so that the function name is preserved.
+=== Using bambu for Rust
+
+When using Rust with bambu, we need to take a few things into account.
+
+First bambu cannot synthesize anything that unwinds the stack, at least when using the LLVM IR backend. Bambu also cannot synthesize terminating the process. This is a bit unfortunate, because unwinding and terminating are the two way that Rust uses to deal with panics. So we must make sure that our code can not panic. When optimizations are disabled, the Rust compiler sometimes inserts exception handlers into the LLVM IR, even though they are not used. On higher optimization levels, the compiler is smart enough to remove those exception handlers. 
+
+Second, our function can not use IO and basically every other impure feature. This includes things like `std::io::println`. This does not affect us in this example, but keep it in mind when writing your own code.
+
+Third, we need to make sure that the function interface is preserved. We can specify that we want the name to be preserved by attaching the `#[no_mangle]` attribute macro to our function. We also need a C-compatible interface, so we need to mark the function as `extern "C"`. While this is not strictly necessary, it is needed for this case, because we use bambus testbench generator to generate testcases for our function. The testbench generator only supports a C interface to call our function.
+
+// TODO: Find example
+// Luckily, Rust and LLVM are quite good at understanding out code, and they can often prove that our code can not panic. 
+
+Fourth bambu does not support all LLVM intrinsics. Most notably bambu does not support the llvm vector reduce intrinsics, which Rust uses for vectorizing loops. There are probably other intrinsics that are not supported, but I have not encountered more yet. If we encounter an unsupported intrinsic, our easiest option is to try another optimization level or see if the Rust compiler has an option to disable the use of that intrinsic. If that does not work we can try to modify the generated LLVM IR to remove the intrinsic. A more advanced option is to write a pass for the LLVM IR that replaces the intrinsic with something that is supported by bambu. We won't do that in this blog post, but it is something to keep in mind.
+
+=== Converting the min_max example to Rust
+
+Translating `min_max_cpp` to Rust is not very difficult. We need to access the input array in rust using `array.get_unchecked(i)` instead of `array[i]`, because the latter is always bounds checked. If we used the checked version, our code could panic, which is not synthesizable. Finally, we need to mark the function as `#[no_mangle]`, so that the function name is preserved.
 
 [source,rust]
 ----
 include::src/min_max_rust.rs[]
 ----
 
-If we compile that code to LLVM IR and try to use bambu with it we get an error that `llvm.vector.reduce.smax.v4i32` is not supported. Bambu does not support llvm vector instructions. They probably get inserted by the https://llvm.org/docs/Vectorizers.html#the-loop-vectorizer[LLVM Loop Vectorizer]. We can disable that vectorization pass by passing `-C no-vectorize-loops` to rustc.
+If we compile that code to LLVM IR and try to use bambu with it we get an error that `llvm.vector.reduce.smax.v4i32` is not supported. As mentioned above bambu does not support llvm vector instructions. They probably get inserted by the https://llvm.org/docs/Vectorizers.html#the-loop-vectorizer[LLVM Loop Vectorizer]. We can disable that vectorization pass by passing `-C no-vectorize-loops` to rustc.
 
+By default the Rust compiler generates code that unwinds the stack on panic. The generated LLVM IR will also have a exception handling personality function added to every function in LLVM IR. This is not synthesizable. We tell the compiler to instead terminate the program on panic by passing `-C panic=abort` to rustc.
 
-By default the Rust compiler generates code that unwinds the stack on panic. The generated LLVM IR also has a exception handling personality function added to every function in LLVM IR. Both are not synthesizable. We tell the compiler to instead termintate the program on panic by passing `-C panic=abort` to rustc. Terminating the program is also not synthesizable, but as long as we dont panic, it is fine.
+For that reason we should also make sure that debug assertions are disabled. Debug assertions add extra safety checks, which can make it easier to find and fix bugs, but these checks usually manifest as panics. We can disable them by passing the `-C debug-assertions=off` flag. On every optimization level other than `0` they are automatically disabled, but we want to be sure.
 
-We also need to disable overflow checks, because they will generate panics. We can do that by passing `-C overflow-checks=off` to rustc.
-
-Finally, we need to pass `-C target-cpu=generic --target=unknown-unknown-unknown` to rustc, because we dont target the host CPU.
+We also need to disable overflow checks, because they will generate panics if overflows occur during arithmetic operations. We can do that by passing `-C overflow-checks=off` to rustc.
 
 It is probably good idea to tell the rust compiler that we are not targeting a specific cpu architecture by passing `-C target-cpu=generic`.
 
-The final command to compile the rust code to LLVM IR is:
+The final command to compile the Rust code to LLVM IR is:
 
 [source,bash]
 ----
 rustc --emit=llvm-ir --crate-type=lib src/min_max_rust.rs -o min_max_rust.ll -C opt-level=0 -C overflow-checks=off -C no-vectorize-loops -C target-cpu=generic -C panic=abort
 ----
 
-Bambu fails to synthesize the rust code if optimizations are disabled. Enabling at least some level of optimization in rustc or enableing a level higher than 1 in bambu fixes the problem. We will set the optimization level to `-O2` in bambu, because that should have a smaller impact on the results than enabling optimizations in rustc.
+Bambu fails to synthesize the Rust code if all optimizations are disabled. Enabling at least some level of optimization in rustc or enableing a level higher than 1 in bambu fixes the problem. I assume this is because Rust still generates exception handlers in LLVM if optimizations are disabled. We will set the optimization level to `-O2` in bambu, because that way we can compare the results with the {cpp} function which also used that level.
 
-.Output of synthesizing the rust function
+.Synthesizing and testing the rust function
 [%collapsible]
 ====
 [source,console]
@@ -100,10 +122,41 @@ include::results/min_max_rust_intro.log[]
 ----
 ====
 
-While taking up roughly the same amount of resources, the rust version need roughly 2 times less cycles to execute. For now I dont know why that is the case. I would have assumed that the rust version would be slower, because the cpp version had optimizations enabled during compilation and synthesis, while the rust version did not.
+It is quite interesting to see that the rust version of the function is apparently identical to the {cpp} version. My best guess is that rustc and clang both generated nearly identical LLVM IR, because the function is basically the same.
 
-Lets try the cpp and the rust version with optimizations set to the maximum level.
+I would have assumed that the rust version would be slower, because the {cpp} version had optimizations enabled during compilation and synthesis, while we only had synthesis optimizations enabled for the rust version. Also bambu was designed to synthesize {cpp} code, so I assumed it might be better at synthesizing {cpp} code than rust code. I think we get this result, because bambu treats also treats both versions just as LLVM IR, so it does not have any special knowledge about {cpp}. We will do a more detailed comparison of the {cpp} and rust versions later, where the GCC backend is also included, maybe that yields better results.
 
+=== Using idiomatic Rust
+
+While the previous example technically was Rust, it was not very Rust-like.
+
+A more idiomatic Rust version of the same function using slices and iterators.
+
+[source,rust]
+----
+include::src/min_max_rust_idiomatic.rs[]
+----
+
+The new version makes use of Rust's standard library and functional constructs such as iterators and the `fold` method. Functional programming is widely used in Rust and considered idiomatic because it is expressive and encourages best practices like immutability and explicitness. It is also safer than manually indexing into the input pointer with the `offset` method as in the previous version. Additionally, the use of a struct to return the minimum and maximum values is a more natural way to represent the output in Rust, as opposed to using two separate output pointers.
+
+Usually idiomatic Rust-like Rust code is also faster than C-like Rust code, because the compiler can do more optimizations. So lets see if that is the case here. Bambu cannot synthesize this function when the LLVM IR was not optimized by Rust, so we will set the optimization level to `1` in Rust. This makes this result less comparable to the previous one, but it shouldn't make a big difference, because Rust does only basic optimizations at that level.
+
+.Synthesizing and testing the idiomatic rust function
+[%collapsible]
+====
+[source,console]
+----
+include::results/min_max_rust_idiomatic_intro.log[]
+----
+====
+
+The results look promising so far. This version is faster and way smaller than the previous two, but that could be because it had the rust compiler set to a higher optimization level. Lets see what happens when we synthesize our functions with all optimizations enabled.
+
+=== Comparing the C++ and Rust versions
+
+For the comparison we will use the same testcases as before. We will test every version of the function once with optimizations set for maximum speed and once with optimizations set for minimum size. For the C++ version we will also compare how the results change when we use gcc instead of clang.
+
+We will consider the synthesis a blackbox, so we wont compare the generated code. We will only compare the execution time and resource usage of the generated code.
 
 .CPP with clang and `-O5`
 [%collapsible]
@@ -163,12 +216,7 @@ include::results/min_max_rust_size.log[]
 When using rust optimization levels _s_ the bambu opt level does not matter for this example.
 ====
 
-A more idiomatic Rust version of the same function using slices and iterators.
 
-[source,rust]
-----
-include::src/min_max_rust_idiomatic.rs[]
-----
 
 .Idiomatic rust with `-Os` and `-C opt-level=s`
 [%collapsible]
