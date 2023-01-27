@@ -1,0 +1,13 @@
+$ rustc --emit=llvm-ir --crate-type=lib -C overflow-checks=off -C no-vectorize-loops -C target-cpu=generic -C panic=abort -C opt-level=s src/min_max_rust.rs -o build/min_max_rust_size.ll
+$ nix run .#bambu-appimage -- build/min_max_rust_size.ll --top-fname=min_max_rust --generate-tb=src/testbench_rust.xml --simulate --simulator=VERILATOR --compiler=I386_CLANG12 -Os
+  Module binding information for function min_max_rust:
+    Number of modules instantiated: 28
+    Number of performance conflicts: 0
+    Estimated resources area (no Muxes and address logic): 238
+    Estimated area of MUX21: 68
+    Total estimated area: 306
+    Estimated number of DSPs: 0
+
+  Total cycles             : 20 cycles
+  Number of executions     : 2
+  Average execution        : 10 cycles

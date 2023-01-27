@@ -1,0 +1,13 @@
+$ rustc --emit=llvm-ir --crate-type=lib -C overflow-checks=off -C no-vectorize-loops -C target-cpu=generic -C panic=abort -C opt-level=s src/min_max_rust_idiomatic.rs -o build/min_max_rust_idiomatic_size.ll
+$ nix run .#bambu-appimage -- build/min_max_rust_idiomatic_size.ll --top-fname=min_max_rust_idiomatic --generate-tb=src/testbench_rust_idiomatic.xml --simulate --simulator=VERILATOR --compiler=I386_CLANG12 -Os
+  Module binding information for function min_max_rust_idiomatic:
+    Number of modules instantiated: 27
+    Number of performance conflicts: 0
+    Estimated resources area (no Muxes and address logic): 202
+    Estimated area of MUX21: 0
+    Total estimated area: 202
+    Estimated number of DSPs: 0
+
+  Total cycles             : 20 cycles
+  Number of executions     : 2
+  Average execution        : 10 cycles

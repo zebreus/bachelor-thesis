@@ -1,0 +1,12 @@
+$ nix run .#bambu-appimage -- src/min_max_cpp.cpp --top-fname=min_max_cpp --generate-tb=src/testbench.xml --simulate --simulator=VERILATOR --compiler=I386_GCC7 -O5
+  Module binding information for function min_max_cpp:
+    Number of modules instantiated: 21
+    Number of performance conflicts: 0
+    Estimated resources area (no Muxes and address logic): 197
+    Estimated area of MUX21: 70
+    Total estimated area: 267
+    Estimated number of DSPs: 0
+
+  Total cycles             : 24 cycles
+  Number of executions     : 2
+  Average execution        : 12 cycles
