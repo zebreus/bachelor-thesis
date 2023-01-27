@@ -21,7 +21,7 @@ BAMBU_FLAGS_FULL = --top-fname=min_max_rust_idiomatic --compiler=I386_CLANG12 --
 
 CASES = min_max_cpp_clang_size min_max_cpp_clang_speed min_max_cpp_gcc_size min_max_cpp_gcc_speed min_max_rust_idiomatic_size min_max_rust_idiomatic_speed min_max_rust_size min_max_rust_speed
 # The following cases are used for the introduction
-INTRO_CASES = min_max_cpp_clang_intro min_max_rust_intro
+INTRO_CASES = min_max_cpp_clang_intro min_max_rust_intro min_max_rust_idiomatic_intro
 
 LOG_FILES = $(addprefix $(OUT_DIR)/,$(addsuffix .log,$(CASES)))
 INTRO_LOG_FILES = $(addprefix $(OUT_DIR)/,$(addsuffix .log,$(INTRO_CASES)))
@@ -54,10 +54,15 @@ $(BUILD_DIR)/min_max_r%_size.sh: $(SOURCE_DIR)/min_max_r%.rs $(SOURCE_DIR)/testb
 	echo "$(RUSTC) $(RUST_FLAGS_SIZE) $< -o $(BUILD_DIR)/$(basename $(notdir $@)).ll" > $@
 	echo -ne "$(BAMBU) $(BUILD_DIR)/$(basename $(notdir $@)).ll --top-fname=min_max_r$* --generate-tb=$(word 2,$^) $(BAMBU_FLAGS_CLANG) $(BAMBU_FLAG_SIZE)" >> $@
 
-$(BUILD_DIR)/min_max_r%_intro.sh: $(SOURCE_DIR)/min_max_r%.rs $(SOURCE_DIR)/testbench_r%.xml
+$(BUILD_DIR)/min_max_rust_idiomatic_intro.sh: $(SOURCE_DIR)/min_max_rust_idiomatic.rs $(SOURCE_DIR)/testbench_rust_idiomatic.xml
+	mkdir -p $(BUILD_DIR)
+	echo "$(RUSTC) $(RUST_FLAGS) -C opt-level=1 $< -o $(BUILD_DIR)/$(basename $(notdir $@)).ll" > $@
+	echo -ne "$(BAMBU) $(BUILD_DIR)/$(basename $(notdir $@)).ll --top-fname=min_max_rust_idiomatic --generate-tb=$(word 2,$^) $(BAMBU_FLAGS_CLANG) -O2" >> $@
+
+$(BUILD_DIR)/min_max_rust_intro.sh: $(SOURCE_DIR)/min_max_rust.rs $(SOURCE_DIR)/testbench_rust.xml
 	mkdir -p $(BUILD_DIR)
 	echo "$(RUSTC) $(RUST_FLAGS) -C opt-level=0 $< -o $(BUILD_DIR)/$(basename $(notdir $@)).ll" > $@
-	echo -ne "$(BAMBU) $(BUILD_DIR)/$(basename $(notdir $@)).ll --top-fname=min_max_r$* --generate-tb=$(word 2,$^) $(BAMBU_FLAGS_CLANG) -O2" >> $@
+	echo -ne "$(BAMBU) $(BUILD_DIR)/$(basename $(notdir $@)).ll --top-fname=min_max_rust --generate-tb=$(word 2,$^) $(BAMBU_FLAGS_CLANG) -O2" >> $@
 
 $(BUILD_DIR)/min_max_cpp_gcc.sh: $(SOURCE_DIR)/min_max_cpp.cpp
 	mkdir -p $(BUILD_DIR)
