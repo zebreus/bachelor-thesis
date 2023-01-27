@@ -10,7 +10,8 @@ mkShell {
     python3
 
     # For rust
-    rust.packages.stable.rustPlatform.rust
+    rust.packages.stable.rustPlatform.rust.rustc
+    rust.packages.stable.rustPlatform.rust.cargo
     rust.packages.stable.rustPlatform.rustLibSrc
     rustfmt
     cacert
