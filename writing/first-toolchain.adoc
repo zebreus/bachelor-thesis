@@ -397,23 +397,6 @@ $ nix run github:zebreus/bachelor-thesis#bambu-appimage -- min_max_rust_idiomati
 
 While the idiomatic version is not faster than the non-idiomatic version, it takes up the smallest area of all synthesized design. It is also more readable and easier to understand.
 
-[gnuplot]
-....
-set xlabel "x"
-set ylabel "f(x)"
-set grid
-set key right top
-set xrange[0:6.28]
-set yrange[-1:1]
-set output 'sinx.pdf'
-
-
-set boxwidth 0.5
-set style fill solid
-set datafile separator ","
-plot 'results/total_cycles.csv' using 0:1 with boxes
-....
-
 [vegalite]
 ....
 {
