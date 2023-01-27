@@ -9,8 +9,6 @@
 // :source-highlighter: highlight.js
 // :highlightjs-languages: rust, cpp, console
 
-== Introduction: Begin by introducing the topic of High-level synthesis (HLS) and its importance in the field of FPGA programming. Explain why you've chosen to focus on Rust as the programming language for HLS.
-
 // TODO: This sections sucks. Rewrite it.
 
 Usually one would write code for an FPGA in a hardware description language (HDL) such as Verilog or VHDL. However, this is a very low-level language, and it is difficult to write code in it. This is where HLS comes in.
