@@ -1,4 +1,4 @@
-$ nix run .#bambu-appimage -- src/min_max_cpp.cpp --top-fname=min_max_cpp --generate-tb=src/testbench.xml --simulate --simulator=VERILATOR --compiler=I386_CLANG12 -O5
+$ nix run .#bambu-appimage -- src/min_max_cpp.cpp --top-fname=min_max_cpp --generate-tb=src/testbench.xml --simulate --simulator=VERILATOR -v2 --compiler=I386_CLANG12 -O5
   Scheduling Information of function min_max_cpp:
     Number of control steps: 15
     Minimum slack: 0.3782639969999988
@@ -12,6 +12,6 @@ $ nix run .#bambu-appimage -- src/min_max_cpp.cpp --top-fname=min_max_cpp --gene
     Total estimated area: 1106
     Estimated number of DSPs: 0
 
-  Total cycles             : 22 cycles
-  Number of executions     : 2
-  Average execution        : 11 cycles
+  Total cycles             : 363 cycles
+  Number of executions     : 21
+  Average execution        : 17 cycles

@@ -1,0 +1,228 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": "Performance comparison of min/max implementations",
+  "data": {
+    "url": "results/test_results.csv"
+  },
+  "transform": [
+    {
+      "lookup": "id",
+      "as": "Estimated area",
+      "from": {
+        "data": {
+          "url": "results/total_estimated_area.csv"
+        },
+        "key": "id",
+        "fields": [
+          "value"
+        ]
+      }
+    },
+    {
+      "lookup": "id",
+      "from": {
+        "key": "id",
+        "data": {
+          "values": [
+            {
+              "Compiler": "C++ clang",
+              "opt": "size",
+              "id": "min_max_cpp_clang_size",
+              "Setup": "C++ clang -Os",
+              "color": "#3454D1"
+            },
+            {
+              "Compiler": "C++ clang",
+              "opt": "speed",
+              "id": "min_max_cpp_clang_speed",
+              "Setup": "C++ clang -O3",
+              "color": "#7A8FE1"
+            },
+            {
+              "Compiler": "C++ gcc",
+              "opt": "size",
+              "id": "min_max_cpp_gcc_size",
+              "Setup": "C++ gcc -Os",
+              "color": "#34D1BF"
+            },
+            {
+              "Compiler": "C++ gcc",
+              "opt": "speed",
+              "id": "min_max_cpp_gcc_speed",
+              "Setup": "C++ gcc -O3",
+              "color": "#7AE1D5"
+            },
+            {
+              "Compiler": "Rust",
+              "opt": "size",
+              "id": "min_max_rust_size",
+              "Setup": "Rust -Os",
+              "color": "#C1292E"
+            },
+            {
+              "Compiler": "Rust",
+              "opt": "speed",
+              "id": "min_max_rust_speed",
+              "Setup": "Rust -O3",
+              "color": "#E2787C"
+            },
+            {
+              "Compiler": "Idiomatic Rust",
+              "opt": "size",
+              "id": "min_max_rust_idiomatic_size",
+              "Setup": "Idiomatic Rust -Os",
+              "color": "#F65D00"
+            },
+            {
+              "Compiler": "Idiomatic Rust",
+              "opt": "speed",
+              "id": "min_max_rust_idiomatic_speed",
+              "Setup": "Idiomatic Rust -O3",
+              "color": "#FF9A5C"
+            }
+          ]
+        },
+        "fields": [
+          "Compiler",
+          "opt",
+          "Setup",
+          "color"
+        ]
+      }
+    }
+  ],
+  "width": 600,
+  "height": 300,
+  "encoding": {
+    "x": {
+      "field": "num_inputs",
+      "type": "quantitative"
+    }
+  },
+  "layer": [
+    {
+      "encoding": {
+        "y": {
+          "field": "cycles",
+          "type": "quantitative"
+        },
+        "color": {
+          "field": "Setup",
+          "type": "nominal",
+          "scale": {
+            "range": {
+              "field": "color"
+            }
+          }
+        }
+      },
+      "layer": [
+        {
+          "mark": "line",
+          "params": [
+            {
+              "name": "selectedSetup",
+              "select": {
+                "type": "point",
+                "fields": [
+                  "Setup"
+                ],
+                "on": "click"
+              },
+              "bind": "legend"
+            }
+          ],
+          "encoding": {
+            "opacity": {
+              "condition": {
+                "param": "selectedSetup",
+                "value": 1
+              },
+              "value": 0.2
+            }
+          }
+        },
+        {
+          "transform": [
+            {
+              "filter": {
+                "param": "hover",
+                "empty": false
+              }
+            }
+          ],
+          "mark": "point",
+          "encoding": {
+            "size": {
+              "value": 75
+            }
+          }
+        }
+      ]
+    },
+    {
+      "transform": [
+        {
+          "pivot": "Setup",
+          "value": "cycles",
+          "groupby": [
+            "num_inputs"
+          ]
+        }
+      ],
+      "mark": "rule",
+      "encoding": {
+        "opacity": {
+          "condition": {
+            "value": 0.3,
+            "param": "hover",
+            "empty": false
+          },
+          "value": 0
+        },
+        "tooltip": [
+          {
+            "field": "C++ clang -Os",
+            "title": "C++ clang",
+            "type": "quantitative"
+          },
+          {
+            "field": "C++ gcc -Os",
+            "title": "C++ gcc",
+            "type": "quantitative"
+          },
+          {
+            "field": "Rust -Os",
+            "type": "quantitative"
+          },
+          {
+            "field": "Rust -O3",
+            "type": "quantitative"
+          },
+          {
+            "field": "Idiomatic Rust -Os",
+            "type": "quantitative"
+          },
+          {
+            "field": "Idiomatic Rust -O3",
+            "type": "quantitative"
+          }
+        ]
+      },
+      "params": [
+        {
+          "name": "hover",
+          "select": {
+            "type": "point",
+            "fields": [
+              "num_inputs"
+            ],
+            "nearest": true,
+            "on": "mouseover",
+            "clear": "mouseout"
+          }
+        }
+      ]
+    }
+  ]
+}

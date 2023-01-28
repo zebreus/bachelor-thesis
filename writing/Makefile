@@ -13,7 +13,7 @@ RUST_FLAGS_SPEED = $(RUST_FLAGS) -C opt-level=3
 BAMBU_FLAG_SPEED = -O5
 BAMBU_FLAG_SIZE = -Os
 
-BAMBU_FLAGS = --simulate --simulator=VERILATOR
+BAMBU_FLAGS = --simulate --simulator=VERILATOR -v2
 BAMBU_FLAGS_CLANG = $(BAMBU_FLAGS) --compiler=I386_CLANG12
 BAMBU_FLAGS_GCC = $(BAMBU_FLAGS) --compiler=I386_GCC7
 
@@ -26,13 +26,17 @@ INTRO_CASES = min_max_cpp_clang_intro min_max_rust_intro min_max_rust_idiomatic_
 LOG_FILES = $(addprefix $(OUT_DIR)/,$(addsuffix .log,$(CASES)))
 INTRO_LOG_FILES = $(addprefix $(OUT_DIR)/,$(addsuffix .log,$(INTRO_CASES)))
 
+RAW_LOG_FILES = $(addprefix $(BUILD_DIR)/,$(addsuffix .raw.out,$(CASES)))
+
+
 TOTAL_ESTIMATED_AREA_CSV = $(OUT_DIR)/total_estimated_area.csv
 AVERAGE_CYCLES_CSV = $(OUT_DIR)/average_cycles.csv
 TOTAL_CYCLES_CSV = $(OUT_DIR)/total_cycles.csv
 ESTIMATED_MAX_FREQUENCY_CSV = $(OUT_DIR)/estimated_max_frequency.csv
-CSV_FILES = $(TOTAL_ESTIMATED_AREA_CSV) $(AVERAGE_CYCLES_CSV) $(TOTAL_CYCLES_CSV) $(ESTIMATED_MAX_FREQUENCY_CSV)
+TEST_RESULTS_CSV = $(OUT_DIR)/test_results.csv
+CSV_FILES = $(TOTAL_ESTIMATED_AREA_CSV) $(AVERAGE_CYCLES_CSV) $(TOTAL_CYCLES_CSV) $(ESTIMATED_MAX_FREQUENCY_CSV) $(TEST_RESULTS_CSV)
 
-RESULTS = $(LOG_FILES) $(CSV_FILES) $(INTRO_LOG_FILES)
+RESULTS = $(LOG_FILES) $(CSV_FILES) $(INTRO_LOG_FILES) 
 .SECONDARY:
 
 all: $(RESULTS)
@@ -129,6 +133,13 @@ $(ESTIMATED_MAX_FREQUENCY_CSV): $(LOG_FILES)
 	for LOGFILE in  $^ ; do \
 	    echo -ne "$$(basename --suffix='.log' $$LOGFILE)," >> $@ ; \
 		grep --color=never "Estimated max frequency" $$LOGFILE | sed 's/[^0-9.]*//g' >> $@ ; \
+	done
+
+$(TEST_RESULTS_CSV): $(RAW_LOG_FILES)
+	rm -f $@
+	echo "id,num_inputs,cycles" > $@
+	for LOGFILE in  $^ ; do \
+		grep --color=never "Simulation completed with SUCCESS" $$LOGFILE | sed 's/[^0-9.]*//g' | sed 's/[.]/ /g' | awk '{printf "'$$(basename --suffix='.raw.out' $$LOGFILE)',%d,%d\n", $$1-1, $$2}' >> $@ ; \
 	done
 
 clean:

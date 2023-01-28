@@ -1,6 +1,6 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "title": "Speed vs size",
+  "title": "Comparison of area and performance",
   "data": {
     "values": [
       {
@@ -81,7 +81,10 @@
       }
     }
   ],
-  "mark": "point",
+  "mark": {
+    "type": "point",
+    "tooltip": true
+  },
   "width": 300,
   "height": 165,
   "encoding": {
@@ -93,8 +96,8 @@
       "field": "Average cycles",
       "type": "quantitative",
       "scale": {
-        "domainMin": 9,
-        "domainMax": 13
+        "domainMin": 0,
+        "domainMax": 26
       }
     },
     "color": {
@@ -105,6 +108,9 @@
       "field": "opt",
       "title": "Optimized for",
       "type": "nominal"
+    },
+    "size": {
+      "value": 75
     }
   }
 }

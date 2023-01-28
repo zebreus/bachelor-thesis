@@ -1,9 +1,9 @@
 id,value
-min_max_cpp_clang_size,11
-min_max_cpp_clang_speed,11
-min_max_cpp_gcc_size,12
-min_max_cpp_gcc_speed,12
-min_max_rust_idiomatic_size,10
-min_max_rust_idiomatic_speed,10
-min_max_rust_size,10
-min_max_rust_speed,10
+min_max_cpp_clang_size,17
+min_max_cpp_clang_speed,17
+min_max_cpp_gcc_size,24
+min_max_cpp_gcc_speed,24
+min_max_rust_idiomatic_size,22
+min_max_rust_idiomatic_speed,15
+min_max_rust_size,22
+min_max_rust_speed,16

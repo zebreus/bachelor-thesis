@@ -6,6 +6,7 @@
 :rouge-style: github
 // We define C++ here, because the ++ is also used as a delimiter in asciidoc
 :cpp: C++
+:docinfo: shared,private-footer
 // :source-highlighter: highlight.js
 // :highlightjs-languages: rust, cpp, console
 
@@ -286,11 +287,8 @@ While the idiomatic version is not faster than the non-idiomatic version, it tak
 }
 ....
 
-
-[vegalite]
-....
-include::chart_estimated_area.vl.json[]
-....
+:vega-lite-filename: chart_estimated_area.vl.json
+include::vega-chart.adoc[]
 
 [vegalite]
 ....
@@ -336,9 +334,10 @@ include::chart_estimated_area.vl.json[]
 }
 ....
 
-[vegalite]
-....
-include::chart_area_speed.vl.json[]
-....
+:vega-lite-filename: chart_area_speed.vl.json
+include::vega-chart.adoc[]
+
+:vega-lite-filename: chart_speed.vl.json
+include::vega-chart.adoc[]
 
 == TODO: Evaluate the tests

@@ -1,5 +1,24 @@
 <?xml version="1.0"?>
 <function>
-	<testbench input="{0,1,2,3,4}" num_elements="5" out_max="{0}" out_min="{0}" />
-	<testbench input="{15,10,5}" num_elements="3" out_max="{15}" out_min="{5}" />
+	<testbench num_elements="0" input="{31, 73, 69, 54, 10, 64, 8, 25, 22, 5, 69, 62, 55, 34, 30, 4, 46, 41, 43, 6}" out_max="{0}" out_min="{0}" />
+	<testbench num_elements="1" input="{31, 73, 69, 54, 10, 64, 8, 25, 22, 5, 69, 62, 55, 34, 30, 4, 46, 41, 43, 6}" out_max="{0}" out_min="{0}" />
+	<testbench num_elements="2" input="{31, 73, 69, 54, 10, 64, 8, 25, 22, 5, 69, 62, 55, 34, 30, 4, 46, 41, 43, 6}" out_max="{0}" out_min="{0}" />
+	<testbench num_elements="3" input="{31, 73, 69, 54, 10, 64, 8, 25, 22, 5, 69, 62, 55, 34, 30, 4, 46, 41, 43, 6}" out_max="{0}" out_min="{0}" />
+	<testbench num_elements="4" input="{31, 73, 69, 54, 10, 64, 8, 25, 22, 5, 69, 62, 55, 34, 30, 4, 46, 41, 43, 6}" out_max="{0}" out_min="{0}" />
+	<testbench num_elements="5" input="{31, 73, 69, 54, 10, 64, 8, 25, 22, 5, 69, 62, 55, 34, 30, 4, 46, 41, 43, 6}" out_max="{0}" out_min="{0}" />
+	<testbench num_elements="6" input="{31, 73, 69, 54, 10, 64, 8, 25, 22, 5, 69, 62, 55, 34, 30, 4, 46, 41, 43, 6}" out_max="{0}" out_min="{0}" />
+	<testbench num_elements="7" input="{31, 73, 69, 54, 10, 64, 8, 25, 22, 5, 69, 62, 55, 34, 30, 4, 46, 41, 43, 6}" out_max="{0}" out_min="{0}" />
+	<testbench num_elements="8" input="{31, 73, 69, 54, 10, 64, 8, 25, 22, 5, 69, 62, 55, 34, 30, 4, 46, 41, 43, 6}" out_max="{0}" out_min="{0}" />
+	<testbench num_elements="9" input="{31, 73, 69, 54, 10, 64, 8, 25, 22, 5, 69, 62, 55, 34, 30, 4, 46, 41, 43, 6}" out_max="{0}" out_min="{0}" />
+	<testbench num_elements="10" input="{31, 73, 69, 54, 10, 64, 8, 25, 22, 5, 69, 62, 55, 34, 30, 4, 46, 41, 43, 6}" out_max="{0}" out_min="{0}" />
+	<testbench num_elements="11" input="{31, 73, 69, 54, 10, 64, 8, 25, 22, 5, 69, 62, 55, 34, 30, 4, 46, 41, 43, 6}" out_max="{0}" out_min="{0}" />
+	<testbench num_elements="12" input="{31, 73, 69, 54, 10, 64, 8, 25, 22, 5, 69, 62, 55, 34, 30, 4, 46, 41, 43, 6}" out_max="{0}" out_min="{0}" />
+	<testbench num_elements="13" input="{31, 73, 69, 54, 10, 64, 8, 25, 22, 5, 69, 62, 55, 34, 30, 4, 46, 41, 43, 6}" out_max="{0}" out_min="{0}" />
+	<testbench num_elements="14" input="{31, 73, 69, 54, 10, 64, 8, 25, 22, 5, 69, 62, 55, 34, 30, 4, 46, 41, 43, 6}" out_max="{0}" out_min="{0}" />
+	<testbench num_elements="15" input="{31, 73, 69, 54, 10, 64, 8, 25, 22, 5, 69, 62, 55, 34, 30, 4, 46, 41, 43, 6}" out_max="{0}" out_min="{0}" />
+	<testbench num_elements="16" input="{31, 73, 69, 54, 10, 64, 8, 25, 22, 5, 69, 62, 55, 34, 30, 4, 46, 41, 43, 6}" out_max="{0}" out_min="{0}" />
+	<testbench num_elements="17" input="{31, 73, 69, 54, 10, 64, 8, 25, 22, 5, 69, 62, 55, 34, 30, 4, 46, 41, 43, 6}" out_max="{0}" out_min="{0}" />
+	<testbench num_elements="18" input="{31, 73, 69, 54, 10, 64, 8, 25, 22, 5, 69, 62, 55, 34, 30, 4, 46, 41, 43, 6}" out_max="{0}" out_min="{0}" />
+	<testbench num_elements="19" input="{31, 73, 69, 54, 10, 64, 8, 25, 22, 5, 69, 62, 55, 34, 30, 4, 46, 41, 43, 6}" out_max="{0}" out_min="{0}" />
+	<testbench num_elements="20" input="{31, 73, 69, 54, 10, 64, 8, 25, 22, 5, 69, 62, 55, 34, 30, 4, 46, 41, 43, 6}" out_max="{0}" out_min="{0}" />
 </function>
