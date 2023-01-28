@@ -336,4 +336,9 @@ include::chart_estimated_area.vl.json[]
 }
 ....
 
+[vegalite]
+....
+include::chart_area_speed.vl.json[]
+....
+
 == TODO: Evaluate the tests
