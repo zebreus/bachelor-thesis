@@ -1,5 +1,5 @@
 
-= Running Rust on an FPGA
+= Running Rust on a FPGA
 :last-update-label!:
 :imagesdir: images
 :source-highlighter: rouge
@@ -11,7 +11,7 @@
 
 // TODO: This sections sucks. Rewrite it.
 
-Usually one would write code for an FPGA in a hardware description language (HDL) such as Verilog or VHDL. However, this is a very low-level language, and it is difficult to write code in it. This is where HLS comes in.
+Usually one would write code for a FPGA in a hardware description language (HDL) such as Verilog or VHDL. However, this is a very low-level language, and it is difficult to write code in it. This is where HLS comes in.
 
 HLS is a process that allows developers to write high-level code, such as C/C++ or Rust code, and then use a toolchain to automatically convert that code into RTL (register-transfer level) code, which can be used to program an FPGA. This is different from traditional FPGA programming, where developers write RTL code directly.
 
@@ -286,48 +286,10 @@ While the idiomatic version is not faster than the non-idiomatic version, it tak
 }
 ....
 
+
 [vegalite]
 ....
-{
-  "data": {
-        "values": [
-          {"id": "min_max_cpp_clang_size", "Setup": "C++ clang -Os"},
-          {"id": "min_max_cpp_clang_speed", "Setup": "C++ clang -O3"},
-          {"id": "min_max_cpp_gcc_size", "Setup": "C++ gcc -Os"},
-          {"id": "min_max_cpp_gcc_speed", "Setup": "C++ gcc -O3"},
-          {"id": "min_max_rust_size", "Setup": "Rust -Os"},
-          {"id": "min_max_rust_speed", "Setup": "Rust -O3"},
-          {"id": "min_max_rust_idiomatic_size", "Setup": "Idiomatic Rust -Os"},
-          {"id": "min_max_rust_idiomatic_speed", "Setup": "Idiomatic Rust -O3"}
-        ] 
-
-      },
-  "title": "Estimated area",
-  "width": 500,
-  "height": 300,
-  "autosize": "fit",
-  "mark": "bar",
-  "transform": [{
-    "lookup": "id",
-    "as": "Estimated area",
-    "from": {
-      "data":  {"url": "results/total_estimated_area.csv"},
-      "key": "id",
-      "fields": ["value"]
-    }
-  }],
-  "encoding": {
-    "x": {
-      "field": "Setup",
-      "axis": {"labelAngle": 45},
-      "scale": {"padding": 0.2}
-    },
-    "y": {
-      "field": "Estimated area",
-      "type": "quantitative"
-    }
-  }
-}
+include::chart_estimated_area.vl.json[]
 ....
 
 [vegalite]
