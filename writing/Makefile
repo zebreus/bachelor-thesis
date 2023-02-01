@@ -143,7 +143,7 @@ $(TEST_RESULTS_CSV): $(RAW_LOG_FILES)
 	done
 
 clean:
-	rm -rf $(BUILD_DIR) HLS_output synthesize_Synthesis_*.sh bambu_results_*.xml simulate_*.sh *.v
+	rm -rf $(BUILD_DIR) HLS_output synthesize_Synthesis_*.sh bambu_results_*.xml simulate_*.sh *.v memory_allocation_*.xml results.txt
 
 clean-all: clean
 	rm -rf $(OUT_DIR)
