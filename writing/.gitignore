@@ -8,6 +8,8 @@ synthesize_Synthesis_*.sh
 bambu_results_*.xml
 simulate_*.sh
 *.v
+memory_allocation_*.xml
+results.txt
 
 # Testing artifacts
 build
