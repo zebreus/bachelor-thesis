@@ -12,12 +12,16 @@
         name = "thesis";
         packages.expose = import ./expose/default.nix { pkgs = nixpkgs.legacyPackages.${system}; };
         packages.toolchain = import ./toolchain-test/default.nix { pkgs = nixpkgs.legacyPackages.${system}; };
-        packages.bambu = import ./bambu/default.nix { pkgs = nixpkgs.legacyPackages.${system}; };
+        packages.bambu-unwrapped = import ./bambu/default.nix { pkgs = nixpkgs.legacyPackages.${system}; };
+        packages.bambu-wrapped = import ./bambu/default.nix { pkgs = nixpkgs.legacyPackages.${system}; bambu = bambu-unwrapped; };
+        packages.bambu = packages.bambu-wrapped;
+        packages.bambu-appimage = import ./bambu/appimage.nix { pkgs = nixpkgs.legacyPackages.${system}; };
         packages.hardware-example = import ./hardware-example/default.nix { pkgs = nixpkgs.legacyPackages.${system}; };
-        packages.bambu-appimage = import ./bambu/appimage/default.nix { pkgs = nixpkgs.legacyPackages.${system}; };
 
         packages.default = packages.expose;
         devShells.default = import ./shell.nix { pkgs = nixpkgs.legacyPackages.${system}; };
+
+        apps.bambu = { type = "app"; program = "" + packages.bambu-wrapped + "/bin/bambu"; };
       }
     );
 }

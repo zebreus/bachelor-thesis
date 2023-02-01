@@ -11,7 +11,6 @@ let
 in
 with pkgs;
 appimageTools.wrapType2 rec {
-  # or wrapType1
   name = "bambu";
   src = bambu_appimage;
 
