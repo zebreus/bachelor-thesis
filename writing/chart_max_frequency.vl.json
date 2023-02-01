@@ -1,0 +1,82 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": "Estimated maximum clock frequency",
+  "data": {
+    "url": "compiler_info.csv"
+  },
+  "transform": [
+    {
+      "lookup": "id",
+      "as": "Maximum frequency (MHz)",
+      "from": {
+        "data": {
+          "url": "results/estimated_max_frequency.csv"
+        },
+        "key": "id",
+        "fields": [
+          "value"
+        ]
+      }
+    }
+  ],
+  "width": 300,
+  "height": 165,
+  "mark": {
+    "type": "bar",
+    "tooltip": true,
+    "stroke": "black"
+  },
+  "encoding": {
+    "y": {
+      "field": "Setup",
+      "title": null,
+      "sort": "-x"
+    },
+    "x": {
+      "field": "Maximum frequency (MHz)",
+      "type": "quantitative",
+      "title": "Frequency (MHz)"
+    },
+    "color": {
+      "legend": null,
+      "field": "color",
+      "type": "nominal",
+      "scale": {
+        "range": {
+          "field": "color"
+        }
+      }
+    },
+    "tooltip": [
+      {
+        "field": "Maximum frequency (MHz)",
+        "type": "quantitative"
+      },
+      {
+        "field": "Compiler"
+      },
+      {
+        "field": "Optimized for"
+      }
+    ],
+    "strokeWidth": {
+      "condition": [
+        {
+          "param": "hover",
+          "empty": false,
+          "value": 0.5
+        }
+      ],
+      "value": 0
+    }
+  },
+  "params": [
+    {
+      "name": "hover",
+      "select": {
+        "type": "point",
+        "on": "mouseover"
+      }
+    }
+  ]
+}

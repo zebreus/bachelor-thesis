@@ -1,0 +1,81 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": "Average cycles per instruction",
+  "data": {
+    "url": "compiler_info.csv"
+  },
+  "transform": [
+    {
+      "lookup": "id",
+      "as": "Average clock cycles",
+      "from": {
+        "data": {
+          "url": "results/average_cycles.csv"
+        },
+        "key": "id",
+        "fields": [
+          "value"
+        ]
+      }
+    }
+  ],
+  "width": 300,
+  "height": 165,
+  "mark": {
+    "type": "bar",
+    "tooltip": true,
+    "stroke": "black"
+  },
+  "encoding": {
+    "y": {
+      "field": "Setup",
+      "title": null,
+      "sort": "x"
+    },
+    "x": {
+      "field": "Average clock cycles",
+      "type": "quantitative"
+    },
+    "color": {
+      "legend": null,
+      "field": "color",
+      "type": "nominal",
+      "scale": {
+        "range": {
+          "field": "color"
+        }
+      }
+    },
+    "tooltip": [
+      {
+        "field": "Average clock cycles",
+        "type": "quantitative"
+      },
+      {
+        "field": "Compiler"
+      },
+      {
+        "field": "Optimized for"
+      }
+    ],
+    "strokeWidth": {
+      "condition": [
+        {
+          "param": "hover",
+          "empty": false,
+          "value": 0.5
+        }
+      ],
+      "value": 0
+    }
+  },
+  "params": [
+    {
+      "name": "hover",
+      "select": {
+        "type": "point",
+        "on": "mouseover"
+      }
+    }
+  ]
+}
