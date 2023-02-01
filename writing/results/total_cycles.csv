@@ -1,8 +1,8 @@
 id,value
 min_max_cpp_clang_size,363
 min_max_cpp_clang_speed,363
-min_max_cpp_gcc_size,505
-min_max_cpp_gcc_speed,505
+min_max_cpp_gcc_size,525
+min_max_cpp_gcc_speed,525
 min_max_rust_idiomatic_size,462
 min_max_rust_idiomatic_speed,322
 min_max_rust_size,464

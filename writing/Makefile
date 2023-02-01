@@ -3,7 +3,7 @@ OUT_DIR = results
 SOURCE_DIR = src
 
 RUSTC ?= rustc
-BAMBU ?= nix run .\#bambu-appimage --
+BAMBU ?= nix run github:zebreus/bachelor-thesis\#bambu --
 
 RUST_FLAGS = --emit=llvm-ir --crate-type=lib -C overflow-checks=off -C no-vectorize-loops -C target-cpu=generic -C panic=abort
 
@@ -15,7 +15,7 @@ BAMBU_FLAG_SIZE = -Os
 
 BAMBU_FLAGS = --simulate --simulator=VERILATOR -v2
 BAMBU_FLAGS_CLANG = $(BAMBU_FLAGS) --compiler=I386_CLANG12
-BAMBU_FLAGS_GCC = $(BAMBU_FLAGS) --compiler=I386_GCC7
+BAMBU_FLAGS_GCC = $(BAMBU_FLAGS) --compiler=I386_GCC8
 
 BAMBU_FLAGS_FULL = --top-fname=min_max_rust_idiomatic --compiler=I386_CLANG12 --generate-tb=testbench_llvm.xml
 

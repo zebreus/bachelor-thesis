@@ -1,17 +1,17 @@
-$ nix run .#bambu-appimage -- src/min_max_cpp.cpp --top-fname=min_max_cpp --generate-tb=src/testbench.xml --simulate --simulator=VERILATOR -v2 --compiler=I386_GCC7 -O5
+$ nix run github:zebreus/bachelor-thesis#bambu -- src/min_max_cpp.cpp --top-fname=min_max_cpp --generate-tb=src/testbench.xml --simulate --simulator=VERILATOR -v2 --compiler=I386_GCC8 -O5
   Scheduling Information of function min_max_cpp:
-    Number of control steps: 10
-    Minimum slack: 3.0949999999999998
-    Estimated max frequency (MHz): 144.82259232440259
+    Number of control steps: 9
+    Minimum slack: 3.0950000000000006
+    Estimated max frequency (MHz): 144.82259232440262
 
   Module binding information for function min_max_cpp:
-    Number of modules instantiated: 21
+    Number of modules instantiated: 19
     Number of performance conflicts: 0
-    Estimated resources area (no Muxes and address logic): 197
+    Estimated resources area (no Muxes and address logic): 189
     Estimated area of MUX21: 70
-    Total estimated area: 267
+    Total estimated area: 259
     Estimated number of DSPs: 0
 
-  Total cycles             : 505 cycles
+  Total cycles             : 525 cycles
   Number of executions     : 21
-  Average execution        : 24 cycles
+  Average execution        : 25 cycles

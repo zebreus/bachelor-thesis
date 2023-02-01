@@ -1,8 +1,8 @@
 $ rustc --emit=llvm-ir --crate-type=lib -C overflow-checks=off -C no-vectorize-loops -C target-cpu=generic -C panic=abort -C opt-level=3 src/min_max_rust.rs -o build/min_max_rust_speed.ll
-$ nix run .#bambu-appimage -- build/min_max_rust_speed.ll --top-fname=min_max_rust --generate-tb=src/testbench_rust.xml --simulate --simulator=VERILATOR -v2 --compiler=I386_CLANG12 -O5
+$ nix run github:zebreus/bachelor-thesis#bambu -- build/min_max_rust_speed.ll --top-fname=min_max_rust --generate-tb=src/testbench_rust.xml --simulate --simulator=VERILATOR -v2 --compiler=I386_CLANG12 -O5
   Scheduling Information of function min_max_rust:
     Number of control steps: 14
-    Minimum slack: 0.3782639969999988
+    Minimum slack: 0.37826399699999946
     Estimated max frequency (MHz): 103.93134873875212
 
   Module binding information for function min_max_rust:
