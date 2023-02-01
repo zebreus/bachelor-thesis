@@ -2,56 +2,7 @@
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
   "title": "Estimated area",
   "data": {
-    "values": [
-      {
-        "Compiler": "C++ clang",
-        "opt": "size",
-        "id": "min_max_cpp_clang_size",
-        "Setup": "C++ clang -Os"
-      },
-      {
-        "Compiler": "C++ clang",
-        "opt": "speed",
-        "id": "min_max_cpp_clang_speed",
-        "Setup": "C++ clang -O3"
-      },
-      {
-        "Compiler": "C++ gcc",
-        "opt": "size",
-        "id": "min_max_cpp_gcc_size",
-        "Setup": "C++ gcc -Os"
-      },
-      {
-        "Compiler": "C++ gcc",
-        "opt": "speed",
-        "id": "min_max_cpp_gcc_speed",
-        "Setup": "C++ gcc -O3"
-      },
-      {
-        "Compiler": "Rust",
-        "opt": "size",
-        "id": "min_max_rust_size",
-        "Setup": "Rust -Os"
-      },
-      {
-        "Compiler": "Rust",
-        "opt": "speed",
-        "id": "min_max_rust_speed",
-        "Setup": "Rust -O3"
-      },
-      {
-        "Compiler": "Idiomatic Rust",
-        "opt": "size",
-        "id": "min_max_rust_idiomatic_size",
-        "Setup": "Idiomatic Rust -Os"
-      },
-      {
-        "Compiler": "Idiomatic Rust",
-        "opt": "speed",
-        "id": "min_max_rust_idiomatic_speed",
-        "Setup": "Idiomatic Rust -O3"
-      }
-    ]
+    "url": "compiler_info.csv"
   },
   "transform": [
     {
@@ -83,9 +34,8 @@
       }
     },
     "y": {
-      "field": "opt",
+      "field": "Optimized for",
       "type": "nominal",
-      "title": "Optimized for",
       "scale": {
         "padding": 0.55
       }
@@ -93,7 +43,11 @@
   },
   "layer": [
     {
-      "mark": "circle",
+      "mark": {
+        "type": "circle",
+        "tooltip": true,
+        "stroke": "black"
+      },
       "encoding": {
         "size": {
           "field": "Estimated area",
@@ -107,10 +61,44 @@
           }
         },
         "color": {
-          "field": "Compiler",
-          "legend": null
+          "legend": null,
+          "field": "color",
+          "type": "nominal",
+          "scale": {
+            "range": {
+              "field": "color"
+            }
+          }
+        },
+        "tooltip": [
+          {
+            "field": "Setup"
+          },
+          {
+            "field": "Estimated area",
+            "type": "quantitative"
+          }
+        ],
+        "strokeWidth": {
+          "condition": [
+            {
+              "param": "hover",
+              "empty": false,
+              "value": 0.5
+            }
+          ],
+          "value": 0
         }
-      }
+      },
+      "params": [
+        {
+          "name": "hover",
+          "select": {
+            "type": "point",
+            "on": "mouseover"
+          }
+        }
+      ]
     },
     {
       "mark": "text",

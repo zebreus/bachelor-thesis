@@ -1,6 +1,6 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "title": "Performance comparison of min/max implementations",
+  "title": "Duration for different input lengths",
   "data": {
     "url": "results/test_results.csv"
   },
@@ -23,68 +23,11 @@
       "from": {
         "key": "id",
         "data": {
-          "values": [
-            {
-              "Compiler": "C++ clang",
-              "opt": "size",
-              "id": "min_max_cpp_clang_size",
-              "Setup": "C++ clang -Os",
-              "color": "#3454D1"
-            },
-            {
-              "Compiler": "C++ clang",
-              "opt": "speed",
-              "id": "min_max_cpp_clang_speed",
-              "Setup": "C++ clang -O3",
-              "color": "#7A8FE1"
-            },
-            {
-              "Compiler": "C++ gcc",
-              "opt": "size",
-              "id": "min_max_cpp_gcc_size",
-              "Setup": "C++ gcc -Os",
-              "color": "#34D1BF"
-            },
-            {
-              "Compiler": "C++ gcc",
-              "opt": "speed",
-              "id": "min_max_cpp_gcc_speed",
-              "Setup": "C++ gcc -O3",
-              "color": "#7AE1D5"
-            },
-            {
-              "Compiler": "Rust",
-              "opt": "size",
-              "id": "min_max_rust_size",
-              "Setup": "Rust -Os",
-              "color": "#C1292E"
-            },
-            {
-              "Compiler": "Rust",
-              "opt": "speed",
-              "id": "min_max_rust_speed",
-              "Setup": "Rust -O3",
-              "color": "#E2787C"
-            },
-            {
-              "Compiler": "Idiomatic Rust",
-              "opt": "size",
-              "id": "min_max_rust_idiomatic_size",
-              "Setup": "Idiomatic Rust -Os",
-              "color": "#F65D00"
-            },
-            {
-              "Compiler": "Idiomatic Rust",
-              "opt": "speed",
-              "id": "min_max_rust_idiomatic_speed",
-              "Setup": "Idiomatic Rust -O3",
-              "color": "#FF9A5C"
-            }
-          ]
+          "url": "compiler_info.csv"
         },
         "fields": [
           "Compiler",
-          "opt",
+          "Optimized for",
           "Setup",
           "color"
         ]
@@ -96,6 +39,7 @@
   "encoding": {
     "x": {
       "field": "num_inputs",
+      "title": "Input length",
       "type": "quantitative"
     }
   },
@@ -104,6 +48,7 @@
       "encoding": {
         "y": {
           "field": "cycles",
+          "title": "Clock cycles",
           "type": "quantitative"
         },
         "color": {

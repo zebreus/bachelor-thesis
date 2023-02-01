@@ -2,56 +2,8 @@
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
   "title": "Comparison of area and performance",
   "data": {
-    "values": [
-      {
-        "Compiler": "C++ clang",
-        "opt": "size",
-        "id": "min_max_cpp_clang_size",
-        "Setup": "C++ clang -Os"
-      },
-      {
-        "Compiler": "C++ clang",
-        "opt": "speed",
-        "id": "min_max_cpp_clang_speed",
-        "Setup": "C++ clang -O3"
-      },
-      {
-        "Compiler": "C++ gcc",
-        "opt": "size",
-        "id": "min_max_cpp_gcc_size",
-        "Setup": "C++ gcc -Os"
-      },
-      {
-        "Compiler": "C++ gcc",
-        "opt": "speed",
-        "id": "min_max_cpp_gcc_speed",
-        "Setup": "C++ gcc -O3"
-      },
-      {
-        "Compiler": "Rust",
-        "opt": "size",
-        "id": "min_max_rust_size",
-        "Setup": "Rust -Os"
-      },
-      {
-        "Compiler": "Rust",
-        "opt": "speed",
-        "id": "min_max_rust_speed",
-        "Setup": "Rust -O3"
-      },
-      {
-        "Compiler": "Idiomatic Rust",
-        "opt": "size",
-        "id": "min_max_rust_idiomatic_size",
-        "Setup": "Idiomatic Rust -Os"
-      },
-      {
-        "Compiler": "Idiomatic Rust",
-        "opt": "speed",
-        "id": "min_max_rust_idiomatic_speed",
-        "Setup": "Idiomatic Rust -O3"
-      }
-    ]
+    "name": "main",
+    "url": "compiler_info.csv"
   },
   "transform": [
     {
@@ -83,7 +35,8 @@
   ],
   "mark": {
     "type": "point",
-    "tooltip": true
+    "tooltip": true,
+    "size": 85
   },
   "width": 300,
   "height": 165,
@@ -101,16 +54,64 @@
       }
     },
     "color": {
-      "field": "Compiler",
-      "type": "nominal"
+      "field": "Setup",
+      "type": "nominal",
+      "scale": {
+        "range": {
+          "field": "color"
+        }
+      },
+      "legend": {
+        "symbolType": {
+          "expr": "indexof(datum.value, '-Os') >= 0 ? 'triangle-down' : 'circle'"
+        }
+      }
     },
     "shape": {
-      "field": "opt",
-      "title": "Optimized for",
-      "type": "nominal"
+      "field": "Optimized for",
+      "type": "nominal",
+      "scale": {
+        "range": [
+          "triangle-down",
+          "circle"
+        ]
+      }
     },
-    "size": {
-      "value": 75
+    "opacity": {
+      "condition": {
+        "param": "selection",
+        "value": 1
+      },
+      "value": 0.2
+    },
+    "strokeWidth": {
+      "condition": {
+        "param": "hover",
+        "empty": false,
+        "value": 3
+      },
+      "value": 2
     }
-  }
+  },
+  "params": [
+    {
+      "name": "selection",
+      "select": {
+        "type": "point",
+        "fields": [
+          "Setup"
+        ],
+        "on": "click"
+      },
+      "bind": "legend"
+    },
+    {
+      "name": "hover",
+      "select": {
+        "type": "point",
+        "on": "mouseover",
+        "toggle": false
+      }
+    }
+  ]
 }
