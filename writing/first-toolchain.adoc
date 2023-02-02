@@ -7,6 +7,7 @@
 // We define C++ here, because the ++ is also used as a delimiter in asciidoc
 :cpp: C++
 :docinfo: shared,private-footer
+:stem:
 // :source-highlighter: highlight.js
 // :highlightjs-languages: rust, cpp, console
 
@@ -157,6 +158,14 @@ include::results/min_max_rust_idiomatic_intro.log[]
 
 The results look promising so far. This version is faster and way smaller than the previous two, but that could be because it had the rust compiler set to a higher optimization level. Lets see what happens when we synthesize our functions with all optimizations enabled.
 
+== Looking at the output
+
+TODO look at generated verilog design
+
+Explain why clock
+
+Explain why interface from memory
+
 === Comparing the C++ and Rust versions
 
 For the comparison we will use the same testcases as before. We will test every version of the function once with optimizations set for maximum speed and once with optimizations set for minimum size. For the C++ version we will also compare how the results change when we use gcc instead of clang.
@@ -242,6 +251,8 @@ include::results/min_max_rust_idiomatic_speed.log[]
 ----
 ====
 
+=== Comparison of the required resources
+
 While the idiomatic version is not faster than the non-idiomatic version, it takes up the smallest area of all synthesized design. It is also more readable and easier to understand.
 
 The area of our design is a important metric for us, because bigger circuits mean that we need a bigger more expensive FPGA. Also we can fit more things on the FPGA, if we have more area left. So area is basically the cost of our design.
@@ -251,28 +262,89 @@ While the exact amount of resources the circuit takes up depends on how we synth
 :vega-lite-filename: chart_estimated_area.vl.json
 include::vega-chart.adoc[]
 
+The designs seem to divide into two groups, one with the _big designs_ (~250 logic elements) and one with the _small designs_ (~1000 logic elements). The big designs are the clang and rust designs optimized for speed. The small designs are all circuits optimized for size, but also the gcc design optimized for speed. 
 
+It is interesting to see that gcc always generates small designs. This could be because both both rust and clang use LLVM as a backend, so they are probably optimized in a similar way. Gcc does not use LLVM, but does its own optimization passes, so it is probably optimized in a different way. It will be interesting to see if the gcc design optimized for speed still has speed comparable to the other designs optimized for speed, despite its signigicantly smaller footprint.
 
-The designs seem to divide into two groups, one with the big designs (> 900 logic elements) and one with the small designs (< 400 logic elements). The big designs are the clang designs and the rust designs optimized for speed. The small designs are the rust designs optimized for size and the idiomatic rust design.
+The versions optimized for size are smaller than the versions optimized for speed. As expected the idiomatic rust design performs better than the C-style rust design on both optimization levels. This is probably because the compiler can do more optimizations on the idiomatic version.
+ 
+The smallest design of the bunch is the idiomatic rust design optimized for size.
 
-With the rust toolchain we do not have such similarities. The versions optimized for size are smaller than the versions optimized for speed. It is interesting to see that the idiomatic rust design is smaller than the C-style Rust desing on both optimization levels. This is probably because the compiler can do more optimizations on the idiomatic version. The smallest design of the bunch is the idiomatic rust design optimized for size.
+=== Performance comparison
 
-
+We tested each design with testcases ranging from 0 to 20 elements. The following chart shows the average number of cycles each circuit.
 
 :vega-lite-filename: chart_average_cycles.vl.json
 include::vega-chart.adoc[]
 
+We can see that the designs optimize for speed are a bit faster than the designs optimized for size. An exception to this is again the gcc design optimized for speed, which requires a number of cycles that is more comparable to the LLVM based designs optimized for size. It is still a bit faster than the gcc design optimized for speed. It seems like the gcc backend for bambu prefers to optimize for size over speed.
+
+The gcc designs both take the most cycles. It is interesting to see that even the gcc design optimized for speed requires more cycles than the LLVM designs optimized for size instead of speed. But the gcc design optimized for speed is still even smaller than the clang and C-style rust designs optimized for size, so it is not that surprising that it is slower.
+
+Again the idiomatic rust design performs a the same or bit better than the C-style rust design on both optimization levels.
+
+We can see that the designs divide in two groups again. The _low cycle designs_ that require between 15 and 17 cycles and the _high cycle designs_ that require between 22 and 26 cycles. These two groups correspond exactly to the two groups we saw in the area chart. The low cycle designs are also the big designs and the high cycle designs are the small designs.
+
+If we look at a more detailed chart for every design we can see that they actually seem to divide into two performance groups:
+
+:vega-lite-filename: chart_detailed_cycles.vl.json
+include::vega-chart.adoc[]
+
+While they all behave quite similar for less than four inputs, they start to diverge after that. The big designs seem to require around stem:[2*"input_length"] cycles, the small designs only take around stem:[1*"input_length"] cycles. 
+
+The small designs all require two more cycles for every additional input element. The big designs actually also require two cycles more every additional input element but every fourth input element they actually require two cycles less. I speculate that the small designs only have one operation that processes one input element. The big designs could in addition to that also have an operation that can process four elements at once, which they use for the bulk of the computation. If the input length is not a multiple of four, they would have to do the last few elements one by one. It could be that this is the result of the LLVM compiler unrolling the loop when set to optimize for speed instead of size.
+
+The big designs containing one operation that processes *1* element and one operation that processes *4* would also explain why these designs are roughly five times, because they include the main logic that happens inside the loop *1*+*4* times. The small designs only include the main logic that happens inside the loop *1* times. They are probably not exactly five times bigger, because there is probably some control logic that stays the same or only doubles for the designs with two operations. I assume that there are probably some optimizations that can be applied if the same operation is done multiple times simultaneously that lead to space savings.
+
+[NOTE]
+====
+Here it seems like the loop is converted into two operations, one that implements a single iteration and one that implements four iterations. It would be interesting to have the ability to specify in the rust code how big these chunks could be. Maybe bambu even has this feature for CPP already, I havent looked into it yet.
+====
+
+Besides the amount of cycles the designs take the other relevant metric for speed is the frequency that the cycles can be executed. While the real maximum frequency is highly dependend on the hardware and the actual place and route, bambu generates a estimate of the maximum frequency of each design. I dont know how accurate they are, but they seem to be a good indicator of the performance of the designs.
 
 :vega-lite-filename: chart_max_frequency.vl.json
 include::vega-chart.adoc[]
 
+Interestingly the gcc designs top this chart. While they performed quite poorly on the other metrics, they are capable of running at a slightly faster speed than the LLVM designs. The LLVM designs optimized for size are the second fastest designs, while the ones optimized for speed are the slowest.
+
+There seems to be a connection between the size and the frequency of the designs. The smaller the design, the faster it can run. This compensates a bit for the fact that the smaller designs on average require more cycles to run. To get the estimated maximum performance for each design we multiply the maximum frequency with the average number of cycles required to run the design for our testcases:
+
 :vega-lite-filename: chart_performance.vl.json
 include::vega-chart.adoc[]
+
+As expected this show that the performance gap between the big designs and the small designs is not as big as we initially expected when looking only at the required cycles
+
+We can clearly see that the big desings are still a bit faster but not as much as we expected. The big clang design is even slower than some small designs.
+
 
 :vega-lite-filename: chart_area_speed.vl.json
 include::vega-chart.adoc[]
 
-:vega-lite-filename: chart_speed.vl.json
+If we plot this against the area we can see that the difference in performance (stem:[+-20%]) is quite small compared to the difference in area (stem:[+-500%]). 
+
+Also it is interesting to see that there are only two useful designs. If we want maximum speed, we should choose the idiomatic rust design optimized for speed, if we want the smallest size the choice would be the idiomatic rust design optimized for size. The other designs are not viable options, because one of these two designs will always be better on either metric.
+
+To get the most out of our FPGA we would want to maximise the performance per area. We can calculate this by dividing the executions per second by the are:
+
+:vega-lite-filename: chart_performance_per_area.vl.json
 include::vega-chart.adoc[]
 
-== TODO: Evaluate the tests
+[NOTE]
+====
+You can click the bars in the chart to set the baseline to compare against.
+====
+
+If we compare them for space efficiency we can see that the idiomatic rust version is the most space efficient design. Surprisingly enough the gcc designs are also quite good here.
+
+The big designs are not very space efficient, which was to be expected as they sacrificed space for speed. This tradeoff is not worth it for this design, because the problem of finding the minimum/maximum element can be parallelized quite well. We could just use two of the small designs simultaneously and get the same performance as a big design for a smaller area. We would need to implement some wrapper logic for that.
+
+== Conclusion
+
+It seems like High-level synthesis from Rust is possible. It performs similar, sometimes even better compared to the usual input languages like C/{cpp}. 
+
+We only looked at a very simple design, this is probably not representative for more complex designs. 
+
+Also the process could benefit from some kinds of annotations in the Rust code to help the HLS tool better synthesize the code. I don't know if that is supported with bambu, but will look into it. Also all the parameter names get lost in the process, it would be nice if we could keep them.
+
+We should also try to use a different HLS tool, like Vivado HLS, which is probably way more mature and capable than bambu. The main restriction is probably that it needs to be able to take LLVM IR as input. I am not sure if there is another free and opensource HLS tool that can process LLVM IR. It may also be feasible to generate C code from the LLVM IR and then try use a C HLS tool.

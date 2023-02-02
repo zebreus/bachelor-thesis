@@ -1,6 +1,6 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "title": "Estimated average speed",
+  "title": "Estimated maximum performance",
   "data": {
     "url": "compiler_info.csv"
   },

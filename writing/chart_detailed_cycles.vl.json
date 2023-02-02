@@ -1,6 +1,6 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "title": "Duration for different input lengths",
+  "title": "Detailed clock cycles for each design",
   "data": {
     "url": "results/test_results.csv"
   },

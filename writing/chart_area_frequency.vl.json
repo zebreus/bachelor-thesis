@@ -1,6 +1,6 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "title": "Comparison of area and performance",
+  "title": "Comparison of area and frequency",
   "data": {
     "name": "main",
     "url": "compiler_info.csv"
@@ -31,23 +31,6 @@
           "value"
         ]
       }
-    },
-    {
-      "lookup": "id",
-      "as": "Average clock cycles",
-      "from": {
-        "data": {
-          "url": "results/average_cycles.csv"
-        },
-        "key": "id",
-        "fields": [
-          "value"
-        ]
-      }
-    },
-    {
-      "calculate": "round(datum['Average clock cycles'] / (datum['Maximum frequency (MHz)'] * 1000000) * 1000000000)",
-      "as": "Execution duration (ns)"
     }
   ],
   "mark": {
@@ -63,7 +46,7 @@
       "type": "quantitative"
     },
     "y": {
-      "field": "Execution duration (ns)",
+      "field": "Maximum frequency (MHz)",
       "type": "quantitative"
     },
     "color": {

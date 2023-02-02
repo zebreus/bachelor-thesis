@@ -1,6 +1,6 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "title": "Average cycles per instruction",
+  "title": "Average clock cycles for each design",
   "data": {
     "url": "compiler_info.csv"
   },
