@@ -12,13 +12,14 @@
       rec {
         name = "thesis";
         packages.expose = import ./expose/default.nix { pkgs = nixpkgs.legacyPackages.${system}; symbolator = symbolator.packages.${system}.symbolator;};
+        packages.writing = import ./writing/default.nix { pkgs = nixpkgs.legacyPackages.${system}; symbolator = symbolator.packages.${system}.symbolator;};
         packages.toolchain = import ./toolchain-test/default.nix { pkgs = nixpkgs.legacyPackages.${system}; };
         packages.bambu-unwrapped = import ./bambu/default.nix { pkgs = nixpkgs.legacyPackages.${system}; };
         packages.bambu-wrapped = import ./bambu/wrapped.nix { pkgs = nixpkgs.legacyPackages.${system}; bambu = packages.bambu-unwrapped; };
         packages.bambu = packages.bambu-wrapped;
         packages.bambu-appimage = import ./bambu/appimage.nix { pkgs = nixpkgs.legacyPackages.${system}; };
         packages.hardware-example = import ./hardware-example/default.nix { pkgs = nixpkgs.legacyPackages.${system}; };
-        packages.default = packages.expose;
+        packages.default = packages.writing;
         devShells.default = import ./shell.nix { pkgs = nixpkgs.legacyPackages.${system}; symbolator = symbolator.packages.${system}.symbolator;};
 
         apps.bambu = { type = "app"; program = "" + packages.bambu-wrapped + "/bin/bambu"; };
