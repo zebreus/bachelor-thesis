@@ -1,4 +1,4 @@
-{ pkgs ? import <nixpkgs> { } }:
+{ pkgs ? import <nixpkgs> { }, symbolator }:
 with pkgs;
 mkShell {
   buildInputs = [
@@ -10,6 +10,7 @@ mkShell {
     nodePackages.vega-lite
     pikchr
     python3
+    symbolator
 
     # Utils
     gnumake

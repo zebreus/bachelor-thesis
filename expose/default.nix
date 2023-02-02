@@ -1,4 +1,4 @@
-{ pkgs ? import <nixpkgs> { }
+{ pkgs ? import <nixpkgs> { }, symbolator
 }:
 
 with pkgs;
@@ -16,6 +16,7 @@ stdenv.mkDerivation {
     nodePackages.vega-cli
     nodePackages.vega-lite
     pikchr
+    symbolator
   ];
 
   buildInputs = [
