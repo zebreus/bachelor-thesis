@@ -87,7 +87,7 @@ $(BUILD_DIR)/%_speed.sh: $(BUILD_DIR)/%.sh
 
 $(BUILD_DIR)/%_size.sh: $(BUILD_DIR)/%.sh
 	cp $< $@
-	echo -ne " $(BAMBU_FLAG_SPEED)" >> $@
+	echo -ne " $(BAMBU_FLAG_SIZE)" >> $@
 
 $(BUILD_DIR)/%.raw.out: $(BUILD_DIR)/%.sh
 	sh $< 2>&1 | sed 's,\x1B\[[0-9;]*[a-zA-Z],,g' | sed 's/[\x01-\x1F\x7F]//g' > $@
