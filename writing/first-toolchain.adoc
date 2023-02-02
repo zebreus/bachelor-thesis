@@ -244,11 +244,26 @@ include::results/min_max_rust_idiomatic_speed.log[]
 
 While the idiomatic version is not faster than the non-idiomatic version, it takes up the smallest area of all synthesized design. It is also more readable and easier to understand.
 
-:vega-lite-filename: chart_average_cycles.vl.json
-include::vega-chart.adoc[]
+The area of our design is a important metric for us, because bigger circuits mean that we need a bigger more expensive FPGA. Also we can fit more things on the FPGA, if we have more area left. So area is basically the cost of our design.
+
+While the exact amount of resources the circuit takes up depends on how we synthesize the design for hardware, bambu gives us a good estimate of how much area the design will take up. The following chart shows the area of the designs we synthesized:
 
 :vega-lite-filename: chart_estimated_area.vl.json
 include::vega-chart.adoc[]
+
+
+
+The designs seem to divide into two groups, one with the big designs (> 900 logic elements) and one with the small designs (< 400 logic elements). The big designs are the clang designs and the rust designs optimized for speed. The small designs are the rust designs optimized for size and the idiomatic rust design.
+
+The first thing we can see is that the clang design is does not seem to change, whether we optimize for speed or for area. In the other charts we will see, that they are show the same performance. While we have not looked at the generated circuits, we can assume that they are identical. The same is also true for the gcc designs. This could be because the clang compiler has a tendency to always generate bigger circuits. The gcc compiler on the other hand has a tendency to generate smaller circuits. It could also be because I am stupid and wrote a horseshit Makefile that passes the wrong flags to the compiler. I will fix that now.
+
+With the rust toolchain we do not have such similarities. The versions optimized for size are smaller than the versions optimized for speed. It is interesting to see that the idiomatic rust design is smaller than the C-style Rust desing on both optimization levels. This is probably because the compiler can do more optimizations on the idiomatic version. The smallest design of the bunch is the idiomatic rust design optimized for size.
+
+
+
+:vega-lite-filename: chart_average_cycles.vl.json
+include::vega-chart.adoc[]
+
 
 :vega-lite-filename: chart_max_frequency.vl.json
 include::vega-chart.adoc[]
