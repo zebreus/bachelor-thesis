@@ -39,7 +39,7 @@ So our toolchain uses rustc to compile rust code to LLVM IR, then uses the bambu
 ....
 
 
-=== Using bambu for {cpp}
+== Using bambu for {cpp}
 
 Bambu is build to synthesize C/{cpp} code.
 
@@ -65,7 +65,7 @@ The most important aspects of the output are the average number of clock cycles 
 
 The tests are executed using verilator, so they are not completly representative of the actual hardware, because Verilator does not simulate timings beyond the clock cycles. So it could be that a design requires fewer cycles, but can only be run at a lower clock frequency. That said, comparing clock cycles should be a somewhat accurate.
 
-== Looking at the output
+=== Looking at the output
 
 The interface of the generated verilog will look something like this:
 
@@ -75,11 +75,19 @@ The interface of the generated verilog will look something like this:
 include::min_max_cpp.v[]
 ....
 
-Explain why clock
+The inputs are shown on the left side and the output on the right side of the module.
 
-Explain why interface from memory
+We can see that the module has has 3 inputs named clock, reset and start. These do pretty much what you would expect them to do. The reset is a signal that resets the module and the start signal is used to start the function. The function will not start until the start signal is high and the reset signal is low. The function will then run until it is done and the start signal goes low again. The clock signal is used to clock the module, when we talk about cycles later we are talking about clock cycles.
 
-=== Using bambu for Rust
+The module has a output named done. I assume that that goes high when the function has finished.
+
+Then there are some in- and outputs prefixed with `M`. They are used by the module to access memory.
+
+At last we have the four inputs of out function as 32bit wide signals. I assume that the input for `numbers_length` passes in the number as a 32 bit integer at the start. The other inputs are pointers to the memory locations where the module can find the array and the two output values.
+
+All of this are just assumptions for now, because we did not look at the generated verilog yet.
+
+== Using bambu for Rust
 
 When using Rust with bambu, we need to take a few things into account.
 
@@ -135,7 +143,7 @@ It is quite interesting to see that the rust version of the function is apparent
 
 I would have assumed that the rust version would be slower, because the {cpp} version had optimizations enabled during compilation and synthesis, while we only had synthesis optimizations enabled for the rust version. Also bambu was designed to synthesize {cpp} code, so I assumed it might be better at synthesizing {cpp} code than rust code. I think we get this result, because bambu treats also treats both versions just as LLVM IR, so it does not have any special knowledge about {cpp}. We will do a more detailed comparison of the {cpp} and rust versions later, where the GCC backend is also included, maybe that yields better results.
 
-=== Using idiomatic Rust
+== Using idiomatic Rust
 
 While the previous example technically was Rust, it was not very Rust-like.
 
@@ -161,7 +169,7 @@ include::results/min_max_rust_idiomatic_intro.log[]
 
 The results look promising so far. This version is faster and way smaller than the previous two, but that could be because it had the rust compiler set to a higher optimization level. Lets see what happens when we synthesize our functions with all optimizations enabled.
 
-=== Comparing the {cpp} and Rust versions
+== Evaluating the different designs
 
 For the comparison we will use the same testcases as before. We will test every version of the function once with optimizations set for maximum speed and once with optimizations set for minimum size. For the {cpp} version we will also compare how the results change when we use gcc instead of clang.
 
@@ -338,8 +346,10 @@ The big designs are not very space efficient, which was to be expected as they s
 
 It seems like High-level synthesis from Rust is possible. It performs similar, sometimes even better compared to the usual input languages like C/{cpp}. 
 
-We only looked at a very simple design, this is probably not representative for more complex designs. 
+We only looked at a very simple design, this is probably not representative for more complex designs.
 
 Also the process could benefit from some kinds of annotations in the Rust code to help the HLS tool better synthesize the code. I don't know if that is supported with bambu, but will look into it. Also all the parameter names get lost in the process, it would be nice if we could keep them.
+
+Also we have no idea how the designs actually work as we just viewed the generated Verilog code as a black box. It would probably be interesting to look at the generated RTL and try to understand how the designs work.
 
 We should also try to use a different HLS tool, like Vivado HLS, which is probably way more mature and capable than bambu. The main restriction is probably that it needs to be able to take LLVM IR as input. I am not sure if there is another free and opensource HLS tool that can process LLVM IR. It may also be feasible to generate C code from the LLVM IR and then try use a C HLS tool.
