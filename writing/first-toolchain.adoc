@@ -324,7 +324,7 @@ We can clearly see that the big desings are still a bit faster but not as much a
 :vega-lite-filename: chart_area_speed.vl.json
 include::vega-chart.adoc[]
 
-If we plot this against the area we can see that the difference in performance (stem:[+-20%]) is quite small compared to the difference in area (stem:[+-500%]). 
+If we plot this against the area we can see that the difference in performance (stem:[ +- 20% ]) is quite small compared to the difference in area (stem:[ +- 500% ]). 
 
 Also it is interesting to see that there are only two useful designs. If we want maximum speed, we should choose the idiomatic rust design optimized for speed, if we want the smallest size the choice would be the idiomatic rust design optimized for size. The other designs are not viable options, because one of these two designs will always be better on either metric.
 
