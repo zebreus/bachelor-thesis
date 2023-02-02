@@ -72,7 +72,7 @@ The interface of the generated verilog will look something like this:
 .Interface generated from {cpp} function
 [symbolator]
 ....
-include::min_max_cpp.v[]
+include::results/min_max_cpp.v[]
 ....
 
 The inputs are shown on the left side and the output on the right side of the module.

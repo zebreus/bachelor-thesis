@@ -7,7 +7,7 @@ HLS_output
 synthesize_Synthesis_*.sh
 bambu_results_*.xml
 simulate_*.sh
-*.v
+./*.v
 memory_allocation_*.xml
 results.txt
 

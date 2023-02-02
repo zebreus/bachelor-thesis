@@ -35,8 +35,10 @@ TOTAL_CYCLES_CSV = $(OUT_DIR)/total_cycles.csv
 ESTIMATED_MAX_FREQUENCY_CSV = $(OUT_DIR)/estimated_max_frequency.csv
 TEST_RESULTS_CSV = $(OUT_DIR)/test_results.csv
 CSV_FILES = $(TOTAL_ESTIMATED_AREA_CSV) $(AVERAGE_CYCLES_CSV) $(TOTAL_CYCLES_CSV) $(ESTIMATED_MAX_FREQUENCY_CSV) $(TEST_RESULTS_CSV)
+VERILOG_FILES = $(OUT_DIR)/min_max_cpp.v $(OUT_DIR)/min_max_rust.v $(OUT_DIR)/min_max_rust_idiomatic.v
 
-RESULTS = $(LOG_FILES) $(CSV_FILES) $(INTRO_LOG_FILES) 
+
+RESULTS = $(LOG_FILES) $(CSV_FILES) $(INTRO_LOG_FILES) $(VERILOG_FILES)
 .SECONDARY:
 
 all: $(RESULTS)
@@ -91,6 +93,14 @@ $(BUILD_DIR)/%_size.sh: $(BUILD_DIR)/%.sh
 
 $(BUILD_DIR)/%.raw.out: $(BUILD_DIR)/%.sh
 	sh $< 2>&1 | sed 's,\x1B\[[0-9;]*[a-zA-Z],,g' | sed 's/[\x01-\x1F\x7F]//g' > $@
+
+$(OUT_DIR)/%.v: $(BUILD_DIR)/%_size.sh
+	sh $< 2>&1 | sed 's,\x1B\[[0-9;]*[a-zA-Z],,g' | sed 's/[\x01-\x1F\x7F]//g'
+	mv `basename $@` $@
+
+$(OUT_DIR)/%.v: $(BUILD_DIR)/%_clang_size.sh
+	sh $< 2>&1 | sed 's,\x1B\[[0-9;]*[a-zA-Z],,g' | sed 's/[\x01-\x1F\x7F]//g'
+	mv `basename $@` $@
 	
 $(OUT_DIR)/%.log: $(BUILD_DIR)/%.raw.out $(BUILD_DIR)/%.sh
 	mkdir -p $(OUT_DIR)
