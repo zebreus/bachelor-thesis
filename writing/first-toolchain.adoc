@@ -293,7 +293,7 @@ If we look at a more detailed chart for every design we can see that they actual
 :vega-lite-filename: chart_detailed_cycles.vl.json
 include::vega-chart.adoc[]
 
-While they all behave quite similar for less than four inputs, they start to diverge after that. The big designs seem to require around stem:[2*"input_length"] cycles, the small designs only take around stem:[1*"input_length"] cycles. 
+While they all behave quite similar for less than four inputs, they start to diverge after that. The big designs seem to require around stem:[2 * "input_length"] cycles, the small designs only take around stem:[1 * "input_length"] cycles. 
 
 The small designs all require two more cycles for every additional input element. The big designs actually also require two cycles more every additional input element but every fourth input element they actually require two cycles less. I speculate that the small designs only have one operation that processes one input element. The big designs could in addition to that also have an operation that can process four elements at once, which they use for the bulk of the computation. If the input length is not a multiple of four, they would have to do the last few elements one by one. It could be that this is the result of the LLVM compiler unrolling the loop when set to optimize for speed instead of size.
 
