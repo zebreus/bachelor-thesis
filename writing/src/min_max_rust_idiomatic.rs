@@ -5,8 +5,8 @@ pub struct MinMax {
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn min_max_rust_idiomatic(input: *mut i32, input_length: i32) -> MinMax {
-    let slice = std::slice::from_raw_parts_mut(input, input_length as usize);
+pub unsafe extern "C" fn min_max_rust_idiomatic(numbers: *mut i32, numbers_length: i32) -> MinMax {
+    let slice = std::slice::from_raw_parts_mut(numbers, numbers_length as usize);
 
     slice.iter().fold(MinMax { max: 0, min: 0 }, |mut acc, &x| {
         if x > acc.max {
