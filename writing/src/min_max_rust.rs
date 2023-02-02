@@ -2,13 +2,13 @@
 #[no_mangle]
 pub unsafe extern "C" fn min_max_rust(
     input: *mut i32,
-    num_elements: i32,
+    input_length: i32,
     out_max: &mut i32,
     out_min: &mut i32,
 ) {
     let mut local_max = *input.offset(0);
     let mut local_min = *input.offset(0);
-    for i in 0..num_elements {
+    for i in 0..input_length {
         if *input.offset(i as isize) > local_max {
             local_max = *input.offset(i as isize);
         }
