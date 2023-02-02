@@ -5,7 +5,9 @@ ifdef::backend-html5+env-not-vscode[]
 :vega-as-script:
 endif::backend-html5+env-not-vscode[]
 
-// Define the filename as 
+// :vega-lite-filename: The file name of the vega-lite specification
+// :vega-theme: The vega theme to use. See https://github.com/vega/vega-themes
+// :vega-hide-actions: Set this to hide action links included with the embedded view.
 
 ifndef::vega-lite-filename[]
 [IMPORTANT]
@@ -24,6 +26,7 @@ endif::vega-lite-filename[]
 ifdef::vega-lite-filename[]
 ifdef::vega-as-script[]
 // Embed the script as js if we are running in a browser
+[subs="attributes"]
 ++++
     <div class="diagram"></div>
     <script>
@@ -72,7 +75,23 @@ ifdef::vega-as-script[]
         );
 
         document.head.appendChild(scriptA);
+      }
 
+      if(!document.styleInserted) {
+        document.styleInserted = true;
+        var style = document.createElement('style');
+        style.innerHTML = `
+        #vg-tooltip-element table {
+          background: unset;
+          margin-bottom: unset;
+          border: unset;
+          word-wrap: unset;
+        }
+        #vg-tooltip-element table td, #vg-tooltip-element table th, #vg-tooltip-element table tr {
+          line-height: unset;
+          padding: unset;
+        }`;
+        document.head.appendChild(style);
       }
 
      (() => {
@@ -85,14 +104,46 @@ ifdef::vega-as-script[]
 include::{vega-lite-filename}[]
 
       ;
+
+      const waitForElm = (selector) => {
+          return new Promise(resolve => {
+              if (document.querySelector(selector)) {
+                  return resolve(document.querySelector(selector));
+              }
+
+              const observer = new MutationObserver(mutations => {
+                  if (document.querySelector(selector)) {
+                      resolve(document.querySelector(selector));
+                      observer.disconnect();
+                  }
+              });
+
+              observer.observe(document.body, {
+                  childList: true,
+                  subtree: true
+              });
+          });
+      }
+
+      const hideActions = "{vega-hide-actions}".includes("vega-hide-actions") ? false : true;
+      const theme = "{vega-theme}".includes("vega-theme") ? "powerbi" : "{vega-theme}";
+      const downloadFileName = "{vega-lite-filename}".includes("vega-lite-filename") ? "visualization" : "{vega-lite-filename}".split(".")[0];
       const container = thisScript.previousElementSibling;
-      const containerId = new Array(20).fill().map(() => Math.random().toString(36)[2]).join('');
+      const containerId = new Array(20).fill().map(() => Math.random().toString(36)[2]).join('').replace(/[^a-z]/g, '');
+
+      waitForElm(`#${containerId}`).then((container) => {
+        (async () => {
+          await document.vegaLoaded;
+          vegaEmbed(`#${containerId}`, vlSpec, {
+            actions: !hideActions,
+            theme: theme,
+            downloadFileName
+          });
+        })();
+      });
+
       container.id = containerId;
 
-      (async () => {
-        await document.vegaLoaded;
-        vegaEmbed(`#${containerId}`, vlSpec);
-      })();
       })();
     </script>
 ++++
