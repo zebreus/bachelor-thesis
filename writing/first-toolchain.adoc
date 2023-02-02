@@ -11,22 +11,17 @@
 // :source-highlighter: highlight.js
 // :highlightjs-languages: rust, cpp, console
 
-// TODO: This sections sucks. Rewrite it.
+Digital circuits are typically designed using hardware description languages (HDLs) like Verilog or VHDL. High-level synthesis (HLS) is a process that enables the design of digital circuits in a high-level language, such as C or {cpp}. HLS allows designers to write their design at a higher level of abstraction which can be more natural and familiar to software developers.
 
-Usually one would write code for a FPGA in a hardware description language (HDL) such as Verilog or VHDL. However, this is a very low-level language, and it is difficult to write code in it. This is where HLS comes in.
+The generated circuits can be deployed to FPGAs. That can offer higher performance and lower power consumption, which can be particularly useful for applications such as high performance computing, image processing, and telecommunications.
 
-HLS is a process that allows developers to write high-level code, such as C/C++ or Rust code, and then use a toolchain to automatically convert that code into RTL (register-transfer level) code, which can be used to program an FPGA. This is different from traditional FPGA programming, where developers write RTL code directly.
+The source languages used for HLS are usually limited subsets of C/{cpp} with some additional restrictions. Rust could be a better source for HLS, because it already has some restrictions for dealing with memory that could proof beneficial for HLS. For example its semantics define memory and ownership more clearly than C/{cpp}.
 
+There are some ways how toolchains for HLS from Rust can be built with currently existing tooling. However, it is currently not known how viable these different toolchains would be for practical application specifically what restrictions would apply, if and how they could benefit from the additional information provided by Rust.
 
-// TODO: Elaborate
-//  Why Rust for HLS: Explain why Rust is a good choice for HLS and how its features such as memory safety and thread safety align with the requirements of HLS.
-
-
-== Hands on with bambu
+== Introducing the toolchain
 
 The PandA projects maintains and develops a usable framework for research in the Hardware/Software Co-Design area. As a part of that project they also publish a HLS tool called bambu. While bambu is mostly used for research, it is also one of the most complete free and open-source HLS tools available.
-
-=== Introducing the toolchain
 
 It can use the clang or gcc compilers as a frontend and synthesize their output to verilog. As clang is based on LLVM, it can also load LLVM IR directly. The Rust compiler is also based on LLVM and has an option to output LLVM IR. We can then use the generated LLVM IR as an input for bambu. This way it is possible to perform High-level synthesis on Rust code.
 
@@ -44,9 +39,9 @@ So our toolchain uses rustc to compile rust code to LLVM IR, then uses the bambu
 ....
 
 
-=== Using bambu for C++
+=== Using bambu for {cpp}
 
-Bambu is build to synthesize C/C++ code.
+Bambu is build to synthesize C/{cpp} code.
 
 The example for a function that finds that minimum or maximum in an array is a good example of how to write code that synthesizes well. It is just very C-like code, that mutates its inputs and has a interface that is not very Rust-like.
 
@@ -59,22 +54,30 @@ The function takes a pointer to an array of integers, the number of elements in 
 
 We synthesize the function using bambu and use bambus integrated test runner to test the function against some testcases. Later we will use the same testcases for the Rust version of the function. The optimization level is set to `-O2` for now, which is the lowest we can go, because the Rust version requires at least some optimizations to be enabled.
 
-.Testcases:
-* input=[0,1,2,3,4] num_elements=5 out_max=0 out_min=4
-* input=[15,10,5] num_elements=3 out_max=15 out_min=5 
+We will test the performance by running the function against 21 testcases with 0 to 20 elements.
 
-.Synthesizing and testing the C++ function
-[%collapsible]
-====
 [source,console]
 ----
 include::results/min_max_cpp_clang_intro.log[]
 ----
-====
 
-The most relevant aspects of the output are the average number of clock cycles and the total area used. The area is an important metric, because it is the most expensive resource on FPGAs. The number of clock cycles is also important, because it is a reasonable indicator of how fast the function is. 
+The most important aspects of the output are the average number of clock cycles and the total area used. The area is an important metric, because it is the most expensive resource on FPGAs. The number of clock cycles is also important, because it is a reasonable indicator of how fast the function is. 
 
 The tests are executed using verilator, so they are not completly representative of the actual hardware, because Verilator does not simulate timings beyond the clock cycles. So it could be that a design requires fewer cycles, but can only be run at a lower clock frequency. That said, comparing clock cycles should be a somewhat accurate.
+
+== Looking at the output
+
+The interface of the generated verilog will look something like this:
+
+.Interface generated from {cpp} function
+[symbolator]
+....
+include::min_max_cpp.v[]
+....
+
+Explain why clock
+
+Explain why interface from memory
 
 === Using bambu for Rust
 
@@ -158,21 +161,13 @@ include::results/min_max_rust_idiomatic_intro.log[]
 
 The results look promising so far. This version is faster and way smaller than the previous two, but that could be because it had the rust compiler set to a higher optimization level. Lets see what happens when we synthesize our functions with all optimizations enabled.
 
-== Looking at the output
+=== Comparing the {cpp} and Rust versions
 
-TODO look at generated verilog design
-
-Explain why clock
-
-Explain why interface from memory
-
-=== Comparing the C++ and Rust versions
-
-For the comparison we will use the same testcases as before. We will test every version of the function once with optimizations set for maximum speed and once with optimizations set for minimum size. For the C++ version we will also compare how the results change when we use gcc instead of clang.
+For the comparison we will use the same testcases as before. We will test every version of the function once with optimizations set for maximum speed and once with optimizations set for minimum size. For the {cpp} version we will also compare how the results change when we use gcc instead of clang.
 
 We will consider the synthesis a blackbox, so we wont compare the generated code. We will only compare the execution time and resource usage of the generated code.
 
-.CPP with clang and `-O5`
+.{cpp} with clang and `-O5`
 [%collapsible]
 ====
 [source,console]
@@ -181,7 +176,7 @@ include::results/min_max_cpp_clang_speed.log[]
 ----
 ====
 
-.CPP with clang and `-Os`
+.{cpp} with clang and `-Os`
 [%collapsible]
 ====
 [source,console]
@@ -190,7 +185,7 @@ include::results/min_max_cpp_clang_size.log[]
 ----
 ====
 
-.CPP with gcc and `-O5`
+.{cpp} with gcc and `-O5`
 [%collapsible]
 ====
 [source,console]
@@ -199,7 +194,7 @@ include::results/min_max_cpp_gcc_speed.log[]
 ----
 ====
 
-.CPP with gcc and `-Os`
+.{cpp} with gcc and `-Os`
 [%collapsible]
 ====
 [source,console]
@@ -298,7 +293,7 @@ The big designs containing one operation that processes *1* element and one oper
 
 [NOTE]
 ====
-Here it seems like the loop is converted into two operations, one that implements a single iteration and one that implements four iterations. It would be interesting to have the ability to specify in the rust code how big these chunks could be. Maybe bambu even has this feature for CPP already, I havent looked into it yet.
+Here it seems like the loop is converted into two operations, one that implements a single iteration and one that implements four iterations. It would be interesting to have the ability to specify in the rust code how big these chunks could be. Maybe bambu even has this feature for {cpp} already, I have not looked into it yet.
 ====
 
 Besides the amount of cycles the designs take the other relevant metric for speed is the frequency that the cycles can be executed. While the real maximum frequency is highly dependend on the hardware and the actual place and route, bambu generates a estimate of the maximum frequency of each design. I dont know how accurate they are, but they seem to be a good indicator of the performance of the designs.
