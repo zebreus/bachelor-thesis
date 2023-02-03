@@ -18,6 +18,22 @@ With FPGAs, we'll transcend the limitations of traditional CPUs, unlocking faste
 
 In the labyrinthine passages of the internet, we shall search for answers. We will encounter PandA, an experienced high-level synthesizer. This powerful entity has the ability to translate the ancient languages of C/{cpp} into the descriptive forms that the FPGAs can understand. Yet, even PandA is unable to understand our native tongue, Rust. Fear not, brave adventurer, for we have the aid of a mighty and swift wyvern of LLVM. It set out to create a common language, not to be nativly spoken by anyone, but to be understood by all. We will use the language of LLVM to communicate with PandA, and see how it fares with our Rust compared to its familiar C/{cpp}. So gather your courage and sharpen your wits, for our journey into the mystical world of HLS, FPGAs, CPUs, and LLVM is about to begin.
 
+== Introduction
+
+A few weeks ago, I decided that I am interested in FPGAs and how Rust could be used to program them. In this post I will document my first explorations into HLS and Rust. We will learn what HLS is, how it works and how we can use it to synthesize Rust code.
+
+== What is the difference between CPUs and FPGAs
+
+Normal CPUs process their instructions one by one. They are purposebuild machines that are carefully designed for processing lots of instructions in sequence. Tradional programminglanguages reflect this design for the most part. They are designed to make it easy for humans to write programs that can be executed one instruction at a time, from top to bottom. There are approached to paralelism, but they are mostly limited to having multiple threads of execution that run from top to bottom simulataneously, or to have some instructions that perform the same instruction on a fixed amount of data elements at the same time.
+
+FPGAs on the other hand are not designed to process one instructions at a time. They are not even designed to process instructions at all. They dont even know what an instruction is. But if they dont know what an instruction is, how can they process anything? Well, they dont. They are not designed to process anything. They are designed to be reprogrammable. This does not explain anything TODO: write more
+
+// A FPGA is programmed not in a programming language, but in a hardware definition language. While hardware definition languages look somewhat similar to programming languages, they They are designed to be reprogrammable and to be able to process multiple things at once. They achieve this by beeing one of the simplest possible circuit
+
+// Our languages merely communicate a list of instructions that can be understood one at a time. There may be some of us that can pretend to understand multiple commands at once, but I say those are liers. not more than a bunch of children covering themselves in an oversized trenchcoat trying to pass of as one adult. There may be 4 or 8 or even 64 of them in there but each one is still only capable of doing one thing at a time. To the FPGAs on the other hand even the concepts of instructions or order is foreign. In their tongue the primitives are the connection and the lookup table (LUT). They not so much understand a instruction at a time, but adjust their self to mirror the words. They can, on under special circumstances, understand the language of the CPU, but they do this only by adjusting their structure to replicate a CPU. As you maybe can imagine they are not very good at this. To replicate a 
+
+== What even is a HLS?
+
 Digital circuits are typically designed using hardware description languages (HDLs) like Verilog or VHDL. High-level synthesis (HLS) is a process that enables the design of digital circuits in a high-level language, such as C or {cpp}. HLS allows designers to write their design at a higher level of abstraction which can be more natural and familiar to software developers.
 
 The generated circuits can be deployed to FPGAs. That can offer higher performance and lower power consumption, which can be particularly useful for applications such as high performance computing, image processing, and telecommunications.
