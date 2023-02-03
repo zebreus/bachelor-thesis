@@ -11,6 +11,13 @@
 // :source-highlighter: highlight.js
 // :highlightjs-languages: rust, cpp, console
 
+
+Fellow crustacean, embark on a journey with me, into the enchanted world of hardware design.
+
+With FPGAs, we'll transcend the limitations of traditional CPUs, unlocking faster and more efficient calculations. Our journey will be a perilous one, as the language of FPGAs and the common languages of our world are vastly different. It would need a mighty sorcerer to bridge that gap. Maybe even multiple ones. The path ahead is unclear, but we shall not be deterred.
+
+In the labyrinthine passages of the internet, we shall search for answers. We will encounter PandA, an experienced high-level synthesizer. This powerful entity has the ability to translate the ancient languages of C/{cpp} into the descriptive forms that the FPGAs can understand. Yet, even PandA is unable to understand our native tongue, Rust. Fear not, brave adventurer, for we have the aid of a mighty and swift wyvern of LLVM. It set out to create a common language, not to be nativly spoken by anyone, but to be understood by all. We will use the language of LLVM to communicate with PandA, and see how it fares with our Rust compared to its familiar C/{cpp}. So gather your courage and sharpen your wits, for our journey into the mystical world of HLS, FPGAs, CPUs, and LLVM is about to begin.
+
 Digital circuits are typically designed using hardware description languages (HDLs) like Verilog or VHDL. High-level synthesis (HLS) is a process that enables the design of digital circuits in a high-level language, such as C or {cpp}. HLS allows designers to write their design at a higher level of abstraction which can be more natural and familiar to software developers.
 
 The generated circuits can be deployed to FPGAs. That can offer higher performance and lower power consumption, which can be particularly useful for applications such as high performance computing, image processing, and telecommunications.
