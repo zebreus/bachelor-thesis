@@ -26,13 +26,26 @@ A few weeks ago, I decided that I am interested in FPGAs and how Rust could be u
 
 Normal CPUs process their instructions one by one. They are purposebuild machines that are carefully designed for processing lots of instructions in sequence. Tradional programminglanguages reflect this design for the most part. They are designed to make it easy for humans to write programs that can be executed one instruction at a time, from top to bottom. There are approached to paralelism, but they are mostly limited to having multiple threads of execution that run from top to bottom simulataneously, or to have some instructions that perform the same instruction on a fixed amount of data elements at the same time.
 
-FPGAs on the other hand are not designed to process one instructions at a time. They are not even designed to process instructions at all. They dont even know what an instruction is. But if they dont know what an instruction is, how can they process anything? Well, they dont. They are not designed to process anything. They are designed to be reprogrammable. This does not explain anything TODO: write more
+FPGAs on the other hand are not designed to process one instructions at a time. They are not even designed to process instructions at all. FPGA stands for field programmable gate array. As the name implies, it is basically just a lot of logic gates that can be connected via a program. So while a CPU is a circuit designed to do one thing, a FPGA is a circuit designed to emulate other circuits. So you could for example define the logic gates that make up your CPU and program your FPGA with that, so it will behave exactly like a CPU and can process instructions. But you could also define the logic to perform a complex calculation that would take a CPU hundreds of cycles, deploy it to a FPGA and you have a piece of hardware that can perform that calculation in an instant.
+
+The downsides of using FPGAs is that they are expensive and harder to program than a CPU. They are expensive because they need to be a lot bigger than circuits that are directly designed to to something. While a logic gate in a real circuit are just a few transistors, in an FPGA you need more <TODO: do some research?>. Also the connections between them need to be configurable, TODO: research this stuff. 
+
+[quote,"Bacon, David F., Rodric Rabbah, and Sunil Shukla.",'https://dl.acm.org/doi/fullHtml/10.1145/2436256.2436271["FPGA programming for the masses." Communications of the ACM 56.4 (2013)]']
+____
+FPGAs are predominantly programmed using hardware description languages (HDLs) such as Verilog and VHDL. These languages, which date back to the 1980s and have seen few revisions, are very low level in terms of the abstraction offered to the user. A hardware designer thinks about the design in terms of low-level building blocks such as gates, registers, and multiplexors. VHDL and Verilog are well suited for describing a design at that level of abstraction. Writing an application at a behavioral level and leaving its destiny in the hands of a synthesis tool is commonly considered a bad design practice.
+
+This is in complete contrast with the software programming languages, which have evolved over the past 60 years. Programming for CPUs enjoys the benefits of well-established ISAs (instruction set architectures) and advanced compilers that offer a much simpler programming experience. Object-oriented and polymorphic programming concepts, as well as automatic memory management (garbage collection) are no longer seen just as desirable features but as necessities. A higher level of abstraction drastically increases a programmer's productivity and reduces the likelihood of bugs, resulting in a faster time to market.
+____
+
+Also verification is a bit part of hardware design. TODO: I will add more on this later. I assume this is, because in traditional hardware design the goal is to produce actual circuits, where each revision is extremly expensive (at least multiple hundred thousand dollars), so you want to make sure you get it right the first time. In software, you can just change the code, recompile it, and ship an update. Also as everything happens in parralel, it is possible to get timing related problems.
 
 // A FPGA is programmed not in a programming language, but in a hardware definition language. While hardware definition languages look somewhat similar to programming languages, they They are designed to be reprogrammable and to be able to process multiple things at once. They achieve this by beeing one of the simplest possible circuit
 
 // Our languages merely communicate a list of instructions that can be understood one at a time. There may be some of us that can pretend to understand multiple commands at once, but I say those are liers. not more than a bunch of children covering themselves in an oversized trenchcoat trying to pass of as one adult. There may be 4 or 8 or even 64 of them in there but each one is still only capable of doing one thing at a time. To the FPGAs on the other hand even the concepts of instructions or order is foreign. In their tongue the primitives are the connection and the lookup table (LUT). They not so much understand a instruction at a time, but adjust their self to mirror the words. They can, on under special circumstances, understand the language of the CPU, but they do this only by adjusting their structure to replicate a CPU. As you maybe can imagine they are not very good at this. To replicate a 
 
 == What even is a HLS?
+
+Raise the level of abstraction of the design compared to HDLs.
 
 Digital circuits are typically designed using hardware description languages (HDLs) like Verilog or VHDL. High-level synthesis (HLS) is a process that enables the design of digital circuits in a high-level language, such as C or {cpp}. HLS allows designers to write their design at a higher level of abstraction which can be more natural and familiar to software developers.
 
@@ -241,8 +254,6 @@ include::results/min_max_cpp_gcc_size.log[]
 ----
 include::results/min_max_rust_speed.log[]
 ----
-
-When using rust optimization levels _3_ or _2_ the bambu opt level does not matter for this example.
 ====
 
 .Rust with `-Os` and `-C opt-level=s`
@@ -252,8 +263,6 @@ When using rust optimization levels _3_ or _2_ the bambu opt level does not matt
 ----
 include::results/min_max_rust_size.log[]
 ----
-
-When using rust optimization levels _s_ the bambu opt level does not matter for this example.
 ====
 
 
