@@ -130,4 +130,12 @@ https://google.github.io/xls/[🔗^]
 _DSLX Reference_
 https://google.github.io/xls/dslx_reference/[🔗^]
 
+== Some links
+
+https://dl.acm.org/doi/fullHtml/10.1145/2436256.2436271?casa_token=AOZDvsCEYEMAAAAA:zRmZorHSfbiMAi32IS7_qHEA7iRg4qw0uJPmSNDEaH4ibGSI3xtoMrKAxPwPHNvYKsRttAHQ-SEf
+
+https://www.cs.cornell.edu/~asampson/blog/fpgaabstraction.html
+
+
+https://www.cs.cornell.edu/~asampson/blog/adl.html
 
