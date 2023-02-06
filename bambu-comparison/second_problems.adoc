@@ -18,7 +18,7 @@ I think the problem is that the generated LLVM IR defines some constants an for 
 .switch_rust.ll
 [source,llvm]
 ----
-include::build/switch_rust_size.ll[]
+include::results/switch_rust_size.ll[]
 ----
 
 bambu probably synthesizes somthing that emulates that memory, which takes up a lot of space. Lets try to see if this is rust specific. I have also written a {cpp} version of the same function:
@@ -36,7 +36,7 @@ If we then use clang to generate the LLVM IR, the result looks remarkably simila
 ====
 [source,llvm]
 ----
-include::build/switch_cpp_size.ll[]
+include::results/switch_cpp_size.ll[]
 ----
 ====
 
@@ -47,19 +47,19 @@ If we compare the interfaces of the three generated components, we can see that 
 .Interface of the {rust}/LLVM IR module
 [symbolator]
 ....
-include::build/switch_rust_size.v[]
+include::results/switch_rust_size.v[]
 ....
 
 .Interface of the {cpp}/LLVM IR module
 [symbolator]
 ....
-include::build/switch_cpp_size.v[]
+include::results/switch_cpp_size.v[]
 ....
 
 .Interface of the direct {cpp} module
 [symbolator]
 ....
-include::build/switch_cpp_direct.v[]
+include::results/switch_cpp_direct.v[]
 ....
 
 I assume that the return port got somehow converted to a input `P1` that passes a memory reference. Also the component has the ports to access outside memory. I assume the reason why the other two components are so big is because they do emulate some kind of memory. Earlier I assumed that that memory is only internally used and not exposed to the outside.
@@ -81,7 +81,7 @@ include::src/switch_big_cpp.cpp[]
 .Interface of the 64bit return {cpp} module
 [symbolator]
 ....
-include::build/switch_big_cpp_size.v[]
+include::results/switch_big_cpp_size.v[]
 ....
 
 So it seems like our component does not send a memory address on its return port, but rather a struct. This is good news, because it means that we can probably just use the return value directly. But we still don't know why exactly the component gets so big.
