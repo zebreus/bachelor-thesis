@@ -13,3 +13,6 @@ results.txt
 
 # Testing artifacts
 build
+
+# Docinfo is required
+!docinfo.html
