@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<function>
+	<testbench P0="0" />
+	<testbench P0="1" />
+	<testbench P0="2" />
+	<testbench P0="3" />
+</function>

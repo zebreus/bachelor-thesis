@@ -53,13 +53,13 @@ $(OUT_DIR)/%_size.ll : $(SOURCE_DIR)/%.cpp
 $(BUILD_DIR)/%.raw.log $(OUT_DIR)/%.v : $(OUT_DIR)/%.ll
 	mkdir -p $(BUILD_DIR)
 	mkdir -p $(OUT_DIR)
-	$(BAMBU) $< --top-fname=$(subst _speed,,$(subst _size,,$(basename $(notdir $<)))) --generate-tb=$(subst _speed,,$(subst _size,,$(basename $<))).xml $(BAMBU_FLAGS_CLANG)  2>&1 | sed 's,\x1B\[[0-9;]*[a-zA-Z],,g' | sed 's/[\x01-\x1F\x7F]//g' > $@
+	$(BAMBU) $< --top-fname=$(subst _speed,,$(subst _size,,$(basename $(notdir $<)))) --generate-tb=$(SOURCE_DIR)/$(subst _speed,,$(subst _size,,$(basename $(notdir $<)))).xml $(BAMBU_FLAGS_CLANG)  2>&1 | sed 's,\x1B\[[0-9;]*[a-zA-Z],,g' | sed 's/[\x01-\x1F\x7F]//g' > $@
 	cp $(subst _speed,,$(subst _size,,$(basename $(notdir $<)))).v $(OUT_DIR)/$(basename $(notdir $<)).v
 
 $(BUILD_DIR)/%_direct.raw.log $(BUILD_DIR)/%_direct.v : $(SOURCE_DIR)/%.cpp
 	mkdir -p $(BUILD_DIR)
 	mkdir -p $(OUT_DIR)
-	$(BAMBU) $< --top-fname=$(basename $(notdir $<)) --generate-tb=$(basename $<).xml $(BAMBU_FLAGS_CLANG) -v5  2>&1 | sed 's,\x1B\[[0-9;]*[a-zA-Z],,g' | sed 's/[\x01-\x1F\x7F]//g' > $@
+	$(BAMBU) $< --top-fname=$(basename $(notdir $<)) --generate-tb=$(SOURCE_DIR)/$(basename $(notdir $<)).xml $(BAMBU_FLAGS_CLANG) -v5  2>&1 | sed 's,\x1B\[[0-9;]*[a-zA-Z],,g' | sed 's/[\x01-\x1F\x7F]//g' > $@
 	cp $(basename $(notdir $<)).v $(OUT_DIR)/$(basename $(notdir $<))_direct.v
 
 clean:
