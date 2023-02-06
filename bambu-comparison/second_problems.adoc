@@ -1,0 +1,104 @@
+= Problems
+:cpp: C++
+
+While our first results were promising, I think we could have just chosen a lucky example.
+
+== The problem
+
+If we try to synthesize the following function, bambu generates a massive component (size around 4000)
+
+.switch_rust.rs
+[source,rust]
+----
+include::src/switch_rust.rs[]
+----
+
+I think the problem is that the generated LLVM IR defines some constants an for the return values and accesses them by address. See:
+
+.switch_rust.ll
+[source,llvm]
+----
+include::build/switch_rust_size.ll[]
+----
+
+bambu probably synthesizes somthing that emulates that memory, which takes up a lot of space. Lets try to see if this is rust specific. I have also written a {cpp} version of the same function:
+
+.switch_cpp.cpp
+[source,cpp]
+----
+include::src/switch_cpp.cpp[]
+----
+
+If we then use clang to generate the LLVM IR, the result looks remarkably similar to the rust version. Synthesizing this function also results in a equally massive component (size around 4000), so it does not seem to be rust specific, but rather a problem with the LLVM IR.
+
+.switch_cpp.ll
+[%collapsible]
+====
+[source,llvm]
+----
+include::build/switch_cpp_size.ll[]
+----
+====
+
+Ok but both those attempts wer made by first compiling the code to LLVM IR and then synthesizing the component. If we directly synthesize the {cpp} code, we get a much smaller component (size around 300). So it seems that the problem is not with the LLVM IR, but rather with the way bambu handles it. Maybe it does some special optimization applies or excludes some optimizations that clang does. Lets try to see if we can find out what is going on.
+
+If we compare the interfaces of the three generated components, we can see that the version were we did not use LLVM IR has a different interface.
+
+.Interface of the {rust}/LLVM IR module
+[symbolator]
+....
+include::build/switch_rust_size.v[]
+....
+
+.Interface of the {cpp}/LLVM IR module
+[symbolator]
+....
+include::build/switch_cpp_size.v[]
+....
+
+.Interface of the direct {cpp} module
+[symbolator]
+....
+include::build/switch_cpp_direct.v[]
+....
+
+I assume that the return port got somehow converted to a input `P1` that passes a memory reference. Also the component has the ports to access outside memory. I assume the reason why the other two components are so big is because they do emulate some kind of memory. Earlier I assumed that that memory is only internally used and not exposed to the outside.
+
+Now I suspect that maybe the value returned on the return_port is actually a reference to some kind of internal memory. The size of the return value is 32bit, which could be a struct of 4 booleans, each stored inside a byte. But, it could also be a 32bit memory address. We can easily check this theory by synthesizing a function that returns something that does not fit into 32bits. If the return_port does not change its size, then it is probably a memory address. If it does change its size, then it is probably a struct.
+
+If we adjust the cpp function to use 2byte integers instead of 2 byte booleans, we should get a return port sized 64bit. Lets see if this is the case.
+
+
+.Source of {cpp} function with bigger return value
+[%collapsible]
+====
+[source,cpp]
+----
+include::src/switch_big_cpp.cpp[]
+----
+====
+
+.Interface of the 64bit return {cpp} module
+[symbolator]
+....
+include::build/switch_big_cpp_size.v[]
+....
+
+So it seems like our component does not send a memory address on its return port, but rather a struct. This is good news, because it means that we can probably just use the return value directly. But we still don't know why exactly the component gets so big.
+
+== Sidetrack - How big of a value can we return?
+
+We have seen that bambu is capable of adjusting the size of the return port to the size of the return value. But how big of a value can we return? Lets try to find out.
+
+Lets increase the size of the four integers in our return value to 32bit each. This should result in a return port of size 128bit.
+
+.Source of {cpp} function with a return value sized 128bit
+[%collapsible]
+====
+[source,cpp]
+----
+include::src/switch_very_big_cpp.cpp[]
+----
+====
+
+Actually the compilation fails. The LLVM for the 128bit return value is:  `{ i64, i64 }` . I think bambu does not support that.

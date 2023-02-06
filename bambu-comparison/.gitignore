@@ -1,0 +1,20 @@
+# Asciidoctor generated diagrams
+images
+.asciidoctor
+
+# Bambu artifacts
+HLS_output
+synthesize_Synthesis_*.sh
+bambu_results_*.xml
+simulate_*.sh
+./*.v
+memory_allocation_*.xml
+results.txt
+array_ref_*.mem
+panda-temp
+
+# Testing artifacts
+build
+
+# Docinfo is required
+!docinfo.html

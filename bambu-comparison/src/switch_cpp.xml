@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<function>
+	<testbench P0="0" P1="{0,0,0,0}" counter="0" />
+	<testbench P0="1" P1="{0,0,0,0}" counter="1" />
+	<testbench P0="2" P1="{0,0,0,0}" counter="2" />
+	<testbench P0="3" P1="{0,0,0,0}" counter="3" />
+</function>
