@@ -14,38 +14,38 @@
 
 Fellow crustacean, embark on a journey with me, into the enchanted world of hardware design.
 
-With FPGAs, we'll transcend the limitations of traditional CPUs, unlocking faster and more efficient calculations. Our journey will be a perilous one, as the language of FPGAs and the common languages of our world are vastly different. It would need a mighty sorcerer to bridge that gap. Maybe even multiple ones. The path ahead is unclear, but we shall not be deterred.
+With FPGAs, we'll transcend the limitations of traditional CPUs, unlocking faster and more efficient calculations. Our journey will be a perilous one, as the language of FPGAs and the common programming languages of our world are vastly different. It would need a mighty sorcerer to bridge that gap. Maybe even multiple ones. The path ahead is unclear, but we shall not be deterred.
 
 In the labyrinthine passages of the internet, we shall search for answers. We will encounter PandA, an experienced high-level synthesizer. This powerful entity has the ability to translate the ancient languages of C/{cpp} into the descriptive forms that the FPGAs can understand. Yet, even PandA is unable to understand our native tongue, Rust. Fear not, brave adventurer, for we have the aid of a mighty and swift wyvern of LLVM. It set out to create a common language, not to be nativly spoken by anyone, but to be understood by all. We will use the language of LLVM to communicate with PandA, and see how it fares with our Rust compared to its familiar C/{cpp}. So gather your courage and sharpen your wits, for our journey into the mystical world of HLS, FPGAs, CPUs, and LLVM is about to begin.
 
 == Introduction
 
-A few weeks ago, I decided that I am interested in FPGAs and how Rust could be used to program them. In this post I will document my first explorations into HLS and Rust. We will learn what HLS is, how it works and how we can use it to synthesize Rust code.
+A few weeks ago, I decided that I am interested in FPGAs and how Rust could be used to program them. In this post I document my first explorations into HLS and Rust. We will learn what HLS is, how it works and how we can use it to synthesize Rust code.
 
-== What is the difference between CPUs and FPGAs
+=== What is the difference between CPUs and FPGAs
 
-Normal CPUs process their instructions one by one. They are purposebuild machines that are carefully designed for processing lots of instructions in sequence. Tradional programminglanguages reflect this design for the most part. They are designed to make it easy for humans to write programs that can be executed one instruction at a time, from top to bottom. There are approached to paralelism, but they are mostly limited to having multiple threads of execution that run from top to bottom simulataneously, or to have some instructions that perform the same instruction on a fixed amount of data elements at the same time.
+Normal CPUs process their instructions one by one. They are purpose-build machines that are carefully designed for processing lots of instructions in sequence. Traditional programming languages reflect this design for the most part. They are designed to make it easy for humans to write programs that can be executed sequentially one instruction at a time. There are approaches to parallelism, but they are either limited to having multiple threads of execution that run from top to bottom simultaneously. Or they have some instructions that perform the same operation on a fixed amount of data elements at the same time.
 
-FPGAs on the other hand are not designed to process one instructions at a time. They are not even designed to process instructions at all. FPGA stands for field programmable gate array. As the name implies, it is basically just a lot of logic gates that can be connected via a program. So while a CPU is a circuit designed to do one thing, a FPGA is a circuit designed to emulate other circuits. So you could for example define the logic gates that make up your CPU and program your FPGA with that, so it will behave exactly like a CPU and can process instructions. But you could also define the logic to perform a complex calculation that would take a CPU hundreds of cycles, deploy it to a FPGA and you have a piece of hardware that can perform that calculation in an instant.
+FPGAs on the other hand are not designed to process one instructions at a time. They are not even designed to process instructions at all. FPGA stands for field programmable gate array. As the name implies, it is basically just a lot of programmable logic gates and programmable connections between them. So while a CPU is a circuit designed to do one thing, a FPGA is a circuit designed to emulate other circuits. So you could for example define the logic gates that make up your CPU and program your FPGA with that, so it will behave exactly like a CPU and can process instructions. But you can also define the logic to perform a complex calculation that will take a CPU hundreds of cycles, deploy it to a FPGA and you have a piece of hardware that can perform that calculation in an instant.
 
-The downsides of using FPGAs is that they are expensive and harder to program than a CPU. They are expensive because they need to be a lot bigger than circuits that are directly designed to to something. While a logic gate in a real circuit are just a few transistors, in an FPGA you need more <TODO: do some research?>. Also the connections between them need to be configurable, TODO: research this stuff. 
+// TODO: research this stuff more, I am not sure if this is correct
+The downsides of using FPGAs is that they are expensive and harder to program than a CPU. They are expensive because they need to be a lot bigger than circuits that are directly designed to to something. While a logic gate in a real circuit are just a few transistors, in an FPGA you need more than that. The connections between them need to be configurable and the programmable interconnects also take up space.
 
-[quote,"Bacon, David F., Rodric Rabbah, and Sunil Shukla.",'https://dl.acm.org/doi/fullHtml/10.1145/2436256.2436271["FPGA programming for the masses." Communications of the ACM 56.4 (2013)]']
+[quote,"David F. Bacon, Rodric Rabbah, and Sunil Shukla.",'https://dl.acm.org/doi/fullHtml/10.1145/2436256.2436271["FPGA programming for the masses." Communications of the ACM 56.4 (2013)]']
 ____
 FPGAs are predominantly programmed using hardware description languages (HDLs) such as Verilog and VHDL. These languages, which date back to the 1980s and have seen few revisions, are very low level in terms of the abstraction offered to the user. A hardware designer thinks about the design in terms of low-level building blocks such as gates, registers, and multiplexors. VHDL and Verilog are well suited for describing a design at that level of abstraction. Writing an application at a behavioral level and leaving its destiny in the hands of a synthesis tool is commonly considered a bad design practice.
 
 This is in complete contrast with the software programming languages, which have evolved over the past 60 years. Programming for CPUs enjoys the benefits of well-established ISAs (instruction set architectures) and advanced compilers that offer a much simpler programming experience. Object-oriented and polymorphic programming concepts, as well as automatic memory management (garbage collection) are no longer seen just as desirable features but as necessities. A higher level of abstraction drastically increases a programmer's productivity and reduces the likelihood of bugs, resulting in a faster time to market.
 ____
 
-Also verification is a bit part of hardware design. TODO: I will add more on this later. I assume this is, because in traditional hardware design the goal is to produce actual circuits, where each revision is extremly expensive (at least multiple hundred thousand dollars), so you want to make sure you get it right the first time. In software, you can just change the code, recompile it, and ship an update. Also as everything happens in parralel, it is possible to get timing related problems.
+//  TODO: I will add more on this later.
+Verification is a big part of hardware design. I assume this is, because in traditional hardware design the goal is to produce actual circuits, where each revision is extremly expensive (at least multiple hundred thousand dollars), so you want to make sure you get it right the first time. In software, you can just change the code, recompile it, and ship an update. Also as everything happens in parralel, it is possible to get timing related problems.
 
-// A FPGA is programmed not in a programming language, but in a hardware definition language. While hardware definition languages look somewhat similar to programming languages, they They are designed to be reprogrammable and to be able to process multiple things at once. They achieve this by beeing one of the simplest possible circuit
+=== What even is HLS?
 
-// Our languages merely communicate a list of instructions that can be understood one at a time. There may be some of us that can pretend to understand multiple commands at once, but I say those are liers. not more than a bunch of children covering themselves in an oversized trenchcoat trying to pass of as one adult. There may be 4 or 8 or even 64 of them in there but each one is still only capable of doing one thing at a time. To the FPGAs on the other hand even the concepts of instructions or order is foreign. In their tongue the primitives are the connection and the lookup table (LUT). They not so much understand a instruction at a time, but adjust their self to mirror the words. They can, on under special circumstances, understand the language of the CPU, but they do this only by adjusting their structure to replicate a CPU. As you maybe can imagine they are not very good at this. To replicate a 
+// TODO: Improve section
 
-== What even is a HLS?
-
-Raise the level of abstraction of the design compared to HDLs.
+Raise the level of abstraction of the design compared to HDLs. HDLs operate on the register-transfer level (RTL)
 
 Digital circuits are typically designed using hardware description languages (HDLs) like Verilog or VHDL. High-level synthesis (HLS) is a process that enables the design of digital circuits in a high-level language, such as C or {cpp}. HLS allows designers to write their design at a higher level of abstraction which can be more natural and familiar to software developers.
 
@@ -55,14 +55,19 @@ The source languages used for HLS are usually limited subsets of C/{cpp} with so
 
 There are some ways how toolchains for HLS from Rust can be built with currently existing tooling. However, it is currently not known how viable these different toolchains would be for practical application specifically what restrictions would apply, if and how they could benefit from the additional information provided by Rust.
 
+// TODO: Add section about LLVM
+
+// TODO: Add section about HDLs and RTL
+
 == Introducing the toolchain
 
-The PandA projects maintains and develops a usable framework for research in the Hardware/Software Co-Design area. As a part of that project they also publish a HLS tool called bambu. While bambu is mostly used for research, it is also one of the most complete free and open-source HLS tools available.
+So now you should have a bit of background on the field that we are going to explore. Our goal for this post is to get a basic HLS toolchain for Rust up and running. Additionally we want to understand how the Results compare to HLS from C/{cpp}.
 
-It can use the clang or gcc compilers as a frontend and synthesize their output to verilog. As clang is based on LLVM, it can also load LLVM IR directly. The Rust compiler is also based on LLVM and has an option to output LLVM IR. We can then use the generated LLVM IR as an input for bambu. This way it is possible to perform High-level synthesis on Rust code.
+The PandA projects maintains and develops a framework for research in the Hardware/Software Co-Design area. As part of that project they publish a HLS tool called bambu. While bambu is mostly used for research, it is also one of the most complete free and open-source HLS tools available.
 
-So our toolchain uses rustc to compile rust code to LLVM IR, then uses the bambu to generate Verilog. We could then use an RTL synthesis tool like yosys to generate gate-level logic that can be deployed to a FPGA. We will not cover the last step of the toolchain here, because it is not really relevant to the topic of this blog post.
+It can use the clang or gcc compilers as a frontend and synthesize their output to verilog. As clang is based on LLVM, it can load LLVM intermediate representation (LLVM IR) directly. The Rust compiler is also based on LLVM and has the option to output LLVM IR. We can then use the generated LLVM IR as the input for bambu. This way it is possible to perform high-level synthesis on Rust code.
 
+.The toolchain
 [pikchr]
 ....
    arrow right 150% "Rust" "Source"
@@ -74,32 +79,31 @@ So our toolchain uses rustc to compile rust code to LLVM IR, then uses the bambu
    arrow right 200% "Json" "Gate-level logic"
 ....
 
+As you can see, our toolchain uses rustc to compile rust code to LLVM IR, then uses the bambu to generate Verilog. We could then use an RTL synthesis tool like yosys to generate gate-level logic that can be deployed to a FPGA (That is not something we will do in this post). 
 
 == Using bambu for {cpp}
 
 Bambu is build to synthesize C/{cpp} code.
 
-The example for a function that finds that minimum or maximum in an array is a good example of how to write code that synthesizes well. It is just very C-like code, that mutates its inputs and has a interface that is not very Rust-like.
+Let us look at this {cpp} function that finds the minimum and maximum in an array:
 
 [source,cpp]
 ----
 include::src/min_max_cpp.cpp[]
 ----
 
-The function takes a pointer to an array of integers, the number of elements in the array, and two pointers to integers. The function will find the minimum and maximum in the array and write them to the memory locations pointed to by `out_max` and `out_min`.
+It is very C-like code that mutates its inputs. The function takes a pointer to an array of integers, the number of elements in the array, and two pointers to integers. The function finds the smallest and largest value of the array and writes them to the memory locations pointed to by `out_max` and `out_min`.
 
-We synthesize the function using bambu and use bambus integrated test runner to test the function against some testcases. Later we will use the same testcases for the Rust version of the function. The optimization level is set to `-O2` for now, which is the lowest we can go, because the Rust version requires at least some optimizations to be enabled.
-
-We will test the performance by running the function against 21 testcases with 0 to 20 elements.
+We synthesize the function using bambu and use its integrated test runner to test the function against some testcases. Later we will use the same testcases for the Rust version of the function. The Rust function also requires some level of optimizations to be enabled. We want this test to be comparable with that, so we set the optimization level to `-O2`, which is the lowest possible value. The test will contain 21 testcases, because we will test the performance of the function with 0 to 20 elements in the array.
 
 [source,console]
 ----
 include::results/min_max_cpp_clang_intro.log[]
 ----
 
-The most important aspects of the output are the average number of clock cycles and the total area used. The area is an important metric, because it is the most expensive resource on FPGAs. The number of clock cycles is also important, because it is a reasonable indicator of how fast the function is. 
+The most important aspects of the output are the average number of clock cycles and the total area used. The area is an important metric, because bigger FPGAs are more expensive. The number of clock cycles is also important, because it is a reasonable indicator of how fast the function is. 
 
-The tests are executed using verilator, so they are not completly representative of the actual hardware, because Verilator does not simulate timings beyond the clock cycles. So it could be that a design requires fewer cycles, but can only be run at a lower clock frequency. That said, comparing clock cycles should be a somewhat accurate.
+We tell bambu to use Verilator to execute the tests. Verilator is not a traditional simulator but a compiler, as it converts the Verilog model back to {cpp} that can be executed. This way the tests run a lot faster, but we primarily use it because it is the most convenient option. Because Verilator does not simulate timings beyond clock cycles, the results are not completly representative of the actual hardware. That said, comparing clock cycles should be completely sufficient for now. Bambu also creates an estimation of the maximum clock frequency that the design can run at. Later we will use that in conjunction with the clock cycles to create a more accurate estimate of the performance.
 
 === Looking at the output
 
@@ -113,30 +117,30 @@ include::results/min_max_cpp.v[]
 
 The inputs are shown on the left side and the output on the right side of the module.
 
-We can see that the module has has 3 inputs named clock, reset and start. These do pretty much what you would expect them to do. The reset is a signal that resets the module and the start signal is used to start the function. The function will not start until the start signal is high and the reset signal is low. The function will then run until it is done and the start signal goes low again. The clock signal is used to clock the module, when we talk about cycles later we are talking about clock cycles.
+We can see that the module has 3 inputs named clock, reset and start. These do pretty much what you would expect them to do. The reset is a signal that resets the module and the start signal is used to start the module. The module will not start until the start signal is high and the reset signal is low. The module will then run until it is done and the start signal goes low again. The clock signal is used to clock the module, when we talk about cycles later we are talking about clock cycles.
 
-The module has a output named done. I assume that that goes high when the function has finished.
+The module has an output named done. I assume that it will be high when the module has finished.
 
-Then there are some in- and outputs prefixed with `M`. They are used by the module to access memory.
+Then there are some in- and outputs prefixed with `M`. They are used to connect the module to external memory.
 
-At last we have the four inputs of out function as 32bit wide signals. I assume that the input for `numbers_length` passes in the number as a 32 bit integer at the start. The other inputs are pointers to the memory locations where the module can find the array and the two output values.
+At last, we have the four inputs of out module as 32bit wide signals. I assume that the input for `numbers_length` passes in the number as a 32 bit integer at the start. The other inputs are pointers to the memory locations where the module can find the array and the two output values.
 
-All of this are just assumptions for now, because we did not look at the generated verilog yet.
+All of this are just educated guesses for now, because we did not look at the generated verilog.
 
 == Using bambu for Rust
 
 When using Rust with bambu, we need to take a few things into account.
 
-First bambu cannot synthesize anything that unwinds the stack, at least when using the LLVM IR backend. Bambu also cannot synthesize terminating the process. This is a bit unfortunate, because unwinding and terminating are the two way that Rust uses to deal with panics. So we must make sure that our code can not panic. When optimizations are disabled, the Rust compiler sometimes inserts exception handlers into the LLVM IR, even though they are not used. On higher optimization levels, the compiler is smart enough to remove those exception handlers. 
+First, bambu cannot synthesize anything that unwinds the stack, at least when using the LLVM IR backend. Bambu also has no way of synthesizing a function that terminates the program (Like `std::process::exit`). This is a bit unfortunate, because unwinding and terminating are the two way that Rust uses to deal with panics. So we must make sure that our code cannot panic. When optimizations are disabled, the Rust compiler sometimes inserts exception handlers into the LLVM IR, even though they are not used. On higher optimization levels, the compiler is smart enough to remove those exception handlers. 
 
-Second, our function can not use IO and basically every other impure feature. This includes things like `std::io::println`. This does not affect us in this example, but keep it in mind when writing your own code.
+Second, our function can not use IO and basically every other impure feature. This includes things like `std::io::println`. This does not affect us in our example, but keep it in mind when writing your own code.
 
-Third, we need to make sure that the function interface is preserved. We can specify that we want the name to be preserved by attaching the `#[no_mangle]` attribute macro to our function. We also need a C-compatible interface, so we need to mark the function as `extern "C"`. While this is not strictly necessary, it is needed for this case, because we use bambus testbench generator to generate testcases for our function. The testbench generator only supports a C interface to call our function.
+Third, we need to make sure that the function interface is preserved. We can specify that we want the name to be preserved by attaching the `#[no_mangle]` attribute macro to our function. Otherwise our function will be named something like `_ZN17min_max_rust12min_max_rust17h0f0776ba5e267ab5E` instead of `min_max_rust`. We also need a C-compatible interface, so we need to mark the function as `extern "C"`. While this is not strictly necessary, it is needed for this case, because we use bambus testbench generator to generate testcases for our function. The testbench generator only supports a C interface to call our function.
 
 // TODO: Find example
 // Luckily, Rust and LLVM are quite good at understanding out code, and they can often prove that our code can not panic. 
 
-Fourth bambu does not support all LLVM intrinsics. Most notably bambu does not support the llvm vector reduce intrinsics, which Rust uses for vectorizing loops. There are probably other intrinsics that are not supported, but I have not encountered more yet. If we encounter an unsupported intrinsic, our easiest option is to try another optimization level or see if the Rust compiler has an option to disable the use of that intrinsic. If that does not work we can try to modify the generated LLVM IR to remove the intrinsic. A more advanced option is to write a pass for the LLVM IR that replaces the intrinsic with something that is supported by bambu. We won't do that in this blog post, but it is something to keep in mind.
+Fourth, bambu does not support all LLVM intrinsics. Intrinsics are basically the standard library of LLVM IR. Most notably bambu does not support the llvm vector reduce intrinsics, which Rust uses for vectorizing loops. There are probably other intrinsics that are not supported, but I have not encountered more yet. If we encounter an unsupported intrinsic, our easiest option is to try another optimization level or see if the Rust compiler has an option to disable the use of that intrinsic. If that does not work we can try to modify the generated LLVM IR to remove the intrinsic. A more advanced option is to write a pass for the LLVM IR that replaces the intrinsic with something that is supported by bambu. We won't need that in this blog post, but it is something to keep in mind.
 
 === Converting the min_max example to Rust
 
@@ -151,7 +155,7 @@ If we compile that code to LLVM IR and try to use bambu with it we get an error 
 
 By default the Rust compiler generates code that unwinds the stack on panic. The generated LLVM IR will also have a exception handling personality function added to every function in LLVM IR. This is not synthesizable. We tell the compiler to instead terminate the program on panic by passing `-C panic=abort` to rustc.
 
-For that reason we should also make sure that debug assertions are disabled. Debug assertions add extra safety checks, which can make it easier to find and fix bugs, but these checks usually manifest as panics. We can disable them by passing the `-C debug-assertions=off` flag. On every optimization level other than `0` they are automatically disabled, but we want to be sure.
+For that reason we should make sure that debug assertions are disabled. Debug assertions add extra safety checks, which can make it easier to find and fix bugs, but these checks usually manifest as panics. We can disable them by passing the `-C debug-assertions=off` flag. On every optimization level other than `0` they are automatically disabled, but we want to be explicit.
 
 We also need to disable overflow checks, because they will generate panics if overflows occur during arithmetic operations. We can do that by passing `-C overflow-checks=off` to rustc.
 
@@ -159,12 +163,12 @@ It is probably good idea to tell the rust compiler that we are not targeting a s
 
 The final command to compile the Rust code to LLVM IR is:
 
-[source,bash]
+[source,console]
 ----
-rustc --emit=llvm-ir --crate-type=lib src/min_max_rust.rs -o min_max_rust.ll -C opt-level=0 -C overflow-checks=off -C no-vectorize-loops -C target-cpu=generic -C panic=abort
+$ rustc --emit=llvm-ir --crate-type=lib src/min_max_rust.rs -o min_max_rust.ll -C opt-level=0 -C overflow-checks=off -C no-vectorize-loops -C target-cpu=generic -C panic=abort
 ----
 
-Bambu fails to synthesize the Rust code if all optimizations are disabled. Enabling at least some level of optimization in rustc or enableing a level higher than 1 in bambu fixes the problem. I assume this is because Rust still generates exception handlers in LLVM if optimizations are disabled. We will set the optimization level to `-O2` in bambu, because that way we can compare the results with the {cpp} function which also used that level.
+Bambu fails to synthesize the Rust code if all optimizations are disabled. Enabling at least some level of optimization in rustc or enableing a level higher than 1 in bambu fixes the problem. I assume this is because Rust still generates exception handlers in LLVM if optimizations are disabled. We will set the optimization level to `-O2` in bambu, because that way we can compare the results with the {cpp} function which used that level.
 
 .Synthesizing and testing the rust function
 [%collapsible]
@@ -177,7 +181,7 @@ include::results/min_max_rust_intro.log[]
 
 It is quite interesting to see that the rust version of the function is apparently identical to the {cpp} version. My best guess is that rustc and clang both generated nearly identical LLVM IR, because the function is basically the same.
 
-I would have assumed that the rust version would be slower, because the {cpp} version had optimizations enabled during compilation and synthesis, while we only had synthesis optimizations enabled for the rust version. Also bambu was designed to synthesize {cpp} code, so I assumed it might be better at synthesizing {cpp} code than rust code. I think we get this result, because bambu treats also treats both versions just as LLVM IR, so it does not have any special knowledge about {cpp}. We will do a more detailed comparison of the {cpp} and rust versions later, where the GCC backend is also included, maybe that yields better results.
+I would have assumed that the rust version would be slower, because the {cpp} version had optimizations enabled during compilation and synthesis, while we only had synthesis optimizations enabled for the rust version. Also bambu was designed to synthesize {cpp} code, so I imagined it might be better at synthesizing {cpp} code than Rust code. My best guess is that bambu treats both versions just as LLVM IR, so it does not have any special knowledge about {cpp}. We will do a more detailed comparison of the {cpp} and Rust versions later, where we also include the GCC backend, maybe that yields different results.
 
 == Using idiomatic Rust
 
@@ -192,9 +196,9 @@ include::src/min_max_rust_idiomatic.rs[]
 
 The new version makes use of Rust's standard library and functional constructs such as iterators and the `fold` method. Functional programming is widely used in Rust and considered idiomatic because it is expressive and encourages best practices like immutability and explicitness. It is also safer than manually indexing into the input pointer with the `offset` method as in the previous version. Additionally, the use of a struct to return the minimum and maximum values is a more natural way to represent the output in Rust, as opposed to using two separate output pointers.
 
-Usually idiomatic Rust-like Rust code is also faster than C-like Rust code, because the compiler can do more optimizations. So lets see if that is the case here. Bambu cannot synthesize this function when the LLVM IR was not optimized by Rust, so we will set the optimization level to `1` in Rust. This makes this result less comparable to the previous one, but it shouldn't make a big difference, because Rust does only basic optimizations at that level.
+Usually idiomatic Rust code is faster than C-like Rust code, because the compiler can do more optimizations. So let"s see if that is the case here. Bambu cannot synthesize this function when the LLVM IR was not optimized by Rust, so we will set the optimization level to `1`. This makes this result less comparable to the previous one, but it shouldn't make a big difference, because Rust does only basic optimizations at that level.
 
-.Synthesizing and testing the idiomatic rust function
+.Synthesizing and testing the idiomatic Rust function
 [%collapsible]
 ====
 [source,console]
@@ -209,7 +213,7 @@ The results look promising so far. This version is faster and way smaller than t
 
 For the comparison we will use the same testcases as before. We will test every version of the function once with optimizations set for maximum speed and once with optimizations set for minimum size. For the {cpp} version we will also compare how the results change when we use gcc instead of clang.
 
-We will consider the synthesis a blackbox, so we wont compare the generated code. We will only compare the execution time and resource usage of the generated code.
+We will consider the synthesis as a blackbox, so we will not compare the generated code. We will only compare the execution time and resource usage of the generated code.
 
 .{cpp} with clang and `-O5`
 [%collapsible]
@@ -265,8 +269,6 @@ include::results/min_max_rust_size.log[]
 ----
 ====
 
-
-
 .Idiomatic rust with `-Os` and `-C opt-level=s`
 [%collapsible]
 ====
@@ -286,20 +288,18 @@ include::results/min_max_rust_idiomatic_speed.log[]
 ----
 ====
 
-=== Comparison of the required resources
+=== Comparing the results
 
-While the idiomatic version is not faster than the non-idiomatic version, it takes up the smallest area of all synthesized design. It is also more readable and easier to understand.
+While the idiomatic version is not faster than the non-idiomatic version, it takes up the smallest area of all synthesized design. It is more readable and easier to understand.
 
-The area of our design is a important metric for us, because bigger circuits mean that we need a bigger more expensive FPGA. Also we can fit more things on the FPGA, if we have more area left. So area is basically the cost of our design.
-
-While the exact amount of resources the circuit takes up depends on how we synthesize the design for hardware, bambu gives us a good estimate of how much area the design will take up. The following chart shows the area of the designs we synthesized:
+The area of our design is a important metric for us, because bigger circuits mean that we need a bigger more expensive FPGA. Also we can fit more things on the FPGA, if we have more area left. So area is basically the cost of our design. While the exact amount of resources the circuit takes up depends on how we synthesize the design for hardware, bambu gives us an estimate of how much area the design will take up. The following chart shows the area of the designs we synthesized:
 
 :vega-lite-filename: chart_estimated_area.vl.json
 include::vega-chart.adoc[]
 
-The designs seem to divide into two groups, one with the _big designs_ (~250 logic elements) and one with the _small designs_ (~1000 logic elements). The big designs are the clang and rust designs optimized for speed. The small designs are all circuits optimized for size, but also the gcc design optimized for speed. 
+The designs seem to be divided into two groups, one with the _big designs_ (~250 logic elements) and one with the _small designs_ (~1000 logic elements). The big designs are the clang and rust designs optimized for speed. The small designs are all circuits optimized for size, but also the gcc design optimized for speed. 
 
-It is interesting to see that gcc always generates small designs. This could be because both both rust and clang use LLVM as a backend, so they are probably optimized in a similar way. Gcc does not use LLVM, but does its own optimization passes, so it is probably optimized in a different way. It will be interesting to see if the gcc design optimized for speed still has speed comparable to the other designs optimized for speed, despite its signigicantly smaller footprint.
+It appears to be that gcc always generates small designs. This could be because both both rust and clang use LLVM as a backend, so they are probably optimized in a similar way. Gcc does not use LLVM, but does its own optimization passes, so it is probably optimized in a different way. It will be interesting to see if the gcc design optimized for speed still has speed comparable to the other designs optimized for speed, despite its signigicantly smaller footprint.
 
 The versions optimized for size are smaller than the versions optimized for speed. As expected the idiomatic rust design performs better than the C-style rust design on both optimization levels. This is probably because the compiler can do more optimizations on the idiomatic version.
  
@@ -312,38 +312,38 @@ We tested each design with testcases ranging from 0 to 20 elements. The followin
 :vega-lite-filename: chart_average_cycles.vl.json
 include::vega-chart.adoc[]
 
-We can see that the designs optimize for speed are a bit faster than the designs optimized for size. An exception to this is again the gcc design optimized for speed, which requires a number of cycles that is more comparable to the LLVM based designs optimized for size. It is still a bit faster than the gcc design optimized for speed. It seems like the gcc backend for bambu prefers to optimize for size over speed.
+We can see that the designs optimize for speed are a bit faster than the designs optimized for size. An exception to this is, again, the gcc design optimized for speed, which requires a number of cycles that is more comparable to the LLVM based designs, optimized for size. It is still a bit faster than the gcc design, optimized for speed. It seems like the gcc backend for bambu prioritizes optimizing for size over speed.
 
-The gcc designs both take the most cycles. It is interesting to see that even the gcc design optimized for speed requires more cycles than the LLVM designs optimized for size instead of speed. But the gcc design optimized for speed is still even smaller than the clang and C-style rust designs optimized for size, so it is not that surprising that it is slower.
+The gcc designs both take the most cycles. It is unexpected that even the gcc design optimized for speed requires more cycles than the LLVM designs optimized for size instead of speed. But the gcc design optimized for speed is still smaller than the clang and C-style rust designs optimized for size, so maybe it could have been expected that it is also slower.
 
-Again the idiomatic rust design performs a the same or bit better than the C-style rust design on both optimization levels.
+Again, the idiomatic rust design performs about the same or bit better than the C-style rust design on both optimization levels.
 
 We can see that the designs divide in two groups again. The _low cycle designs_ that require between 15 and 17 cycles and the _high cycle designs_ that require between 22 and 26 cycles. These two groups correspond exactly to the two groups we saw in the area chart. The low cycle designs are also the big designs and the high cycle designs are the small designs.
 
-If we look at a more detailed chart for every design we can see that they actually seem to divide into two performance groups:
+If we look at a more detailed chart for every design we can see that they actually divide into two groups:
 
 :vega-lite-filename: chart_detailed_cycles.vl.json
 include::vega-chart.adoc[]
 
-While they all behave quite similar for less than four inputs, they start to diverge after that. The big designs seem to require around stem:[2 * "input_length"] cycles, the small designs only take around stem:[1 * "input_length"] cycles. 
+While they all behave quite similar for less than four inputs, they start to diverge as we increase the length of the input array. The big designs seem to require around stem:[2 * "input_length"] cycles, the small designs only take around stem:[1 * "input_length"] cycles. 
 
-The small designs all require two more cycles for every additional input element. The big designs actually also require two cycles more every additional input element but every fourth input element they actually require two cycles less. I speculate that the small designs only have one operation that processes one input element. The big designs could in addition to that also have an operation that can process four elements at once, which they use for the bulk of the computation. If the input length is not a multiple of four, they would have to do the last few elements one by one. It could be that this is the result of the LLVM compiler unrolling the loop when set to optimize for speed instead of size.
+For small designs the number of cycles increases by two for each additional input element. The big designs require two cycles more for every additional input element but every fourth input element they actually require two cycles less. I speculate that the small designs only have one operation that processes one input element. The big designs could in addition to that also have an operation that can process four elements at once, which they use for the bulk of the computation. If the input length is not a multiple of four, they would have to do the last few elements one by one. It could be that this is the result of the LLVM compiler unrolling the loop when set to optimize for speed instead of size.
 
-The big designs containing one operation that processes *1* element and one operation that processes *4* would also explain why these designs are roughly five times, because they include the main logic that happens inside the loop *1*+*4* times. The small designs only include the main logic that happens inside the loop *1* times. They are probably not exactly five times bigger, because there is probably some control logic that stays the same or only doubles for the designs with two operations. I assume that there are probably some optimizations that can be applied if the same operation is done multiple times simultaneously that lead to space savings.
+The big designs containing one operation that processes *1* element and one operation that processes *4* would also explain why these designs are roughly five times larger, because they include the main logic that happens inside the loop *1*+*4* times. The small designs only include the main logic that happens inside the loop *1* time. They are probably not exactly five times bigger, because there is probably some control logic that stays the same or only doubles for the designs with two operations. I assume that there are probably some optimizations that can be applied if the same operation is done multiple times simultaneously that lead to space savings.
 
 [NOTE]
 ====
 Here it seems like the loop is converted into two operations, one that implements a single iteration and one that implements four iterations. It would be interesting to have the ability to specify in the rust code how big these chunks could be. Maybe bambu even has this feature for {cpp} already, I have not looked into it yet.
 ====
 
-Besides the amount of cycles the designs take the other relevant metric for speed is the frequency that the cycles can be executed. While the real maximum frequency is highly dependend on the hardware and the actual place and route, bambu generates a estimate of the maximum frequency of each design. I dont know how accurate they are, but they seem to be a good indicator of the performance of the designs.
+Besides the amount of cycles the designs take the other relevant metric for speed is the frequency that the cycles can be executed. While the real maximum frequency is highly dependend on the hardware and the actual placement and routing of the logic, bambu generates an estimate of the maximum frequency of each design. The following chart shows the maximum frequency of each design:
 
 :vega-lite-filename: chart_max_frequency.vl.json
 include::vega-chart.adoc[]
 
 Interestingly the gcc designs top this chart. While they performed quite poorly on the other metrics, they are capable of running at a slightly faster speed than the LLVM designs. The LLVM designs optimized for size are the second fastest designs, while the ones optimized for speed are the slowest.
 
-There seems to be a connection between the size and the frequency of the designs. The smaller the design, the faster it can run. This compensates a bit for the fact that the smaller designs on average require more cycles to run. To get the estimated maximum performance for each design we multiply the maximum frequency with the average number of cycles required to run the design for our testcases:
+There seems to be a connection between the size and the frequency of the designs. The smaller the design, the faster it executes. This compensates a bit for the fact that the smaller designs on average require more cycles to run. To get the estimated maximum performance for each design we multiply the maximum frequency with the average number of cycles required to run the design for our testcases:
 
 :vega-lite-filename: chart_performance.vl.json
 include::vega-chart.adoc[]
@@ -358,9 +358,9 @@ include::vega-chart.adoc[]
 
 If we plot this against the area we can see that the difference in performance (stem:[ +- 20% ]) is quite small compared to the difference in area (stem:[ +- 500% ]). 
 
-Also it is interesting to see that there are only two useful designs. If we want maximum speed, we should choose the idiomatic rust design optimized for speed, if we want the smallest size the choice would be the idiomatic rust design optimized for size. The other designs are not viable options, because one of these two designs will always be better on either metric.
+It is interesting to see that there are only two useful designs. If we want maximum speed, we should choose the idiomatic rust design optimized for speed, if we want the smallest size the choice would be the idiomatic rust design optimized for size. The other designs are not viable options, because one of these two designs will always be better on either metric.
 
-To get the most out of our FPGA we would want to maximise the performance per area. We can calculate this by dividing the executions per second by the are:
+To get the most out of our FPGA we would want to maximize the space efficiency. We can calculate this by dividing the executions per second by the area. As this metric is quite abstract we will only compare it in relation to the other designs:
 
 :vega-lite-filename: chart_performance_per_area.vl.json
 include::vega-chart.adoc[]
@@ -370,18 +370,26 @@ include::vega-chart.adoc[]
 You can click the bars in the chart to set the baseline to compare against.
 ====
 
-If we compare them for space efficiency we can see that the idiomatic rust version is the most space efficient design. Surprisingly enough the gcc designs are also quite good here.
+If we compare them for space efficiency we can see that the idiomatic rust version is the most space efficient design. Surprisingly enough the gcc designs are quite good here.
 
-The big designs are not very space efficient, which was to be expected as they sacrificed space for speed. This tradeoff is not worth it for this design, because the problem of finding the minimum/maximum element can be parallelized quite well. We could just use two of the small designs simultaneously and get the same performance as a big design for a smaller area. We would need to implement some wrapper logic for that.
+The big designs are not very space efficient, which was to be expected as they sacrificed space for speed. This tradeoff is not worth it for this design, because the problem of finding the minimum/maximum element can be parallelized quite well. We could just use two of the small designs simultaneously and get the same performance as a big design for a smaller area. We would need to implement some wrapper logic for that, which would probably be quite small compared to the rest of the design.
 
 == Conclusion
 
 It seems like High-level synthesis from Rust is possible. It performs similar, sometimes even better compared to the usual input languages like C/{cpp}. 
 
-We only looked at a very simple design, this is probably not representative for more complex designs.
+The process could benefit from some kind of annotations in the Rust code to help the HLS tool better synthesize the code. I don't know if that is supported by bambu, but will look into it at some point in the future. Currently all the parameter names get lost in the process, it would be nice if we could keep them. Also, we have no idea how the designs actually work as we just viewed the generated Verilog code as a black box. It would probably be interesting to look at the generated RTL and try to understand how the designs work.
 
-Also the process could benefit from some kinds of annotations in the Rust code to help the HLS tool better synthesize the code. I don't know if that is supported with bambu, but will look into it. Also all the parameter names get lost in the process, it would be nice if we could keep them.
+We could try to use a different HLS tool, like Vivado HLS, which is probably way more mature and capable than bambu. The main restriction is probably that it needs to be able to take LLVM IR as input. I am not sure if there is another free and opensource HLS tool that can process LLVM IR. It may be feasible to generate C code from the LLVM IR and then try use that with a C HLS tool.
 
-Also we have no idea how the designs actually work as we just viewed the generated Verilog code as a black box. It would probably be interesting to look at the generated RTL and try to understand how the designs work.
+// For now I will leave it at that. I hope you enjoyed this little journey into the world of High-level synthesis and FPGAs. I will probably write another post about this topic in the future, but I don't know when that will be. I have a lot of other things to do, so it may take a while.
 
-We should also try to use a different HLS tool, like Vivado HLS, which is probably way more mature and capable than bambu. The main restriction is probably that it needs to be able to take LLVM IR as input. I am not sure if there is another free and opensource HLS tool that can process LLVM IR. It may also be feasible to generate C code from the LLVM IR and then try use a C HLS tool.
+---
+
+// Today, we only looked at a very simple design which is probably not representative for more complex circuits. In the next post we will try to implement a simple blinker in Rust and see how that works out. While doing that we will experience that even a marginally more complex function can cause massive problems.
+
+And so, our first journey into the realm of High-level synthesis comes to a close, and we have only scratched the surface. We have discovered that Rust, with the aid of the powerful PandA and the wyvern of LLVM, unlocking some of the potential of FPGAs. But there is still much to be explored, and our quest for faster and more efficient calculations continues.
+
+In the next chapter of our journey, we will delve deeper into the mystical world of HLS and FPGAs. We will put our newfound knowledge to the test by crafting a more complex design, a simple blinker, in Rust. But there are still dangers lurking in the shadows, and our work is far from done. But we'll be ready, for our wit and cunning will guide us through the maze of memory, and the challenges posed by switch and match will only make our journey all the more exhilarating.
+
+Stay tuned, dear reader, as in just a week's time, the next chapter of our journey will be available, and we promise it will be just as thrilling.
