@@ -8,7 +8,9 @@
 :toclevels: 2
 :docinfo: shared,private-footer
 :stem:
-:toc:
+:toc: macro
+// :toc-title: Expedition Route
+:toc-title: Atlas of Adventure
 
 
 // :source-highlighter: highlight.js
@@ -16,11 +18,11 @@
 
 Fellow crustacean, embark on a journey with me, into the enchanted world of hardware design.
 
-:toc:
-
 With FPGAs, we'll transcend the limitations of traditional CPUs, unlocking faster and more efficient calculations. Our journey will be a perilous one, as the language of FPGAs and the common programming languages of our world are vastly different. It would need a mighty sorcerer to bridge that gap. Maybe even multiple ones. The path ahead is unclear, but we shall not be deterred.
 
 In the labyrinthine passages of the internet, we shall search for answers. We will encounter PandA, an experienced high-level synthesizer. This powerful entity has the ability to translate the ancient languages of C/{cpp} into the descriptive forms that the FPGAs can understand. Yet, even PandA is unable to understand our native tongue, Rust. Fear not, brave adventurer, for we have the aid of a mighty and swift wyvern of LLVM. It set out to create a common language, not to be nativly spoken by anyone, but to be understood by all. We will use the language of LLVM to communicate with PandA, and see how it fares with our Rust compared to its familiar C/{cpp}. So gather your courage and sharpen your wits, for our journey into the mystical world of HLS, FPGAs, CPUs, and LLVM is about to begin.
+
+toc::[]
 
 == Introduction
 
@@ -146,7 +148,7 @@ Another benfit that could come from using Rust specifically is that there alread
 
 // Thought: Functional style programming like it is common in rust is well suited for HLS
 
-== Introducing the toolchain
+== Setting up the toolchain
 
 So now you should have a bit of background on the field that we are going to explore. Our goal for this post is to get a basic HLS toolchain for Rust up and running. Additionally we want to understand how the Results compare to HLS from C/{cpp}.
 
@@ -168,7 +170,7 @@ It can use the clang or gcc compilers as a frontend and synthesize their output 
 
 As you can see, our toolchain uses rustc to compile rust code to LLVM IR, then uses the bambu to generate Verilog. We could then use an RTL synthesis tool like yosys to generate gate-level logic that can be deployed to a FPGA (That is not something we will do in this post). 
 
-== Using bambu for {cpp}
+=== Using bambu for {cpp}
 
 Bambu is build to synthesize C/{cpp} code.
 
@@ -192,7 +194,7 @@ The most important aspects of the output are the average number of clock cycles 
 
 We tell bambu to use Verilator to execute the tests. Verilator is not a traditional simulator but a compiler, as it converts the Verilog model back to {cpp} that can be executed. This way the tests run a lot faster, but we primarily use it because it is the most convenient option. Because Verilator does not simulate timings beyond clock cycles, the results are not completly representative of the actual hardware. That said, comparing clock cycles should be completely sufficient for now. Bambu also creates an estimation of the maximum clock frequency that the design can run at. Later we will use that in conjunction with the clock cycles to create a more accurate estimate of the performance.
 
-=== Looking at the output
+=== Looking at generated interface
 
 The interface of the generated verilog will look something like this:
 
@@ -214,7 +216,7 @@ At last, we have the four inputs of out module as 32bit wide signals. I assume t
 
 All of this are just educated guesses for now, because we did not look at the generated verilog.
 
-== Using bambu for Rust
+=== Limitations when using bambu with Rust
 
 When using Rust with bambu, we need to take a few things into account.
 
@@ -270,7 +272,7 @@ It is quite interesting to see that the rust version of the function is apparent
 
 I would have assumed that the rust version would be slower, because the {cpp} version had optimizations enabled during compilation and synthesis, while we only had synthesis optimizations enabled for the rust version. Also bambu was designed to synthesize {cpp} code, so I imagined it might be better at synthesizing {cpp} code than Rust code. My best guess is that bambu treats both versions just as LLVM IR, so it does not have any special knowledge about {cpp}. We will do a more detailed comparison of the {cpp} and Rust versions later, where we also include the GCC backend, maybe that yields different results.
 
-== Using idiomatic Rust
+=== Converting it to more idiomatic Rust
 
 While the previous example technically was Rust, it was not very Rust-like.
 
@@ -375,7 +377,7 @@ include::results/min_max_rust_idiomatic_speed.log[]
 ----
 ====
 
-=== Comparing the results
+=== Which design is the smallest?
 
 While the idiomatic version is not faster than the non-idiomatic version, it takes up the smallest area of all synthesized design. It is more readable and easier to understand.
 
@@ -392,7 +394,7 @@ The versions optimized for size are smaller than the versions optimized for spee
  
 The smallest design of the bunch is the idiomatic rust design optimized for size.
 
-=== Performance comparison
+=== Which design is the fastest?
 
 We tested each design with testcases ranging from 0 to 20 elements. The following chart shows the average number of cycles each circuit.
 
@@ -423,12 +425,16 @@ The big designs containing one operation that processes *1* element and one oper
 Here it seems like the loop is converted into two operations, one that implements a single iteration and one that implements four iterations. It would be interesting to have the ability to specify in the rust code how big these chunks could be. Maybe bambu even has this feature for {cpp} already, I have not looked into it yet.
 ====
 
+=== Which design clocks the highest?
+
 Besides the amount of cycles the designs take the other relevant metric for speed is the frequency that the cycles can be executed. While the real maximum frequency is highly dependend on the hardware and the actual placement and routing of the logic, bambu generates an estimate of the maximum frequency of each design. The following chart shows the maximum frequency of each design:
 
 :vega-lite-filename: chart_max_frequency.vl.json
 include::vega-chart.adoc[]
 
 Interestingly the gcc designs top this chart. While they performed quite poorly on the other metrics, they are capable of running at a slightly faster speed than the LLVM designs. The LLVM designs optimized for size are the second fastest designs, while the ones optimized for speed are the slowest.
+
+=== Which design is the best?
 
 There seems to be a connection between the size and the frequency of the designs. The smaller the design, the faster it executes. This compensates a bit for the fact that the smaller designs on average require more cycles to run. To get the estimated maximum performance for each design we multiply the maximum frequency with the average number of cycles required to run the design for our testcases:
 
@@ -438,7 +444,6 @@ include::vega-chart.adoc[]
 As expected this show that the performance gap between the big designs and the small designs is not as big as we initially expected when looking only at the required cycles
 
 We can clearly see that the big desings are still a bit faster but not as much as we expected. The big clang design is even slower than some small designs.
-
 
 :vega-lite-filename: chart_area_speed.vl.json
 include::vega-chart.adoc[]
@@ -472,8 +477,6 @@ We could try to use a different HLS tool, like Vivado HLS, which is probably way
 // For now I will leave it at that. I hope you enjoyed this little journey into the world of High-level synthesis and FPGAs. I will probably write another post about this topic in the future, but I don't know when that will be. I have a lot of other things to do, so it may take a while.
 
 ---
-
-// Today, we only looked at a very simple design which is probably not representative for more complex circuits. In the next post we will try to implement a simple blinker in Rust and see how that works out. While doing that we will experience that even a marginally more complex function can cause massive problems.
 
 And so, our first journey into the realm of High-level synthesis comes to a close, and we have only scratched the surface. We have discovered that Rust, with the aid of the powerful PandA and the wyvern of LLVM, unlocking some of the potential of FPGAs. But there is still much to be explored, and our quest for faster and more efficient calculations continues.
 
