@@ -1,4 +1,3 @@
-
 = Running Rust on a FPGA
 :last-update-label!:
 :imagesdir: images
@@ -6,13 +5,18 @@
 :rouge-style: github
 // We define C++ here, because the ++ is also used as a delimiter in asciidoc
 :cpp: C++
+:toclevels: 2
 :docinfo: shared,private-footer
 :stem:
+:toc:
+
+
 // :source-highlighter: highlight.js
 // :highlightjs-languages: rust, cpp, console
 
-
 Fellow crustacean, embark on a journey with me, into the enchanted world of hardware design.
+
+:toc:
 
 With FPGAs, we'll transcend the limitations of traditional CPUs, unlocking faster and more efficient calculations. Our journey will be a perilous one, as the language of FPGAs and the common programming languages of our world are vastly different. It would need a mighty sorcerer to bridge that gap. Maybe even multiple ones. The path ahead is unclear, but we shall not be deterred.
 
@@ -20,44 +24,127 @@ In the labyrinthine passages of the internet, we shall search for answers. We wi
 
 == Introduction
 
-A few weeks ago, I decided that I am interested in FPGAs and how Rust could be used to program them. In this post I document my first explorations into HLS and Rust. We will learn what HLS is, how it works and how we can use it to synthesize Rust code.
+A few weeks ago, I decided that I am interested in FPGAs and how Rust could be used to program them. In this post I document my first explorations into HLS and Rust. We will learn what HLS is, how it works and how we can use it to synthesize Rust into circuits.
 
-=== What is the difference between CPUs and FPGAs
+== Background
 
-Normal CPUs process their instructions one by one. They are purpose-build machines that are carefully designed for processing lots of instructions in sequence. Traditional programming languages reflect this design for the most part. They are designed to make it easy for humans to write programs that can be executed sequentially one instruction at a time. There are approaches to parallelism, but they are either limited to having multiple threads of execution that run from top to bottom simultaneously. Or they have some instructions that perform the same operation on a fixed amount of data elements at the same time.
+I will assume that you have some knowledge of Rust and systems programming. I will try to give you a short intro on what FPGAs are and how they are usually used, but I will not go into too much detail.
 
-FPGAs on the other hand are not designed to process one instructions at a time. They are not even designed to process instructions at all. FPGA stands for field programmable gate array. As the name implies, it is basically just a lot of programmable logic gates and programmable connections between them. So while a CPU is a circuit designed to do one thing, a FPGA is a circuit designed to emulate other circuits. So you could for example define the logic gates that make up your CPU and program your FPGA with that, so it will behave exactly like a CPU and can process instructions. But you can also define the logic to perform a complex calculation that will take a CPU hundreds of cycles, deploy it to a FPGA and you have a piece of hardware that can perform that calculation in an instant.
+=== What even is a FPGA?
 
-// TODO: research this stuff more, I am not sure if this is correct
-The downsides of using FPGAs is that they are expensive and harder to program than a CPU. They are expensive because they need to be a lot bigger than circuits that are directly designed to to something. While a logic gate in a real circuit are just a few transistors, in an FPGA you need more than that. The connections between them need to be configurable and the programmable interconnects also take up space.
+CPUs process their instructions one by one. They are purpose-build machines that are carefully designed for processing lots of instructions in sequence. Traditional programming languages reflect this design for the most part. They are designed to make it easy for humans to write programs that can be executed sequentially one instruction at a time. There are approaches to parallelism, but they are either limited to having multiple threads of execution that run from top to bottom simultaneously. Or they have some instructions that perform the same operation on a fixed amount of data elements at the same time.
 
-[quote,"David F. Bacon, Rodric Rabbah, and Sunil Shukla.",'https://dl.acm.org/doi/fullHtml/10.1145/2436256.2436271["FPGA programming for the masses." Communications of the ACM 56.4 (2013)]']
+Field programmable gate arrays (FPGAs) on the other hand are not designed to process one instructions at a time. They are not even designed to process instructions at all. As the name field programmable gate arrays implies, it is basically just a lot of programmable logic gates with programmable connections between them. So while a CPU is a circuit designed to do one thing, a FPGA is a circuit designed to emulate other circuits. 
+
+So you could for example define the logic gates that make up your CPU and program your FPGA with that, so it will behave exactly like a CPU and can process instructions. The soft CPU will be bigger and therefore slower than a real CPU, because a circuit emulated on a FPGA takes up more space than a application specific circuit. This is still really useful for prototyping, because you can test the CPU design in hardware with external peripherals, like memory and I/O devices.
+
+In the past FPGAs were mostly used like this for prototyping hardware development. You would design your circuit in a hardware description language (HDL) and simulate it as a first stage of verification. If that works you can deploy it to a FPGA, and then test it there. If everything works as expected you would produce that design as integrated circuits. 
+
+This is still the most common use case for FPGAs, but it is not the only one. In recent years the usage of FPGAs as pseudo-general-purpose computational accelerators, became more relevant. Here you do not use them to prototype circuits that will eventually be produced as integrated circuits, but as the final platform. FPGAs used in this context are known as _computational FPGAs_. It is somewhat comparable of the use of GPUs as computing accelerators. But where GPUs excel at tasks that perform the same operations in parallel on massive amounts of data, FPGAs can be used for some kind of computations with irregular parallelism with static structure. In opposition to GPUs we are not yet entirely sure what an appropriate abstraction for the computational pattern used with computational FPGAs is.
+
+[quote,"Adrian Sampson",'https://www.cs.cornell.edu/~asampson/blog/fpgaabstraction.html[FPGAs Have the Wrong Abstraction], 2019']
 ____
-FPGAs are predominantly programmed using hardware description languages (HDLs) such as Verilog and VHDL. These languages, which date back to the 1980s and have seen few revisions, are very low level in terms of the abstraction offered to the user. A hardware designer thinks about the design in terms of low-level building blocks such as gates, registers, and multiplexors. VHDL and Verilog are well suited for describing a design at that level of abstraction. Writing an application at a behavioral level and leaving its destiny in the hands of a synthesis tool is commonly considered a bad design practice.
-
-This is in complete contrast with the software programming languages, which have evolved over the past 60 years. Programming for CPUs enjoys the benefits of well-established ISAs (instruction set architectures) and advanced compilers that offer a much simpler programming experience. Object-oriented and polymorphic programming concepts, as well as automatic memory management (garbage collection) are no longer seen just as desirable features but as necessities. A higher level of abstraction drastically increases a programmer's productivity and reduces the likelihood of bugs, resulting in a faster time to market.
+The world hasn’t settled yet on a succinct description of the fundamental computational pattern that FPGAs are supposed to be good at. But it has something to do with potentially-irregular parallelism, data reuse, and mostly-static data flow. 
 ____
 
-//  TODO: I will add more on this later.
-Verification is a big part of hardware design. I assume this is, because in traditional hardware design the goal is to produce actual circuits, where each revision is extremly expensive (at least multiple hundred thousand dollars), so you want to make sure you get it right the first time. In software, you can just change the code, recompile it, and ship an update. Also as everything happens in parralel, it is possible to get timing related problems.
+Until that is settled, computational FPGAs will probably stay a niche application. There are currently multiple projects that try to find an answer to this problem, by developing a new type of programming language for designing these hardware accelerators. We will learn more about that in a few sections.
 
-=== What even is HLS?
+
+
+
+// // TODO: research this stuff more, I am not sure if this is correct
+// The downsides of using FPGAs is that they are expensive and harder to program than a CPU. They are expensive because they need to be a lot bigger than circuits that are directly designed to to something. While a logic gate in a real circuit are just a few transistors, in an FPGA you need more than that. The connections between them need to be configurable and the programmable interconnects also take up space.
+
+// [quote,"David F. Bacon, Rodric Rabbah, and Sunil Shukla.",'https://dl.acm.org/doi/fullHtml/10.1145/2436256.2436271["FPGA programming for the masses." Communications of the ACM 56.4 (2013)]']
+// ____
+// FPGAs are predominantly programmed using hardware description languages (HDLs) such as Verilog and VHDL. These languages, which date back to the 1980s and have seen few revisions, are very low level in terms of the abstraction offered to the user. A hardware designer thinks about the design in terms of low-level building blocks such as gates, registers, and multiplexors. VHDL and Verilog are well suited for describing a design at that level of abstraction. Writing an application at a behavioral level and leaving its destiny in the hands of a synthesis tool is commonly considered a bad design practice.
+
+// This is in complete contrast with the software programming languages, which have evolved over the past 60 years. Programming for CPUs enjoys the benefits of well-established ISAs (instruction set architectures) and advanced compilers that offer a much simpler programming experience. Object-oriented and polymorphic programming concepts, as well as automatic memory management (garbage collection) are no longer seen just as desirable features but as necessities. A higher level of abstraction drastically increases a programmer's productivity and reduces the likelihood of bugs, resulting in a faster time to market.
+// ____
+
+// //  TODO: I will add more on this later.
+// Verification is a big part of hardware design. I assume this is, because in traditional hardware design the goal is to produce actual circuits, where each revision is extremly expensive (at least multiple hundred thousand dollars), so you want to make sure you get it right the first time. In software, you can just change the code, recompile it, and ship an update. Also as everything happens in parralel, it is possible to get timing related problems.
+
+=== How are FPGAs programmed?
+
+Usually logic design is done in hardware description languages (HDL). Currently there are two major ones, Verilog and VHDL. VHDL has a slightly higher level of abstraction and some features that make it easier to manage bigger projects. In some ways the relation between Verilog and VHDL is comparable to the relation between C and {cpp} in terms of features and abstraction. Both can be used to model the structure of hardware equally efficiently, so the choice is mostly a matter of personal preference. In this post we will focus on Verilog, because it is the default language of most tools.
+
+// Source: https://dl.acm.org/doi/pdf/10.1145/240518.240664
+
+Most commonly HDLs are used to describe circuits on in a register-transfer level (RTL) abstraction. On RTL we describe registers that can hold state and the combinational (time-independent) logic that connects them. In HDLs we can describe modules around these RTL describtions of logic. Modules can describe input and output ports the connect the contained logic to the outside world. We can then connect these modules together to form a larger circuit. This is the basic structure of a HDL design.
+
+Let us look at a simple example of a counter in Verilog. On every clock pulse it counts up by one and resets to zero when it reaches 255:
+
+.Interface of the counter
+[symbolator]
+....
+include::src/counter.v[]
+....
+
+.Verilog source of the counter
+[source,verilog]
+----
+include::src/counter.v[]
+----
+
+The connections to the outside are an input port name `clock` and an output port name `count`. `clock` is just a single bit, but `count` is 8 bits wide. Internally we also have a register named `internal_counter` that stores our current count. First we tell Verilog that the output port should be directly connected to the internal counter register. Then we define that the value of `internal_counter` plus 1 gets assigned to the `internal_counter` every time the `clock` input goes from zero (low) to one (high). 
+
+// It is also noteworthy that language is quite unstructured. For example we defined which ports are inputs and outputs after we use them. The `module` in the first line, even though it looks just like a single line statement with the semicolon at the end of the line, actually opens a block that ends in the last line with `endmodule`. Also the indentation is not required, but it is common to use it to make the code more readable. VHDL improves on some of these issues, but is still not as readable as modern languages.
+
+// === What is a Accelerator Design Language (ADL)
+
+// // https://www.cs.cornell.edu/~asampson/blog/adl.html
+
+// Accelerator design languages
+
+=== Can't we just use a normal programming language?
 
 // TODO: Improve section
 
-Raise the level of abstraction of the design compared to HDLs. HDLs operate on the register-transfer level (RTL)
+As we have seen earlier HDLs mostly operate on the register-transfer level (RTL) abstraction. High-level synthesis (HLS) is a process that enables the design of digital circuits in a high-level language, such as C or {cpp}. HLS allows designers to write their design at a higher level of abstraction which can be more natural and familiar to software developers.
 
-Digital circuits are typically designed using hardware description languages (HDLs) like Verilog or VHDL. High-level synthesis (HLS) is a process that enables the design of digital circuits in a high-level language, such as C or {cpp}. HLS allows designers to write their design at a higher level of abstraction which can be more natural and familiar to software developers.
+// https://dl.acm.org/doi/fullHtml/10.1145/2436256.2436271["FPGA programming for the masses." Communications of the ACM 56.4 (2013)]
 
-The generated circuits can be deployed to FPGAs. That can offer higher performance and lower power consumption, which can be particularly useful for applications such as high performance computing, image processing, and telecommunications.
+// Last sentence of the paragraph needs quotation
 
-The source languages used for HLS are usually limited subsets of C/{cpp} with some additional restrictions. Rust could be a better source for HLS, because it already has some restrictions for dealing with memory that could proof beneficial for HLS. For example its semantics define memory and ownership more clearly than C/{cpp}.
+The biggest downside of using HLS is that the generated circuits are a usually a lot more inefficient than circuits designed directly on RTL. It is also sometimes a bit unpredictable what optimizations will and will not be applied during HLS. Writing a application at this level and letting the HLS tools figure out the details is considered a bad design practice in hardware design. This is in opposition to software programming, where the compiler is expected to do the heavy lifting in terms of speed and optimization. The programmer can focus on the behavioural application logic. Computational FPGA programming usually accepts this tradeoff, because bigger FPGAs are usually cheaper than the time it would take to design the circuit on RTL.
 
-There are some ways how toolchains for HLS from Rust can be built with currently existing tooling. However, it is currently not known how viable these different toolchains would be for practical application specifically what restrictions would apply, if and how they could benefit from the additional information provided by Rust.
+The source languages used for HLS are usually limited subsets of C/{cpp} with some additional restrictions. In this post we will look into Rust as a source language for HLS. Rust could be a good fit for HLS, because it already has some restrictions for dealing with memory that could proof beneficial for HLS. For example, its semantics define memory and ownership more clearly than C/{cpp}.
 
-// TODO: Add section about LLVM
+There are some ways how toolchains for HLS from Rust can be built with currently existing software. However, it is currently not known how viable these different toolchains are be for practical application specifically what restrictions apply. It is also not known how they can benefit from the additional information provided by Rusts semantics.
 
-// TODO: Add section about HDLs and RTL
+=== Are there other alternatives?
+
+For this kind of computational programming a new style of programming languages is currently being created, known as accelerator design languages (ADL). They are somewhat similar to using HLS, but where HLS uses a programming language as a adhoc ADL, real ADLs are designed from the ground up to accomodate the needs of hardware design, while still offering a level of abstraction comparable to programming languages. As a tradeoff they do not attempt to enable the design of arbitrary hardware. The two big areas of complexity that ADLs try to abstract away are physicality and time:
+
+[quote,"Adrian Sampson",'https://www.sigarch.org/hdl-to-adl/[From Hardware Description Languages to Accelerator Design Languages]']
+____
+_Physicality_. Perhaps the most fundamental thing about hardware is that computation uses finite, physical resources to do its work. When an accelerator performs a floating-point multiplication, for example, that has to happen somewhere - it needs to dedicate an FPU to that computation. And meanwhile, it needs to take care not to simultaneously try to use the same FPU to do something else at the same time. While CPUs of course also need to allocate computational resources to computations, they do it implicitly - whereas accelerator designs have to manage it as a first-class design concern.
+
+_Time_. While parallel software has to deal with a notion of logical time, such as a happens-before relation for ordering events between threads, hardware accelerators need to contend with physical time in the form of clock cycles. Cycle-level timing adds a dimension to ADLs’ complexity, but it also gives accelerators the unique ability to ensure determinism: that a given computation takes 100 cycles, for example, with no exceptions. This level of control is an important advantage over even high-performance CPUs. For many use cases such as datacenter networking, 100 deterministic cycles might be preferable to a CPU that takes 80 cycles most of the time but 500 cycles in rare exceptions.
+____
+
+As mentioned above, HLS can be viewed of abusing a normal programming language to express something it is not meant to express. While a real ADL is probably better suited for generating serious hardware, for smaller tasks or as part of a bigger design HLS can still be a good alternative. The big benefit of HLS over dedicated ADLs is that they enable developers to write their code in a language they are already familiar with. In addition the tooling for traditional programing languages is more mature than for ADLs.
+
+While it is probable that in the future ADLs will become more popular, for now HLS remains the most common way to write high-level code for FPGAs. 
+
+// I think
+
+[NOTE]
+====
+If you want to known more about ADLs, I recommend reading the following blogposts by Adrian Sampson:
+
+* https://www.cs.cornell.edu/~asampson/blog/adl.html[From Hardware Description Languages to Accelerator Design Languages]
+* https://www.cs.cornell.edu/~asampson/blog/fpgaabstraction.html[FPGAs Have the Wrong Abstraction]
+====
+
+=== Why use Rust instead of C/{cpp}?
+
+Rust seems to be better suited as a adhoc ADL, then C/{cpp}, because its memory semantics already touch on some of the problems of ADLs. For example Rust only allows for only one mutable, or multiple readonly references to a variable at a time. This is could help with the problem of physicality, because there can only be one thing that writes to a variable at a time.
+
+Another benfit that could come from using Rust specifically is that there already is a project named _rust-hdl_ that allows for writing RTL modules on the same level of abstraction as other HDL languages, but in Rust. It would be really interesting if we could use HLS to use normal rust functions as modules in rust-hdl. That way all Hardware and accelerator design could be done in a single rust project. For now we will not focus on this, but if we have a successful proof-of-concept for HLS from rust we could look into this.
+
+// Thought: Functional style programming like it is common in rust is well suited for HLS
 
 == Introducing the toolchain
 
@@ -115,13 +202,13 @@ The interface of the generated verilog will look something like this:
 include::results/min_max_cpp.v[]
 ....
 
-The inputs are shown on the left side and the output on the right side of the module.
+The input ports are shown on the left side and the output ports on the right side of the module.
 
-We can see that the module has 3 inputs named clock, reset and start. These do pretty much what you would expect them to do. The reset is a signal that resets the module and the start signal is used to start the module. The module will not start until the start signal is high and the reset signal is low. The module will then run until it is done and the start signal goes low again. The clock signal is used to clock the module, when we talk about cycles later we are talking about clock cycles.
+We can see that the module has 3 input ports named clock, reset and start. These do pretty much what you would expect them to do. The reset is a signal that resets the module and the start signal is used to start the module. The module will not start until the start signal is high and the reset signal is low. The module will then run until it is done and the start signal goes low again. The clock signal is used to clock the module, when we talk about cycles later we are talking about clock cycles.
 
-The module has an output named done. I assume that it will be high when the module has finished.
+The module has an output port named done. I assume that it will be high when the module has finished.
 
-Then there are some in- and outputs prefixed with `M`. They are used to connect the module to external memory.
+Then there are some input and output port prefixed with `M`. They are used to connect the module to external memory. This is necessary, because the input to our function is a pointer, so the module also needs access to the memory it points to.
 
 At last, we have the four inputs of out module as 32bit wide signals. I assume that the input for `numbers_length` passes in the number as a 32 bit integer at the start. The other inputs are pointers to the memory locations where the module can find the array and the two output values.
 
@@ -327,7 +414,7 @@ include::vega-chart.adoc[]
 
 While they all behave quite similar for less than four inputs, they start to diverge as we increase the length of the input array. The big designs seem to require around stem:[2 * "input_length"] cycles, the small designs only take around stem:[1 * "input_length"] cycles. 
 
-For small designs the number of cycles increases by two for each additional input element. The big designs require two cycles more for every additional input element but every fourth input element they actually require two cycles less. I speculate that the small designs only have one operation that processes one input element. The big designs could in addition to that also have an operation that can process four elements at once, which they use for the bulk of the computation. If the input length is not a multiple of four, they would have to do the last few elements one by one. It could be that this is the result of the LLVM compiler unrolling the loop when set to optimize for speed instead of size.
+For small designs the number of cycles increases by two for each additional input element. For big designs they behave similarly but every fourth additional input element the number of cycles decreases by two instead. I speculate that the small designs only have one operation that processes one input element. The big designs could in addition to that also have an operation that can process four elements at once, which they use for the bulk of the computation. If the input length is not a multiple of four, they would have to do the last few elements one by one. It could be that this is the result of the LLVM compiler unrolling the loop when set to optimize for speed instead of size.
 
 The big designs containing one operation that processes *1* element and one operation that processes *4* would also explain why these designs are roughly five times larger, because they include the main logic that happens inside the loop *1*+*4* times. The small designs only include the main logic that happens inside the loop *1* time. They are probably not exactly five times bigger, because there is probably some control logic that stays the same or only doubles for the designs with two operations. I assume that there are probably some optimizations that can be applied if the same operation is done multiple times simultaneously that lead to space savings.
 
