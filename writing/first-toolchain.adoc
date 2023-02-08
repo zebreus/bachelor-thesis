@@ -474,6 +474,10 @@ The big designs are not very space efficient, which was to be expected as they s
 
 It seems like high-level synthesis from Rust is possible. In our simple example it even performed slightly better than the usual input languages like C/{cpp}. In future work we could try to synthesize more complex designs and see if the results are still good. We could also try to optimize the designs for speed and see if we can get better results.
 
+// die ganzen problem die auftreten, wie die sache mit den paniks kann man dadurch loesen dass man die compileroptimierungen hochsetzt => deshalb knormalerweise kein problem
+
+// better than erwartet
+
 The process could benefit from some kind of annotations in the Rust code to help the HLS tool better synthesize the code. I don't know if that is supported by bambu but will look into it in the future. Currently, all the parameter names get lost in the process. It would be nice if we could keep them. Also, we have no idea how the designs actually work as we just viewed the generated Verilog code as a black box. It would probably be interesting to look at the generated RTL and try to understand how the designs work.
 
 We could try to use a different HLS tool, like Vivado HLS, which is probably way more mature and capable than bambu. The main restriction is probably that it needs to be able to take LLVM IR as input. I am not sure if there is another free and open-source HLS tool that can process LLVM IR. It may be feasible to generate C code from the LLVM IR and then try using that with a C HLS tool.
