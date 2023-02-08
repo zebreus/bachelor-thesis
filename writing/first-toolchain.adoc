@@ -1,4 +1,4 @@
-= Running Rust on an FPGA
+= Introduction to High-Level Synthesis from Rust
 :last-update-label!:
 :imagesdir: images
 :source-highlighter: rouge
