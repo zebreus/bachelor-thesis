@@ -90,6 +90,11 @@ include::src/counter.v[]
 
 The connections to the outside are an input port name `clock` and an output port name `count`. `clock` is just a single bit, but `count` is 8 bits wide. Internally we also have a register named `internal_counter` that stores our current count. First, we tell Verilog that the output port should be directly connected to the internal counter register. Then we define that the value of `internal_counter` plus 1 gets assigned to the `internal_counter` every time the `clock` input goes from zero (low) to one (high). 
 
+[NOTE]
+====
+There also is https://github.com/samitbasu/rust-hdl[rust-hdl] uses a subset of Rust as a HDL. It does not do high-level synthesis, but allows you to write, simulate and verify RTL logic directly in Rust. If you interested in FPGA programming, you should definitely check it out.
+====
+
 // It is also noteworthy that language is quite unstructured. For example, we defined which ports are inputs and outputs after we use them. The `module` in the first line, even though it looks just like a single line statement with the semicolon at the end of the line, actually opens a block that ends in the last line with `endmodule`. Also, indentation is not required, but it is common to use it to make the code more readable. VHDL improves on some of these issues but is still not as readable as modern languages.
 
 // === What is an Accelerator Design Language (ADL)
@@ -467,7 +472,7 @@ The big designs are not very space efficient, which was to be expected as they s
 
 == Conclusion
 
-It seems like high-level synthesis from Rust is possible. It performs similarly, sometimes even better compared to the usual input languages like C/{cpp}. 
+It seems like high-level synthesis from Rust is possible. In our simple example it even performed slightly better than the usual input languages like C/{cpp}. In future work we could try to synthesize more complex designs and see if the results are still good. We could also try to optimize the designs for speed and see if we can get better results.
 
 The process could benefit from some kind of annotations in the Rust code to help the HLS tool better synthesize the code. I don't know if that is supported by bambu but will look into it in the future. Currently, all the parameter names get lost in the process. It would be nice if we could keep them. Also, we have no idea how the designs actually work as we just viewed the generated Verilog code as a black box. It would probably be interesting to look at the generated RTL and try to understand how the designs work.
 
