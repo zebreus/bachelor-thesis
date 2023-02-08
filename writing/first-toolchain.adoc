@@ -10,7 +10,7 @@
 :stem:
 :toc: macro
 // :toc-title: Expedition Route
-:toc-title: Atlas of Adventure
+// :toc-title: Atlas of Adventure
 
 // :source-highlighter: highlight.js
 // :highlightjs-languages: rust, cpp, console
