@@ -11,6 +11,7 @@ mkShell {
     pikchr
     python3
     symbolator
+    adoptopenjdk-hotspot-bin-15
 
     # Utils
     gnumake
@@ -38,6 +39,7 @@ mkShell {
   ];
 
   RUST_SRC_PATH = "${pkgs.rust.packages.stable.rustPlatform.rustLibSrc}";
+  JAVA_HOME = "${adoptopenjdk-hotspot-bin-15}";
 
   shellHook = ''
     # ...
