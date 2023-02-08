@@ -37,9 +37,12 @@ CPUs process their instructions one by one. They are purpose-built machines that
 
 Field programmable gate arrays (FPGAs) on the other hand are not designed to process one instruction at a time. They are not even designed to process instructions at all. As the name field programmable gate array implies, it is just a lot of programmable logic gates with programmable connections between them. So while a CPU is a circuit designed to do one thing, an FPGA is a circuit designed to emulate other circuits. 
 
-So you could for example define the logic gates that make up your CPU and program your FPGA with that, so it will behave exactly like a CPU and can process instructions. The soft CPU will be bigger and therefore slower than a real CPU because a circuit emulated on an FPGA takes up more space than an application-specific circuit. This is still really useful for prototyping because you can test the CPU design in hardware with external peripherals, like memory and I/O devices.
+// Me: So you could for example define the logic gates that make up your CPU and program your FPGA with that,
+// Good: For example, you can define the logic gates for your CPU and program the FPGA with that design, 
 
-In the past, FPGAs were mostly used like this for prototyping hardware development. You would design your circuit in a hardware description language (HDL) and simulate it as a first stage of verification. If that works you can deploy it to an FPGA, and then test it there. If everything works as expected you would produce that design as integrated circuits. 
+For example, you can define the logic gates for your CPU and program the FPGA with that design, so it will behave exactly like a CPU and can process instructions. Such a 'soft' CPU will be bigger and therefore slower than a real CPU because a circuit emulated on an FPGA takes up more space than an application-specific circuit. This is however really useful for prototyping because you can test the CPU design in hardware with external peripherals, like memory and I/O devices.
+
+In the past, FPGAs were mostly used like this for prototyping hardware development. Programmers designed a circuit in a hardware description language (HDL) and simulate it as a first stage of verification. If that works you can deploy it to an FPGA, and then test it there. If everything works as expected, you would produce that design as integrated circuits. 
 
 This is still the most common use case for FPGAs, but it is not the only one. In recent years the usage of FPGAs as pseudo-general-purpose computational accelerators became more relevant. Here you do not use them to prototype circuits that will eventually be taped out but as the final platform. FPGAs used in this context are known as _computational FPGAs_. It is somewhat comparable to the use of GPUs as computing accelerators. But where GPUs excel at tasks that perform the same operations in parallel on massive amounts of data, FPGAs can be used for some kind of computations with irregular parallelism with static structure. In opposition to GPUs, we are not yet entirely sure what an appropriate abstraction for the computational pattern used with computational FPGAs is.
 
@@ -48,7 +51,7 @@ ____
 The world hasn’t settled yet on a succinct description of the fundamental computational pattern that FPGAs are supposed to be good at. But it has something to do with potentially-irregular parallelism, data reuse, and mostly-static data flow. 
 ____
 
-Until that is settled, computational FPGAs will probably stay a niche application. There are currently multiple projects that try to find an answer to this problem, by developing a new type of programming language for designing these hardware accelerators. We will learn more about that in a few sections.
+Until that is settled, computational FPGAs will probably stay a niche application. There are currently multiple projects that try to find an answer to this problem, by developing a new type of programming language for designing these hardware accelerators. We will learn more about that in the next sections.
 
 
 
@@ -74,6 +77,11 @@ Usually, logic design is done in hardware description languages (HDL). Currently
 
 Most commonly HDLs are used to describe circuits in a register-transfer level (RTL) abstraction. On RTL we describe registers that can hold state and the combinational (time-independent) logic that connects them. In HDLs we can describe modules around these RTL descriptions of logic. Modules can describe input and output ports that connect the contained logic to the outside world. We can then connect these modules to form a larger circuit. This is the basic structure of an HDL design.
 
+[NOTE]
+====
+There also is https://github.com/samitbasu/rust-hdl[rust-hdl] which is a HDL you can write in Rust. Its capabilities are comparable to other HDLs like Verilog or VHDL. When using it you write Rust structs that represent HDL modules. You can then annotate these structs with macros and https://github.com/samitbasu/rust-hdl[rust-hdl] will generate Verilog from that. It does not do high-level synthesis, but allows you to write, simulate and verify RTL logic directly in Rust. If you are interested in FPGA programming, you should definitely check it out.
+====
+
 Let us look at a simple example of a counter in Verilog. On every clock pulse, it counts up by one and resets to zero when it reaches 255:
 
 .Interface of the counter
@@ -90,10 +98,7 @@ include::src/counter.v[]
 
 The connections to the outside are an input port name `clock` and an output port name `count`. `clock` is just a single bit, but `count` is 8 bits wide. Internally we also have a register named `internal_counter` that stores our current count. First, we tell Verilog that the output port should be directly connected to the internal counter register. Then we define that the value of `internal_counter` plus 1 gets assigned to the `internal_counter` every time the `clock` input goes from zero (low) to one (high). 
 
-[NOTE]
-====
-There also is https://github.com/samitbasu/rust-hdl[rust-hdl] uses a subset of Rust as a HDL. It does not do high-level synthesis, but allows you to write, simulate and verify RTL logic directly in Rust. If you interested in FPGA programming, you should definitely check it out.
-====
+
 
 // It is also noteworthy that language is quite unstructured. For example, we defined which ports are inputs and outputs after we use them. The `module` in the first line, even though it looks just like a single line statement with the semicolon at the end of the line, actually opens a block that ends in the last line with `endmodule`. Also, indentation is not required, but it is common to use it to make the code more readable. VHDL improves on some of these issues but is still not as readable as modern languages.
 
@@ -107,13 +112,13 @@ There also is https://github.com/samitbasu/rust-hdl[rust-hdl] uses a subset of R
 
 // TODO: Improve section
 
-As we have seen earlier HDLs mostly operate on the register-transfer level (RTL) abstraction. High-level synthesis (HLS) is a process that enables the design of digital circuits in a high-level language, such as C or {cpp}. HLS allows designers to write their design at a higher level of abstraction which can be more natural and familiar to software developers.
+As we have seen, earlier HDLs mostly operate on the register-transfer level (RTL) abstraction. High-level synthesis (HLS) is a process that enables the design of digital circuits in a high-level language, such as C or {cpp}. HLS allows designers to write their design at a higher level of abstraction which can be more natural and familiar to software developers.
 
 // https://dl.acm.org/doi/fullHtml/10.1145/2436256.2436271["FPGA programming for the masses." Communications of the ACM 56.4 (2013)]
 
 // Last sentence of the paragraph needs a quotation
 
-The biggest downside of using HLS is that the generated circuits are usually a lot more inefficient than circuits designed directly on RTL. It is also sometimes a bit unpredictable what optimizations will and will not be applied during HLS. Writing an application at this level and letting the HLS tools figure out the details is considered a bad design practice in hardware design. This is in opposition to software programming, where the compiler is expected to do the heavy lifting in terms of speed and optimization. The programmer can focus on the behavioral application logic. Computational FPGA programming usually accepts this tradeoff, because bigger FPGAs are usually cheaper than the time it would take to design the circuit on RTL.
+The biggest downside of using HLS is that the generated circuits are usually a lot more inefficient than circuits designed directly on RTL. It is sometimes a bit unpredictable what optimizations will and will not be beneficial during HLS, because the optimizations that improve performance on a CPU are not always beneficial for synthesizing ciruits. Writing an application at this level and letting the HLS tools figure out the details is considered a bad design practice in hardware design. This is in opposition to software programming, where the compiler is expected to do the heavy lifting in terms of speed and optimization. The programmer can focus on the behavioral application logic. Computational FPGA programming usually accepts this tradeoff, because bigger FPGAs are usually cheaper than the time it would take to design the circuit on RTL.
 
 The source languages used for HLS are usually limited subsets of C/{cpp} with some additional restrictions. In this post, we will look into Rust as a source language for HLS. Rust could be a good fit for HLS because it already has some restrictions for dealing with memory that could prove beneficial for HLS. For example, its semantics define memory and ownership more clearly than C/{cpp}.
 
@@ -148,7 +153,7 @@ If you want to know more about ADLs, I recommend reading the following blog post
 
 Rust seems to be better suited as an ad-hoc ADL, than C/{cpp}, because its memory semantics already touch on some of the problems of ADLs. For example, Rust only allows for only one mutable, or multiple read-only references to a variable at a time. This is could help with the problem of physicality because there can only be one thing that writes to a variable at a time.
 
-Another benefit that could come from using Rust specifically is that there already is a project named _rust-hdl_ that allows for writing RTL modules on the same level of abstraction as other HDL languages but in Rust. It would be really interesting if we could use HLS to use normal rust functions as modules in rust-hdl. That way all Hardware and accelerator design could be done in a single rust project. For now, we will not focus on this, but if we have a successful proof-of-concept for HLS from rust we could look into this.
+Another benefit that could come from using Rust specifically is that there already is a project named _rust-hdl_ that allows for writing RTL modules on the same level of abstraction as other HDL languages but in Rust. It would be really interesting if we could use HLS to use normal rust functions as modules in rust-hdl. That way all hardware and accelerator design could be done in a single rust project. For now, we will not focus on this, but if we have a successful proof-of-concept for HLS from rust, we could look into this.
 
 // Thought: Functional style programming like it is common in rust is well suited for HLS
 
@@ -196,7 +201,7 @@ include::results/min_max_cpp_clang_intro.log[]
 
 The most important aspects of the output are the average number of clock cycles and the total area used. The area is an important metric because bigger FPGAs are more expensive. The number of clock cycles is also important because it is a reasonable indicator of how fast the function is. 
 
-We tell bambu to use Verilator to execute the tests. Verilator is not a traditional simulator but a compiler, as it converts the Verilog model back to {cpp} that can be executed. This way the tests run a lot faster, but we primarily use it because it is the most convenient option. Because Verilator does not simulate timings beyond clock cycles, the results are not completely representative of the actual hardware. That said, comparing clock cycles should be completely sufficient for now. Bambu also creates an estimation of the maximum clock frequency that the design can run at. Later we will use that in conjunction with the clock cycles to create a more accurate estimate of the performance.
+We tell bambu to use Verilator to execute the tests. Verilator is not a traditional simulator but a compiler, as it converts the Verilog model back to {cpp} that can be executed. This way the tests run a lot faster, but we primarily use it, because it is the most convenient option. Verilator does not simulate timings beyond clock cycles, so the results are not completely representative of the actual hardware. That said, comparing clock cycles should be completely sufficient for now. Bambu also creates an estimation of the maximum clock frequency that the design can run at. Later we will use that in conjunction with the clock cycles to create a more accurate estimate of the performance.
 
 === Looking at the generated interface
 
@@ -233,7 +238,7 @@ Third, we need to make sure that the function interface is preserved. We can spe
 // TODO: Find an example
 // Luckily, Rust and LLVM are quite good at understanding our code, and they can often prove that our code can not panic. 
 
-Fourth, bambu does not support all LLVM intrinsics. Intrinsics are the standard library of LLVM IR. Most notably bambu does not support the LLVM `vector::reduce` intrinsics, which Rust uses for vectorizing loops. There are probably other intrinsics that are not supported, but I have not encountered more yet. If we encounter an unsupported intrinsic, our easiest option is to try another optimization level or see if the Rust compiler has the option to disable the use of that intrinsic. If that does not work we can try to modify the generated LLVM IR to remove the intrinsic. A more advanced option is to write a pass for the LLVM IR that replaces the intrinsic with something that is supported by bambu. We won't need that in this blog post, but it is something to keep in mind.
+Fourth, bambu does not support all LLVM intrinsics. Intrinsics are the standard library of LLVM IR. Most notably bambu does not support the LLVM `vector::reduce` intrinsics, which Rust uses for vectorizing loops. There are probably other intrinsics that are not supported, but I have not encountered any more yet. If we encounter an unsupported intrinsic, our easiest option is to try another optimization level or see if the Rust compiler has the option to disable the use of that intrinsic. If that does not work we can try to modify the generated LLVM IR to remove the intrinsic. A more advanced option is to write a pass for the LLVM IR that replaces the intrinsic with something that is supported by bambu. We won't need that in this blog post, but it is something to keep in mind.
 
 === Converting the min_max example to Rust
 
@@ -490,4 +495,4 @@ And so, our first journey into the realm of High-level synthesis comes to a clos
 
 In the next chapter of our journey, we will delve deeper into the mystical world of HLS and FPGAs. We will put our newfound knowledge to the test by crafting a more complex design, a simple blinker, in Rust. But there are still dangers lurking in the shadows, and our work is far from done. But we'll be ready, for our wit and cunning will guide us through the maze of memory, and the challenges posed by switch and match will only make our journey all the more exhilarating.
 
-Stay tuned, dear reader, as in just a week's time, the next chapter of our journey will be available, and we promise it will be just as thrilling.
+Stay tuned, dear reader, as in just a week's time, the next chapter of our journey will be available, and I promise it will be just as thrilling.
