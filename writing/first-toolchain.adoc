@@ -15,7 +15,7 @@
 // :source-highlighter: highlight.js
 // :highlightjs-languages: rust, cpp, console
 
-Fellow crustaceans, embark on a journey with me, into the enchanted world of hardware design.
+Fellow Rustaceans, embark on a journey with me, into the enchanted world of hardware design.
 
 With FPGAs, we'll transcend the limitations of traditional CPUs, unlocking faster and more efficient calculations. Our journey will be a perilous one, as the language of FPGAs and the common programming languages of our world are vastly different. It would need a mighty sorcerer to bridge that gap. Maybe even multiple ones. The path ahead is unclear, but we shall not be deterred.
 
