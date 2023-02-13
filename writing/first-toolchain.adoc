@@ -71,6 +71,8 @@ Until that is settled, computational FPGAs will probably stay a niche applicatio
 
 === How are FPGAs programmed?
 
+// TODO Behavioral vs RTL
+
 Usually, logic design is done in hardware description languages (HDL). Currently, there are two major ones, Verilog and VHDL. VHDL has a slightly higher level of abstraction and some features that make it easier to manage bigger projects. In some ways, the relation between Verilog and VHDL is comparable to the relation between C and {cpp} in terms of features and abstraction. Both can be used to model the structure of hardware equally efficiently, so the choice is mostly a matter of personal preference. In this post, we will focus on Verilog, because it is the default language of most tools.
 
 // Source: https://dl.acm.org/doi/pdf/10.1145/240518.240664
