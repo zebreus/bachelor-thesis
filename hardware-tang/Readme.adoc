@@ -1,0 +1,164 @@
+= First steps with the tang nano 9k
+:cpp: C++
+:imagesdir: images
+
+
+In this example we first want to get familiar with the tang nano 9k board by deploying a simple blinker/counter. We will write this counter in Verilog.
+
+Then we want to try using bambu to synthesize a counter from {cpp}. We try to get the same interface as the reference counter we wrote earlier. In the best case we do not need to write any verilog code for the bambu example, but I am not sure whether bambu can generate a interface that can be used as the top level function from our {cpp} code.
+
+== Reference counter in Verilog
+
+=== Toolchain
+
+The first step is to get the toolchain up and running.
+
+Our toolchain is based on yosys, nextpnr and apycula.
+
+.Makefile for deploying the counter to the tang nano 9k
+[source,Makefile]
+----
+include::Makefile[tag=!bambu]
+----
+
+Running `make prog` synthesizes the `counter.v` file and programs it to the tang nano 9k. Seems to work.
+
+We also create a `tangnano.cst` file that defines the pinout of the tang nano 9k. This is used by nextpnr to place the logic on the board.
+
+.Content of `tangnano.cst`
+[%collapsible]
+====
+.tangnano.cst
+[source,cst]
+----
+include::tangnano.cst[]
+----
+====
+
+=== Creating the counter
+
+The counter is quite trivial and is lifted from a tutorial on the tang nano 9k.
+
+.Interface of the reference counter
+[symbolator]
+....
+include::counter.v[]
+....
+
+.counter.v
+[source,verilog]
+----
+include::counter.v[]
+----
+
+Running `make prog` synthesizes the counter and programs it to the tang nano 9k. Seems to work.
+
+// Insert video here
+
+== Using bambu
+
+The next step is to replicate that in {cpp} using bambu. I think the two big challenges are to get the interface right and to keep some kind of state in the counter.
+
+=== Adjusting the toolchain
+
+We adjust the Makefile for processing {cpp} code with. First we add rules to synthesize the {cpp} code with bambu.
+
+.Additional rules for bambu
+[source,Makefile]
+----
+include::Makefile[tag=bambu]
+----
+
+Running `make something.v` will now look for a file `something.cpp` and synthesize it using bambu. 
+
+---
+
+We also want to test the generated verilog code. We use verilator for testing.
+
+.Rules for verilator
+[source,Makefile]
+----
+include::Makefile[tag=verilator]
+----
+
+This rule assumes that the entrypoint for a Verilog file will be named `something_sim_main.cpp`. It uses that and the Verilog file to generate a test executable. We can use `make obj_dir/Vsomething` to generate the test executable for `something.v` and execute it with `obj_dir/Vsomething`.
+
+This rule also trust that our testbench will always generate a `.vcd` file with a matching name.
+
+---
+
+.Rules for {cpp}
+[source,Makefile]
+----
+include::Makefile[tag=clang]
+----
+
+We also add rules to compile the {cpp} code to an executable, so that we can verify that our function works as expected. When compiling to a native executable we set the `TEST_CPP` macro, which we can use to add a `main` function to our {cpp} code, when we are creating a executable.
+
+=== Trying to keep state
+
+We will try to synthesize something that keeps state. As a minimal example we will define a {cpp} function that has a counter which gets incremented every time the function is called.
+
+.state_test.cpp
+[source,cpp]
+----
+include::state_test.cpp[]
+----
+
+We can verify that the function keeps internal state as expected by executing its main function.
+
+.Output of our function
+[source,cpp]
+----
+include::state_test.native.log[]
+----
+
+The output contains the expected increasing values, so our function should be fine.
+
+We synthesize this using bambu and get the following interface:
+
+.Interface of the reference counter
+[symbolator]
+....
+include::state_test.v[]
+....
+
+The interface of the generated Verilog module looks about right, but we dont know, whether it actually keeps state. In the previous post we used the testing framework that is built into bambu, but I think that we can't use that here, because it can only test pure functions. Instead we will use verilator directly to test the generated Verilog code. Our testabench will run the function for 50 clock cycles and generate a `.vcd` file.
+
+.Detailed testbench for the counter
+[%collapsible]
+====
+.state_test_sim_main.cpp
+[source,cpp]
+----
+include::state_test_sim_main.cpp[]
+----
+====
+
+The generated trace does not look like we expected it to look:
+
+.Behaviour with only clock pulses
+[wavedrom]
+....
+include::state_test.wavejson[]
+....
+
+It seems like the counter is only incremented once. I suspect that the startport also needs to go high to start a function execution. Let's adjust the testbench to also pulse `start` every 3 clock cycles.
+
+.Behaviour with clock and start pulses
+[wavedrom]
+....
+include::state_test_b.wavejson[]
+....
+
+Ok, start seems to actually trigger a function execution. What is a bit irritating to me is that the done_port stays low the whole time. I would have expected it to go high for at least one clock cycle, when the function is done. Maybe reset needs to be high the whole time.
+
+.Behaviour with clock and start pulses. Also reset is high the whole time.
+[wavedrom]
+....
+include::state_test_c.wavejson[]
+....
+
+Now we get a pulse on the done port. It is not quite what I expected, as it goes high after the start pulse, and switches back to low after the result changed. I think that the done_port being high means that the function is not yet finished. I would have expected the reverse behaviour. But I guess that is just a matter of taste.
+
+My expectations for how the interface works have been mostly wrong. I will now go find some documentation, so that we can get a better understanding of how the interface works.

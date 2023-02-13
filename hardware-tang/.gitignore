@@ -1,3 +1,8 @@
 *.fs
 *.json
 *.pack
+blink_cpp.v
+*.mem
+*.vcd
+obj_dir
+state_test
