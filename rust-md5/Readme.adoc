@@ -1,0 +1,7 @@
+= A simple md5 implementation in Rust
+
+This crate provides a simple md5 implementation based on https://en.wikipedia.org/wiki/MD5#Pseudocode[the example from wikipedia] in Rust.
+
+md5 seems to be a reasonable algorithm for testing HLS, because it has some computational complexity, requires some additional data and is easy to implement.
+
+The interface of the function is kept in C style, because that makes HLS and testing easier.
