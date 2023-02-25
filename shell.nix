@@ -1,4 +1,4 @@
-{ pkgs ? import <nixpkgs> { }, symbolator, vcd2wavedrom, bambu }:
+{ pkgs ? import <nixpkgs> { }, symbolator, vcd2wavedrom, bambu, fenix }:
 with pkgs;
 mkShell {
   buildInputs = [
@@ -23,10 +23,14 @@ mkShell {
     jq
 
     # For rust
-    rust.packages.stable.rustPlatform.rust.rustc
-    rust.packages.stable.rustPlatform.rust.cargo
-    rust.packages.stable.rustPlatform.rustLibSrc
-    rustfmt
+    (fenix.complete.withComponents [
+      "cargo"
+      "clippy"
+      "rust-src"
+      "rustc"
+      "rustfmt"
+    ])
+    fenix.rust-analyzer
     cacert
 
     # For verilog
@@ -71,7 +75,7 @@ mkShell {
     clang-tools
   ];
 
-  RUST_SRC_PATH = "${pkgs.rust.packages.stable.rustPlatform.rustLibSrc}";
+  # RUST_SRC_PATH = "${unstable-pkgs.rust.packages.stable.rustPlatform.rustLibSrc}";
   JAVA_HOME = "${adoptopenjdk-hotspot-bin-15}";
 
   shellHook = ''
