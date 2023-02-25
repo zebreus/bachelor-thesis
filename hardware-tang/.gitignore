@@ -6,3 +6,7 @@ blink_cpp.v
 *.vcd
 obj_dir
 state_test
+results.txt
+old
+V*
+*.ll
