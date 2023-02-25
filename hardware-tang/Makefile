@@ -1,6 +1,4 @@
 
-SOURCES := counter.v
-
 PWD = $(shell pwd)
 YOSYS     = yosys
 NEXTPNR   = nextpnr-gowin
@@ -14,6 +12,9 @@ CLANG     = clang++
 # tag::verilator[] 
 VERILATOR = verilator
 # end::verilator[]
+# tag::rust[] 
+RUSTC = rustc
+# end::rust[]
 # tag::hide[]
 TARGETS += state_test.v state_test.native.log state_test.wavejson state_test_b.wavejson state_test_c.wavejson
 doc: $(TARGETS)
@@ -21,11 +22,27 @@ doc: $(TARGETS)
 
 .EXTRA_PREREQS:=Makefile
 all: top.fs
+# tag::rust[]
+
+md5.ll: ../rust-md5/src/md5.rs
+	$(RUSTC) --emit=llvm-ir --crate-type=lib -C overflow-checks=off -C no-vectorize-loops -C target-cpu=generic -C panic=abort -C opt-level=s -C llvm-args="--opaque-pointers=false" $< -o $@
+
+%.ll: %.rs
+	$(RUSTC) --emit=llvm-ir --crate-type=lib -C overflow-checks=off -C no-vectorize-loops -C target-cpu=generic -C panic=abort -C opt-level=s -C llvm-args="--opaque-pointers=false" $< -o $@
+# end::rust[]
 # tag::bambu[] 
 
 %.v: %.cpp
 	$(BAMBU) $< --top-fname=$(basename $(notdir $<)) --clock-name=clk --compiler=I386_CLANG12 -Os
 # end::bambu[]
+# tag::rust[] 
+
+%_rust.v: %_rust.ll
+	$(BAMBU) $< --top-fname=$(basename $(notdir $<)) --clock-name=clk --compiler=I386_CLANG12 -Os
+
+%.v: %.ll
+	$(BAMBU) $< --top-fname=$(basename $(notdir $<)) --clock-name=clk --compiler=I386_CLANG12 -Os
+# end::rust[]
 # tag::clang[] 
 
 %: %.cpp
@@ -44,7 +61,7 @@ V%_c: %.v %_sim_main_c.cpp
 # end::hide[]
 # tag::verilator[]
 
-V%: %.v %_sim_main.cpp  
+V%: %.v %_sim_main.cpp
 	$(VERILATOR) --cc --exe --build --trace --Wno-width -j 0 $^
 	mv obj_dir/V$(notdir $(basename $<)) $@
 
@@ -69,6 +86,6 @@ prog: top.fs
 	openFPGALoader -b tangnano $^
 
 clean:
-	rm -f *.json *.fs *.pack
+	rm -rf *.json *.fs *.pack *.vcd *.png obj_dir HLS_output
 
 .PHONY: %-tangnano-prog clean all
