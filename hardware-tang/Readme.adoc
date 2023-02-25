@@ -191,3 +191,19 @@ The https://panda.dei.polimi.it/?page_id=555[Bambu tutorial] does not mention th
 |I think it contains the valid return value on the falling flank of the `done_port` pulse, but it could also be on the rising flank.
 
 |===
+
+We can use that knowledge to write a wrapper 
+
+// TODO: Finish section
+
+== And now for something completely different
+
+Now that we have a working counter, we can try to do something more interesting. I want to try to synthesize a function that computes a md5 hash. I think that should be a good test for the toolchain, as the logic is quite complex and it requires a medium sized array of number constants at runtime.
+
+.Interface of the md5 function counter
+[symbolator]
+....
+include::md5.v[]
+....
+
+
