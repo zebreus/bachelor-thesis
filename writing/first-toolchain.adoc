@@ -261,11 +261,13 @@ We also need to disable overflow checks, because they will generate panics if ov
 
 It is probably a good idea to tell the rust compiler that we are not targeting a specific CPU architecture by passing `-C target-cpu=generic`.
 
+Recent versions of rustc will generate LLVM IR with https://llvm.org/docs/OpaquePointers.html[opaque pointers](`ptr` instead of `i32*`) by default. This is not supported by bambu because it uses an old LLVM version so we need to pass `-C llvm-args="--opaque-pointers=false"` to rustc.
+
 The final command to compile the Rust code to LLVM IR is:
 
 [source,console]
 ----
-$ rustc --emit=llvm-ir --crate-type=lib src/min_max_rust.rs -o min_max_rust.ll -C opt-level=0 -C overflow-checks=off -C no-vectorize-loops -C target-cpu=generic -C panic=abort
+$ rustc --emit=llvm-ir --crate-type=lib src/min_max_rust.rs -o min_max_rust.ll -C opt-level=0 -C overflow-checks=off -C no-vectorize-loops -C target-cpu=generic -C panic=abort -C llvm-args="--opaque-pointers=false"
 ----
 
 Bambu fails to synthesize the Rust code if all optimizations are disabled. Enabling at least some level of optimization in rustc or enabling a level higher than 1 in bambu fixes the problem. I assume this is because Rust still generates exception handlers in LLVM if optimizations are disabled. We will set the optimization level to `-O2` in bambu because that way we can compare the results with the {cpp} function which used that level.
