@@ -45,10 +45,10 @@ md5.ll: ../rust-md5/src/md5.rs
 # end::rust[]
 # tag::clang[] 
 
-%: %.cpp
+%-native-executable: %.cpp
 	$(CLANG) -D TEST_CPP $< -o $@
 
-%.native.log: %
+%.native.log: %-native-executable
 	./$< > $@
 # end::clang[] 
 # tag::hide[]

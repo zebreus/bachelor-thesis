@@ -11,3 +11,5 @@ results.txt
 old
 V*
 *.ll
+*.native.log
+*.wavejson
