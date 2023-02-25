@@ -162,3 +162,32 @@ include::state_test_c.wavejson[]
 Now we get a pulse on the done port. It is not quite what I expected, as it goes high after the start pulse, and switches back to low after the result changed. I think that the done_port being high means that the function is not yet finished. I would have expected the reverse behaviour. But I guess that is just a matter of taste.
 
 My expectations for how the interface works have been mostly wrong. I will now go find some documentation, so that we can get a better understanding of how the interface works.
+
+The https://panda.dei.polimi.it/?page_id=555[Bambu tutorial] does not mention the exact behaviour of the interface.
+
+.What I got by testing
+[cols="1,2,2"]
+|===
+|Port |Info |Speculation
+
+|`clock`
+|Needs to cycle between high and low
+|
+
+|`reset`
+|Needs to be high for the module to work. At least the done signal is only emitted, if it is high
+|Maybe resets the module if pulled to low
+
+|`start_port`
+|The module will start executing, if this is high and the function is finished. Pinning this to high will cause the function to repeat.
+| There could be a delay
+
+|`done_port`
+|Pulses high for one cycle, when the module is done.
+|Idk how this behaves, if the module is instant
+
+|`return_port`
+|Contains the return value. Can contain random values during function execution.
+|I think it contains the valid return value on the falling flank of the `done_port` pulse, but it could also be on the rising flank.
+
+|===
