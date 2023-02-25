@@ -1,7 +1,8 @@
 *.fs
 *.json
 *.pack
-blink_cpp.v
+*.v
+!drive*.v
 *.mem
 *.vcd
 obj_dir

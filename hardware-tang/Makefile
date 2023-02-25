@@ -16,7 +16,7 @@ VERILATOR = verilator
 RUSTC = rustc
 # end::rust[]
 # tag::hide[]
-TARGETS += state_test.v state_test.native.log state_test.wavejson state_test_b.wavejson state_test_c.wavejson
+TARGETS += state_test.v state_test.native.log state_test.wavejson state_test_b.wavejson state_test_c.wavejson md5.v
 doc: $(TARGETS)
 # end::hide[]
 
@@ -86,6 +86,9 @@ prog: top.fs
 	openFPGALoader -b tangnano $^
 
 clean:
-	rm -rf *.json *.fs *.pack *.vcd *.png obj_dir HLS_output
+	rm -rf *.json *.fs *.pack *.vcd *.png obj_dir HLS_output synthesize_*.sh *.mem *.ll
+
+dist-clean: clean
+	rm -rf $(TARGETS)
 
 .PHONY: %-tangnano-prog clean all
