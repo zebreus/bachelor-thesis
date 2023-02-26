@@ -202,10 +202,122 @@ I was not able to find any documentation for the interface, the following table 
 
 Now that we have a working counter, we can try to do something more interesting. I want to try to synthesize a function that computes a md5 hash. I think that should be a good test for the toolchain, as the logic is quite complex and it requires a medium sized array of number constants at runtime.
 
-.Interface of the md5 function counter
+
+.Rust implementation of the md5 function
+[source,rust]
+....
+include::../rust-md5/src/md5.rs[tag=md5-implementation]
+....
+
+The rust implementation is based on the pseudocode example from https://en.wikipedia.org/wiki/MD5#Pseudocode[wikipedia]. Note that this implementation can only process one block of data. This should be enough for our test.
+
+We use rust unittests to verify that our implementation works as expected. When hashing an empty string, we expect the result to be `d41d8cd98f00b204e9800998ecf8427e`, when hashing the string `"a"` we expect the result to be `0cc175b9c0f1b6a831c399e269772661`.
+
+.Unittest implementation
+[%collapsible]
+====
+[source,rust]
+----
+include::../rust-md5/src/md5.rs[tag=md5-test]
+----
+====
+
+The tests pass, so we can be sure that our implementation is correct.
+
+We can now synthesize the function and verify that it works as expected. We will use the same testcases as before. This time we define them in a xml file for bambu. This way it can test our function directly when we are synthesizing it.
+
+.Testbench for the md5 function
+[source,xml]
+....
+include::test-md5.xml[]
+....
+
+
+The tests pass, so we can be sure that our function works as expected and bambu was able to synthesize it correctly.
+
+.Verilog interface of the md5 module
 [symbolator]
 ....
 include::md5.v[]
 ....
+
+The synthesized interface also looks sane, so we can attempt the next step and try to get the module loaded to the FPGA. 
+
+We need to write a wrapper that connects the function to the rest of the system. Our module expects to be able to get the input data and write the output data via its memory related ports. I think it will be the easiest if we hardcode the data for the empty string. We can then verify the output of our module by activating the LEDs on the FPGA board once we got the correct result.
+
+But first we should figure out how the memory works.
+
+.What do we want to learn about memory access?
+* What addresses are used for the message and result arguments?
+* How does the module read from memory?
+* How does the module write to memory?
+* What do the memory related signals mean?
+
+The first question is probably the easiest to answer. We can just inspect the trace of the simulation when the function is started.
+
+.Argument inputs when starting the module
+[wavedrom]
+....
+{signal: [
+  {name: 'clock', wave: 'p...|..'},
+  {name: 'start_port', wave: 'lhl.|hl', "node" : ".A...B."},
+  {name: 'Pd458 (message)', wave: 'x3..|3.', data: ['40000000', '40000200']},
+  {name: 'Pd459 (result)', wave: 'x3..|3.', data: ['40000100','40000300']}
+],
+edge   : ["A First testcase", "B Second testcase"],
+config: { hscale: 2 }}
+....
+
+For the first testcase the message data starts at address `0x40000000` and the result data starts at address `0x40000100`. For the second testcase the message data starts at address `0x40000200` and the result data starts at address `0x40000300`.
+
+Now we still need to figure out how the module reads from these addresses. Let's take a look at the first time 0x40000000 is read.
+
+.Memory signals when reading a value
+[wavedrom]
+....
+{signal: [
+  {name: 'clock', wave: 'p...'},
+  {name: 'Mout_we_ram', wave: '2...', data: ['0x0']},
+  {name: 'Mout_oe_ram', wave: '232.', data: ['0x0','0x1','0x0']},
+  {name: 'Mout_data_ram_size', wave: '232.', data: ['0x0', '0x20', '0x0']},
+  {name: 'Mout_addr_ram', wave: '232.', data: ['0x0', '40000000', '0x0']},
+  {name: 'M_Wdata_ram', wave: '2...', data: ['0000000000000000']},
+  {name: 'M_Rdata_ram', wave: '2.32', data: ['0x0', '0000000000000080', '0x0']},
+  {name: 'M_DataRdy', wave: '2...', data: ['0x0']},
+],
+config: { hscale: 3 }}
+....
+
+The reads seem to happen in two cycles.
+
+In the first cycle the module sets `Mout_oe_ram` to `1` to enable the output of the memory data, to tell the memory that it wants to read a value. It also sets Mout_data_ram_size to `0x20` (decimal 32), because it will only read 32 bits. This matches our expectations because our message is passed in as an array of u32 values. `Mout_addr_ram` is set to `0x40000000` which is the address of the first message value.
+
+In the second cycle these signals all return to 0. The input `M_Rdata_ram` then contains the value that was read from the memory. In this case it is `0x00000080` which is the first byte of the message.
+
+Let's take a look at the first time data is written to the result.
+
+.Memory signals when writing values
+[wavedrom]
+....
+{signal: [
+  {name: 'clock', wave: 'p...'},
+  {name: 'Mout_we_ram', wave: '23.2', data: ['0x0','0x3','0x0']},
+  {name: 'Mout_oe_ram', wave: '2...', data: ['0x0']},
+  {name: 'Mout_data_ram_size', wave: '23.2', data: ['0x0', '0x820', '0x0']},
+  {name: 'Mout_addr_ram', wave: '2332', data: ['0x0', '4000010440000100','4000010C40000108','0x0']},
+  {name: 'M_Wdata_ram', wave: '2332', data: ['0x0..00', '04B2008FD981DD4','7E42F8EC980980E9','0x0..00']},
+  {name: 'M_Rdata_ram', wave: '2...', data: ['0x0']},
+  {name: 'M_DataRdy', wave: '23.2', data: ['0x0', '0x3', '0x0']},
+],
+config: { hscale: 3.5 }}
+....
+
+Here something interesting happens, as we can see that the module writes 4 values to the memory in just two cycles.
+
+
+
+
+The wrapper also needs to simulate the memory
+
 
 

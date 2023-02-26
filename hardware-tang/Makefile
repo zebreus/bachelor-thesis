@@ -5,7 +5,7 @@ NEXTPNR   = nextpnr-gowin
 GOWINPACK = gowin_pack
 # tag::bambu[] 
 BAMBU     = bambu
-BAMBU_FLAGS = --clock-name=clk --compiler=I386_CLANG12 -Os --simulator=VERILATOR
+BAMBU_FLAGS = --clock-name=clk --compiler=I386_CLANG12 -Os --simulator=ICARUS
 # end::bambu[]
 # tag::clang[]
 CLANG     = clang++
@@ -44,12 +44,18 @@ md5.ll: ../rust-md5/src/md5.rs
 # end::bambu[]
 # tag::rust[] 
 
-%_rust.v: %_rust.ll
-	$(BAMBU) $(BAMBU_FLAGS) $< --top-fname=$(basename $(notdir $<))
-
 %.v: %.ll
 	$(BAMBU) $(BAMBU_FLAGS) $< --top-fname=$(basename $(notdir $<))
 # end::rust[]
+# tag::hide[]
+
+test-md5.log: md5.ll
+	$(BAMBU) $(BAMBU_FLAGS) $< --top-fname=md5 --simulate --generate-tb=test-md5.xml > test-md5.log
+
+test-md5.vcd: md5.ll
+	$(BAMBU) $(BAMBU_FLAGS) $< --top-fname=md5 --simulate --generate-tb=test-md5.xml --generate-vcd
+	cp HLS_output/simulation/test.vcd test-md5.vcd
+# end::hide[]
 # tag::clang[] 
 
 %-native-executable: %.cpp
@@ -93,7 +99,7 @@ prog: top.fs
 	openFPGALoader -b tangnano $^
 
 clean:
-	rm -rf *.json *.fs *.pack *.vcd *.png obj_dir HLS_output synthesize_*.sh *.mem *.ll
+	rm -rf *.json *.fs *.pack *.vcd *.png obj_dir HLS_output *.mem *.ll synthesize_*.sh simulate_*.sh bambu_results_*.xml memory_allocation_*.xml a.out
 
 dist-clean: clean
 	rm -rf $(TARGETS)

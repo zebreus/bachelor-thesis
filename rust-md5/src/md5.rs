@@ -5,6 +5,7 @@ pub mod encode_result;
 #[cfg(test)]
 pub mod padding;
 
+// tag::md5-implementation[]
 const S: [u32; 64] = [
     7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 5, 9, 14, 20, 5, 9, 14, 20, 5, 9,
     14, 20, 5, 9, 14, 20, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 6, 10, 15,
@@ -104,6 +105,7 @@ pub unsafe extern "C" fn md5(message_pointer: *const u32, result_pointer: *mut u
     result[2] = c;
     result[3] = d;
 }
+// end::md5-implementation[]
 
 #[cfg(test)]
 mod tests {
@@ -124,9 +126,10 @@ mod tests {
         }
     }
 
+    // tag::md5-test[]
     #[test]
     fn hashing_empty_string_generates_the_correct_result() {
-        let input = first_md5_block("a".as_bytes());
+        let input = first_md5_block("".as_bytes());
         let mut result = [0u32; 4];
 
         unsafe {
@@ -135,7 +138,7 @@ mod tests {
 
         assert_eq!(
             result.into_hash_string().as_str(),
-            "0cc175b9c0f1b6a831c399e269772661"
+            "d41d8cd98f00b204e9800998ecf8427e"
         )
     }
 
@@ -153,6 +156,7 @@ mod tests {
             "0cc175b9c0f1b6a831c399e269772661"
         )
     }
+    // end::md5-test[]
 
     #[test]
     fn hashing_abc_generates_the_correct_result() {

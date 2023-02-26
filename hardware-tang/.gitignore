@@ -13,3 +13,9 @@ V*
 *.ll
 *.native.log
 *.wavejson
+synthesize_*.sh
+simulate_*.sh
+bambu_results_*.xml
+memory_allocation_*.xml
+a.out
+images
