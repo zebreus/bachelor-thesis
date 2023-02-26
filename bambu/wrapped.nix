@@ -23,6 +23,7 @@ pkgs.runCommand "bambu-wrapped"
             gnumake
             gnused
             gnugrep
+            verilog
           ]}
     fi
   done
