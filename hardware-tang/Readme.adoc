@@ -165,6 +165,8 @@ My expectations for how the interface works have been mostly wrong. I will now g
 
 The https://panda.dei.polimi.it/?page_id=555[Bambu tutorial] does not mention the exact behaviour of the interface.
 
+I was not able to find any documentation for the interface, the following table show what I found out by testing.
+
 .What I got by testing
 [cols="1,2,2"]
 |===
@@ -192,7 +194,7 @@ The https://panda.dei.polimi.it/?page_id=555[Bambu tutorial] does not mention th
 
 |===
 
-We can use that knowledge to write a wrapper 
+
 
 // TODO: Finish section
 

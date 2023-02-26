@@ -5,6 +5,7 @@ NEXTPNR   = nextpnr-gowin
 GOWINPACK = gowin_pack
 # tag::bambu[] 
 BAMBU     = bambu
+BAMBU_FLAGS = --clock-name=clk --compiler=I386_CLANG12 -Os --simulator=VERILATOR
 # end::bambu[]
 # tag::clang[]
 CLANG     = clang++
@@ -16,12 +17,18 @@ VERILATOR = verilator
 RUSTC = rustc
 # end::rust[]
 # tag::hide[]
-TARGETS += state_test.v state_test.native.log state_test.wavejson state_test_b.wavejson state_test_c.wavejson md5.v
-doc: $(TARGETS)
+
+TARGETS_WITHOUT_HTML += state_test.v state_test.native.log state_test.wavejson state_test_b.wavejson state_test_c.wavejson md5.v index.html
+TARGETS += $(TARGETS_WITHOUT_HTML) index.html
 # end::hide[]
 
 .EXTRA_PREREQS:=Makefile
 all: top.fs
+# tag::hide[]
+
+index.html: Readme.adoc $(TARGETS_WITHOUT_HTML)
+	asciidoctor -r asciidoctor-diagram Readme.adoc -o index.html
+# end::hide[]
 # tag::rust[]
 
 md5.ll: ../rust-md5/src/md5.rs
@@ -33,15 +40,15 @@ md5.ll: ../rust-md5/src/md5.rs
 # tag::bambu[] 
 
 %.v: %.cpp
-	$(BAMBU) $< --top-fname=$(basename $(notdir $<)) --clock-name=clk --compiler=I386_CLANG12 -Os
+	$(BAMBU) $(BAMBU_FLAGS) $< --top-fname=$(basename $(notdir $<))
 # end::bambu[]
 # tag::rust[] 
 
 %_rust.v: %_rust.ll
-	$(BAMBU) $< --top-fname=$(basename $(notdir $<)) --clock-name=clk --compiler=I386_CLANG12 -Os
+	$(BAMBU) $(BAMBU_FLAGS) $< --top-fname=$(basename $(notdir $<))
 
 %.v: %.ll
-	$(BAMBU) $< --top-fname=$(basename $(notdir $<)) --clock-name=clk --compiler=I386_CLANG12 -Os
+	$(BAMBU) $(BAMBU_FLAGS) $< --top-fname=$(basename $(notdir $<))
 # end::rust[]
 # tag::clang[] 
 

@@ -24,6 +24,7 @@
         packages.bambu = packages.bambu-wrapped;
         packages.bambu-appimage = import ./bambu/appimage.nix { pkgs = nixpkgs.legacyPackages.${system}; };
         packages.hardware-example = import ./hardware-example/default.nix { pkgs = nixpkgs.legacyPackages.${system}; };
+        packages.hardware-tang = import ./hardware-tang/default.nix { pkgs = nixpkgs.legacyPackages.${system}; fenix = fenix.packages.${system};  symbolator = symbolator.packages.${system}.symbolator; vcd2wavedrom = vcd2wavedrom.packages.${system}.vcd2wavedrom; bambu = packages.bambu; };
         packages.default = packages.writing;
         devShells.default = import ./shell.nix { pkgs = nixpkgs.legacyPackages.${system}; fenix = fenix.packages.${system}; symbolator = symbolator.packages.${system}.symbolator; vcd2wavedrom = vcd2wavedrom.packages.${system}.vcd2wavedrom; bambu = packages.bambu; };
 
