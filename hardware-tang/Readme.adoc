@@ -241,7 +241,7 @@ The tests pass, so we can be sure that our function works as expected and bambu 
 include::md5.v[]
 ....
 
-The synthesized interface also looks sane, so we can attempt the next step and try to get the module loaded to the FPGA. 
+The synthesized interface also looks sane, so we can attempt the next step and try to get the module loaded to the FPGA. Note that the memory lanes and addresses are 64 bit wide. We are able to instruct bambu to create 32 bit wide memory interfaces but 64 bit is the default.
 
 We need to write a wrapper that connects the function to the rest of the system. Our module expects to be able to get the input data and write the output data via its memory related ports. I think it will be the easiest if we hardcode the data for the empty string. We can then verify the output of our module by activating the LEDs on the FPGA board once we got the correct result.
 
@@ -312,8 +312,59 @@ Let's take a look at the first time data is written to the result.
 config: { hscale: 3.5 }}
 ....
 
-Here something interesting happens, as we can see that the module writes 4 values to the memory in just two cycles.
+Here something interesting happens, as we can see that the module writes 128 bits to the memory in just two cycles. I would have assumed that it would write 32 bits per cycle in four cycles, as our result consists of four u32 values. Here it seems to write 64 bits per cycle in two cycles.
 
+The first write cycle puts the data `04B2008FD981DD4` at address `4000010440000100`. I think what actually happens here is that this are two writes to two different addresses. If we treat the first 32 bit as one operation and the second 32 bit as another operation, we can see that the first operation writes `04B2008F` to address `40000104` and the second operation writes `FD981DD4` to address `40000100`. These are indeed the correct values at the correct addresses, as the expected result for the first testcase is `D41D8CD9 8F00B204 E9800998 ECF8427E`.
+
+`Mout_data_ram_size` (12 bit wide) is set to `0x820` which is a weird value. My best guess for now is that the two least significant nibbles are 0x20, which signifies the size of a values as 32 bits. The remaining most significant nibbles is 0x8 which could mean that two values are written at once. It could also be the offset in nibbles for the second number. We should look for documentation on this.
+
+`Mout_we_ram` is set to `0x3` which could mean that we are writing two values at once. This is also supported by the fact that we write 64 bits in two cycles.
+
+We can summarize the memroy access as follows:
+
+.How them memory is accessed
+[cols="1,1,2,2"]
+|===
+|Port |Better name |Description
+
+|`Mout_oe_ram`
+|`readMemory`
+|Set to 0x1 to get data from the memory on the next clock cycle
+
+|`Mout_we_ram`
+|`writeMemory`
+|Set to 0x3 to write two values to memory. Maybe you have to wait for the `M_DataRdy` signal to be nonzero before writing the second value.
+
+|`Mout_data_ram_size`
+|`valueSize`
+|12 bit integer. The lower two nibbles seem to contain the size of the values in bits. The upper nibble seems to contain the offset in nibbles for the second value, when accessing two values at once.
+
+|`Mout_addr_ram`
+|`memoryAddress`
+|Memory will be accessed at this address.
+
+|`M_Wdata_ram`
+|`dataToWrite`
+|Outputs the data that will be written to memory when `Mout_we_ram` is set.
+
+|`M_Rdata_ram`
+|`readData`
+|Contains the data that was read from memory when `Mout_oe_ram` was set.
+
+|`M_DataRdy`
+|`memoryReady`
+|Set when a write operation is finished. Does not seem to get set during a read operation.
+
+|===
+
+.New questions for later
+* Does 0x3 on `Mout_we_ram` mean that two values are written simultaneously?
+* Does 0x3 on `Mout_oe_ram` mean that two values are read simultaneously?
+* What does 0x820 on `Mout_data_ram_size` mean?
+
+
+
+It looks like two values are written simultaneously, utilizing the full bandwidth of the memory interface. 
 
 
 
