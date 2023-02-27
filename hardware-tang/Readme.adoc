@@ -362,13 +362,187 @@ We can summarize the memroy access as follows:
 * Does 0x3 on `Mout_oe_ram` mean that two values are read simultaneously?
 * What does 0x820 on `Mout_data_ram_size` mean?
 
+=== Reverse engineering the memory
 
+I was not able to find documentation on the memory interface. However bambu generates testbenches that simulate the memory. We can reverse engineer these to find out how memory is accessed.
 
-It looks like two values are written simultaneously, utilizing the full bandwidth of the memory interface. 
+our module has multichannel memory, because the default setup of bambu enables this. We could probably disable this to get a single channel memory with an easier interface, but I assume that it is helpful to understand how the memory works anyway.
 
+.Testbench code for writes
+[source,verilog]
+....
+  always @(posedge clock)
+  begin
+    if (Mout_we_ram[0] === 1'b1 && base_addr <= Mout_addr_ram[31:0] && Mout_addr_ram[31:0] < (base_addr + MEMSIZE)) // <1>
+    begin // <2>
+      {_bambu_testbench_mem_[Mout_addr_ram[31:0] + 3 - base_addr], _bambu_testbench_mem_[Mout_addr_ram[31:0] + 2 - base_addr], _bambu_testbench_mem_[Mout_addr_ram[31:0] + 1 - base_addr], _bambu_testbench_mem_[Mout_addr_ram[31:0] + 0 - base_addr]} = (Mout_Wdata_ram[31:0] & mask[31:0]) | ({_bambu_testbench_mem_[Mout_addr_ram[31:0] + 3 - base_addr], _bambu_testbench_mem_[Mout_addr_ram[31:0] + 2 - base_addr], _bambu_testbench_mem_[Mout_addr_ram[31:0] + 1 - base_addr], _bambu_testbench_mem_[Mout_addr_ram[31:0] + 0 - base_addr]} & ~(mask[31:0]));
+    end
+    if (Mout_we_ram[1] === 1'b1 && base_addr <= Mout_addr_ram[63:32] && Mout_addr_ram[63:32] < (base_addr + MEMSIZE)) // <3>
+    begin // <4>
+      {_bambu_testbench_mem_[Mout_addr_ram[63:32] + 3 - base_addr], _bambu_testbench_mem_[Mout_addr_ram[63:32] + 2 - base_addr], _bambu_testbench_mem_[Mout_addr_ram[63:32] + 1 - base_addr], _bambu_testbench_mem_[Mout_addr_ram[63:32] + 0 - base_addr]} = (Mout_Wdata_ram[63:32] & mask[63:32]) | ({_bambu_testbench_mem_[Mout_addr_ram[63:32] + 3 - base_addr], _bambu_testbench_mem_[Mout_addr_ram[63:32] + 2 - base_addr], _bambu_testbench_mem_[Mout_addr_ram[63:32] + 1 - base_addr], _bambu_testbench_mem_[Mout_addr_ram[63:32] + 0 - base_addr]} & ~(mask[63:32]));
+    end
+  end
+....
+<1> If the low bit of `Mout_we_ram` is set.
+<2> Write the low 32 bits of the data to the low 32 bits of the address
+<3> If the high bit of `Mout_we_ram` is set.
+<4> Write the high 32 bits of the data to the high 32 bits of the address
 
+So the least significant 32 bits of `Mout_Wdata_ram` are written to the address specified by the least significant 32 bits of `Mout_addr_ram` if the low bit of `Mout_we_ram` is set. The same goes for the high bit of `Mout_we_ram` and the most significant 32 bits of `Mout_Wdata_ram` and `Mout_addr_ram`.
 
-The wrapper also needs to simulate the memory
+.Testbench code for reads
+[source,verilog]
+----
+reg signed [31:0] reg_DataReady[1:0];
 
+// ...
+
+always @(posedge clock)
+begin
+  // <1>
+  if ((Mout_oe_ram[0]===1'b1 && base_addr <= Mout_addr_ram[31:0] && Mout_addr_ram[31:0] < (base_addr + MEMSIZE)))
+  begin
+    if (reg_DataReady[0] >= 0 && reg_DataReady[0] < `MEM_DELAY_READ-1)
+      reg_DataReady[0] <= 1 + reg_DataReady[0];
+    else
+      reg_DataReady[0] <= 0;
+  end
+  
+  else if ((Mout_we_ram[0]===1'b1 && base_addr <= Mout_addr_ram[31:0] && Mout_addr_ram[31:0] < (base_addr + MEMSIZE)))
+  begin
+    if (reg_DataReady[0] >= 0 && reg_DataReady[0] < `MEM_DELAY_WRITE-1)
+      reg_DataReady[0] <= 1 + reg_DataReady[0];
+    else
+      reg_DataReady[0] <= 0;
+  end
+  else
+    reg_DataReady[0] <= 0;
+  
+  // <2>
+  if ((Mout_oe_ram[1]===1'b1 && base_addr <= Mout_addr_ram[63:32] && Mout_addr_ram[63:32] < (base_addr + MEMSIZE)))
+  begin
+    if (reg_DataReady[1] >= 0 && reg_DataReady[1] < `MEM_DELAY_READ-1)
+      reg_DataReady[1] <= 1 + reg_DataReady[1];
+    else
+      reg_DataReady[1] <= 0;
+    end
+  
+  else if ((Mout_we_ram[1]===1'b1 && base_addr <= Mout_addr_ram[63:32] && Mout_addr_ram[63:32] < (base_addr + MEMSIZE)))
+  begin
+    if (reg_DataReady[1] >= 0 && reg_DataReady[1] < `MEM_DELAY_WRITE-1)
+      reg_DataReady[1] <= 1 + reg_DataReady[1];
+    else
+      reg_DataReady[1] <= 0;
+    end
+  
+  else
+    reg_DataReady[1] <= 0;
+
+end
+
+// <3>
+assign M_DataRdy[0] = (base_addr <= Mout_addr_ram[31:0] && Mout_addr_ram[31:0] < (base_addr + MEMSIZE)) && (((reg_DataReady[0] == `MEM_DELAY_READ-1)) || (Mout_we_ram[0]===1'b1 && (reg_DataReady[0] == `MEM_DELAY_WRITE-1)));
+assign M_DataRdy[1] = (base_addr <= Mout_addr_ram[63:32] && Mout_addr_ram[63:32] < (base_addr + MEMSIZE)) && (((reg_DataReady[1] == `MEM_DELAY_READ-1)) || (Mout_we_ram[1]===1'b1 && (reg_DataReady[1] == `MEM_DELAY_WRITE-1)));
+  
+----
+<1> Do something to the low bit of `reg_DataReady` if the low bit of `Mout_oe_ram`.
+<2> Do something to the high bit of `reg_DataReady` if the high bit of `Mout_oe_ram` is set.
+<3> Set the upper/lower bit of `M_DataRdy`
+
+The testbench uses `reg_DataReady` as an internal counter until the memory channels are ready. It has two 32 bit integers, that ?? are nonzero if the memory is not ready. The low bit of `M_DataRdy` is nonzero, if the low channel is not ready, the high bit is nonzero if the high channel is not ready.
+
+So we now know that the memory is split into two 32 channels, represented by the lower half and upper half of `Mout_we_ram`, `Mout_oe_ram`, `M_DataRdy`, `M_Rdata_ram`, `Mout_Wdata_ram` and `Mout_addr_ram`. They seem to operate independently of each other. The one thing that we do not yet understand is how `Mout_data_ram_size` interacts with them.
+
+.Testbench code for writes
+[source,verilog]
+....
+  wire [11:0] Mout_data_ram_size;
+  wire [63:0] mask;
+
+  // <1>
+  assign mask[31:0] = (1 << Mout_data_ram_size[5:0]) -1;
+  assign mask[63:32] = (1 << Mout_data_ram_size[11:6]) -1;
+
+  // <2>
+  always @(posedge clock)
+  begin
+    if (Mout_we_ram[0] === 1'b1 && base_addr <= Mout_addr_ram[31:0] && Mout_addr_ram[31:0] < (base_addr + MEMSIZE))
+    begin
+      {_bambu_testbench_mem_[Mout_addr_ram[31:0] + 3 - base_addr], _bambu_testbench_mem_[Mout_addr_ram[31:0] + 2 - base_addr], _bambu_testbench_mem_[Mout_addr_ram[31:0] + 1 - base_addr], _bambu_testbench_mem_[Mout_addr_ram[31:0] + 0 - base_addr]} = (Mout_Wdata_ram[31:0] & mask[31:0]) | ({_bambu_testbench_mem_[Mout_addr_ram[31:0] + 3 - base_addr], _bambu_testbench_mem_[Mout_addr_ram[31:0] + 2 - base_addr], _bambu_testbench_mem_[Mout_addr_ram[31:0] + 1 - base_addr], _bambu_testbench_mem_[Mout_addr_ram[31:0] + 0 - base_addr]} & ~(mask[31:0]));
+    end
+    if (Mout_we_ram[1] === 1'b1 && base_addr <= Mout_addr_ram[63:32] && Mout_addr_ram[63:32] < (base_addr + MEMSIZE))
+    begin
+      {_bambu_testbench_mem_[Mout_addr_ram[63:32] + 3 - base_addr], _bambu_testbench_mem_[Mout_addr_ram[63:32] + 2 - base_addr], _bambu_testbench_mem_[Mout_addr_ram[63:32] + 1 - base_addr], _bambu_testbench_mem_[Mout_addr_ram[63:32] + 0 - base_addr]} = (Mout_Wdata_ram[63:32] & mask[63:32]) | ({_bambu_testbench_mem_[Mout_addr_ram[63:32] + 3 - base_addr], _bambu_testbench_mem_[Mout_addr_ram[63:32] + 2 - base_addr], _bambu_testbench_mem_[Mout_addr_ram[63:32] + 1 - base_addr], _bambu_testbench_mem_[Mout_addr_ram[63:32] + 0 - base_addr]} & ~(mask[63:32]));
+    end
+  end
+....
+<1> Use the first 6 bit of `Mout_data_ram_size` to create a mask for the first 32 bits of the address
+<2> Use mask during writes
+
+`Mout_data_ram_size` is divided into two channels like all the other memory ports. In this case every channel has 6 bit, which is enough to encode the numbers from 0 to 63. This number is used to select the number of bits to be written to the memory on this channel.
+
+Before we summarize what we learned about the memory, lets first take a look at the options used by bambu by default. Bambu uses the `BAMBU-BALANCED-MP` setup if we do not specify otherwise, which implies the channels type `MEM_ACC_NN`. I think that the default value for --channels-number is two or automatic.
+
+.Some memory options for bambu
+[source]
+----
+--channels-type=<type>
+  Set the type of memory connections.
+  Possible values for <type> are:
+      MEM_ACC_11 - the accesses to the memory have a single direct
+                   connection or a single indirect connection (default)
+      MEM_ACC_N1 - the accesses to the memory have n parallel direct
+                   connections or a single indirect connection
+      MEM_ACC_NN - the accesses to the memory have n parallel direct
+                   connections or n parallel indirect connections
+
+--channels-number=<n>
+  Define the number of parallel direct or indirect accesses.
+
+--data-bus-bitsize=<bitsize>
+  Set the bitsize of the external data bus.
+
+--addr-bus-bitsize=<bitsize>
+  Set the bitsize of the external address bus.
+----
+
+In our case we have 2 channels and 32 bit addresses and 32 bit data.
+
+The width of all memory ports scales with the number of channels. 
+
+.What we learned about memory
+[cols="1,1,2,2"]
+|===
+|Port |Size per channel (bit) |Description
+
+|`Mout_oe_ram`
+|1
+|Set to one to read from the channel.
+
+|`Mout_we_ram`
+|1
+|Set to 1 to write to the channel.
+
+|`Mout_data_ram_size`
+|log2(datawidth) + 1
+|Set the number of bits that should be written to the memory. Can be a value between 0 and the width of your data.
+
+|`Mout_addr_ram`
+|addresswidth
+|Select the address this channel should operate on.
+
+|`M_Wdata_ram`
+|datawidth
+|Contains the data that will be written to memory if `Mout_we_ram` is set.
+
+|`M_Rdata_ram`
+|datawidth
+|Contains the data that was read from memory if `Mout_oe_ram` was set in the last cycle.
+
+|`M_DataRdy`
+|1
+|Nonzero if the memory is not ready
+
+|===
 
 
