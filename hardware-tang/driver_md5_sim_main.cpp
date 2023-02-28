@@ -4,7 +4,7 @@
 #include <verilated_vcd_c.h>
 #include "Vdriver_md5.h"
 
-#define MAX_SIM_TIME 1000
+#define MAX_SIM_TIME 1000000
 vluint64_t sim_time = 0;
 
 int main(int argc, char** argv, char** env) {

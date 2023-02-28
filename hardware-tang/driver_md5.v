@@ -1,11 +1,10 @@
-`include "mdfive.v"
-
+`include "md5.v"
 
 module top
     (
         input clk,
-        output [5:0] led,
-        output [7:0] logic_analyzer
+        output reg [5:0] led,
+        output reg [7:0] logic_analyzer
     );
 
 
@@ -14,34 +13,23 @@ module top
         slowCounter <= slowCounter + 1;
     end
     wire slowClock = slowCounter[7];
-
-
-    reg [5:0] ledCounterBuffer = 6'b000111;
-
-    wire [5:0] ledCounter;
-    reg [30:0] clockCounter = 0;
     
     wire  done;
-    wire read_enable;
-    wire write_enable;
+    wire [1:0] read_enable;
+    wire [1:0] write_enable;
     wire [63:0] current_address;
     wire [63:0] current_write_data;
     wire [11:0] current_data_size;
 
+    reg [63:0] current_read_data;
 
+    reg start = 0;
+    wire [1:0] data_ready;
 
-    reg [63:0] current_read_data = 0;
-    wire data_ready;
-
-    reg [31:0] a = 0;
-    reg [31:0] b = 0;
-    reg [31:0] c = 0;
-    reg [31:0] d = 0;
-
-    mdfive state_test_inst (
+    md5 state_test_inst (
         .clk(slowClock),
         .reset(1),
-        .start_port(1),
+        .start_port(start),
         .Pd458(32'h40000000),
         .Pd459(32'h40000100),
         .M_Rdata_ram(current_read_data),
@@ -55,96 +43,49 @@ module top
         .Mout_data_ram_size(current_data_size)
     );
 
-    reg got_correct_hash_first_part = 0;
-    reg got_correct_hash_second_part = 0;
+    assign data_ready = write_enable != 0 ? 3 : 0;
+
+    reg [10:0] done_countdown;
 
     always @(posedge slowClock) begin
-        if (read_enable == 1) begin
-            if (current_address == 63'h0000000040000000) begin
-                current_read_data <= 63'h0000000000000080;
+        if(done == 1) begin
+            done_countdown <= 100;
+            start <= 0;
+        end
+        else begin
+            if (done_countdown != 0) begin
+                done_countdown <= done_countdown - 1;
+                start <= 0;
             end
             else begin
-                current_read_data <= 63'h0000000000000000;
-
+                start <= 1;
             end
         end
-        else begin
-            current_read_data <= 63'h0000000000000000;
-        end
-    end
-    
-    // Log write enable
-    always @(posedge slowClock) begin
-        if (write_enable == 1) begin
-            logic_analyzer_counter[2] <= 1;
-            send_data <= 64'h04b2008fd98c1dd4;
+
+        if (read_enable[0] == 1 & current_address[31:0] == 32'h40000000) begin
+            current_read_data[31:0] <= 32'h00000080;
         end
         else begin
-            logic_analyzer_counter[2] <= 0;
+            current_read_data[31:0] <= 32'h00000000;
+        end
+
+        if (read_enable[1] == 1 & current_address[63:32] == 32'h40000000) begin
+            current_read_data[63:32] <= 32'h00000080;
+        end
+        else begin
+            current_read_data[63:32] <= 32'h00000000;
+        end
+
+        if (write_enable != 0) begin
+            led <= 6'b010101;
+            logic_analyzer <= current_write_data[39:32];
+            // logic_analyzer <= current_write_data[7:0];
+
+        end
+        else begin
+            led <= 6'b000111;
+            logic_analyzer <= 8'h00000000;
         end
     end
 
-    reg [63:0] send_data = 64'h04b2008fd98c1dd4;
-    reg [63:0] send_data_b = 64'h04b2008fd98c1dd4;
-    reg [6:0] current_bit;
-    reg send_done;
-    reg prepare_sending;
-
-    wire notSoSlowClock = slowCounter[5];
-
-    always begin
-            logic_analyzer_counter[6] <= notSoSlowClock;
-    end
-
-    wire current_bit_value  = 0;
-    always @(posedge notSoSlowClock) begin
-        if (send_done) begin
-            logic_analyzer_counter[5] <= 1;
-        end
-        if (!send_done && prepare_sending) begin
-            logic_analyzer_counter[5] <= 0;
-        end
-        if (!send_done && !prepare_sending) begin
-            logic_analyzer_counter[5] <= send_data_b[current_bit];
-            current_bit <= current_bit + 1;
-            if(current_bit == 63) begin
-                send_done <= 1;
-                current_bit <= 0;
-            end
-        end
-        if (slowClock && write_enable == 1 && send_done) begin
-            prepare_sending <= 1;
-            send_done <= 0;
-        end
-    end
-
-    
-
-    // Mark as correct
-    always @(posedge slowClock) begin
-        if (current_write_data == 64'h04b2008fd98c1dd4) begin
-            got_correct_hash_first_part <= 1;
-            logic_analyzer_counter[1] <= 1;
-        end
-        if (current_write_data == 64'h7e42f8ec980980e9) begin
-            got_correct_hash_second_part <= 1;
-            logic_analyzer_counter[0] <= 1;
-        end
-    end
-
-    // Enable LEDs, if we got both parts of the correct result
-    always @(posedge slowClock) begin
-        if (got_correct_hash_first_part == 1 && got_correct_hash_second_part == 1) begin
-            ledCounterBuffer <= 6'b010101;
-        end
-    end
-    
-    assign led = ledCounterBuffer;
-
-    reg [7:0] logic_analyzer_counter = 0;
-    // always @(posedge clk) begin
-    //     logic_analyzer_counter <= logic_analyzer_counter + 1;
-    // end    
-
-    assign logic_analyzer = logic_analyzer_counter;
 endmodule

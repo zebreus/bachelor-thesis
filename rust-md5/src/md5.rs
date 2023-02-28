@@ -6,7 +6,7 @@ pub mod encode_result;
 pub mod padding;
 
 // tag::md5-implementation[]
-const S: [u32; 64] = [
+const SHIFT_PER_ROUND: [u32; 64] = [
     7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 5, 9, 14, 20, 5, 9, 14, 20, 5, 9,
     14, 20, 5, 9, 14, 20, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 6, 10, 15,
     21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21,
@@ -29,8 +29,12 @@ const C0: u32 = 0x98badcfe;
 const D0: u32 = 0x10325476;
 
 #[no_mangle]
-pub unsafe extern "C" fn md5(message_pointer: *const u32, result_pointer: *mut u32) -> () {
-    let message = std::slice::from_raw_parts(message_pointer, 16 as usize);
+pub unsafe extern "C" fn md5(
+    message_pointer: *const u32,
+    result_pointer: *mut u32,
+    debug_pointer: *mut u32,
+) -> () {
+    let message = std::slice::from_raw_parts(message_pointer, 16);
     let mut a = A0; // A
     let mut b = B0; // B
     let mut c = C0; // C
@@ -38,8 +42,10 @@ pub unsafe extern "C" fn md5(message_pointer: *const u32, result_pointer: *mut u
 
     // for i from 0 to 63 do
     for i in 0u32..64 {
+        *debug_pointer = a;
+
         // var int F, g
-        let mut f: u32;
+        let f: u32;
         let g: u32;
 
         match i {
@@ -79,10 +85,12 @@ pub unsafe extern "C" fn md5(message_pointer: *const u32, result_pointer: *mut u
 
         // // Be wary of the below definitions of a,b,c,d
         // F := F + A + K[i] + M[g]  // M[g] must be a 32-bit block
-        f = f
+        let current_message_data = message[g as usize];
+        let rot = f
             .wrapping_add(a)
             .wrapping_add(K[i as usize])
-            .wrapping_add(message[g as usize]);
+            .wrapping_add(current_message_data);
+
         // A := D
         a = d;
         // D := C
@@ -90,7 +98,7 @@ pub unsafe extern "C" fn md5(message_pointer: *const u32, result_pointer: *mut u
         // C := B
         c = b;
         // B := B + leftrotate(F, s[i])
-        b = b.wrapping_add(f.rotate_left(S[i as usize]));
+        b = b.wrapping_add(rot.rotate_left(SHIFT_PER_ROUND[i as usize]));
         // end for
     }
 
@@ -118,7 +126,11 @@ mod tests {
         unsafe {
             let input_pointer = &input as *const u32;
             let mut result = [0u32; 4];
-            md5(input_pointer, &mut result as *mut u32);
+            md5(
+                input_pointer,
+                &mut result as *mut u32,
+                &mut [0u32; 1] as *mut u32,
+            );
             assert_eq!(
                 result.into_hash_string(),
                 "d41d8cd98f00b204e9800998ecf8427e"
@@ -133,7 +145,11 @@ mod tests {
         let mut result = [0u32; 4];
 
         unsafe {
-            md5(&input as *const u32, &mut result as *mut u32);
+            md5(
+                &input as *const u32,
+                &mut result as *mut u32,
+                &mut [0u32; 1] as *mut u32,
+            );
         }
 
         assert_eq!(
@@ -148,7 +164,11 @@ mod tests {
         let mut result = [0u32; 4];
 
         unsafe {
-            md5(&input as *const u32, &mut result as *mut u32);
+            md5(
+                &input as *const u32,
+                &mut result as *mut u32,
+                &mut [0u32; 1] as *mut u32,
+            );
         }
 
         assert_eq!(
@@ -164,7 +184,11 @@ mod tests {
         let mut result = [0u32; 4];
 
         unsafe {
-            md5(&input as *const u32, &mut result as *mut u32);
+            md5(
+                &input as *const u32,
+                &mut result as *mut u32,
+                &mut [0u32; 1] as *mut u32,
+            );
         }
 
         assert_eq!(
@@ -179,7 +203,11 @@ mod tests {
         let mut result = [0u32; 4];
 
         unsafe {
-            md5(&input as *const u32, &mut result as *mut u32);
+            md5(
+                &input as *const u32,
+                &mut result as *mut u32,
+                &mut [0u32; 1] as *mut u32,
+            );
         }
 
         assert_eq!(

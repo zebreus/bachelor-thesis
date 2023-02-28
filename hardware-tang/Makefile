@@ -71,11 +71,18 @@ V%_b: %.v %_sim_main_b.cpp
 V%_c: %.v %_sim_main_c.cpp  
 	$(VERILATOR) --cc --exe --build --trace --Wno-width -j 0 $^
 	mv obj_dir/V$(notdir $(basename $<)) $@
+
+driver_md5.v: md5.v
+	touch $@
 # end::hide[]
 # tag::verilator[]
 
-V%: %.v %_sim_main.cpp
+Vdriver_md5: driver_md5.v driver_md5_sim_main.cpp
 	$(VERILATOR) --cc --exe --build --trace --Wno-width -j 0 $^
+	mv obj_dir/V$(notdir $(basename $<)) $@
+
+V%: %.v %_sim_main.cpp
+	$(VERILATOR) --cc --exe --build --trace --Wno-width $^
 	mv obj_dir/V$(notdir $(basename $<)) $@
 
 .PRECIOUS: %.vcd
@@ -86,16 +93,19 @@ V%: %.v %_sim_main.cpp
 	vcd2wavedrom -i $< | sed 's/TOP\.//' | jq '.signal = (.signal | map(select(.name | length < 30)))' > $@
 # end::verilator[]
 
-top.fs: top.pack
+top-%.fs: top-%.pack
 	$(GOWINPACK) -d GW1N-9C -o $@ $^
 
-top.pack: top.json
-	$(NEXTPNR) --json top.json --write top.pack --device GW1NR-LV9QN88PC6/I5 --family GW1N-9C --cst tangnano.cst
+top-%.pack: top-%.json
+	$(NEXTPNR) --json $< --write $@ --device GW1NR-LV9QN88PC6/I5 --family GW1N-9C --cst tangnano.cst
 
-top.json: $(SOURCES)
-	$(YOSYS) -p "synth_gowin -json top.json -top top" $(SOURCES)
+top-counter.json: counter.v
+	$(YOSYS) -p "synth_gowin -json $@ -top top" counter.v
 
-prog: top.fs
+top-md5.json: md5.v driver_md5.v
+	$(YOSYS) -p "synth_gowin -json $@ -top top" driver_md5.v
+
+prog-%: top-%.fs
 	openFPGALoader -b tangnano $^
 
 clean:
