@@ -1,5 +1,27 @@
-{ pkgs ? import <nixpkgs> { }, symbolator, vcd2wavedrom, bambu, fenix }:
+{ pkgs ? import <nixpkgs> { }, symbolator, vcd2wavedrom, bambu, fenix, unstable-nixpkgs }:
 with pkgs;
+let
+  latestNextpnr = unstable-nixpkgs.nextpnr.overrideAttrs (old: {
+    pname = "nextpnr";
+    version = "0.5"; # usually harmless to omit
+    srcs = [
+      (fetchFromGitHub {
+        owner = "YosysHQ";
+        repo = "nextpnr";
+        rev = "2f509734dff676b7543a574b64a46be4224a5aa4";
+        hash = "sha256-+4jmJVn+Gz94IKCMkXbE3EW66ntCW7v9N9xXtoj2Fp8=";
+        name = "nextpnr";
+      })
+      (fetchFromGitHub {
+        owner = "YosysHQ";
+        repo = "nextpnr-tests";
+        rev = "00c55a9eb9ea2e062b51fe0d64741412b185d95d";
+        sha256 = "sha256-83suMftMtnaRFq3T2/I7Uahb11WZlXhwYt6Q/rqi2Yo=";
+        name = "nextpnr-tests";
+      })
+    ];
+  });
+in
 mkShell {
   buildInputs = [
     # For docs
@@ -34,10 +56,12 @@ mkShell {
     cacert
 
     # For verilog
-    yosys
-    nextpnrWithGui
-    icestorm
-    python3
+    unstable-nixpkgs.yosys
+    latestNextpnr
+    unstable-nixpkgs.icestorm
+    unstable-nixpkgs.openfpgaloader
+    unstable-nixpkgs.python310Packages.apycula
+    unstable-nixpkgs.python3
     verilator
 
     # Binaries from oss-cad-suite
@@ -54,11 +78,9 @@ mkShell {
     trellis
     fujprog
     ghdl-llvm
-    python310Packages.apycula
     verilog
     usbutils
     mcy
-    openfpgaloader
     openocd
     python310Packages.pyserial
     openbabel
