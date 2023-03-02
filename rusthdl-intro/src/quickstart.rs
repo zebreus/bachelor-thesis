@@ -1,9 +1,9 @@
 use rust_hdl::docs::vcd2svg::vcd_to_svg;
 use rust_hdl::prelude::*;
+use std::fs;
 use std::time::Duration;
 
-const CLOCK_SPEED_HZ: u64 = 10_000;
-
+// tag::blinky-implementation[]
 #[derive(LogicBlock)] // <- This turns the struct into something you can simulate/synthesize
 struct Blinky {
     pub clock: Signal<In, Clock>, // <- input signal, type is clock
@@ -11,6 +11,7 @@ struct Blinky {
     pub led: Signal<Out, Bit>,    // <- output signal, type is single bit
 }
 
+const CLOCK_SPEED_HZ: u64 = 10_000;
 impl Default for Blinky {
     fn default() -> Self {
         Self {
@@ -30,8 +31,10 @@ impl Logic for Blinky {
         self.led.next = self.pulser.pulse.val();
     }
 }
+// end::blinky-implementation[]
 
-pub fn quickstart() {
+// tag::simulate-blinky[]
+pub fn simulate() {
     // v--- build a simple simulation (1 testbench, single clock)
     let mut sim = simple_sim!(Blinky, clock, CLOCK_SPEED_HZ, ep, {
         let mut x = ep.init()?;
@@ -42,8 +45,26 @@ pub fn quickstart() {
     // v--- construct the circuit
     let mut uut = Blinky::default();
     uut.connect_all();
+
+    // v--- run the simulation
     sim.run_to_file(Box::new(uut), 5 * SIMULATION_TIME_ONE_SECOND, "blinky.vcd")
         .unwrap();
+}
+// end::simulate-blinky[]
+
+// tag::generate-verilog[]
+pub fn generate() {
+    let mut uut = Blinky::default();
+    uut.connect_all();
+    let data = generate_verilog(&uut);
+    fs::write("./blinky.v", data).expect("Unable to write file");
+}
+// end::generate-verilog[]
+
+pub fn quickstart() {
+    generate();
+    simulate();
+
     vcd_to_svg(
         "./blinky.vcd",
         "./blinky_all.svg",

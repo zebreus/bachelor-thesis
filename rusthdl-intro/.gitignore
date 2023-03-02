@@ -1,3 +1,4 @@
 target
 *.vcd
 *.svg
+*.v

@@ -15,8 +15,46 @@ The rust-hdl rust crate enables us to write RTL logic in rust and generate veril
 
 First we create a new cargo project by running `cargo init --bin` and add rust-hdl as a dependency by running `cargo add rust-hdl`. Then we copy the quickstart example from the https://github.com/samitbasu/rust-hdl#quickstart[rust-hdl git repo] into a `quickstart.rs` file and adjust our main function to call the quickstart example.
 
+The quickstart example is a simple blinker that runs on a 10kHz clock and blinks a single LEDs for 250 ms.
+
+.Interface of Blinky
+[symbolator]
+....
+include::blinky_top.v[]
+....
+
+=== Blinky imlementation
+
+[source,rust]
+----
+include::src/quickstart.rs[tag=blinky-implementation]
+----
+
+In rust-hdl the interfaces and registers of verilog modules are defined as a struct. In the first lines a module named `Blinky` is defined with a clock input and a led output. It also has a internal instance of a `Pulser` module which is used to actually generate the blinking signal.
+
+In the second part we define the default connections for the Blinky module. This is probably only neccessary for top-level modules, I think. The Pulser is instatiated with a configuration that sets the pulse width to 250 ms. In the next example we will try to do this without the Pulser module.
+
+Finally we define the actual logic of the Blinky module. This is straitforward we just connect the clock to the pulser and the pulser output to the led output.
+
+=== Run simulations
+
+Now that we have defined the `Blinky` module we can also simulate it.
+
 .quickstart.rs
 [source,rust]
 ----
-include::src/quickstart.rs[]
+include::src/quickstart.rs[tag=simulate-blinky]
 ----
+
+First we create a testbench using the `simple_sim!` macro. Then we construct the circuit using the default trait we implemented earlier. After that we can use the run_to_file  method on the testbench to run the simulation for a given time and write the output to a vcd file. We can then use a vcd viewer to inspect the simulation results.
+
+=== Generate verilog
+
+The test verified that our design works as intended. The next step is to export the design to verilog. 
+
+[source,rust]
+----
+include::src/quickstart.rs[tag=generate-verilog]
+----
+
+We can do this by passing the circuit to the `generate_verilog()` function. It returns verilog as a string which we can write to `blinky.v`.
