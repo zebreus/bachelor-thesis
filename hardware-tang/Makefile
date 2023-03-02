@@ -5,7 +5,22 @@ NEXTPNR   = nextpnr-gowin
 GOWINPACK = gowin_pack
 # tag::bambu[] 
 BAMBU     = bambu
-BAMBU_FLAGS = --clock-name=clk --compiler=I386_CLANG12 -Os --simulator=ICARUS
+BAMBU_FLAGS += --clock-name=clk
+BAMBU_FLAGS += --compiler=I386_CLANG12
+BAMBU_FLAGS += -Os
+BAMBU_FLAGS += --simulator=ICARUS
+# BAMBU_FLAGS += --experimental-setup=BAMBU
+# BAMBU_FLAGS += --channels-type=MEM_ACC_NN
+# BAMBU_FLAGS += --channels-number=2
+# BAMBU_FLAGS += --memory-allocation-policy=ALL_BRAM
+# BAMBU_FLAGS += --DSP-allocation-coefficient=1.75
+# BAMBU_FLAGS += --distram-threshold=256
+
+# CPRF need to be lower than 1.0
+BAMBU_FLAGS += --cprf=0.9
+# mux-margins needs to be lower than clock-period
+BAMBU_FLAGS += --mux-margins=5
+BAMBU_FLAGS += --clock-period=10
 # end::bambu[]
 # tag::clang[]
 CLANG     = clang++
@@ -103,7 +118,9 @@ top-counter.json: counter.v
 	$(YOSYS) -p "synth_gowin -json $@ -top top" counter.v
 
 top-md5.json: md5.v driver_md5.v
-	$(YOSYS) -p "synth_gowin -json $@ -top top" driver_md5.v
+#   $(YOSYS) -p "synth_gowin -json $@ -top top" driver_md5.v
+	$(YOSYS) -p "synth_gowin -json $@ -top top -noalu" driver_md5.v
+# -nodffe -nobram -nowidelut -noalu -nolutram
 
 prog-%: top-%.fs
 	openFPGALoader -b tangnano $^

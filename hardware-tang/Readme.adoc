@@ -245,6 +245,8 @@ The synthesized interface also looks sane, so we can attempt the next step and t
 
 We need to write a wrapper that connects the function to the rest of the system. Our module expects to be able to get the input data and write the output data via its memory related ports. I think it will be the easiest if we hardcode the data for the empty string. We can then verify the output of our module by activating the LEDs on the FPGA board once we got the correct result.
 
+=== Memory interface
+
 But first we should figure out how the memory works.
 
 .What do we want to learn about memory access?
@@ -546,3 +548,26 @@ The width of all memory ports scales with the number of channels.
 |===
 
 
+=== Md5 continued
+
+We have now seen how the memory is connected to the module. Lets continue with the md5 algorithm.
+
+We need a driver module that acts as the toplevel module providing the md5 module with a clock signal, input values and memory access. The driver module is also responsible for checking the output of the md5 module.
+
+We set the message_pointer to 0x40000000 and the result pointer to 0x40000100. Our driver hardcodes reads to the first message address to 0x00000080 and every other address to 0x00000000. This corresponds to the empty string padded for md5 hashing. The driver checks every write to the memory and compares it to the expected values. Once all parts of the correct hash were output once, it switches all LEDs on. The driver also supports a logic analyzer connected to 8 pins of the FPGA. It will output the last 8 bits of every write to memory for debugging purposes. Our md5 implementation will write the value of `a` to the debug pointer on every round of hashing, so we can get use that to trace execution.
+
+The simulation show that our implementation is correct, as it turn the leds on after the module has completed. However if we deploy the module to the tang nano, it does not work. The leds do not turn on and the trace we get from the logic analyzer shows that the value of `a` is correct for the first 2-6 rounds but drifts after that. This only happens when using the opensource toolchain based around yosys and nextpnr. The gowin toolchain works fine. I suspect this to be either a timing issue, a bug in the opensource toolchain or a crosstalk issue in the gowin FPGA. 
+
+.Things I tried to fix the example
+* Most of the yosys cli options
+* Most of the nextpnr cli options
+* Most of the bambu cli options
+* Updating yosys and nextpnr to the latest versions
+* Using the gowin toolchain instead of the opensource toolchain
+* Dividing the clock by 1000 to prevent clock timing problems
+* Verifying that my code is correct in many different ways
+
+.Things I will try
+* Using a FPGA from a different manufacturer
+
+After I wrote this list I tried playing around with the bambu options again and found out that it works if we set `--cprf` to a value less than 1.0 and `--mux-margin` to a value less than `--clock-period`. This is probably just a hacky workaround to generate verilog that works for this specific example with this specific toolchain. Also you need to set `-noalu` in the yosys synthesis option. As programming the verilog to actual hardware is not the focus of this post, I will not investigate this further. I have wasted enough time on this already. If we wanted proper hardware support for this example we should also create a device configuration file for the gowin FPGA for bambu. I think it easiest to use a lattice device as these are already well supported by bambu, yosys and nextpnr.

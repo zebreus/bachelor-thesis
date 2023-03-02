@@ -93,13 +93,11 @@ module top
                 received_correct_hash[1] <= received_correct_hash[1];
         end
 
-        if (received_correct_hash = 2'b11) begin
+        if (received_correct_hash == 2'b11) begin
             led <= 6'b100111;
-            done_forever <= 1;
         end
         else begin
             led <= 6'b010000;
-            done_forever <= 0;
         end
 
         if (write_enable != 0) begin
