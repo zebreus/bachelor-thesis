@@ -588,3 +588,4 @@ For future posts I will probably just focus on simulating the highlevel synthsiz
 * Add more code snippets/traces
 * Compare the performance and area estimates from bambu to the results from nextpnr
 * Add the driver for the simple example
+* Document my setup and how I used the logic analyzer
