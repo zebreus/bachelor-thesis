@@ -144,11 +144,11 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1675360752,
-        "narHash": "sha256-eHe33YUt/CuiAMVrdl6GXo3b+qo4N6DGM+/g1HEEegk=",
+        "lastModified": 1675695225,
+        "narHash": "sha256-SoBn2WVwV1idyXEzHm9+21Fyc97m3BFXdVnVnylTBwI=",
         "owner": "zebreus",
         "repo": "symbolator",
-        "rev": "4354640df25458ed539cae9123039952dcaf21f6",
+        "rev": "170b714d79786aeab10d6d924b59ea65a93b2ded",
         "type": "github"
       },
       "original": {
