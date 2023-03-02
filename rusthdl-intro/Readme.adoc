@@ -1,0 +1,22 @@
+= First steps with `rust-hdl`
+:last-update-label!:
+:imagesdir: images
+:source-highlighter: rouge
+:rouge-style: github
+:toclevels: 2
+:docinfo: shared,private-footer
+:stem:
+:toc: macro
+:icons: font
+
+The rust-hdl rust crate enables us to write RTL logic in rust and generate verilog from it. In this post we will setup a `rust-hdl` project, generate some verilog and deploy that to a FPGA. Our first goal will be to blink the LEDs on the tang nano 9k board.
+
+== Setup a `rust-hdl` project
+
+First we create a new cargo project by running `cargo init --bin` and add rust-hdl as a dependency by running `cargo add rust-hdl`. Then we copy the quickstart example from the https://github.com/samitbasu/rust-hdl#quickstart[rust-hdl git repo] into a `quickstart.rs` file and adjust our main function to call the quickstart example.
+
+.quickstart.rs
+[source,rust]
+----
+include::src/quickstart.rs[]
+----
