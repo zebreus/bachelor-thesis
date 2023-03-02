@@ -571,3 +571,20 @@ The simulation show that our implementation is correct, as it turn the leds on a
 * Using a FPGA from a different manufacturer
 
 After I wrote this list I tried playing around with the bambu options again and found out that it works if we set `--cprf` to a value less than 1.0 and `--mux-margin` to a value less than `--clock-period`. This is probably just a hacky workaround to generate verilog that works for this specific example with this specific toolchain. Also you need to set `-noalu` in the yosys synthesis option. As programming the verilog to actual hardware is not the focus of this post, I will not investigate this further. I have wasted enough time on this already. If we wanted proper hardware support for this example we should also create a device configuration file for the gowin FPGA for bambu. I think it easiest to use a lattice device as these are already well supported by bambu, yosys and nextpnr.
+
+=== Conclusion
+
+We have shown that we are able to synthesize even complex Rust functions, simulate them and deploy them to an actual FPGA. Working with real hardware turns out to be really buggy. We found out that there is no proper way to have the HLS verilog run on the FPGA without some amount of glue code. By experimenting around with the code we figured out how we can write such a glue module.
+
+For future posts I will probably just focus on simulating the highlevel synthsized modules as it can be a lot of work to get them running on a FPGA. 
+
+.Open questions
+* How accurate are the performance and area estimates from bambu compared to the results from nextpnr?
+* Why did the fix work?
+* How can we fix the names for our function arguments?
+* Is the memory interface actually documented somewhere?
+
+.TODOs for this post
+* Add more code snippets/traces
+* Compare the performance and area estimates from bambu to the results from nextpnr
+* Add the driver for the simple example
