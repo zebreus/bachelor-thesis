@@ -58,3 +58,53 @@ include::src/quickstart.rs[tag=generate-verilog]
 ----
 
 We can do this by passing the circuit to the `generate_verilog()` function. It returns verilog as a string which we can write to `blinky.v`.
+
+== Implementing the counter from the tang nano 9k example in rust-hdl
+
+In the previous post, we used a simple counter to blink the LEDs on the tang nano 9k board. Lets implement the same counter in rust-hdl.
+
+
+.Verilog counter implementation
+[source,rust]
+----
+include::src/counter.rs[tag=verilog-implementation]
+----
+
+The counter has a `clockCounter` register that counts up every cycle until it reaches 13500000. When it reaches 13500000 it resets to zero and increments a second register `ledCounter` by one. The data in the ledCounter register is then directly used to drive the LEDs.
+
+We try to keep our rust-hdl implementation as close to the verilog implementation as possible. The counter is quite similiar to the Blinky quickstart example, but to learn more about rust-hdl we will try to avoid using library modules such as Pulser.
+
+.Rust-hdl counter implementation
+[source,rust]
+----
+include::src/counter.rs[tag=rust-hdl-implementation]
+----
+
+// TODO: Verify that this is correct
+The only library modules we have use are DFFs (I think a DFF is a D flip-flop?) module. These are similar to registers in verilog, as they also represent a way to keep state between clock cycles. While the `reg` keyword in verilog provides a generic way to store a value, until a new value gets assigned, rust-hdl requires us to specify how we want to store a value. In this case we use a D flip-flop to store the value of the counter.
+
+// TODO: More about DFFs?
+
+Like the verilog module the Rust struct has an input named `clock` and an output named `led`. The struct also has two internal flip-flops `clock_counter` and `led_counter`. These are functionally equivalent to the `clockCounter` and `ledCounter` registers in the verilog implementation.
+
+
+// TODO: Default maybe can be derived.
+
+The logic for the counter is implemented in the update function. The update function is comparable to an `always @(*)` block in verilog. Verilog also allows us to put the logic of a module into multiple procedural and combinational blocks. rust-hdl forces us to keep all logic of the module in one place to improve readability. 
+
+// TODO: Is it really combinational? Not sure.
+Another big difference to verilog is that rust-hdl only allows us to do combinational logic. So we can not use something like the `<=` operator from verilog to assign a value in the next timestep. If we want to do something in the next clock cycle we have to use a flip-flop module (like the DFF we used here) and use combinational assignments to drive the flip-flop.
+
+So our rust-hdl kernel defines the data input `d` of `clock_counter` to be the value of the data output of `clock_counter` plus one. Because we also connected our clock to the clock input of `clock_counter` the data will be stored into `clock_counter` on the next rising edge of the clock. The same is true for `led_counter`. While this is a bit more verbose than verilog it also makes it easier to reason about the logic of the module
+
+[NOTE]
+====
+If we can only do combinational assignments in rust-hdl you may wonder how DFF can keep the state at all. The answer is that the logic of the DFF module is not written in rust-hdl but in verilog. Later I will show you how to embed verilog code into rust-hdl.
+====
+
+[NOTE]
+====
+Note that rust-hdl does not allow us to specify a sensitivity list (`always @(posedge clock)`), like verilog does. If we want to react to specific edges we would have to do that manually or use the EdgeDetector module.
+====
+
+

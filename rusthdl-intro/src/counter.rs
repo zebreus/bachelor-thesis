@@ -3,8 +3,7 @@ use rust_hdl::prelude::*;
 use std::fs;
 
 /*
-// Verilog reference implementation
-
+// tag::verilog-implementation[]
 module top
     (
         input clk,
@@ -25,8 +24,11 @@ module top
 
     assign led = ~ledCounter;
 endmodule
+// end::verilog-implementation[]
  */
 
+// tag::rust-hdl-implementation[]
+// tag::rust-hdl-struct[]
 #[derive(LogicBlock)]
 struct Counter {
     pub clock: Signal<In, Clock>,
@@ -34,6 +36,7 @@ struct Counter {
     clock_counter: DFF<Bits<32>>,
     led_counter: DFF<Bits<6>>,
 }
+// end::rust-hdl-struct[]
 
 const WAIT_TIME: u32 = 10;
 impl Default for Counter {
@@ -50,7 +53,9 @@ impl Default for Counter {
 impl Logic for Counter {
     #[hdl_gen]
     fn update(&mut self) {
-        dff_setup!(self, clock, led_counter, clock_counter);
+        self.led_counter.clock.next = self.clock.val();
+        self.clock_counter.clock.next = self.clock.val();
+        self.led_counter.d.next = self.led_counter.q.val();
 
         self.led.next = self.led_counter.q.val();
         self.clock_counter.d.next = self.clock_counter.q.val() + 1u64.to_bits();
@@ -61,6 +66,7 @@ impl Logic for Counter {
         }
     }
 }
+// end::rust-hdl-implementation[]
 
 pub fn simulate() {
     let mut sim = simple_sim!(Counter, clock, 10000, ep, {
