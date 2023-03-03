@@ -107,4 +107,21 @@ If we can only do combinational assignments in rust-hdl you may wonder how DFF c
 Note that rust-hdl does not allow us to specify a sensitivity list (`always @(posedge clock)`), like verilog does. If we want to react to specific edges we would have to do that manually or use the EdgeDetector module.
 ====
 
+=== Simulating and verifying our counter
+
+We can use a normal rust unittest to test the counter
+
+.Rust-hdl counter implementation
+[source,rust]
+----
+include::src/counter.rs[tag=rust-hdl-test]
+----
+<1> Create a counter for testing
+<2> Prepare a simulation environment with a 100MHz clock
+<3> Add a testbench for testing the counter
+<4> Run the simulation until it passed (or times out)
+
+This time we do not use the `simple_test!()` macro but create all the components for a testcase ourselves. In this specific case we do not really need the additional control over the simulation but it is nice to understand what that macro actually does.
+
+Our testbench tests that the counter increments the led counter once after each `WAIT_TIME` cycles. After that has been verified for the first ten numbers, we let the testbench complete successfully.
 

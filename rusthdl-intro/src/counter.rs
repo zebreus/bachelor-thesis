@@ -1,4 +1,3 @@
-use rust_hdl::docs::vcd2svg::vcd_to_svg;
 use rust_hdl::prelude::*;
 use std::fs;
 
@@ -38,7 +37,7 @@ struct Counter {
 }
 // end::rust-hdl-struct[]
 
-const WAIT_TIME: u32 = 10;
+const WAIT_TIME: u64 = 1000;
 impl Default for Counter {
     fn default() -> Self {
         Self {
@@ -60,7 +59,7 @@ impl Logic for Counter {
         self.led.next = self.led_counter.q.val();
         self.clock_counter.d.next = self.clock_counter.q.val() + 1u64.to_bits();
 
-        if self.clock_counter.q.val() > WAIT_TIME.to_bits() {
+        if self.clock_counter.q.val() >= WAIT_TIME.to_bits() - 1 {
             self.clock_counter.d.next = 0.into();
             self.led_counter.d.next = self.led_counter.q.val() + 1u64.to_bits();
         }
@@ -68,44 +67,54 @@ impl Logic for Counter {
 }
 // end::rust-hdl-implementation[]
 
-pub fn simulate() {
-    let mut sim = simple_sim!(Counter, clock, 10000, ep, {
-        let mut x = ep.init()?;
-        wait_clock_cycles!(ep, clock, x, 4 * 10000);
-        ep.done(x)
-    });
-
-    let mut uut = Counter::default();
-    uut.connect_all();
-
-    sim.run_to_file(Box::new(uut), 5 * SIMULATION_TIME_ONE_SECOND, "counter.vcd")
-        .unwrap();
-}
-pub fn generate() {
-    let mut uut = Counter::default();
-    uut.connect_all();
-    let data = generate_verilog(&uut);
+/// Create a counter.v file
+pub fn counter() {
+    let mut device = Counter::default();
+    device.connect_all();
+    let data = generate_verilog(&device);
     fs::write("./counter.v", data).expect("Unable to write file");
 }
 
-pub fn counter() {
-    generate();
-    simulate();
+// tag::rust-hdl-test[]
+#[cfg(test)]
+mod tests {
+    use super::Counter;
+    use super::WAIT_TIME;
+    use rust_hdl::prelude::*;
 
-    vcd_to_svg(
-        "./counter.vcd",
-        "./counter_all.svg",
-        &["uut.clock", "uut.led"],
-        0,
-        4_000_000_000_000,
-    )
-    .unwrap();
-    vcd_to_svg(
-        "./counter.vcd",
-        "./counter_pulse.svg",
-        &["uut.clock", "uut.led"],
-        900_000_000_000,
-        1_500_000_000_000,
-    )
-    .unwrap();
+    #[test]
+    fn should_be_able_to_count_to_ten() {
+        // <1>
+        let mut counter = Counter::default();
+        counter.connect_all();
+
+        // <2>
+        let mut simulation = Simulation::new();
+        let clock_period = 10000;
+        simulation.add_clock(clock_period / 2, |counter: &mut Box<Counter>| {
+            counter.clock.next = !counter.clock.val()
+        });
+
+        // <3>
+        simulation.add_testbench(move |mut sim: Sim<Counter>| {
+            let mut counter = sim.init()?;
+
+            for expected_counter in 0..10 {
+                sim_assert_eq!(sim, counter.led.val(), expected_counter, counter);
+                wait_clock_cycles!(sim, clock, counter, WAIT_TIME)
+            }
+
+            sim.done(counter)
+        });
+
+        // <4>
+        simulation
+            .run_to_file(
+                Box::new(counter),
+                clock_period * WAIT_TIME * 20,
+                &vcd_path!("should_be_able_to_count_to_ten.vcd"),
+            )
+            .unwrap();
+    }
 }
+// end::rust-hdl-test[]
