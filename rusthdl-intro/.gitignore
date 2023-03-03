@@ -3,3 +3,7 @@ target
 *.svg
 *.v
 sims
+obj_dir
+*.fs
+*.json
+V*

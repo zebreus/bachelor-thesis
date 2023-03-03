@@ -5,7 +5,7 @@ use std::fs;
 // tag::verilog-implementation[]
 module top
     (
-        input clk,
+        input clock,
         output [5:0] led
     );
 
@@ -13,7 +13,7 @@ module top
     localparam WAIT_TIME = 13500000;
     reg [5:0] ledCounter = 0;
 
-    always @(posedge clk) begin
+    always @(posedge clock) begin
         clockCounter <= clockCounter + 1;
         if (clockCounter == WAIT_TIME) begin
             clockCounter <= 0;
@@ -34,17 +34,19 @@ struct Counter {
     pub led: Signal<Out, Bits<6>>,
     clock_counter: DFF<Bits<32>>,
     led_counter: DFF<Bits<6>>,
+    delay: Constant<Bits<32>>,
 }
 // end::rust-hdl-struct[]
 
-const WAIT_TIME: u64 = 1000;
-impl Default for Counter {
-    fn default() -> Self {
+impl Counter {
+    // Create a new counter
+    pub fn new(delay: u64) -> Self {
         Self {
             clock: Default::default(),
             led: Default::default(),
             clock_counter: Default::default(),
             led_counter: Default::default(),
+            delay: Constant::new(delay.into()),
         }
     }
 }
@@ -59,7 +61,7 @@ impl Logic for Counter {
         self.led.next = self.led_counter.q.val();
         self.clock_counter.d.next = self.clock_counter.q.val() + 1u64.to_bits();
 
-        if self.clock_counter.q.val() >= WAIT_TIME.to_bits() - 1 {
+        if self.clock_counter.q.val() >= self.delay.val() - 1 {
             self.clock_counter.d.next = 0.into();
             self.led_counter.d.next = self.led_counter.q.val() + 1u64.to_bits();
         }
@@ -69,7 +71,7 @@ impl Logic for Counter {
 
 /// Create a counter.v file
 pub fn counter() {
-    let mut device = Counter::default();
+    let mut device = Counter::new(13500000u64);
     device.connect_all();
     let data = generate_verilog(&device);
     fs::write("./counter.v", data).expect("Unable to write file");
@@ -79,13 +81,13 @@ pub fn counter() {
 #[cfg(test)]
 mod tests {
     use super::Counter;
-    use super::WAIT_TIME;
     use rust_hdl::prelude::*;
+    const WAIT_TIME: u64 = 1000;
 
     #[test]
     fn should_be_able_to_count_to_ten() {
         // <1>
-        let mut counter = Counter::default();
+        let mut counter = Counter::new(WAIT_TIME);
         counter.connect_all();
 
         // <2>

@@ -1,5 +1,8 @@
 
 PWD = $(shell pwd)
+YOSYS     = yosys
+NEXTPNR   = nextpnr-gowin
+GOWINPACK = gowin_pack
 
 ASCIIDOCTOR = asciidoctor
 CARGO = cargo
@@ -10,7 +13,7 @@ TARGETS += $(TARGETS_WITHOUT_HTML) index.html
 .EXTRA_PREREQS:=Makefile
 all: $(TARGETS)
 
-blinky.vcd blinky.v:
+blinky.vcd blinky.v counter.v:
 	$(CARGO) run
 
 blinky_top.v: blinky.v
@@ -20,6 +23,18 @@ blinky_top.v: blinky.v
 
 index.html: Readme.adoc blinky.vcd blinky_top.v
 	$(ASCIIDOCTOR) -r asciidoctor-diagram Readme.adoc -o index.html
+
+top-%.fs: top-%.pack
+	$(GOWINPACK) -d GW1N-9C -o $@ $^
+
+top-%.pack: top-%.json tangnano.cst
+	$(NEXTPNR) --json $< --write $@ --device GW1NR-LV9QN88PC6/I5 --family GW1N-9C --cst tangnano.cst
+
+top-counter.json: counter.v
+	$(YOSYS) -p "synth_gowin -json $@ -top top" counter.v
+
+prog-%: top-%.fs
+	openFPGALoader -b tangnano $^
 
 clean: 
 	rm -rf target blinky.vcd blinky.v blinky_top.v

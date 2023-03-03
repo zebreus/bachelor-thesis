@@ -125,3 +125,8 @@ This time we do not use the `simple_test!()` macro but create all the components
 
 Our testbench tests that the counter increments the led counter once after each `WAIT_TIME` cycles. After that has been verified for the first ten numbers, we let the testbench complete successfully.
 
+== Compile to hardware
+
+Now that we have verified that our counter works as intended we can compile it to hardware. We can do this by using the `generate_verilog()` function.
+
+The steps to program the FPGA are the same as in the previous post, blablabla.
