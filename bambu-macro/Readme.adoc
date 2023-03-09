@@ -1,0 +1,36 @@
+= Making it convenient to use HLS from rust
+:last-update-label!:
+:imagesdir: images
+:source-highlighter: rouge
+:rouge-style: github
+// We define C++ here, because the ++ is also used as a delimiter in asciidoc
+:cpp: C++
+:toclevels: 2
+:docinfo: shared,private-footer
+:stem:
+:toc: macro
+
+In the previous post we synthesized a Verilog counter from Rust code. Then we manually pasted that Verilog into a handmade `rust-hdl` component, so that we can use it. This is not very convient. 
+
+In an ideal world one would be able to annotate a function with something like `#[hls]` and then a rust macro would do all the conversions for you. In this post we will explore how to do that.
+
+.The toolchain
+[pikchr]
+....
+   arrow right 150% ".rs file with macros" "Source"
+   box rad 10px "Transform to LLVM" "(rustc)" fit
+   arrow right 190% "LLVM IR file" "Intermediate"
+   box rad 10px "HLS to verilog" "(bambu)" fit
+   arrow right 130% "Verilog module" "Intermediate"
+   box rad 10px "Embed into rust-hdl" "(yosys)" fit
+   arrow right 200% "rust-hdl module" "Target"
+....
+
+So we need to write three rust macros. One that converts a file to LLVM IR, one that converts LLVM IR to Verilog, and one that embeds the Verilog into a rust-hdl component.
+
+The first two macros will be quite hacky, as we will need to invoke external tools from rust. The third macro should be quite straightforward, as it only needs to wrap the Verilog in a rust-hdl component. We will start with the third macro, as it is the easiest.
+
+== Converting a rust file with some kind of Verilog to a rust-hdl component
+
+After the other two macros created Verilog and placed it into the file we now need to wrap that up for `rust-hdl`. At first we need to find out in what format we need the Verilog. For now we will just assume that it can be in any shape we want it figure the details out later. As a first atttempt I propose the following format:
+
