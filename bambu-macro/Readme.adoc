@@ -32,5 +32,50 @@ The first two macros will be quite hacky, as we will need to invoke external too
 
 == Converting a rust file with some kind of Verilog to a rust-hdl component
 
-After the other two macros created Verilog and placed it into the file we now need to wrap that up for `rust-hdl`. At first we need to find out in what format we need the Verilog. For now we will just assume that it can be in any shape we want it figure the details out later. As a first atttempt I propose the following format:
+After the other two macros created Verilog and placed it into the file we now need to wrap that up for `rust-hdl`. First I will try to define some goals I want to achieve.
 
+.Goals
+- It should be able to convert the Verilog counter example to a rust-hdl component.
+- It should be able to convert a Verilog module synthesized by bambu to a rust-hdl component.
+- It should be callable as a rust macro.
+- It should take a Verilog string as input.
+
+Lets try to split the task of create that rust macro that converts a verilog to rusthdl into smaller subtasks.
+
+.Task subdivision
+[%collapsible]
+====
+.1
+- Create a rust macro that converts a verilog to rusthdl
+
+.2
+- Create library that converts a verilog string to a rust-hdl string
+- Create a macro around that library
+
+.3
+- Create a rust crate for the converter library
+- Figure out the interface of the library functions
+- Parse Verilog strings
+- Create rust-hdl strings
+- Create a macro around that library
+
+.4
+- Create a rust crate for the converter library
+- Figure out the interface of the library functions
+- Parse Verilog strings
+- Extract the top module interface
+- Create rust-hdl module
+- Insert Verilog into rust-hdl module
+- Create a macro around that library
+====
+
+.Tasks
+- Create a rust crate for the converter library
+- Figure out the interface of the library functions
+- Parse Verilog strings
+- Extract the top module interface
+- Create rust-hdl module
+- Insert Verilog into rust-hdl module
+- Create a macro around that library
+
+I will try to work the tasks in that order and log any problems here.
