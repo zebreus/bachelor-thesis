@@ -1,0 +1,7 @@
+[package]
+name = "convert-verilog-to-rusthdl"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+sv-parser = "0.13.0"

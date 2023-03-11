@@ -71,11 +71,19 @@ Lets try to split the task of create that rust macro that converts a verilog to 
 
 .Tasks
 - Create a rust crate for the converter library
-- Figure out the interface of the library functions
 - Parse Verilog strings
 - Extract the top module interface
 - Create rust-hdl module
 - Insert Verilog into rust-hdl module
+- Figure out the interface of the library functions
 - Create a macro around that library
 
 I will try to work the tasks in that order and log any problems here.
+
+=== Create a rust crate for the converter library
+
+Easy, I just run `cargo init --lib` and create a new crate. Why did I even add a task for this?
+
+=== Parse Verilog strings
+
+I tried the `verilog` parser crate, but it had problems parsing even basic Verilog. Next I tried the `sv-parser` crate. That one is actually build for SystemVerilog, but that is just a superset of Verilog, so it should work.
