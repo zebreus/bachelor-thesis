@@ -10,3 +10,5 @@ diag-*.*
 # bambu HLS output
 HLS_output
 synthesize_Synthesis_*.sh
+
+.vscode/settings.json

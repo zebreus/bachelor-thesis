@@ -9,13 +9,13 @@
 :toc: macro
 :icons: font
 
-The rust-hdl rust crate enables us to write RTL logic in rust and generate verilog from it. In this post we will setup a `rust-hdl` project, generate some verilog and deploy that to a FPGA. Our first goal will be to blink the LEDs on the tang nano 9k board.
+The rust-hdl rust crate enables us to write RTL logic in rust and generate Verilog from it. In this post, we will set up a `rust-hdl` project, generate some verilog and deploy that to an FPGA. Our first goal will be to blink the LEDs on the tang nano 9k board.
 
 == Setup a `rust-hdl` project
 
-First we create a new cargo project by running `cargo init --bin` and add rust-hdl as a dependency by running `cargo add rust-hdl`. Then we copy the quickstart example from the https://github.com/samitbasu/rust-hdl#quickstart[rust-hdl git repo] into a `quickstart.rs` file and adjust our main function to call the quickstart example.
+First, we create a new cargo project by running `cargo init --bin` and add rust-hdl as a dependency by running `cargo add rust-hdl`. Then we copy the quickstart example from the https://github.com/samitbasu/rust-hdl#quickstart[rust-hdl git repo] into a `quickstart.rs` file and adjust our main function to call the quickstart example.
 
-The quickstart example is a simple blinker that runs on a 10kHz clock and blinks a single LEDs for 250 ms.
+The quickstart example is a simple blinker that runs on a 10kHz clock and blinks a single LED for 250 ms.
 
 .Interface of Blinky
 [symbolator]
@@ -23,18 +23,18 @@ The quickstart example is a simple blinker that runs on a 10kHz clock and blinks
 include::blinky_top.v[]
 ....
 
-=== Blinky imlementation
+=== Blinky implementation
 
 [source,rust]
 ----
 include::src/quickstart.rs[tag=blinky-implementation]
 ----
 
-In rust-hdl the interfaces and registers of verilog modules are defined as a struct. In the first lines a module named `Blinky` is defined with a clock input and a led output. It also has a internal instance of a `Pulser` module which is used to actually generate the blinking signal.
+In rust-hdl the interfaces and registers of Verilog modules are defined as a struct. In the first lines a module named `Blinky` is defined with a clock input and a led output. It also has an internal instance of a `Pulser` module which is used to generate the blinking signal.
 
-In the second part we define the default connections for the Blinky module. This is probably only neccessary for top-level modules, I think. The Pulser is instatiated with a configuration that sets the pulse width to 250 ms. In the next example we will try to do this without the Pulser module.
+In the second part, we define the default connections for the Blinky module. This is probably only necessary for top-level modules, I think. The Pulser is instantiated with a configuration that sets the pulse width to 250 ms. In the next example, we will try to do this without the Pulser module.
 
-Finally we define the actual logic of the Blinky module. This is straitforward we just connect the clock to the pulser and the pulser output to the led output.
+Finally, we define the actual logic of the Blinky module. This is straightforward we just connect the clock to the pulser and the pulser output to the led output.
 
 === Run simulations
 
@@ -46,20 +46,20 @@ Now that we have defined the `Blinky` module we can also simulate it.
 include::src/quickstart.rs[tag=simulate-blinky]
 ----
 
-First we create a testbench using the `simple_sim!` macro. Then we construct the circuit using the default trait we implemented earlier. After that we can use the run_to_file  method on the testbench to run the simulation for a given time and write the output to a vcd file. We can then use a vcd viewer to inspect the simulation results.
+First, we create a testbench using the `simple_sim!` macro. Then we construct the circuit using the default trait we implemented earlier. After that, we can use the run_to_file  method on the testbench to run the simulation for a given time and write the output to a vcd file. We can then use a vcd viewer to inspect the simulation results.
 
-=== Generate verilog
+=== Generate Verilog
 
-The test verified that our design works as intended. The next step is to export the design to verilog. 
+The test verified that our design works as intended. The next step is to export the design to Verilog. 
 
 [source,rust]
 ----
 include::src/quickstart.rs[tag=generate-verilog]
 ----
 
-We can do this by passing the circuit to the `generate_verilog()` function. It returns verilog as a string which we can write to `blinky.v`.
+We can do this by passing the circuit to the `generate_verilog()` function. It returns Verilog as a string that we can write to `blinky.v`.
 
-=== Inspecting the generated verilog
+=== Inspecting the generated Verilog
 
 Let's take a look at the generated Verilog and analyze it:
 
@@ -78,17 +78,17 @@ include::blinky.v[lines=31..]
 ----
 ====
 
-rust-hdl generates a Verilog module named top from the toplevel rust-hdl module. The inputs and outputs are specified as module ports. All internal logic from the `update` function is placed in an `always @(*)` block (a procedural block that is executed every time the inputs change.). It seems like rust-hdl is only doing combinational logic in the always block.
+rust-hdl generates a Verilog module named top from the top-level rust-hdl module. The inputs and outputs are specified as module ports. All internal logic from the `update` function is placed in an `always @(*)` block (a procedural block that is executed every time the inputs change.). It seems like rust-hdl is only doing combinational logic in the always block.
 
-The blinker example does not really have any logic in itself as it outsource most of the blinking to an instance of the pulser module. We can see that the name of the pulser module is prefixed with `top$` because it is used as a component of the top module. rust-hdl does this to avoid naming conflicts. This way multiple modules with the same name can be used in the same design, because their name is always unique, as it is prefixed with the names of its parent (and their parents).
+The blinker example does not really have any logic in itself as it outsources most of the blinking to an instance of the pulser module. We can see that the name of the pulser module is prefixed with `top$` because it is used as a component of the top module. rust-hdl does this to avoid naming conflicts. This way multiple modules with the same name can be used in the same design, because their name is always unique, as it is prefixed with the names of its parent (and their parents).
 
-This can lead to some very long names when a module is nested deep in the hierarchy of the design. For example the pulser has a shot sub-module which has a counter submodule. The counter submodule is named `top$pulser$shot$counter`. This is not a problem for verilog, but it can make it hard to read the generated verilog.
+This can lead to some very long names when a module is nested deep in the hierarchy of the design. For example, the pulser has a shot sub-module which has a counter submodule. The counter submodule is named `top$pulser$shot$counter`. This is not a problem for Verilog, but it can make it hard to read the generated Verilog.
 
-Otherwise the generated verilog seems quite readable and looks similar to code we would have written by hand. I like it.
+Otherwise, the generated Verilog seems quite readable and looks similar to code we would have written by hand. I like it.
 
 == Implementing the counter from the tang nano 9k example in rust-hdl
 
-In the previous post, we used a simple counter to blink the LEDs on the tang nano 9k board. Lets implement the same counter in rust-hdl.
+In the previous post, we used a simple counter to blink the LEDs on the tang nano 9k board. Let us implement the same counter in rust-hdl.
 
 
 .Verilog counter implementation
@@ -99,7 +99,7 @@ include::src/counter.rs[tag=verilog-implementation]
 
 The counter has a `clockCounter` register that counts up every cycle until it reaches 13500000. When it reaches 13500000 it resets to zero and increments a second register `ledCounter` by one. The data in the ledCounter register is then directly used to drive the LEDs.
 
-We try to keep our rust-hdl implementation as close to the verilog implementation as possible. The counter is quite similiar to the Blinky quickstart example, but to learn more about rust-hdl we will try to avoid using library modules such as Pulser.
+We try to keep our rust-hdl implementation as close to the Verilog implementation as possible. The counter is quite similar to the Blinky quickstart example, but to learn more about rust-hdl we will try to avoid using library modules such as Pulser.
 
 .Rust-hdl counter implementation
 [source,rust]
@@ -107,7 +107,7 @@ We try to keep our rust-hdl implementation as close to the verilog implementatio
 include::src/counter.rs[tag=rust-hdl-implementation]
 ----
 
-.Generated verilog
+.Generated Verilog
 [%collapsible]
 ====
 .counter.v
@@ -118,35 +118,35 @@ include::counter.v[]
 ====
 
 // TODO: Verify that this is correct
-The only library modules we have use are DFFs (I think a DFF is a D flip-flop?) module. These are similar to registers in verilog, as they also represent a way to keep state between clock cycles. While the `reg` keyword in verilog provides a generic way to store a value, until a new value gets assigned, rust-hdl requires us to specify how we want to store a value. In this case we use a D flip-flop to store the value of the counter.
+The only library modules we have used are DFFs (I think a DFF is a D flip-flop?) module. These are similar to registers in Verilog, as they also represent a way to keep the state between clock cycles. While the `reg` keyword in Verilog provides a generic way to store a value, until a new value gets assigned, rust-hdl requires us to specify how we want to store a value. In this case, we use a D flip-flop to store the value of the counter.
 
 // TODO: More about DFFs?
 
-Like the verilog module the Rust struct has an input named `clock` and an output named `led`. The struct also has two internal flip-flops `clock_counter` and `led_counter`. These are functionally equivalent to the `clockCounter` and `ledCounter` registers in the verilog implementation.
+Like the Verilog module, the Rust struct has an input named `clock` and an output named `led`. The struct also has two internal flip-flops `clock_counter` and `led_counter`. These are functionally equivalent to the `clockCounter` and `ledCounter` registers in the Verilog implementation.
 
 
 // TODO: Default maybe can be derived.
 
-The logic for the counter is implemented in the update function. The update function is comparable to an `always @(*)` block in verilog. Verilog also allows us to put the logic of a module into multiple procedural and combinational blocks. rust-hdl forces us to keep all logic of the module in one place to improve readability. 
+The logic for the counter is implemented in the update function. The update function is comparable to an `always @(*)` block in Verilog. Verilog also allows us to put the logic of a module into multiple procedural and combinational blocks. rust-hdl forces us to keep all logic of the module in one place to improve readability. 
 
 // TODO: Is it really combinational? Not sure.
-Another big difference to verilog is that rust-hdl only allows us to do combinational logic. So we can not use something like the `<=` operator from verilog to assign a value in the next timestep. If we want to do something in the next clock cycle we have to use a flip-flop module (like the DFF we used here) and use combinational assignments to drive the flip-flop.
+Another big difference to Verilog is that rust-hdl only allows us to do combinational logic. So we can not use something like the `<=` operator from Verilog to assign a value in the next time step. If we want to do something in the next clock cycle we have to use a flip-flop module (like the DFF we used here) and use combinational assignments to drive the flip-flop.
 
-So our rust-hdl kernel defines the data input `d` of `clock_counter` to be the value of the data output of `clock_counter` plus one. Because we also connected our clock to the clock input of `clock_counter` the data will be stored into `clock_counter` on the next rising edge of the clock. The same is true for `led_counter`. While this is a bit more verbose than verilog it also makes it easier to reason about the logic of the module
-
-[NOTE]
-====
-If we can only do combinational assignments in rust-hdl you may wonder how DFF can keep the state at all. The answer is that the logic of the DFF module is not written in rust-hdl but in verilog. Later I will show you how to embed verilog code into rust-hdl.
-====
+So our rust-hdl kernel defines the data input `d` of `clock_counter` to be the value of the data output of `clock_counter` plus one. Because we also connected our clock to the clock input of `clock_counter` the data will be stored in `clock_counter` on the next rising edge of the clock. The same is true for `led_counter`. While this is a bit more verbose than Verilog it also makes it easier to reason about the logic of the module
 
 [NOTE]
 ====
-Note that rust-hdl does not allow us to specify a sensitivity list (`always @(posedge clock)`), like verilog does. If we want to react to specific edges we would have to do that manually or use the EdgeDetector module.
+If we can only do combinational assignments in rust-hdl you may wonder how DFF can keep the state at all. The answer is that the logic of the DFF module is not written in rust-hdl but in Verilog. Later I will show you how to embed verilog code into rust-hdl.
+====
+
+[NOTE]
+====
+Note that rust-hdl does not allow us to specify a sensitivity list (`always @(posedge clock)`), as verilog does. If we want to react to specific edges we would have to do that manually or use the EdgeDetector module.
 ====
 
 === Simulating and verifying our counter
 
-We can use a normal rust unittest to test the counter
+We can use a normal rust unit test to test the counter
 
 .Rust-hdl counter implementation
 [source,rust]
@@ -158,9 +158,9 @@ include::src/counter.rs[tag=rust-hdl-test]
 <3> Add a testbench for testing the counter
 <4> Run the simulation until it passed (or times out)
 
-This time we do not use the `simple_test!()` macro but create all the components for a testcase ourselves. In this specific case we do not really need the additional control over the simulation but it is nice to understand what that macro actually does.
+This time we do not use the `simple_test!()` macro but create all the components for a test case ourselves. In this specific case, we do not really need the additional control over the simulation but it is nice to understand what that macro actually does.
 
-Our testbench tests that the counter increments the led counter once after each `WAIT_TIME` cycles. After that has been verified for the first ten numbers, we let the testbench complete successfully.
+Our testbench tests that the counter increments the led counter once after `WAIT_TIME` cycles. After that has been verified for the first ten numbers, we let the testbench complete successfully.
 
 == Compile to hardware
 
@@ -168,22 +168,22 @@ Now that we have verified that our counter works as intended we can compile it t
 
 The steps to program the FPGA are the same as in the previous post, blablabla.
 
-== Embedding verilog code
+== Embedding Verilog code
 
-Instead of porting the Verilog counter to rust-hdl we can also embed the verilog code directly into our rust-hdl code. This is useful if we want to use a module that is not yet implemented in rust-hdl or if we want to use a module that is not available as a library. We will also use this technique to bring our HLS code into rust-hdl in a later post.
+Instead of porting the Verilog counter to rust-hdl we can also embed the Verilog code directly into our rust-hdl code. This is useful if we want to use a module that is not yet implemented in rust-hdl or if we want to use a module that is not available as a library. We will also use this technique to bring our HLS code into rust-hdl in a later post.
 
 The module for the counter implementation from earlier would look like this:
 
-.Verilog based counter implementation
+. Verilog-based counter implementation
 [source,rust]
 ----
 include::src/counter_embedded.rs[tag=rust-hdl-implementation]
 ----
-<1> The update function is empty because we specify the generated Verilog in hdl
+<1> The update function is empty because we specify the generated Verilog in HDL
 <2> We need to tell rust-hdl that led is driven from our verilog code
-<3> Creating an instance of the verilog module
+<3> Creating an instance of the Verilog module
 
-.Generated verilog
+.Generated Verilog
 [%collapsible]
 ====
 .counter_embedded.v
@@ -195,17 +195,17 @@ include::counter_embedded.v[]
 
 The interface in the struct looks similar to the previous example.
 
-The logic implementation has some notable differences. We implemented the `hdl` function to specify custom Verilog. The Verilog wrapper we specified there gets two inputs. `cores` will be inserted into the HDL file after our the module we are currently defining. We use this to add the Verilog counter module here. If we have more code we might need to be a bit careful here if we have modules with duplicate names. `code` will be inserted directly into the module we are currently generating. Here we instatiate an instance of the Verilog counter and connect it to the inputs and outputs of our rust-hdl module.
+The logic implementation has some notable differences. We implemented the `hdl` function to specify custom Verilog. The Verilog wrapper we specified has two inputs. `cores` will be inserted into the HDL file after the module we are currently defining. We use this to add the Verilog counter module here. If we have more code we might need to be a bit careful here if we have modules with duplicate names. `code` will be inserted directly into the module we are currently generating. Here we instantiate an instance of the Verilog counter and connect it to the inputs and outputs of our rust-hdl module.
 
-We also need to specify the `connect` function to tell rust-hdl that the `led` output of our module is driven by the `led` output of the verilog module. This is necessary because rust-hdl can not infer the connection between the two.
+We also need to specify the `connect` function to tell rust-hdl that the `led` output of our module is driven by the `led` output of the Verilog module. This is necessary because rust-hdl can not infer the connection between the two.
 
-The update function is empty because the manually specified HDL takes precedence over the rust-hdl update. However if we want to simulate the module we need to implement the update function as rust-hdl is not capable of simulating Verilog code. This is a major limitation of the current version of rust-hdl. We might be able to use verilator to generate code from the Verilog in some later experiment but for now we will just accept that we can not simulate the counter.
+The update function is empty because the manually specified HDL takes precedence over the rust-hdl update. However, if we want to simulate the module we need to implement the update function as rust-hdl is not capable of simulating Verilog code. This is a major limitation of the current version of rust-hdl. We might be able to use https://www.veripool.org/verilator/[Verilator] to generate code from the Verilog in some later experiments but for now, we will just accept that we can not simulate the counter.
 
 
 When we deploy the generated Verilog to the FPGA we can see that the counter works as expected. 
 
 == Conclusion
 
-In this post we have learned how to use rust-hdl and tried some basic examples.
+In this post, we have learned how to use rust-hdl and tried some basic examples.
 
-As we can embed verilog code into rust-hdl we can use it to bring our HLS code into rust-hdl. However there is the big limitation that we wont be able to simulate our code if we do that. For now we will accept that limitation. In the next post we will try to analyze further obstacles we might encounter when trying to integrate bambu with rust-hdl.
+As we can embed Verilog code into rust-hdl we can use it to bring our HLS code into rust-hdl. However, there is a big limitation that we won't be able to simulate our code if we do that. For now, we will accept that limitation. In the next post, we will try to analyze further obstacles we might encounter when trying to integrate bambu with rust-hdl.
