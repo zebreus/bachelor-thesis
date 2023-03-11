@@ -1,4 +1,3 @@
-use rust_hdl::docs::vcd2svg::vcd_to_svg;
 use rust_hdl::prelude::*;
 use std::fs;
 use std::time::Duration;
@@ -34,7 +33,7 @@ impl Logic for Blinky {
 // end::blinky-implementation[]
 
 // tag::simulate-blinky[]
-pub fn simulate() {
+pub fn simulate_blinky() {
     // v--- build a simple simulation (1 testbench, single clock)
     let mut sim = simple_sim!(Blinky, clock, CLOCK_SPEED_HZ, ep, {
         let mut x = ep.init()?;
@@ -53,7 +52,7 @@ pub fn simulate() {
 // end::simulate-blinky[]
 
 // tag::generate-verilog[]
-pub fn generate() {
+pub fn generate_blinky() {
     let mut uut = Blinky::default();
     uut.connect_all();
     let data = generate_verilog(&uut);
@@ -61,24 +60,24 @@ pub fn generate() {
 }
 // end::generate-verilog[]
 
-pub fn quickstart() {
-    generate();
-    simulate();
+// pub fn quickstart() {
+//     generate();
+//     simulate();
 
-    vcd_to_svg(
-        "./blinky.vcd",
-        "./blinky_all.svg",
-        &["uut.clock", "uut.led"],
-        0,
-        4_000_000_000_000,
-    )
-    .unwrap();
-    vcd_to_svg(
-        "./blinky.vcd",
-        "./blinky_pulse.svg",
-        &["uut.clock", "uut.led"],
-        900_000_000_000,
-        1_500_000_000_000,
-    )
-    .unwrap();
-}
+//     vcd_to_svg(
+//         "./blinky.vcd",
+//         "./blinky_all.svg",
+//         &["uut.clock", "uut.led"],
+//         0,
+//         4_000_000_000_000,
+//     )
+//     .unwrap();
+//     vcd_to_svg(
+//         "./blinky.vcd",
+//         "./blinky_pulse.svg",
+//         &["uut.clock", "uut.led"],
+//         900_000_000_000,
+//         1_500_000_000_000,
+//     )
+//     .unwrap();
+// }

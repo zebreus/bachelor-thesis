@@ -13,7 +13,7 @@ TARGETS += $(TARGETS_WITHOUT_HTML) index.html
 .EXTRA_PREREQS:=Makefile
 all: $(TARGETS)
 
-blinky.vcd blinky.v counter.v:
+blinky.vcd blinky.v counter.v counter_embedded.v:
 	$(CARGO) run
 
 blinky_top.v: blinky.v
@@ -21,7 +21,7 @@ blinky_top.v: blinky.v
 	rm xx01
 	mv xx00 blinky_top.v
 
-index.html: Readme.adoc blinky.vcd blinky_top.v
+index.html: Readme.adoc blinky.vcd blinky_top.v counter_embedded.v src/counter.rs src/counter_embedded.rs
 	$(ASCIIDOCTOR) -r asciidoctor-diagram Readme.adoc -o index.html
 
 top-%.fs: top-%.pack
@@ -32,6 +32,9 @@ top-%.pack: top-%.json tangnano.cst
 
 top-counter.json: counter.v
 	$(YOSYS) -p "synth_gowin -json $@ -top top" counter.v
+
+top-counter_embedded.json: counter_embedded.v
+	$(YOSYS) -p "synth_gowin -json $@ -top top" counter_embedded.v
 
 prog-%: top-%.fs
 	openFPGALoader -b tangnano $^
