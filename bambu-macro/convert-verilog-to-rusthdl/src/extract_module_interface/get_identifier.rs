@@ -19,6 +19,8 @@ pub fn get_identifier<'a>(node: RefNode, ast: &'a SyntaxTree) -> Option<&'a str>
 
 #[cfg(test)]
 mod tests {
+    use sv_parser::Identifier;
+
     use crate::verilog_parser::parse_verilog_string;
 
     use super::*;

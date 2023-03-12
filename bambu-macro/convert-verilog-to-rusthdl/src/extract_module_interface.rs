@@ -1,4 +1,4 @@
-mod analyze_ansi_port_list;
+mod analyze_port_list;
 mod find_module_by_name;
 mod get_constant_number;
 mod get_identifier;
