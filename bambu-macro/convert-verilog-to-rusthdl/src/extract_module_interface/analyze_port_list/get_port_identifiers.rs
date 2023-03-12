@@ -4,9 +4,16 @@ use itertools::Itertools;
 use sv_parser::{RefNode, SyntaxTree};
 
 pub fn get_port_identifiers(module: RefNode, ast: &SyntaxTree) -> Vec<String> {
-    let port_identifiers = module.into_iter().filter_map(|node| match node {
-        RefNode::PortIdentifier(_) => get_identifier(node, ast).map(String::from),
+    let port_identifier_containers = module.into_iter().filter_map(|node| match node {
+        RefNode::AnsiPortDeclarationNet(_) => Some(node),
+        RefNode::PortDeclaration(_) => Some(node),
         _ => None,
+    });
+    let port_identifiers = port_identifier_containers.flat_map(|container| {
+        container.into_iter().filter_map(|node| match node {
+            RefNode::PortIdentifier(_) => get_identifier(node, ast).map(String::from),
+            _ => None,
+        })
     });
     port_identifiers.unique().collect_vec()
 }

@@ -1,5 +1,6 @@
 use convert_verilog_to_rusthdl::{
-    extract_module_interface::extract_module_interface, verilog_parser::parse_verilog_string,
+    extract_module_interface::extract_module_interface,
+    verilog_parser::{parse_verilog_file, parse_verilog_string},
 };
 
 const VERILOG_COUNTER: &str = r#"
@@ -26,7 +27,8 @@ endmodule
 "#;
 
 pub fn main() {
-    let result = parse_verilog_string(VERILOG_COUNTER);
+    let result = parse_verilog_file("md5.v");
     let syntax_tree = result.unwrap();
-    extract_module_interface(&syntax_tree);
+    let ports = extract_module_interface(&syntax_tree, Some("md5"));
+    println!("{:#?}", ports);
 }

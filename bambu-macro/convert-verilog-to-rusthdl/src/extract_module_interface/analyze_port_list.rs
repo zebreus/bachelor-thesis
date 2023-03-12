@@ -4,14 +4,14 @@ mod get_port_identifiers;
 mod get_port_net_type;
 
 use get_port_direction::get_port_direction;
-use get_port_direction::Direction;
+pub use get_port_direction::Direction;
 use itertools::Itertools;
 
 use self::get_port_data_size::get_port_data_size;
-use self::get_port_data_size::DataSize;
+pub use self::get_port_data_size::DataSize;
 use self::get_port_identifiers::get_port_identifiers;
 use self::get_port_net_type::get_port_net_type;
-use self::get_port_net_type::NetType;
+pub use self::get_port_net_type::NetType;
 
 use sv_parser::{RefNode, SyntaxTree};
 
@@ -24,7 +24,7 @@ pub struct Port {
     pub data_size: DataSize,
 }
 
-pub fn analyze_ansi_port_list(module: RefNode, ast: &SyntaxTree) -> Vec<Port> {
+pub fn analyze_port_list(module: RefNode, ast: &SyntaxTree) -> Vec<Port> {
     // let ports = match unwrap_node!(node, ListOfPortDeclarations) {
 
     let identifiers = get_port_identifiers(module.clone(), ast);
@@ -89,7 +89,7 @@ mod tests {
     fn should_work_with_a_basic_module() {
         let ast =
             parse_verilog_string("module alpha(input clock, output [5:0] led); endmodule").unwrap();
-        let ports = analyze_ansi_port_list(unwrap_node!(&ast, ModuleDeclaration).unwrap(), &ast);
+        let ports = analyze_port_list(unwrap_node!(&ast, ModuleDeclaration).unwrap(), &ast);
         assert_eq!(ports.len(), 2);
         assert_eq!(
             ports[0],
@@ -117,7 +117,7 @@ mod tests {
             "module alpha(clock, led); input clock; output [5:0] led; endmodule",
         )
         .unwrap();
-        let ports = analyze_ansi_port_list(unwrap_node!(&ast, ModuleDeclaration).unwrap(), &ast);
+        let ports = analyze_port_list(unwrap_node!(&ast, ModuleDeclaration).unwrap(), &ast);
         assert_eq!(ports.len(), 2);
         assert_eq!(
             ports[0],
@@ -142,14 +142,14 @@ mod tests {
     #[test]
     fn should_work_with_a_module_without_ports() {
         let ast = parse_verilog_string("module alpha(); endmodule").unwrap();
-        let ports = analyze_ansi_port_list(unwrap_node!(&ast, ModuleDeclaration).unwrap(), &ast);
+        let ports = analyze_port_list(unwrap_node!(&ast, ModuleDeclaration).unwrap(), &ast);
         assert_eq!(ports.len(), 0);
     }
 
     #[test]
     fn should_work_with_an_input_port() {
         let ast = parse_verilog_string("module alpha(input clock); endmodule").unwrap();
-        let ports = analyze_ansi_port_list(unwrap_node!(&ast, ModuleDeclaration).unwrap(), &ast);
+        let ports = analyze_port_list(unwrap_node!(&ast, ModuleDeclaration).unwrap(), &ast);
         assert_eq!(ports.len(), 1);
         assert_eq!(
             ports[0],
@@ -165,7 +165,7 @@ mod tests {
     #[test]
     fn should_work_with_an_output_port() {
         let ast = parse_verilog_string("module alpha(output clock); endmodule").unwrap();
-        let ports = analyze_ansi_port_list(unwrap_node!(&ast, ModuleDeclaration).unwrap(), &ast);
+        let ports = analyze_port_list(unwrap_node!(&ast, ModuleDeclaration).unwrap(), &ast);
         assert_eq!(ports.len(), 1);
         assert_eq!(
             ports[0],
@@ -181,7 +181,7 @@ mod tests {
     #[test]
     fn should_work_with_an_input_output_port() {
         let ast = parse_verilog_string("module alpha(inout clock); endmodule").unwrap();
-        let ports = analyze_ansi_port_list(unwrap_node!(&ast, ModuleDeclaration).unwrap(), &ast);
+        let ports = analyze_port_list(unwrap_node!(&ast, ModuleDeclaration).unwrap(), &ast);
         assert_eq!(ports.len(), 1);
         assert_eq!(
             ports[0],
@@ -197,7 +197,7 @@ mod tests {
     #[test]
     fn should_work_with_a_sized_port() {
         let ast = parse_verilog_string("module alpha(input [7:0] clock); endmodule").unwrap();
-        let ports = analyze_ansi_port_list(unwrap_node!(&ast, ModuleDeclaration).unwrap(), &ast);
+        let ports = analyze_port_list(unwrap_node!(&ast, ModuleDeclaration).unwrap(), &ast);
         assert_eq!(ports.len(), 1);
         assert_eq!(
             ports[0],
@@ -213,7 +213,7 @@ mod tests {
     #[test]
     fn should_work_with_a_single_bit_sized_port() {
         let ast = parse_verilog_string("module alpha(input [0:0] clock); endmodule").unwrap();
-        let ports = analyze_ansi_port_list(unwrap_node!(&ast, ModuleDeclaration).unwrap(), &ast);
+        let ports = analyze_port_list(unwrap_node!(&ast, ModuleDeclaration).unwrap(), &ast);
         assert_eq!(ports.len(), 1);
         assert_eq!(
             ports[0],
@@ -230,7 +230,7 @@ mod tests {
     fn should_work_with_specified_reg_net_type() {
         let ast = parse_verilog_string("module alpha(input reg clock); endmodule").unwrap();
 
-        let ports = analyze_ansi_port_list(unwrap_node!(&ast, ModuleDeclaration).unwrap(), &ast);
+        let ports = analyze_port_list(unwrap_node!(&ast, ModuleDeclaration).unwrap(), &ast);
         assert_eq!(ports.len(), 1);
         assert_eq!(
             ports[0],
@@ -247,7 +247,7 @@ mod tests {
     fn should_work_with_specified_wire_net_type() {
         let ast = parse_verilog_string("module alpha(input wire clock); endmodule").unwrap();
 
-        let ports = analyze_ansi_port_list(unwrap_node!(&ast, ModuleDeclaration).unwrap(), &ast);
+        let ports = analyze_port_list(unwrap_node!(&ast, ModuleDeclaration).unwrap(), &ast);
         assert_eq!(ports.len(), 1);
         assert_eq!(ports[0].net_type, NetType::Wire);
     }
@@ -255,7 +255,7 @@ mod tests {
     #[test]
     fn should_work_with_nonansi_module() {
         let ast = parse_verilog_string("module alpha(clock); input clock; endmodule").unwrap();
-        let ports = analyze_ansi_port_list(unwrap_node!(&ast, ModuleDeclaration).unwrap(), &ast);
+        let ports = analyze_port_list(unwrap_node!(&ast, ModuleDeclaration).unwrap(), &ast);
         assert_eq!(ports.len(), 1);
     }
 }
