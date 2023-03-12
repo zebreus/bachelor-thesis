@@ -1,7 +1,17 @@
-use sv_parser::{unwrap_node, AnsiPortDeclarationNet, Locate, PortDirection, RefNode, SyntaxTree};
+mod analyze_ansi_port_list;
+mod find_module_by_name;
+mod get_constant_number;
+mod get_identifier;
+
+use find_module_by_name::find_module_by_name;
+use get_constant_number::get_constant_number;
+use get_identifier::get_identifier;
+use sv_parser::{unwrap_node, AnsiPortDeclarationNet, PortDirection, RefNode, SyntaxTree};
 
 pub fn extract_module_interface(ast: &SyntaxTree) -> () {
-    let top_module_declaration = find_module_by_name(&ast, "counter").expect("No top level module");
+    let top_module_declaration =
+        find_module_by_name("counter", ast.into_iter().next().unwrap(), &ast)
+            .expect("No top level module");
     match top_module_declaration {
         RefNode::ModuleDeclarationAnsi(x) => {
             let ports = unwrap_node!(x, ListOfPortDeclarations).unwrap();
@@ -18,19 +28,6 @@ pub fn extract_module_interface(ast: &SyntaxTree) -> () {
                 .count();
         }
         _ => (),
-    }
-}
-
-fn get_identifier(node: RefNode) -> Option<Locate> {
-    // unwrap_node! can take multiple types
-    match unwrap_node!(node, SimpleIdentifier, EscapedIdentifier) {
-        Some(RefNode::SimpleIdentifier(x)) => {
-            return Some(x.nodes.0);
-        }
-        Some(RefNode::EscapedIdentifier(x)) => {
-            return Some(x.nodes.0);
-        }
-        _ => None,
     }
 }
 
@@ -54,56 +51,9 @@ enum DataType {
     Bits(u32),
 }
 
-fn get_number_constant(node: RefNode, ast: &SyntaxTree) -> i64 {
-    // unwrap_node! can take multiple types
-    let value = match unwrap_node!(node, IntegralNumber, RealNumber) {
-        Some(RefNode::IntegralNumber(x)) => {
-            match unwrap_node!(x, DecimalNumber, OctalNumber, BinaryNumber, HexNumber) {
-                Some(RefNode::DecimalNumber(x)) => {
-                    let RefNode::UnsignedNumber(unsigned_number) =
-                        unwrap_node!(x, UnsignedNumber).unwrap() else {
-                        panic!("No UnsignedNumber found");
-                        };
-                    let locate = unsigned_number.nodes.0;
-                    let unsigned_value = ast.get_str(&locate).unwrap();
-                    i64::from_str_radix(unsigned_value, 10).unwrap()
-                }
-                Some(RefNode::OctalNumber(octal_number)) => {
-                    let octal_value_node = &octal_number.nodes.2;
-                    let locate = octal_value_node.nodes.0;
-                    let octal_value = ast.get_str(&locate).unwrap();
-                    i64::from_str_radix(octal_value, 8).unwrap()
-                }
-                Some(RefNode::BinaryNumber(binary_number)) => {
-                    let binary_value_node = &binary_number.nodes.2;
-                    let locate = binary_value_node.nodes.0;
-                    let binary_value = ast.get_str(&locate).unwrap();
-                    i64::from_str_radix(binary_value, 2).unwrap()
-                }
-                Some(RefNode::HexNumber(hex_number)) => {
-                    let hex_value_node = &hex_number.nodes.2;
-                    let locate = hex_value_node.nodes.0;
-                    let hex_value = ast.get_str(&locate).unwrap();
-                    i64::from_str_radix(hex_value, 16).unwrap()
-                }
-                _ => panic!("Should not happen"),
-            }
-        }
-
-        Some(RefNode::RealNumber(_x)) => {
-            panic!("RealNumber not supported yet")
-        }
-        _ => {
-            panic!("Tried to parse a constant number but failed")
-        }
-    };
-    value
-}
-
 pub fn analyze_ansi_port_list(port_declaration: &AnsiPortDeclarationNet, ast: &SyntaxTree) -> () {
     let port_identifier_node = unwrap_node!(port_declaration, PortIdentifier).unwrap();
-    let port_identifier_locate = get_identifier(port_identifier_node).unwrap();
-    let port_identifier = ast.get_str(&port_identifier_locate).unwrap();
+    let port_identifier = get_identifier(port_identifier_node, ast).unwrap();
 
     println!("port_identifier: {:#?}", port_identifier);
 
@@ -132,8 +82,10 @@ pub fn analyze_ansi_port_list(port_declaration: &AnsiPortDeclarationNet, ast: &S
     let constant_range = unwrap_node!(implicit_datatype, ConstantRange);
     let data_type = match constant_range {
         Some(RefNode::ConstantRange(constant_range)) => {
-            let start = get_number_constant((&constant_range.nodes.2).into(), ast);
-            let end = get_number_constant((&constant_range.nodes.0).into(), ast);
+            let start = get_constant_number((&constant_range.nodes.2).into(), ast)
+                .expect("Failed to parse number");
+            let end = get_constant_number((&constant_range.nodes.0).into(), ast)
+                .expect("Failed to parse number");
             let length = end.abs_diff(start) + 1;
             DataType::Bits(length.try_into().unwrap())
         }
@@ -142,35 +94,4 @@ pub fn analyze_ansi_port_list(port_declaration: &AnsiPortDeclarationNet, ast: &S
     };
 
     println!("port datatype: {:#?}", data_type);
-}
-
-pub fn find_module_by_name<'a>(ast: &'a SyntaxTree, name: &str) -> Option<RefNode<'a>> {
-    let thing = ast.into_iter().find(|node| {
-        match node {
-            RefNode::ModuleDeclarationNonansi(x) => {
-                // unwrap_node! gets the nearest ModuleIdentifier from x
-                let id = unwrap_node!(*x, ModuleIdentifier).unwrap();
-
-                let id = get_identifier(id).unwrap();
-
-                // Original string can be got by SyntaxTree::get_str(self, locate: &Locate)
-                let id = ast.get_str(&id).unwrap();
-                if id != name {
-                    return false;
-                }
-                return true;
-            }
-            RefNode::ModuleDeclarationAnsi(x) => {
-                let id = unwrap_node!(*x, ModuleIdentifier).unwrap();
-                let id = get_identifier(id).unwrap();
-                let id = ast.get_str(&id).unwrap();
-                if id != name {
-                    return false;
-                }
-                return true;
-            }
-            _ => return false,
-        }
-    });
-    thing
 }
