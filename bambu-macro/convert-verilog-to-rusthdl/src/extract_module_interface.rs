@@ -30,13 +30,36 @@ pub fn extract_module_interface(ast: &SyntaxTree, module_name: Option<&str>) -> 
 mod tests {
     use sv_parser::unwrap_node;
 
-    use crate::verilog_parser::parse_verilog_file;
+    use crate::verilog_parser::parse_verilog_string;
 
     use super::*;
 
+    const VERILOG_COUNTER: &str = r#"
+    module counter
+    (
+        input clock,
+        output [5:0] led
+    );
+    
+    reg [23:0] clockCounter = 0;
+    localparam WAIT_TIME = 1000;
+    reg [5:0] ledCounter = 0;
+    
+    always @(posedge clock) begin
+        clockCounter <= clockCounter + 1;
+        if (clockCounter == WAIT_TIME) begin
+            clockCounter <= 0;
+            ledCounter <= ledCounter + 1;
+        end
+    end
+    
+    assign led = ~ledCounter;
+    endmodule
+    "#;
+
     #[test]
     fn can_extract_the_interface_of_counter() {
-        let ast = parse_verilog_file("counter.v").unwrap();
+        let ast = parse_verilog_string(VERILOG_COUNTER).unwrap();
         let ports = analyze_port_list(unwrap_node!(&ast, ModuleDeclaration).unwrap(), &ast);
         assert_eq!(ports.len(), 2);
         assert_eq!(

@@ -1,5 +1,5 @@
 use std::{collections::HashMap, path::PathBuf};
-use sv_parser::{parse_sv, parse_sv_str, SyntaxTree};
+use sv_parser::{parse_sv_str, SyntaxTree};
 
 pub fn parse_verilog_string(input: &str) -> Result<SyntaxTree, sv_parser::Error> {
     // The path of SystemVerilog source file
@@ -12,23 +12,6 @@ pub fn parse_verilog_string(input: &str) -> Result<SyntaxTree, sv_parser::Error>
     // Parse
     let result = parse_sv_str(input, &path, &defines, &includes, false, false);
     // parse_sv(&path, &defines, &includes, false, false);
-
-    match result {
-        Ok((syntax_tree, _)) => Ok(syntax_tree),
-        Err(e) => Err(e),
-    }
-}
-
-pub fn parse_verilog_file(path: &str) -> Result<SyntaxTree, sv_parser::Error> {
-    // The path of SystemVerilog source file
-    let path = PathBuf::from(path);
-    // The list of defined macros
-    let defines = HashMap::new();
-    // The list of include paths
-    let includes: Vec<PathBuf> = Vec::new();
-
-    // Parse
-    let result = parse_sv(&path, &defines, &includes, false, false);
 
     match result {
         Ok((syntax_tree, _)) => Ok(syntax_tree),
@@ -126,13 +109,6 @@ mod tests {
     //     let verilog = syntax_tree.get_str(syntax_tree.).unwrap();
     //     assert_eq!(verilog, VERILOG_COUNTER);
     // }
-
-    #[test]
-    fn parsed_file_should_have_correct_module() {
-        let result = parse_verilog_file("counter.v");
-        let syntax_tree = result.unwrap();
-        assert_node_with_name_exists(&syntax_tree, "counter");
-    }
 
     #[test]
     fn parsing_test() {}

@@ -34,9 +34,9 @@ pub fn get_port_direction_nonansi(port_declaration: RefNode) -> Option<Direction
         OutputDeclaration,
         InoutDeclaration
     ) {
-        Some(RefNode::InputDeclaration(x)) => Some(Direction::In),
-        Some(RefNode::OutputDeclaration(x)) => Some(Direction::Out),
-        Some(RefNode::InoutDeclaration(x)) => Some(Direction::InOut),
+        Some(RefNode::InputDeclaration(_)) => Some(Direction::In),
+        Some(RefNode::OutputDeclaration(_)) => Some(Direction::Out),
+        Some(RefNode::InoutDeclaration(_)) => Some(Direction::InOut),
         _ => None,
     }
 }
@@ -45,7 +45,7 @@ pub fn get_port_direction(port_name: &str, module: RefNode, ast: &SyntaxTree) ->
     match unwrap_node!(module, ModuleDeclarationAnsi, ModuleDeclarationNonansi) {
         Some(RefNode::ModuleDeclarationAnsi(x)) => {
             let mut ansi_declaration_nets = x.into_iter().filter_map(|node| match node {
-                RefNode::AnsiPortDeclarationNet(x) => Some(node),
+                RefNode::AnsiPortDeclarationNet(_) => Some(node),
                 _ => None,
             });
 

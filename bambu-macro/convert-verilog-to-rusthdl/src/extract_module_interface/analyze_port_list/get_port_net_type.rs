@@ -1,6 +1,4 @@
-use crate::extract_module_interface::{
-    get_constant_number::get_constant_number, get_identifier::get_identifier,
-};
+use crate::extract_module_interface::get_identifier::get_identifier;
 
 use sv_parser::{unwrap_node, RefNode, SyntaxTree};
 
