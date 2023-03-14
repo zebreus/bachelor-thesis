@@ -2,7 +2,7 @@ use sv_parser::{unwrap_node, PortDirection, RefNode, SyntaxTree};
 
 use crate::extract_module_interface::get_identifier::get_identifier;
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum Direction {
     In,
     Out,

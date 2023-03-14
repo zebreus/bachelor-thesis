@@ -15,8 +15,7 @@ pub use self::get_port_net_type::NetType;
 
 use sv_parser::{RefNode, SyntaxTree};
 
-#[derive(Debug, PartialEq, Eq)]
-
+#[derive(Debug, PartialEq, Eq, Clone)]
 pub struct Port {
     pub identifier: String,
     pub direction: Direction,

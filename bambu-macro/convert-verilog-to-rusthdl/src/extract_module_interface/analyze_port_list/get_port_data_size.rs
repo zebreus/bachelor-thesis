@@ -4,7 +4,7 @@ use crate::extract_module_interface::{
 
 use sv_parser::{unwrap_node, RefNode, SyntaxTree};
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum DataSize {
     Bit,
     Bits(u32),
