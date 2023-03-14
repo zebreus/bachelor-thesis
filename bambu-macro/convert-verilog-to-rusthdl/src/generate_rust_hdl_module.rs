@@ -16,6 +16,9 @@ use crate::{
 
 use self::as_pascal_case::as_pascal_case;
 
+/// Represents a rust-hdl module.
+///
+/// It should be trivial to convert this into a rust-hdl module.
 #[derive(Debug, PartialEq, Eq)]
 pub struct RustHdlModule {
     /// Name for the rust-hdl struct
@@ -46,6 +49,20 @@ pub struct Signal {
     pub driven: bool,
 }
 
+/// Generate a wrapping rust-hdl module from a verilog module
+///
+/// # Arguments
+///
+/// * `verilog` - The original Verilog module that was passed in.
+/// * `module_name` - The name of the module that you want to extract.
+///
+/// # Return
+///
+/// * `RustHdlModule` - The RustHdlModule struct.
+///
+/// # Errors
+///
+/// This function will return an error if there is an error parsing the Verilog
 pub fn generate_rust_hdl_module(
     verilog: &str,
     module_name: &str,
