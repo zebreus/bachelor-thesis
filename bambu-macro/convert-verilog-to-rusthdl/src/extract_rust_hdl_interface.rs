@@ -31,7 +31,7 @@ pub struct RustHdlModule {
 }
 
 /// The type of a signal.
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 pub enum SignalType {
     Bit,
     Clock,
@@ -41,7 +41,7 @@ pub enum SignalType {
 /// Represents a signal in a rust-hdl module.
 ///
 /// Use this to generate the signal types in the struct. `clk: Signal<In, Clock>`
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 pub struct Signal {
     /// Name of the signal
     pub name: String,

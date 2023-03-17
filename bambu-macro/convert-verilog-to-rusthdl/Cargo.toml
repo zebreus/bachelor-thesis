@@ -2,6 +2,12 @@
 name = "extract_rust_hdl_interface"
 version = "0.1.0"
 edition = "2021"
+license = "MIT"
+keywords = ["rust-hdl", "verilog", "fpga"]
+authors = ["zebreus <lennarteichhorn@googlemail.com>"]
+categories = ["development-tools::build-utils"]
+repository = "https://github.com/zebreus/bachelor-thesis"
+homepage = "https://github.com/zebreus/bachelor-thesis/tree/master/bambu-macro/convert-verilog-to-rusthdl"
 
 [dependencies]
 itertools = "0.10.5"
