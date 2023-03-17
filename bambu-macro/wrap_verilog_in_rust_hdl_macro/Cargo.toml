@@ -1,0 +1,30 @@
+[package]
+name = "wrap_verilog_in_rust_hdl_macro"
+version = "0.1.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+keywords = ["rust-hdl", "verilog", "fpga", "wrap", "macro"]
+authors = ["zebreus <lennarteichhorn@googlemail.com>"]
+categories = ["development-tools::build-utils", "compilers"]
+repository = "https://github.com/zebreus/bachelor-thesis"
+homepage = "https://github.com/zebreus/bachelor-thesis/tree/master/bambu-macro/wrap_verilog_in_rust_hdl_macro"
+description = "A proc-macro to wrap Verilog code in a rust-hdl module"
+
+
+[lib]
+proc-macro = true
+
+[[test]]
+name = "tests"
+path = "tests/progress.rs"
+
+[dependencies]
+proc-macro2 = "1.0.52"
+quote = "1.0.26"
+syn = "1.0.109"
+proc-macro-error = "1.0.4"
+rust-hdl = "0.44.0"
+extract_rust_hdl_interface = "0.1.0"
+
+[dev-dependencies]
+trybuild = "1.0.79"
