@@ -1,4 +1,4 @@
-use crate::extract_module_interface::{DataSize, Direction, Port};
+use crate::extract_verilog_interface::{DataSize, Direction, Port};
 
 use super::{as_snake_case::as_snake_case, Signal, SignalType};
 
@@ -45,7 +45,7 @@ impl From<&Port> for Signal {
 
 #[cfg(test)]
 mod tests {
-    use crate::extract_module_interface::NetType;
+    use crate::extract_verilog_interface::NetType;
 
     use super::*;
 

@@ -1,4 +1,4 @@
-use crate::extract_module_interface::{
+use crate::extract_verilog_interface::{
     get_constant_number::get_constant_number, get_identifier::get_identifier,
 };
 
@@ -11,13 +11,6 @@ pub enum DataSize {
 }
 
 pub fn get_port_data_size_ansi(port_declaration: RefNode, ast: &SyntaxTree) -> Option<DataSize> {
-    // let net_port_header = port_declaration.into_iter().find_map(|node| match node {
-    //     RefNode::NetPortHeader(x) => Some(x),
-    //     _ => None,
-    // })?;
-
-    // let port_datatype = unwrap_node!(net_port_header, NetPortTypeDataType)?;
-    // let data_type = unwrap_node!(port_datatype, ImplicitDataType, DataType)?;
     let constant_range = unwrap_node!(port_declaration, ConstantRange);
     let data_size = match constant_range {
         Some(RefNode::ConstantRange(constant_range)) => {
@@ -120,7 +113,6 @@ mod tests {
     fn works_with_nonansi_with_range() {
         let ast =
             parse_verilog_string("module alpha(clock); input [7:0] clock; endmodule").unwrap();
-        // println!("{:#?}", ast);
         let port_direction =
             get_port_data_size_ansi(unwrap_node!(&ast, ModuleDeclaration).unwrap(), &ast).unwrap();
         assert_eq!(port_direction, DataSize::Bits(8));

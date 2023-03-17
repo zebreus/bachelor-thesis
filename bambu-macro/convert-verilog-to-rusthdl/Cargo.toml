@@ -1,5 +1,5 @@
 [package]
-name = "convert-verilog-to-rusthdl"
+name = "extract_rust_hdl_interface"
 version = "0.1.0"
 edition = "2021"
 

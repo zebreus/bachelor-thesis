@@ -14,7 +14,7 @@ pub use self::analyze_port_list::Direction;
 pub use self::analyze_port_list::NetType;
 pub use self::analyze_port_list::Port;
 
-pub fn extract_module_interface(ast: &SyntaxTree, module_name: Option<&str>) -> Vec<Port> {
+pub fn extract_verilog_interface(ast: &SyntaxTree, module_name: Option<&str>) -> Vec<Port> {
     let module_name = module_name.unwrap_or(
         unwrap_node!(ast, ModuleIdentifier)
             .and_then(|x| get_identifier(x, ast))

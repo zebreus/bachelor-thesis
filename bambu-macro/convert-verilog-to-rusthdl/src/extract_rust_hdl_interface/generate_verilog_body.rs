@@ -1,6 +1,6 @@
 use itertools::Itertools;
 
-use crate::{extract_module_interface::Port, generate_rust_hdl_module::as_snake_case};
+use crate::{extract_rust_hdl_interface::as_snake_case, extract_verilog_interface::Port};
 
 /// Generate the body of the Verilog module
 pub fn generate_verilog_body(ports: Vec<Port>, module_name: &str) -> String {
@@ -17,7 +17,7 @@ pub fn generate_verilog_body(ports: Vec<Port>, module_name: &str) -> String {
 
 #[cfg(test)]
 mod tests {
-    use crate::extract_module_interface::{DataSize, Direction, NetType};
+    use crate::extract_verilog_interface::{DataSize, Direction, NetType};
 
     use super::*;
 

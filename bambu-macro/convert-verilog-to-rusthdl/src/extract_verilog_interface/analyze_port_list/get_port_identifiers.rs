@@ -1,4 +1,4 @@
-use crate::extract_module_interface::get_identifier::get_identifier;
+use crate::extract_verilog_interface::get_identifier::get_identifier;
 
 use itertools::Itertools;
 use sv_parser::{RefNode, SyntaxTree};

@@ -10,7 +10,7 @@ pub use generate_verilog_body::generate_verilog_body;
 use itertools::Itertools;
 
 use crate::{
-    extract_module_interface::{extract_module_interface, Direction},
+    extract_verilog_interface::{extract_verilog_interface, Direction},
     verilog_parser::parse_verilog_string,
 };
 
@@ -18,7 +18,7 @@ use self::as_pascal_case::as_pascal_case;
 
 /// Represents a rust-hdl module.
 ///
-/// It should be trivial to convert this into a rust-hdl module.
+/// It should be trivial to generate a wrapping rust-hdl module from this struct.
 #[derive(Debug, PartialEq, Eq)]
 pub struct RustHdlModule {
     /// Name for the rust-hdl struct
@@ -30,6 +30,7 @@ pub struct RustHdlModule {
     pub external_verilog: String,
 }
 
+/// The type of a signal.
 #[derive(Debug, PartialEq, Eq)]
 pub enum SignalType {
     Bit,
@@ -37,6 +38,9 @@ pub enum SignalType {
     Bits(u32),
 }
 
+/// Represents a signal in a rust-hdl module.
+///
+/// Use this to generate the signal types in the struct. `clk: Signal<In, Clock>`
 #[derive(Debug, PartialEq, Eq)]
 pub struct Signal {
     /// Name of the signal
@@ -49,7 +53,7 @@ pub struct Signal {
     pub driven: bool,
 }
 
-/// Generate a wrapping rust-hdl module from a verilog module
+/// Extract all information needed to generate a wrapping rust-hdl module from a Verilog module.
 ///
 /// # Arguments
 ///
@@ -63,12 +67,12 @@ pub struct Signal {
 /// # Errors
 ///
 /// This function will return an error if there is an error parsing the Verilog
-pub fn generate_rust_hdl_module(
+pub fn extract_rust_hdl_interface(
     verilog: &str,
     module_name: &str,
 ) -> Result<RustHdlModule, sv_parser::Error> {
     let syntax_tree = parse_verilog_string(verilog)?;
-    let ports = extract_module_interface(&syntax_tree, Some(module_name));
+    let ports = extract_verilog_interface(&syntax_tree, Some(module_name));
     let signals: Vec<Signal> = ports.iter().map_into().collect();
 
     let internal_verilog = generate_verilog_body(ports, module_name);
@@ -112,7 +116,7 @@ mod tests {
 
     #[test]
     fn generating_rust_hdl_module_struct_from_counter_works() {
-        let rust_hdl_module = generate_rust_hdl_module(VERILOG_COUNTER, "counter").unwrap();
+        let rust_hdl_module = extract_rust_hdl_interface(VERILOG_COUNTER, "counter").unwrap();
 
         assert_eq!(
             rust_hdl_module,

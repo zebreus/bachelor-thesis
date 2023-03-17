@@ -1,4 +1,4 @@
-use crate::extract_module_interface::get_identifier::get_identifier;
+use crate::extract_verilog_interface::get_identifier::get_identifier;
 
 use sv_parser::{unwrap_node, RefNode, SyntaxTree};
 
@@ -7,29 +7,6 @@ pub enum NetType {
     Wire,
     Reg,
 }
-
-// pub fn get_port_net_type_ansi(port_declaration: RefNode, ast: &SyntaxTree) -> Option<DataSize> {
-//     // let net_port_header = port_declaration.into_iter().find_map(|node| match node {
-//     //     RefNode::NetPortHeader(x) => Some(x),
-//     //     _ => None,
-//     // })?;
-
-//     // let port_datatype = unwrap_node!(net_port_header, NetPortTypeDataType)?;
-//     // let data_type = unwrap_node!(port_datatype, ImplicitDataType, DataType)?;
-//     let constant_range = unwrap_node!(port_declaration, ConstantRange);
-//     let data_size = match constant_range {
-//         Some(RefNode::ConstantRange(constant_range)) => {
-//             let start = get_constant_number((&constant_range.nodes.2).into(), ast)
-//                 .expect("Failed to parse number");
-//             let end = get_constant_number((&constant_range.nodes.0).into(), ast)
-//                 .expect("Failed to parse number");
-//             let length = u32::try_from(end.abs_diff(start) + 1);
-//             length.ok().map(|length| DataSize::Bits(length))
-//         }
-//         _ => Some(DataSize::Bit),
-//     };
-//     data_size
-// }
 
 pub fn get_port_net_type_ansi(port_declaration: RefNode, ast: &SyntaxTree) -> Option<NetType> {
     let net_port_type = unwrap_node!(port_declaration, NetPortType).unwrap();

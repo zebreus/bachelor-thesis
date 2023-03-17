@@ -1,6 +1,6 @@
 use sv_parser::{unwrap_node, PortDirection, RefNode, SyntaxTree};
 
-use crate::extract_module_interface::get_identifier::get_identifier;
+use crate::extract_verilog_interface::get_identifier::get_identifier;
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum Direction {
@@ -9,7 +9,6 @@ pub enum Direction {
     InOut,
 }
 
-// Expects someth
 pub fn get_port_direction_ansi(port_net: RefNode) -> Option<Direction> {
     let net_port_header = port_net.into_iter().find_map(|node| match node {
         RefNode::NetPortHeader(x) => Some(x),
