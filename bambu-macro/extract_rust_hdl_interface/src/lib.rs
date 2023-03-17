@@ -6,7 +6,7 @@ mod extract_rust_hdl_interface;
 mod extract_verilog_interface;
 mod verilog_parser;
 
-pub use extract_rust_hdl_interface::{
+pub use crate::extract_rust_hdl_interface::{
     extract_rust_hdl_interface, RustHdlModule, Signal, SignalType,
 };
 pub use extract_verilog_interface::Direction;
