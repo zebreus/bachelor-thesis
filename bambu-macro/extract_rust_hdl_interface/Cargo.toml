@@ -8,6 +8,7 @@ authors = ["zebreus <lennarteichhorn@googlemail.com>"]
 categories = ["development-tools::build-utils"]
 repository = "https://github.com/zebreus/bachelor-thesis"
 homepage = "https://github.com/zebreus/bachelor-thesis/tree/master/bambu-macro/extract_rust_hdl_interface"
+description = "Extracts the information needed for a rust-hdl module from a verilog module"
 
 [dependencies]
 itertools = "0.10.5"
