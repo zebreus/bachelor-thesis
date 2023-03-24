@@ -7,10 +7,11 @@ pub trait ToHashNumbers {
 
 impl ToHashString for [u32; 4] {
     fn into_hash_string(self) -> String {
-        let mut result = String::new();
-        for byte in self.iter() {
-            result.push_str(&format!("{:08x}", byte.to_be()));
-        }
+        let result = self
+            .iter()
+            .map(|&x| format!("{:08x}", x.to_be()))
+            .collect::<Vec<String>>()
+            .join("");
         result
     }
 }
