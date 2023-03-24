@@ -1,0 +1,14 @@
+[package]
+name = "bambu_build_demo"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["staticlib"]
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+rand = "0.8.5"
+rand_chacha = "0.3.1"
+subcrate = { path = "./subcrate"}
+getrandom = { version = "0.2", features = ["js"] }

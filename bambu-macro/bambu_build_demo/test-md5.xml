@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<function>
+	// Empty string.
+	// 128 = [0x80, 0, 0, 0] as little endian u32.
+	// Length 0bit, encoded as le u64 represented as the two last u32s.
+	<testbench Pd460="{128,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}" Pd461="{0,0,0,0}" Pd462="{0}" />
+	// "a"
+	// 32919 = ['a', 0x80, 0, 0] as little endian u32.
+	// Length 8bit, encoded as le u64 represented as the two last u32s.
+	<testbench Pd460="{32919,0,0,0,0,0,0,0,0,0,0,0,0,0,8,0}" Pd461="{0,0,0,0}" Pd462="{0}" />
+</function>
