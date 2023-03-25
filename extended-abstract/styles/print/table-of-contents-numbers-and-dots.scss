@@ -1,9 +1,9 @@
 // Add page numbers to the table of contents, when printing
+$dot-spacing: 6px;
+$end-dot-padding: 8px;
+$start-dot-padding: 4px;
 
 @media print {
-    $dot-spacing: 10px;
-    $end-dot-padding: 8px;
-    $start-dot-padding: 4px;
 
     #content {
         counter-reset: page 1;
@@ -24,7 +24,7 @@
 
 
         /* Dots between section title and page number */
-        li {
+        ul ul ul li {
             position: relative;
 
             &::before {

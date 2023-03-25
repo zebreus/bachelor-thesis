@@ -25,11 +25,11 @@ $h2-font-size: $base-font-size * (12 / 11);
 // Default: 1.375em
 $h3-font-size: $base-font-size * (9 / 11);
 // Default: 1.125em
-$h4-font-size: $base-font-size * (9 / 11);
+$h4-font-size: $base-font-size;
 // Default: 1.125em
-$h5-font-size: $base-font-size * (9 / 11);
+$h5-font-size: $base-font-size;
 // Default: 1em
-$h6-font-size: $base-font-size * (9 / 11);
+$h6-font-size: $base-font-size;
 // Used for paragraphs and other things
 // Default: 1em
 $p-font-size: $base-font-size;
@@ -64,6 +64,9 @@ $lineheight-normal: 1.25;
 // Margin between paragraphs
 // Default: 1.25em
 $paragraph-margin: 0.75rem;
+
+// Padding around content and stuff
+$box-side-padding: 0.9375em;
 
 // Basic text color
 // Default: rgba(0, 0, 0, 0.8)

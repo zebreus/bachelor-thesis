@@ -17,8 +17,6 @@
         ul.sectlevel1 {
             margin: 0.5em 0;
         }
-
-
     }
 
     ul {
@@ -33,14 +31,13 @@
 
     a {
         text-decoration: none;
+
+        &:active {
+            text-decoration: underline;
+        }
     }
 
-    a:active {
-        text-decoration: underline;
-    }
 }
-
-
 
 
 #content #toc {
@@ -51,9 +48,9 @@
     border-radius: 4px;
 }
 
-#content #toc> :first-child {
-    margin-top: 0;
-}
+// #content #toc> :first-child {
+//     margin-top: 0;
+// }
 
 #content #toc> :last-child {
     margin-bottom: 0;

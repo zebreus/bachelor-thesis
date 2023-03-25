@@ -10,8 +10,8 @@
     max-width: 62.5em;
     *zoom: 1;
     position: relative;
-    padding-left: 0.9375em;
-    padding-right: 0.9375em;
+    padding-left: $box-side-padding;
+    padding-right: $box-side-padding;
 }
 
 #header::before,

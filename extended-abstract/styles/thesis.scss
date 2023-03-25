@@ -1,4 +1,4 @@
-@import 'https://fonts.googleapis.com/css2?family=Spectral:wght@300;400;500;600;700&display=swap';
+@import 'https://fonts.googleapis.com/css2?family=Concert+One&family=Spectral:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap';
 
 @import './default.scss';
 @import './print.scss';
@@ -7,7 +7,7 @@
 
 @page {
     size: A4;
-    margin: 3.05cm 3.86cm 3.81cm 4.26cm;
+    margin: 3.05cm (3.86cm - 0.39687cm) 3.81cm (4.26cm - 0.39687cm);
 }
 
 @page :first {
@@ -18,18 +18,57 @@ h1,
 h2,
 h3,
 #toctitle,
-.sidebarblock>.content>.title,
-h4,
-h5,
-h6 {
+.sidebarblock>.content>.titled {
     text-transform: uppercase;
     letter-spacing: 0.08rem;
+}
 
+#_thesis {
+    counter-reset: page 1;
+}
+
+#toc {
+    &>ul {
+        margin-left: 0.25rem;
+
+        &>li>a {
+            color: #ae2230;
+        }
+
+        &>li>ul {
+            margin-left: 0;
+
+            ul {
+                margin-left: 1.1rem;
+
+                ul {
+                    margin-left: 1.8rem;
+                }
+            }
+        }
+    }
+
+    a {
+        letter-spacing: 0rem;
+        color: $heading-text-color;
+
+        &::after {
+            color: $normal-link-color;
+        }
+    }
+}
+
+span.section-number {
+    margin-right: 0.5rem;
+    font-style: normal;
+    text-transform: uppercase;
+    color: currentColor;
 }
 
 // Add lines to h2
 #toctitle,
 h2 {
+    break-before: always;
     font-size: $h2-font-size;
     margin-bottom: 2.3rem;
     position: relative;
@@ -40,9 +79,42 @@ h2 {
         content: "";
         width: 100%;
         position: absolute;
-        height: 1px;
+        height: 0.5px;
         background: black;
     }
+}
+
+#content h1 {
+    color: #ae2230;
+    font-size: $h2-font-size * 1.1;
+    font-weight: 400;
+    margin-top: 6.5cm;
+
+    span.section-number {
+        text-transform: none;
+        color: $heading-text-color;
+        display: block;
+        margin: 1rem auto 1.2rem;
+        white-space: nowrap;
+        letter-spacing: 0;
+    }
+}
+
+// Add numbers to h2
+h2 {
+    span.section-number {
+        font-size: 7rem;
+        position: absolute;
+        color: lighten($heading-text-color, 50%);
+        right: -5rem;
+        bottom: -1rem;
+    }
+}
+
+h4,
+h5,
+h6 {
+    font-style: italic;
 }
 
 .logo {
@@ -53,7 +125,6 @@ h2 {
 
     img {
         margin-top: 0rem;
-
         width: 7.7cm;
     }
 }

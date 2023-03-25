@@ -12,6 +12,7 @@
 :title-page: false
 :toc-title: Inhaltsverzeichnis
 :stylesheet: Readme.css
+:toclevels: 3
 
 image::logo_hda.svg[role=logo]
 
@@ -23,6 +24,8 @@ image::logo_hda.svg[role=logo]
     titlePageElement?.parentNode.removeChild(titlePageElement);
 </script>
 ++++
+
+
 
 [.university.text-center]
 Hochschule Darmstadt
@@ -63,7 +66,7 @@ sdfa
 
 <<<
 
-[abstract%untitled]
+[discrete]
 == Erklärung
 
 Ich versichere hiermit, dass ich die vorliegende Arbeit selbstständig verfasst
@@ -83,7 +86,7 @@ _Darmstadt, 24. März 2023_
 
 <<<
 
-[preface]
+[discrete]
 == Abstract
 
 A short summary of the contents in English of about one page. The following
@@ -157,7 +160,7 @@ Non vices medical da. Se qui peano distinguer demonstrate, personas internet in 
 clave effortio primarimente su del.1 Nullam facilisis, massa ut faucibus vulputate, enim velit luctus nulla, a elementum ipsum metus eu sem. Sed a auctor quam. Cras venenatis ullamcorper velit, nec elementum lacus elementum
 pellentesque.
 
-=== Der erste abschnitt des kapitels
+=== Der erste Abschnitt des Kapitels
 
 Sia ma sine svedese americas. Asia Bentley [Ben99] representantes un nos,
 un altere membros qui. De web nostre historia angloromanic. Medical representantes al uso, con lo unic vocabulos, tu peano essentialmente qui. Lo
@@ -210,3 +213,28 @@ quam lobortis blandit. Quisque urna mauris, placerat a pretium eu, placerat
 vel risus. Donec sollicitudin malesuada cursus. Sed auctor aliquet urna sit
 amet porta. Cum sociis natoque penatibus et magnis dis parturient montes,
 nascetur ridiculus mus.
+
+// Convert numbers in headings to spans
+// Also removes the trailing dot from the numbers
+// Also removes numbers from h2
+// Also adds data-sectnum to h2
+// ++++
+// <script>
+//     var nodes = document.querySelectorAll("h1,h2,h3,h4,h5,h6,#toc a");
+//     [...nodes].forEach(node => {node.innerHTML = node.innerHTML.replace(/^(<a[^/]*[/]a>)?[\s]*([0-9.:IV]*[0-9IV])[.:]?/, node.tagName != "H2"
+//       ? '<span class="section-number">$2</span>'
+//       : (match, p1, section_number)=> {
+//           node.setAttribute("data-sectnum", section_number);
+//           return ""
+//         }
+//     )})
+// </script>
+// ++++
+
+++++
+<script>
+    var nodes = document.querySelectorAll("h1,h2,h3,h4,h5,h6,#toc a");
+    [...nodes].forEach(node => {node.innerHTML = node.innerHTML.replace(/^(<a[^/]*[/]a>)?[\s]*((Part )?[0-9.:IV]*[0-9IV])[.:]?/, '<span class="section-number">$2</span>'
+    )})
+</script>
+++++
