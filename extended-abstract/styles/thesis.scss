@@ -84,7 +84,7 @@ h2 {
     }
 }
 
-#content h1 {
+#content h1:first-child {
     color: #ae2230;
     font-size: $h2-font-size * 1.1;
     font-weight: 400;

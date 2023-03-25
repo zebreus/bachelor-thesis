@@ -25,8 +25,6 @@ image::logo_hda.svg[role=logo]
 </script>
 ++++
 
-
-
 [.university.text-center]
 Hochschule Darmstadt
 
@@ -123,9 +121,6 @@ toc::[]
 = Thesis
 
 <<<
-
-
-This is the introduction to the first part of our mud-encrusted journey.
 
 == Einleitung
 

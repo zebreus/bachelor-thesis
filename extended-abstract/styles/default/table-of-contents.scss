@@ -10,12 +10,12 @@
     }
 
     ul.sectlevel0 {
-        &>li>a {
-            font-style: italic;
-        }
+        // &>li>a {
+        //     font-style: italic;
+        // }
 
         ul.sectlevel1 {
-            margin: 0.5em 0;
+            margin: 0;
         }
     }
 
@@ -25,8 +25,8 @@
     }
 
     li {
-        line-height: 1.3334;
-        margin-top: 0.3334em;
+        line-height: $lineheight-normal + 0.1;
+        margin-top: 0;
     }
 
     a {
