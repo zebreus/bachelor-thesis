@@ -7,7 +7,7 @@ strong {
 }
 
 abbr {
-    font-size: 0.9em;
+    font-size: 90%;
 }
 
 abbr[title] {
@@ -27,10 +27,6 @@ hr {
 mark {
     background: #ff0;
     color: #000;
-}
-
-small {
-    font-size: 80%;
 }
 
 sub,
@@ -57,7 +53,7 @@ p {
 }
 
 p aside {
-    font-size: 0.875em;
+    font-size: $aside-font-size;
     line-height: 1.35;
     font-style: italic;
 }
@@ -79,12 +75,12 @@ i {
 
 strong,
 b {
-    font-weight: bold;
+    font-weight: $bold-font-weight;
     line-height: inherit;
 }
 
 small {
-    font-size: 60%;
+    font-size: $small-font-size;
     line-height: inherit;
 }
 
@@ -93,7 +89,7 @@ em em {
 }
 
 strong strong {
-    font-weight: 400;
+    font-weight: $bold-font-weight;
 }
 
 
@@ -150,4 +146,13 @@ p {
 .sidebarblock td.content,
 p.tableblock {
     font-size: $p-font-size;
+}
+
+h1,
+h2,
+p,
+td.content,
+span.alt,
+summary {
+    letter-spacing: -0.01em;
 }

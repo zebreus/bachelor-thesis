@@ -3,7 +3,7 @@
 
 sup.footnote,
 sup.footnoteref {
-    font-size: 0.875em;
+    font-size: $footnote-font-size;
     position: static;
     vertical-align: super;
 }
@@ -34,7 +34,7 @@ sup.footnoteref a:active {
 #footnotes .footnote {
     padding: 0 0.375em 0 0.225em;
     line-height: 1.3334;
-    font-size: 0.875em;
+    font-size: $footnote-font-size;
     margin-left: 1.2em;
     margin-bottom: 0.2em;
 }

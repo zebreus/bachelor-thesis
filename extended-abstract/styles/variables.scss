@@ -6,8 +6,6 @@ $serif-font-family: $text-font-family;
 $mono-font-family: "Droid Sans Mono", "DejaVu Sans Mono", monospace;
 
 
-$huge: 1.6669rem;
-$very-large: 1.4169rem;
 
 // Used for normal text
 $base-font-size: 0.96em; // 12pt adjusted for spectral
@@ -33,7 +31,31 @@ $h5-font-size: $base-font-size;
 // Default: 1em
 $h6-font-size: $base-font-size;
 // Used for paragraphs and other things
+// Default: 1em
 $p-font-size: $base-font-size;
+
+// Font size used for small text
+// Default: 60%
+$small-font-size: 60%;
+
+// Font size for footnotes and asides
+$annotation-font-size: $base-font-size * 0.875;
+// Default: 0.875em
+$footnote-font-size: $annotation-font-size;
+// Default: 0.875em
+$aside-font-size: $annotation-font-size;
+
+// Default: 300
+$heading-font-weight: normal;
+$normal-font-weight: normal;
+$bold-font-weight: bold;
+$light-font-weight: 300;
+
+// Margins for headings
+// Default: 1em
+$heading-margin-top: $base-font-size;
+// Default: 0.5em
+$heading-margin-bottom: $heading-margin-top * 0.5;
 
 // Used where lineheight was 1.6
 // Default: 1.6

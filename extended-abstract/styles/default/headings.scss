@@ -1,62 +1,6 @@
 // Styles for section headings
 @import "../variables.scss";
 
-div,
-dl,
-dt,
-dd,
-ul,
-ol,
-li,
-h1,
-h2,
-h3,
-#toctitle,
-.sidebarblock>.content>.title,
-h4,
-h5,
-h6,
-pre,
-form,
-p,
-blockquote,
-th,
-td {
-    margin: 0;
-    padding: 0;
-}
-
-h1,
-h2,
-h3,
-#toctitle,
-.sidebarblock>.content>.title,
-h4,
-h5,
-h6 {
-    font-family: $text-font-family;
-    font-weight: normal;
-    font-style: normal;
-    color: $heading-text-color;
-    text-rendering: optimizeLegibility;
-    margin-top: 1em;
-    margin-bottom: 0.5em;
-    line-height: 1.0125em;
-}
-
-h1 small,
-h2 small,
-h3 small,
-#toctitle small,
-.sidebarblock>.content>.title small,
-h4 small,
-h5 small,
-h6 small {
-    font-size: 60%;
-    color: $title-annotation-text-color;
-    line-height: 0;
-}
-
 h1 {
     font-size: $h1-font-size;
 }
@@ -83,7 +27,6 @@ h6 {
     font-size: $h6-font-size;
 }
 
-
 h1,
 h2,
 h3,
@@ -92,21 +35,86 @@ h3,
 h4,
 h5,
 h6 {
-    line-height: 1.2;
+    font-family: $text-font-family;
+    font-weight: $heading-font-weight;
+    font-style: normal;
+    color: $heading-text-color;
+    text-rendering: optimizeLegibility;
+    margin-top: $heading-margin-top;
+    margin-bottom: $heading-margin-bottom;
     word-spacing: -0.05em;
+    // line-height: 1.0125em;
+
+    small {
+        font-size: $small-font-size;
+        color: $title-annotation-text-color;
+        line-height: 0;
+    }
+
+    strong {
+        font-weight: $bold-font-weight;
+    }
+
+    // Style links in headings
+    &>a.link {
+        color: $heading-text-color;
+        text-decoration: none;
+
+        &:hover {
+            color: $heading-hovered-link-color;
+        }
+    }
+
 }
 
-h1 strong,
-h2 strong,
-h3 strong,
-#toctitle strong,
-.sidebarblock>.content>.title strong,
-h4 strong,
-h5 strong,
-h6 strong {
-    font-weight: 400;
+// Styles for the anchor link that appears when hovering over the heading and `:sectanchors:` is set.
+#content h1,
+h2,
+h3,
+#toctitle,
+.sidebarblock>.content>.title,
+h4,
+h5,
+h6 {
+    &>a {
+        &.anchor {
+            position: absolute;
+            z-index: 1001;
+            width: 1.5ex;
+            margin-left: -1.5ex;
+            display: block;
+            text-decoration: none !important;
+            visibility: hidden;
+            text-align: center;
+            font-weight: 400;
+
+            &::before {
+                content: "\00A7";
+                font-size: 0.85em;
+                display: block;
+                padding-top: 0.1em;
+            }
+
+            &.link {
+                color: $heading-text-color;
+                text-decoration: none;
+
+                &:hover {
+                    color: $heading-hovered-link-color;
+                }
+            }
+
+
+        }
+    }
+
+    &:hover>a.anchor,
+    &>a.anchor:hover {
+        visibility: visible;
+    }
 }
 
+// Decorate first big heading, if there are no other classes on it
 #content>h1:first-child:not([class]) {
     color: rgba(0, 0, 0, 0.85);
     border-bottom: 1px solid #dddddf;
@@ -114,88 +122,4 @@ h6 strong {
     margin-top: 0;
     padding-top: 1rem;
     margin-bottom: $paragraph-margin;
-}
-
-#content h1>a.anchor,
-h2>a.anchor,
-h3>a.anchor,
-#toctitle>a.anchor,
-.sidebarblock>.content>.title>a.anchor,
-h4>a.anchor,
-h5>a.anchor,
-h6>a.anchor {
-    position: absolute;
-    z-index: 1001;
-    width: 1.5ex;
-    margin-left: -1.5ex;
-    display: block;
-    text-decoration: none !important;
-    visibility: hidden;
-    text-align: center;
-    font-weight: 400;
-}
-
-#content h1>a.anchor::before,
-h2>a.anchor::before,
-h3>a.anchor::before,
-#toctitle>a.anchor::before,
-.sidebarblock>.content>.title>a.anchor::before,
-h4>a.anchor::before,
-h5>a.anchor::before,
-h6>a.anchor::before {
-    content: "\00A7";
-    font-size: 0.85em;
-    display: block;
-    padding-top: 0.1em;
-}
-
-#content h1:hover>a.anchor,
-#content h1>a.anchor:hover,
-h2:hover>a.anchor,
-h2>a.anchor:hover,
-h3:hover>a.anchor,
-#toctitle:hover>a.anchor,
-.sidebarblock>.content>.title:hover>a.anchor,
-h3>a.anchor:hover,
-#toctitle>a.anchor:hover,
-.sidebarblock>.content>.title>a.anchor:hover,
-h4:hover>a.anchor,
-h4>a.anchor:hover,
-h5:hover>a.anchor,
-h5>a.anchor:hover,
-h6:hover>a.anchor,
-h6>a.anchor:hover {
-    visibility: visible;
-}
-
-#content h1>a.link,
-h2>a.link,
-h3>a.link,
-#toctitle>a.link,
-.sidebarblock>.content>.title>a.link,
-h4>a.link,
-h5>a.link,
-h6>a.link {
-    color: $heading-text-color;
-    text-decoration: none;
-}
-
-#content h1>a.link:hover,
-h2>a.link:hover,
-h3>a.link:hover,
-#toctitle>a.link:hover,
-.sidebarblock>.content>.title>a.link:hover,
-h4>a.link:hover,
-h5>a.link:hover,
-h6>a.link:hover {
-    color: $heading-hovered-link-color;
-}
-
-h1,
-h2,
-p,
-td.content,
-span.alt,
-summary {
-    letter-spacing: -0.01em;
 }
