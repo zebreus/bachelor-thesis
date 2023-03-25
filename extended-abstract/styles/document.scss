@@ -1,0 +1,124 @@
+/*
+  Justify the content of the following block elements unless it is specifically aligned using text-*
+  Be most specific (that is on dd/li) as pagedjs will add a text-align-last to the whole element including
+  nested elements once that breaks across two pages.
+   */
+.dlist:not(.text-left):not(.text-right):not(.text-center) dd p,
+.ulist:not(.text-left):not(.text-right):not(.text-center) li p,
+.olist:not(.text-left):not(.text-right):not(.text-center) li p,
+.paragraph:not(.text-left):not(.text-right):not(.text-center) p,
+.admonitionblock:not(.text-left):not(.text-right):not(.text-center) .content {
+  text-align: justify;
+}
+
+// /* fix admonition icon size with Font Awesome 5*/
+// .admonitionblock>table td.icon svg {
+//   height: 2.5em;
+//   width: 100%;
+//   cursor: default;
+// }
+
+// .admonitionblock>table td.icon .fa-layers {
+//   height: 100%;
+//   width: 100%;
+// }
+
+// .admonitionblock td.icon.icon-tip svg.fa-circle path {
+//   fill: #338a37;
+// }
+
+// .admonitionblock td.icon.icon-caution svg.fa-circle path {
+//   fill: #7c3479;
+// }
+
+// .admonitionblock td.icon.icon-note svg>path {
+//   fill: #1565c0;
+// }
+
+// .admonitionblock td.icon.icon-warning svg>path {
+//   fill: #b26610;
+// }
+
+// .admonitionblock td.icon.icon-important svg>path {
+//   fill: #ab2424;
+// }
+
+// /* fix callout text alignment */
+// .conum[data-value]:after {
+//   display: flex;
+//   margin: auto;
+// }
+
+// pre .conum[data-value] {
+//   display: inline-flex;
+// }
+
+// #cover {
+//   display: flex;
+//   flex-direction: column;
+//   justify-content: center;
+//   height: 100%;
+//   align-items: flex-end;
+// }
+
+// #cover h1 {
+//   color: #999;
+//   font-weight: 200;
+//   font-size: 2.6rem;
+//   padding: 0;
+//   margin-bottom: 1rem;
+// }
+
+// #cover h2 {
+//   font-size: 1.1rem;
+//   font-weight: 200;
+//   padding: 0;
+//   margin: 0;
+// }
+
+/* Workaround: https://gitlab.pagedmedia.org/tools/pagedjs/issues/162 */
+.pagedjs_page_content>div {
+  height: 100%;
+}
+
+
+
+/*
+  TOC page numbering and leaders, adapted from https://www.pagedjs.org/posts/2020-02-19-toc/
+  The page numbering is straightforward and generally works.
+  The leader works by filling the li with dots, and arranging for the <a> and a::after to cover them, using the same background color as the TOC div.
+  */
+
+
+.front-matter {
+  page: front;
+}
+
+#content {
+  counter-reset: page 1;
+}
+
+/* footnotes */
+@page {
+  @footnote {
+    float: bottom;
+    /*border-top: solid black thin;
+      padding-top: 8pt;*/
+  }
+}
+
+span.footnote {
+  float: footnote;
+}
+
+[data-footnote-call]::after {
+  content: "[" counter(footnote) "]";
+}
+
+.pagedjs_area a[data-footnote-call] {
+  cursor: pointer;
+}
+
+[data-footnote-call]::after {
+  content: "[" counter(footnote) "]";
+}

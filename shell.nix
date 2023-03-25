@@ -36,6 +36,7 @@ mkShell {
     adoptopenjdk-hotspot-bin-15
     nodePackages.wavedrom-cli
     vcd2wavedrom
+    sass
 
     # Utils
     gnumake

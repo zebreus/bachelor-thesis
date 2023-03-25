@@ -25,6 +25,7 @@ stdenv.mkDerivation rec {
     adoptopenjdk-hotspot-bin-15
     nodePackages.wavedrom-cli
     vcd2wavedrom
+    sass
 
     # Utils
     gnumake
@@ -54,13 +55,14 @@ stdenv.mkDerivation rec {
   ];
 
   buildPhase = ''
+    mkdir -p styles
     mkdir -p images
     make index.html
   '';
 
   installPhase = ''
     mkdir -p $out
-    cp -r index.html images $out
+    cp -r *.html *.css images $out
    
     mkdir -p $out/bin
     cat <<EOF > $out/bin/${pname}.sh
