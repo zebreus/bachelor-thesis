@@ -9,7 +9,7 @@ TARGETS += $(TARGETS_WITHOUT_HTML) index.html
 .EXTRA_PREREQS:=Makefile
 all: index.html
 
-SCSS_FILES = $(wildcard styles/*.scss)
+SCSS_FILES = $(wildcard styles/*.scss) $(wildcard styles/*/*.scss) $(wildcard styles/*/*/*.scss)
 
 Readme.css: $(SCSS_FILES)
 	cd styles ; sass --update --sourcemap=none thesis.scss:../Readme.css

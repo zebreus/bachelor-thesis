@@ -1,0 +1,34 @@
+// Styles for links
+@import "../variables.scss";
+
+a:hover {
+    cursor: pointer;
+}
+
+a {
+    background: none;
+}
+
+a:focus {
+    outline: thin dotted;
+}
+
+a:active,
+a:hover {
+    outline: 0;
+}
+
+a {
+    color: $normal-link-color;
+    text-decoration: underline;
+    line-height: inherit;
+}
+
+a:hover,
+a:focus {
+    color: $focused-link-color;
+}
+
+a img {
+    border: 0;
+}

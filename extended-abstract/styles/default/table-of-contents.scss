@@ -1,0 +1,58 @@
+// Table of Contents
+@import "../variables.scss";
+
+#toc {
+    border-bottom: 1px solid #e7e7e9;
+    padding-bottom: 0.5em;
+}
+
+#toc>ul {
+    margin-left: 0.125em;
+}
+
+#toc ul.sectlevel0>li>a {
+    font-style: italic;
+}
+
+#toc ul.sectlevel0 ul.sectlevel1 {
+    margin: 0.5em 0;
+}
+
+#toc ul {
+    font-family: $text-font-family;
+    list-style-type: none;
+}
+
+#toc li {
+    line-height: 1.3334;
+    margin-top: 0.3334em;
+}
+
+#toc a {
+    text-decoration: none;
+}
+
+#toc a:active {
+    text-decoration: underline;
+}
+
+#toctitle {
+    color: $title-text-color;
+    font-size: 1.2em;
+}
+
+#content #toc {
+    border: 1px solid #e0e0dc;
+    margin-bottom: $paragraph-margin;
+    padding: 1.25em;
+    background: #f8f8f7;
+    border-radius: 4px;
+}
+
+#content #toc> :first-child {
+    margin-top: 0;
+}
+
+#content #toc> :last-child {
+    margin-bottom: 0;
+}
