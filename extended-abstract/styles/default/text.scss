@@ -95,15 +95,17 @@ strong strong {
 
 .sect1 {
     padding-bottom: 0.625em;
-}
 
+    &:last-child {
+        padding-bottom: 0;
+    }
 
-.sect1:last-child {
-    padding-bottom: 0;
-}
+    @if $border-between-sections {
+        &+.sect1 {
+            border-top: 1px solid #e7e7e9;
+        }
+    }
 
-.sect1+.sect1 {
-    border-top: 1px solid #e7e7e9;
 }
 
 .paragraph.lead>p,

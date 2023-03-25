@@ -1,20 +1,6 @@
 // Styles for spoilers
 @import "../variables.scss";
 
-.sect1 {
-    padding-bottom: 0.625em;
-}
-
-
-.sect1:last-child {
-    padding-bottom: 0;
-}
-
-.sect1+.sect1 {
-    border-top: 1px solid #e7e7e9;
-}
-
-
 details {
     margin-left: 1.25rem;
 }

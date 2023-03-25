@@ -104,3 +104,7 @@ $admonition-warning-color: #bf6900;
 $admonition-caution-color: #bf3400;
 // Default: #bf0000
 $admonition-important-color: #bf0000;
+
+// Add a light border between highest level sections
+// Default: true
+$border-between-sections: false;
