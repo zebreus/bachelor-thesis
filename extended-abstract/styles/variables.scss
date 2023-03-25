@@ -23,13 +23,13 @@ $h1-font-size: $base-font-size * (14 / 11);
 // Default: 1.6875em
 $h2-font-size: $base-font-size * (12 / 11);
 // Default: 1.375em
-$h3-font-size: $base-font-size;
+$h3-font-size: $base-font-size * (9 / 11);
 // Default: 1.125em
-$h4-font-size: $base-font-size;
+$h4-font-size: $base-font-size * (9 / 11);
 // Default: 1.125em
-$h5-font-size: $base-font-size;
+$h5-font-size: $base-font-size * (9 / 11);
 // Default: 1em
-$h6-font-size: $base-font-size;
+$h6-font-size: $base-font-size * (9 / 11);
 // Used for paragraphs and other things
 // Default: 1em
 $p-font-size: $base-font-size;
@@ -53,9 +53,9 @@ $light-font-weight: 300;
 
 // Margins for headings
 // Default: 1em
-$heading-margin-top: $base-font-size;
+$heading-margin-top: $base-font-size * 1.5;
 // Default: 0.5em
-$heading-margin-bottom: $heading-margin-top * 0.5;
+$heading-margin-bottom: $base-font-size * 1.5;
 
 // Used where lineheight was 1.6
 // Default: 1.6

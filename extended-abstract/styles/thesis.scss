@@ -3,37 +3,34 @@
 @import './default.scss';
 @import './print.scss';
 
-// $huge: 1.6669rem;
-// $very-large: 1.4169rem;
-// $large: 1.1669rem;
-// $normal-size: 0.96em; // 11.5pt
-
-// Used for normal text
-$base-font-size: 0.96em; // 12pt adjusted for spectral
-// Latex Large
-$large: $base-font-size * (14 / 11);
-// Latex LARGE
-$very-large: $base-font-size * (17 / 11);
-// Latex huge
-$huge: $base-font-size * (20 / 11);
+@import './variables.scss';
 
 @page {
     size: A4;
-    // margin: 0;
-    // margin: 2.4cm 3.81cm 3.81cm 3.81cm;
     margin: 3.05cm 3.86cm 3.81cm 4.26cm;
-    // margin: 4.445cm 4.445cm 4.445cm 4.445cm;
-
 }
 
 @page :first {
     margin-top: 2.4cm;
+}
+
+h1,
+h2,
+h3,
+#toctitle,
+.sidebarblock>.content>.title,
+h4,
+h5,
+h6 {
+    text-transform: uppercase;
+    letter-spacing: 0.08rem;
 
 }
 
+// Add lines to h2
+#toctitle,
 h2 {
-    text-transform: uppercase;
-    letter-spacing: .1rem;
+    font-size: $h2-font-size;
     margin-bottom: 2.3rem;
     position: relative;
 
@@ -46,17 +43,6 @@ h2 {
         height: 1px;
         background: black;
     }
-}
-
-html {
-    font-family: 'Spectral', serif;
-    // text-align: justify;
-    // text-align-last: left;
-
-}
-
-#cover {
-    display: none;
 }
 
 .logo {
