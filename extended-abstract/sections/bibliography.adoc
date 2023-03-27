@@ -1,0 +1,81 @@
+
+[bibliography]
+== References
+
+* [[[Har22]]]
+Hardin, David,
+_Hardware/Software Co-Assurance using the Rust Programming Language and ACL2_,
+arXiv preprint arXiv:2205.11709,
+2022.
+https://arxiv.org/abs/2205.11709v1[🔗^]
+
+* [[[Rog20]]]
+Rogers, Samuel and Slycord, Joshua and Baharani, Mohammadreza and Tabkhi, Hamed,
+_gem5-SALAM: A System Architecture for LLVM-based Accelerator Modeling_,
+2020 53rd Annual IEEE/ACM International Symposium on Microarchitecture (MICRO), 471-482,
+2020.
+https://ieeexplore.ieee.org/abstract/document/9251937[🔗^]
+
+* [[[Li21]]]
+Li, Rui and Berkley, Lincoln and Yang, Yihang and Manohar, Rajit,
+_Fluid: An Asynchronous High-level Synthesis Tool for Complex Program Structures_,
+2021 27th IEEE International Symposium on Asynchronous Circuits and Systems (ASYNC), 1-8,
+2020.
+https://ieeexplore.ieee.org/abstract/document/9565447[🔗^]
+
+* [[[Lia23]]]
+Liang, Geng-Ming and Yuan, Chuan-Yue and Yuan, Meng-Shiun and Chen, Tai-Liang and Chen, Kuan-Hsun and Lee, Jenq-Kuen,
+_The Support of MLIR HLS Adaptor for LLVM IR_,
+Workshop Proceedings of the 51st International Conference on Parallel Processing, 1-8,
+2020.
+https://doi.org/10.1145/3547276.3548515[🔗^]
+
+* [[[Fer21]]]
++F. Ferrandi et al.+,
+_Invited: Bambu: an Open-Source Research Framework for the High-Level Synthesis of Complex Applications_,
+2021 58th ACM/IEEE Design Automation Conference (DAC), 1327-1330,
+2021.
+https://ieeexplore.ieee.org/abstract/document/9586110[🔗^]
+
+* [[[Rot10]]]
++F. Ferrandi et al.,+
+_C-to-Verilog. com: High-Level Synthesis Using LLVM_,
+University of Haifa,
+2010.
+https://llvm.org/devmtg/2010-11/Rotem-CToVerilog.pdf[🔗^]
+
+* [[[Sch20]]]
+Fabian Schuiki, Andreas Kurth, Tobias Grosser, and Luca Benini,
+_LLHD: a multi-level intermediate representation for hardware description languages_,
+In Proceedings of the 41st ACM SIGPLAN Conference on Programming Language Design and Implementation (PLDI 2020), 258–271,
+2020.
+https://doi.org/10.1145/3385412.3386024[🔗^]
+
+* [[[Nan16]]]
++R. Nane et al.+,
+_A Survey and Evaluation of FPGA High-Level Synthesis Tools_,
+IEEE Transactions on Computer-Aided Design of Integrated Circuits and Systems, 1591-1604,
+2016.
+https://ieeexplore.ieee.org/abstract/document/7368920[🔗^]
+
+* [[[Nor18]]]
++D. H. Noronha, B. Salehpour and S. J. E. Wilton+,
+_LeFlow: Enabling Flexible FPGA High-Level Synthesis of Tensorflow Deep Neural Networks_,
+Fifth International Workshop on FPGAs for Software Programmers, 1-8,
+2018.
+https://ieeexplore.ieee.org/abstract/document/8470462[🔗^]
+
+* [[[Soz22]]]
+Sozzo, Emanuele Del, et al.,
+_Pushing the level of abstraction of digital system design: A survey on how to program FPGAs_,
+ACM Computing Surveys, 1-48,
+2022.
+https://dl.acm.org/doi/abs/10.1145/3532989[🔗^]
+
+* [[[XLS]]]
+_XLS project page_
+https://google.github.io/xls/[🔗^]
+
+* [[[DSLX]]]
+_DSLX Reference_
+https://google.github.io/xls/dslx_reference/[🔗^]

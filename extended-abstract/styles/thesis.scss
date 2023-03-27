@@ -192,6 +192,55 @@ h1 {
     }
 }
 
+// Adds a line where a signature can be written
+.signature-required {
+    width: 40%;
+    margin-right: 0;
+    margin-left: auto;
+
+    &::before {
+        content: "";
+        background: black;
+        width: 100%;
+        height: 1px;
+        display: block;
+        margin-bottom: 0.5rem;
+        margin-top: 2rem;
+    }
+
+    p {
+        text-align: center;
+    }
+}
+
+a.citation {
+    color: #008000;
+
+    &::before {
+        content: "[";
+        color: $base-text-color;
+    }
+
+    &::after {
+        content: "]";
+        color: $base-text-color;
+    }
+}
+
+ul.bibliography {
+    list-style: none;
+    margin-left: 3rem;
+
+    &>li {
+        a:first-child {
+            position: absolute;
+            left: 0;
+            color: inherit;
+            text-decoration: inherit;
+        }
+    }
+}
+
 // .signature img {
 //     height: 2cm;
 //     margin-left: 1cm;

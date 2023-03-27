@@ -3,7 +3,6 @@
 :imagesdir: images
 :source-highlighter: rouge
 :rouge-style: github
-:cpp: C++
 :toclevels: 2
 :stem:
 :toc: macro
@@ -16,15 +15,6 @@
 
 image::logo_hda.svg[role=logo]
 
-// Remove title page from PDF.
-// This seems to be the only way
-++++
-<script>
-    var titlePageElement = document.getElementById("cover");
-    titlePageElement?.parentNode.removeChild(titlePageElement);
-</script>
-++++
-
 [.university.text-center]
 Hochschule Darmstadt
 
@@ -32,11 +22,7 @@ Hochschule Darmstadt
 Fachbereich Informatik
 
 [discrete]
-= A Classic Thesis Style
-:notitle:
-:!showtitle:
-:docinfo: private
-:!title-page:
+= How can High-level synthesis from Rust code be integrated into rust-hdl?
 
 [.description.text-center]
 Abschlussarbeit zur Erlangung des akademischen Grades +
@@ -55,32 +41,7 @@ vorgelegt von +
 
 |Korreferent |: |Prof. Dr. Martin Stiemerling
 
-
 |=== 
-
-<<<
-
-sdfa
-
-<<<
-
-[discrete]
-== Erklärung
-
-Ich versichere hiermit, dass ich die vorliegende Arbeit selbstständig verfasst
-und keine anderen als die im Literaturverzeichnis angegebenen Quellen benutzt habe.
-
-Alle Stellen, die wörtlich oder sinngemäß aus veröffentlichten oder noch
-nicht veröffentlichten Quellen entnommen sind, sind als solche kenntlich
-gemacht.
-
-Die Zeichnungen oder Abbildungen in dieser Arbeit sind von mir selbst
-erstellt worden oder mit einem entsprechenden Quellennachweis versehen.
-
-Diese Arbeit ist in gleicher oder ähnlicher Form noch bei keiner anderen
-Prüfungsbehörde eingereicht worden.
-
-_Darmstadt, 24. März 2023_
 
 <<<
 
@@ -122,114 +83,41 @@ toc::[]
 
 <<<
 
-== Einleitung
-
-Lorem ipsum at nusquam appellantur his, labitur bonorum pri no.
-His no decore nemore graecis. In eos meis nominavi, liber soluta vim cu. Sea
-commune suavitate interpretaris eu, vix eu libris efficiantur.
-
-=== Motivation
-
-Illo principalmente su nos. Non message occidental angloromanic da. Debitas
-effortio simplificate sia se, auxiliar summarios da que, se avantiate publicationes via. Pan in terra summarios, capital interlingua se que. Al via multo
-esser specimen, campo responder que da. Le usate medical addresses pro,
-europa origine sanctificate nos se. Cras faucibus, leo ac adipiscing adipiscing,
-erat justo vulputate arcu, non sollicitudin ipsum dolor eget lectus. Nulla sed
-mi non ipsum varius consequat sit amet nec ipsum. Donec ac elit id nibh
-pretium pulvinar non ut ipsum. Integer congue iaculis augue ac porttitor.
-Suspendisse sed enim ac eros hendrerit adipiscing. Integer elit libero, lacinia vitae pharetra a, ullamcorper vitae metus. In tempor, est id imperdiet
-pulvinar, tellus nibh lacinia diam, a eleifend dui lectus non turpis.
-
-=== Gliederung
-
-Nulla fastidii ea ius, exerci suscipit instructior te nam, in ullum postulant
-quo. Congue quaestio philosophia his at, sea odio autem vulputate ex. Cu
-usu mucius iisque voluptua. Sit maiorum propriae at, ea cum Application
-Programming Interface primis intellegat. Hinc cotidieque reprehendunt eu nec. Autem timeam deleniti usu id, in nec nibh altera.
+include::sections/introduction.adoc[]
 
 <<<
 
-== Grundlagen und verwandte Arbeiten
-
-Non vices medical da. Se qui peano distinguer demonstrate, personas internet in nos. Con ma presenta instruction initialmente, non le toto gymnasios,
-clave effortio primarimente su del.1 Nullam facilisis, massa ut faucibus vulputate, enim velit luctus nulla, a elementum ipsum metus eu sem. Sed a auctor quam. Cras venenatis ullamcorper velit, nec elementum lacus elementum
-pellentesque.
-
-=== Der erste Abschnitt des Kapitels
-
-Sia ma sine svedese americas. Asia Bentley [Ben99] representantes un nos,
-un altere membros qui. De web nostre historia angloromanic. Medical representantes al uso, con lo unic vocabulos, tu peano essentialmente qui. Lo
-malo laborava anteriormente uso.
-
-==== Ein Unterabschnitt
-
-Uno pote summario methodicamente al, uso debe nomina hereditage ma.
-Iala rapide ha del, ma nos esser parlar. Maximo dictionario sed al. Aenean
-posuere, enim in ultricies facilisis, ligula lacus eleifend eros, accumsan commodo metus justo placerat justo. Donec sit amet mauris dolor, at imperdiet lacus. In laoreet pretium condimentum. Proin ut varius diam. Fusce ipsum
-ipsum, elementum id porttitor at, pharetra congue nisi.
-
-==== Ein weiterer Unterabschnitt
-
-Deler utilitate methodicamente con se. Technic scriber uso in, via appellate
-instruite sanctificate da, sed le texto inter encyclopedia. Ha iste americas que,
-qui ma tempore capital. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Proin vitae urna id metus vestibulum
-lobortis. Duis rhoncus pulvinar massa, eget venenatis justo dapibus sed.
-
-=== Ein zweiter Abschnitt
-
-Phasellus ut ipsum nulla, vitae venenatis augue. Suspendisse potenti. Mauris
-suscipit justo a dolor laoreet lacinia. Pellentesque habitant morbi tristique
-senectus et netus et malesuada fames ac turpis egestas. Aliquam commodo
-commodo dui, nec auctor mi malesuada et. Aenean tortor erat, semper eu
-ullamcorper non, dignissim sed lectus. Praesent et pretium leo.
-
-==== Ein Unterabschnitt
-
-Uno pote summario methodicamente al, uso debe nomina hereditage ma.
-Iala rapide ha del, ma nos esser parlar. Maximo dictionario sed al. Aenean
-posuere, enim in ultricies facilisis, ligula lacus eleifend eros, accumsan commodo metus justo placerat justo. Donec sit amet mauris dolor, at imperdiet lacus. In laoreet pretium condimentum. Proin ut varius diam. Fusce ipsum
-ipsum, elementum id porttitor at, pharetra congue nisi.
-
-===== Ein Unter-Unterabschnitt
-
-Sed vel ante vel quam commodo cursus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Duis non turpis
-eget quam rutrum scelerisque. Duis nec quam metus. Curabitur purus dui,
-sagittis vel mattis a, elementum vitae risus. Pellentesque a tellus lacus, id
-gravida lectus.
+include::sections/summary.adoc[]
 
 <<<
 
-== Ein weiteres Kapitel
+include::sections/bibliography.adoc[]
 
-liquam facilisis convallis nibh. Ut accumsan malesuada nisi, eget luctus ante
-dignissim at. Integer dignissim rutrum feugiat. Mauris sit amet leo id ligula
-fringilla pharetra. In id neque metus, eu congue libero. Suspendisse egestas imperdiet nulla, in blandit dolor venenatis vel. Quisque quis justo quis
-quam lobortis blandit. Quisque urna mauris, placerat a pretium eu, placerat
-vel risus. Donec sollicitudin malesuada cursus. Sed auctor aliquet urna sit
-amet porta. Cum sociis natoque penatibus et magnis dis parturient montes,
-nascetur ridiculus mus.
 
-// Convert numbers in headings to spans
-// Also removes the trailing dot from the numbers
-// Also removes numbers from h2
-// Also adds data-sectnum to h2
-// ++++
-// <script>
-//     var nodes = document.querySelectorAll("h1,h2,h3,h4,h5,h6,#toc a");
-//     [...nodes].forEach(node => {node.innerHTML = node.innerHTML.replace(/^(<a[^/]*[/]a>)?[\s]*([0-9.:IV]*[0-9IV])[.:]?/, node.tagName != "H2"
-//       ? '<span class="section-number">$2</span>'
-//       : (match, p1, section_number)=> {
-//           node.setAttribute("data-sectnum", section_number);
-//           return ""
-//         }
-//     )})
-// </script>
-// ++++
+// === Motivation
 
-++++
-<script>
-    var nodes = document.querySelectorAll("h1,h2,h3,h4,h5,h6,#toc a");
-    [...nodes].forEach(node => {node.innerHTML = node.innerHTML.replace(/^(<a[^/]*[/]a>)?[\s]*((Part )?[0-9.:IV]*[0-9IV])[.:]?/, '<span class="section-number">$2</span>'
-    )})
-</script>
-++++
+// == Related work
+
+// === HDL
+
+// === FPGA
+
+// === ADL
+
+// === Rust
+
+// === Rust-HDL
+
+// === High-level synthesis
+
+// === Bambu
+
+// === Other tools
+
+// == Implementation
+
+// == Conclusion
+
+
+
+include::sections/trailing-scripts.adoc[]

@@ -1,0 +1,7 @@
+== Introduction
+
+The introduction of your extended abstract should <<DSLX>> <<Har22>> state in no more than 700 words the nature of
+the project or problem you are addressing and why you are studying it. It should provide
+background information about the work and its significance, while highlighting other relevant
+literature and specifying how it relates or differs from your work. You should also discuss the
+scope and limitations of your study in the introduction.
