@@ -2,6 +2,8 @@
 [bibliography]
 == References
 
+// Claims to have a transpiler from a subset of Rust (RAR) to restriceted algrithmic C (RAC) that can be synthesized to FPGA. No source.
+// The first paper to mention HLS from Rust. 
 * [[[Har22]]]
 Hardin, David,
 _Hardware/Software Co-Assurance using the Rust Programming Language and ACL2_,
@@ -36,6 +38,7 @@ _Invited: Bambu: an Open-Source Research Framework for the High-Level Synthesis 
 2021 58th ACM/IEEE Design Automation Conference (DAC), 1327-1330,
 2021.
 https://ieeexplore.ieee.org/abstract/document/9586110[🔗^]
+https://re.public.polimi.it/retrieve/668507/dac21_bambu.pdf[📁^]
 
 * [[[Rot10]]]
 +F. Ferrandi et al.,+
@@ -47,16 +50,19 @@ https://llvm.org/devmtg/2010-11/Rotem-CToVerilog.pdf[🔗^]
 * [[[Sch20]]]
 Fabian Schuiki, Andreas Kurth, Tobias Grosser, and Luca Benini,
 _LLHD: a multi-level intermediate representation for hardware description languages_,
-In Proceedings of the 41st ACM SIGPLAN Conference on Programming Language Design and Implementation (PLDI 2020), 258–271,
+In Proceedings of the 41st ACM SIGPLAN Conference on Programming Language Design and Implementation (PLDI 2020), 258-271,
 2020.
 https://doi.org/10.1145/3385412.3386024[🔗^]
 
+// Multiple HLS tools use LLVM
+// C/Cpp are most popular languages for HLS
 * [[[Nan16]]]
 +R. Nane et al.+,
 _A Survey and Evaluation of FPGA High-Level Synthesis Tools_,
 IEEE Transactions on Computer-Aided Design of Integrated Circuits and Systems, 1591-1604,
 2016.
 https://ieeexplore.ieee.org/abstract/document/7368920[🔗^]
+https://sci-hub.st/10.1109/tcad.2015.2513673[📁^]
 
 * [[[Nor18]]]
 +D. H. Noronha, B. Salehpour and S. J. E. Wilton+,
@@ -79,3 +85,72 @@ https://google.github.io/xls/[🔗^]
 * [[[DSLX]]]
 _DSLX Reference_
 https://google.github.io/xls/dslx_reference/[🔗^]
+
+* [[[rusthdl]]]
+_rust-hdl project overview_
+https://github.com/samitbasu/rust-hdl[🔗^]
+
+
+* [[[Zen12]]]
+_Identifying Barriers to Adoption for Rust through Online Discourse_
+https://arxiv.org/pdf/1901.01001.pdf[🔗^]
+
+* [[[so-trends]]]
+_Stack Overflow Trends_
+https://insights.stackoverflow.com/trends?tags=rust%2Cc%2B%2B[🔗^]
+
+// Rust has an ecosystem that greatly simplifies any software projec
+// Rust is great
+* [[[Bug22]]]
++William Bugden, Ayman Alahmar+,
+_Rust: The Programming Language for Safety and Performance_,
+asXiv,
+2022.
+https://arxiv.org/pdf/2206.05503.pdf[🔗^]
+
+// Rust can be used for GPU programming
+* [[[Byc22]]]
++Andrey Bychkov, Vsevolod Nikolskiy+,
+_Rust Language for GPU Programming_,
+In: Voevodin, V., Sobolev, S., Yakobovskiy, M., Shagaliev, R. (eds) Supercomputing. RuSCDays 2022. Lecture Notes in Computer Science, vol 13708. Springer, Cham, 2022, pp. 522-32,
+2022
+https://doi.org/10.1007/978-3-031-22941-1_38[🔗^]
+
+// Rust can be used for web programming
+* [[[Kyr22]]]
++Kyriakou K-ID, Tselikas ND+,
+_Complementing JavaScript in High-Performance Node.js and Web Applications with Rust and WebAssembly._,
+Electronics 11, no. 19: 3217,
+2022
+https://doi.org/10.3390/electronics11193217[🔗^]
+
+// Probably one of the greatest features of the language is the package manager, called cargo.
+* [[[Cos19]]]
++Cosmin Cartas+,
+_Rust - The Programming Language for Every Industry_,
+ECONOMY INFORMATICS JOURNAL, 19, 45-51,
+2019
+https://doi.org/10.12948/ei2019.01.05[🔗^]
+
+// state-of-art bottom-up logic programming within the Rust ecosystem
+* [[[Sah22]]]
++Arash Sahebolamri, Thomas Gilray, Kristopher Micinski+,
+_Seamless Deductive Inference via Macros_,
+Proceedings of the 31st ACM SIGPLAN International Conference on Compiler Construction, 77-88,
+2022
+https://doi.org/10.1145/3497776.3517779[🔗^]
+
+// Productivity in HLS is better than HDL
+// HLS offers easier design and testing
+// HDL implementation is better than HLS
+* [[[Mil20]]]
++Roberto Millón, Emmanuel Frati, Enzo Rucci+,
+_A Comparative Study between HLS and HDL on SoC for Image Processing Applications_,
+Revista elektron, Vol. 4, No. 2, 100-106,
+2020
+https://doi.org/10.37537/rev.elektron.4.2.117.2020[🔗^]
+
+
+// Shows that HLS is twice as fast as HDL 
+// M. Pelcat, C. Bourrasset, L. Maggiani and F. Berry, "Design productivity of a high level synthesis compiler versus HDL," 2016 International Conference on Embedded Computer Systems: Architectures, Modeling and Simulation (SAMOS), Agios Konstantinos, Greece, 2016, pp. 140-147, doi: 10.1109/SAMOS.2016.7818341.
+// https://ieeexplore.ieee.org/abstract/document/7818341

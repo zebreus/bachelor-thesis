@@ -1,7 +1,16 @@
 == Introduction
 
-The introduction of your extended abstract should <<DSLX>> <<Har22>> state in no more than 700 words the nature of
-the project or problem you are addressing and why you are studying it. It should provide
-background information about the work and its significance, while highlighting other relevant
-literature and specifying how it relates or differs from your work. You should also discuss the
-scope and limitations of your study in the introduction.
+// The introduction of your extended abstract should state in no more than 700 words the nature of
+// the project or problem you are addressing and why you are studying it. It should provide
+// background information about the work and its significance, while highlighting other relevant
+// literature and specifying how it relates or differs from your work. You should also discuss the
+// scope and limitations of your study in the introduction.
+
+The popularity of the Rust programming language is rising and it is one of the most loved new programming languages. It integrates modern tooling like standartized dependency management, testing, documentation generation, formatting and building. In the future the adoption will probably increase further and it could replace cpp as the most common system programming language <<Bug22>>.
+It is possible that Rust also provides benefits in domains other than systems programming. It has been shown that Rust can be used for other domains such as GPU programming, web development or logic programming <<Sah22>> <<Byc22>> <<Kyr22>>. This enables us to use some of the benfits of Rust <<Bug22>> <<Cos19>>.
+
+This paper will explore how Rust can be used in the domain of FPGA firmware develpment. Usually FPGA firmware is developed in a Hardware Description Language (HDL) such as Verilog or VHDL. In these languages the programmer has to describe the hardware in detail. This is a low-level approach that can lead to efficient designs, but it is quite time consuming <<Mil20>>. The rust-hdl project enables us to express hardware descriptions in Rust similar to traditional HDLs <<rusthdl>>. In addition to manually writing hardware descriptions in a HDL, it is also possible to use High-level synthesis (HLS) to generate hardware descriptions in HDLs from an algorithmic description written in high-level programming languages. This provides increased productivity at the cost of slightly less optimized designs <<Mil20>>. This process is currently mostly used with C or C++, because they are the most common system programming languages. There are multiple HLS tools available that are able to synthesize HDL code from Cpp code. Multiple of these tools are based around the LLVM compiler infrastructure <<Nan16>>. There is one reported use of Rust as a HLS language but that is of no use for us as their tools are not available <<Har22>>. As Rust is also based on LLVM, it is possible that it can be used with these tools too. 
+
+In order to figure out whether Rust can be used as a source language for HLS, we developed a modular process for integrating HLS solutions with rust-hdl <<rusthdl>>. We used this process to implement a proof-of-concept integration with the PandA Bambu HLS framework and showed that it is possible to use Rust as a source language for HLS. We also evaluated the resulting solution by synthesizing a simple example. We found that the solution is not yet suitable for production use, but that it is a promising starting point for further development.
+
+// This paper will explore if Rust can be used for High-level synthesis, which is a process for generating FPGA firmware from an algorithmic description written in high-level languages.
