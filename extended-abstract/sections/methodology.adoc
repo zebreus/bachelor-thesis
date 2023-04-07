@@ -1,0 +1,15 @@
+== Materials and methods
+
+=== Reusable toolchain
+
+We created a modular toolchain for integrating HLS frameworks with rust-hdl. We choose this over working directly with the HLS frameworks as it allows for faster iterations and easier integration of other HLS frameworks. We centered our experiments around rust-hdl to minimize the complexity of needing to manage multiple languages in our experimental setups. The whole process is automated in a single Rust macro so that it allows for faster iterations.
+
+The first step extracts functions marked with a `#[hls]` attribute macro into separate Rust crates.  The extracted crates contain the same dependencies and code as the source crate. The crate type is changed to a library crate, the `#[hls]` attribute is removed and it is adjusted to only export the marked function. It is also ensured that the marked function has an interface that is fitting for HLS. If the `#[hls]` macro for a specific function contains additional parameters, a file containing these parameters is also created in the extracted crate directory. The parameters can be used to pass additional configuration to the HLS tool.
+
+// TODO: A build script is generated and then executed
+In the second step a High-level synthesis tool is used to synthesize the extracted crates into Verilog. First we use the Rust compiler to compile an extracted crate into a single LLVM IR file. Then the highlevel synthesis tool generates verilog code for the marked functions and their dependencies. The generated verilog code is place in the extracted crate's `target` directory. This step can be adapted to use other HLS tools. We choose PandA bambu for this step as it is easily available, well-documented and supports LLVM IR input. This step can be easily adjusted for other HLS tools.
+
+The generated Verilog is then wrapped in rust-hdl and embedded into the original Rust project. The wrapping process first extracts the interface of the generated Verilog module. It then creates a rust-hdl module with the same interface. The Verilog code is then placed in the module's body. The wrapped module is then inserted at the original location of the marked function.
+
+=== Demonstrating HLS from Rust
+
