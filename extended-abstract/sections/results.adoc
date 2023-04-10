@@ -1,0 +1,8 @@
+== Preliminary results
+_I have not yet conducted most of the experiments as described in the methodology, so the results section is mostly based on informal experimentation_
+// TODO: Specify Rust version
+
+A subset of Rust can be synthesized with existing HLS tools. PandA bambu appears to be the most suited HLS tool at the moment.
+
+PandA bambu supports most of Rust with the exception being everything that has the potential to panic. This includes array accesses as Rust automatically generates bound checks for them. For most simple cases this issue can be mitigated by using a higher optimization level when compiling the Rust code to LLVM IR. This will enable the Rust compiler to remove panics if it can statically prove that they will never be executed. It is not guaranteed that the Rust compiler can detect that a panic, so it is not a general solution. If the Rust code contains no panics that cannot be removed by optimization the HLS nearly always works. The performance of the synthesized modules seems to be on par with the performance of an equivalent module synthesized from Cpp code.
+
