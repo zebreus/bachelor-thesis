@@ -1,5 +1,4 @@
 == Summary
 
-The summary should highlight key sfaklfdjsa <<Har22, >> dsf findings and compare the results of your work to others as
-appropriate. Your summary should be based on the evidence presented in your extended abstract.
-Discuss how your work contributes to other studies.
+We showed that High-level synthesis from Rust is possible and described a prototype implementation using PandA bambu. The biggest limitation is that it does not support synthesis of functions that could crash. We demonstrated that the Rust language, its build system and the package registry can be used for hardware design.
+// We believe that this work is a first step towards a Rust-based hardware design.
