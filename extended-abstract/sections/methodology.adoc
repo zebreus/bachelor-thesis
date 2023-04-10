@@ -1,5 +1,21 @@
-== Materials and methods
+== Methodology
 
+=== Finding candidates for HLS tools
+
+We indentified HLS tools that have potential to be used for Rust, by searching google scholar, github, and google. Another criteria for the search was that the tool is open source, so that we are able to adjust it if necessary. First we searched for HLS tools that support Rust directly. That search did not yield any results. The Rust compiler supports compiling Rust code to LLVM intermediate representation (IR). We then considered HLS tools which support LLVM IR as an input language. The potential HLS tools also should have ongoing development, as the Rust compiler generates the latest LLVM IR version. PandA Bambu was the only tool meeting all three criteria. Excluding the acive development criteria, an older version of LegUp or ahaHLS could be considered as well. Excluding the open source criteria, there may be other HLS tools that support LLVM IR but we were not able to verify that.
+
+=== Evaluating a HLS tool
+
+To evaluate a HLS tool, we need to define a set of criteria. As our focus is on the integration of HLS tools with Rust our main criteria is the supported subset of Rust and reliability. The quality of the synthesized result is also evaluated.
+
+The supported subset of Rust is evaluated by trying to synthesize a set of Rust functions. The functions are chosen to cover the most common Rust features. The functions are then synthesized with the HLS tool. If the synthesis is successful it is evaluated that the generated module is also correct.
+
+We evaluate the reliability of a HLS tool for Rust by trying to synthesize multiple Rust functions that only use the supported subset of Rust for a given HLS tool. A tool with perfect reliability would be able to synthesize all functions. A tool with poor reliability would require additional tweaking with the exact structure of the function or with the options used for the HLS tool on a per-function basis.
+
+We evaluate the performance of a HLS tool for Rust by comparing the module synthesized from Rust with a module synthesized from the preferred input language of the HLS tool. The performance is evaluated by comparing the execution time and the number of LUTs of the modules.
+// Currently I am not sure how we can measure these two metrics n a standardized way across multiple tools.
+
+// TODO: Find out in which section this belongs
 === Reusable toolchain
 
 We created a modular toolchain for integrating HLS frameworks with rust-hdl. We choose this over working directly with the HLS frameworks as it allows for faster iterations and easier integration of other HLS frameworks. We centered our experiments around rust-hdl to minimize the complexity of needing to manage multiple languages in our experimental setups. The whole process is automated in a single Rust macro so that it allows for faster iterations.
@@ -11,20 +27,11 @@ In the second step a High-level synthesis tool is used to synthesize the extract
 
 The generated Verilog is then wrapped in rust-hdl and embedded into the original Rust project. The wrapping process first extracts the interface of the generated Verilog module. It then creates a rust-hdl module with the same interface. The Verilog code is then placed in the module's body. The wrapped module is then inserted at the original location of the marked function.
 
-=== Methodology
-
-==== Search for HLS tools
-
-We indentified HLS tools that have potential to be used for Rust, by searching google scholar, github, and google. Another criteria for the search was that the tool is open source, so that we are able to adjust it if necessary. First we searched for HLS tools that support Rust directly. That search did not yield any results. The Rust compiler supports compiling Rust code to LLVM intermediate representation (IR). We then considered HLS tools which support LLVM IR as an input language. The potential HLS tools also should have ongoing development, as the Rust compiler generates the latest LLVM IR version. PandA Bambu was the only tool meeting all three criteria. Excluding the acive development criteria, an older version of LegUp or ahaHLS could be considered as well. Excluding the open source criteria, there may be other HLS tools that support LLVM IR but we were not able to verify that.
-
-==== Evaluating a HLS tool
-
-To evaluate a HLS tool, we need to define a set of criteria. As our focus is on the integration of HLS tools with Rust our main criteria is the supported subset of Rust and reliability. The quality of the synthesized result is also evaluated.
-
-The supported subset of Rust is evaluated by trying to synthesize a set of Rust functions. The functions are chosen to cover the most common Rust features. The functions are then synthesized with the HLS tool. If the synthesis is successful it is evaluated that the generated module is also correct.
-
-We evaluate the reliability of a HLS tool for Rust by trying to synthesize multiple Rust functions that only use the supported subset of Rust for a given HLS tool. A tool with perfect reliability would be able to synthesize all functions. A tool with poor reliability would require additional tweaking with the exact structure of the function or with the options used for the HLS tool on a per-function basis.
-
-We evaluate the performance of a HLS tool for Rust by comparing the module synthesized from Rust with a module synthesized from the preferred input language of the HLS tool. The performance is evaluated by comparing the execution time and the number of LUTs of the modules.
-// Currently I am not sure how we can measure these two metrics n a standardized way across multiple tools.
-
+// Possible test functions:
+// * Sine wave generator: A simple sine wave generator that is used to validate the basic functionality of the HLS tool.
+// * FIR filter: A FIR filter used to evaluate the performance of the HLS tool.
+// * Matrix multiplication: A matrix multiplication algorithm used to evaluate the performance of the HLS tool.
+// * Viterbi decoder: A Viterbi decoder used to evaluate the performance of the HLS tool.
+// * Sort: A sort algorithm used to evaluate the performance of the HLS tool.
+// * Image processing: A image processing algorithm used to evaluate the performance of the HLS tool.
+// * AES: A AES algorithm used to evaluate the performance of the HLS tool.
