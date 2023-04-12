@@ -2,17 +2,17 @@
 
 === Finding candidates for HLS tools
 
-We indentified HLS tools that have potential to be used for Rust, by searching google scholar, github, and google. Another criteria for the search was that the tool is open source, so that we are able to adjust it if necessary. First we searched for HLS tools that support Rust directly. That search did not yield any results. The Rust compiler supports compiling Rust code to LLVM intermediate representation (IR). We then considered HLS tools which support LLVM IR as an input language. The potential HLS tools also should have ongoing development, as the Rust compiler generates the latest LLVM IR version. PandA Bambu was the only tool meeting all three criteria. Excluding the acive development criteria, an older version of LegUp or ahaHLS could be considered as well. Excluding the open source criteria, there may be other HLS tools that support LLVM IR but we were not able to verify that.
+Google Scholar, GitHub, and Google were used to identify HLS tools that have the potential to be used for Rust. A criterion for the search was that the tool is open-source so that it can be adjusted if necessary. No HLS tools that support Rust directly were found. The Rust compiler supports compiling Rust code to LLVM intermediate representation (IR). In a second search HLS tools that support LLVM IR as an input language were also considered. The potential HLS tools also should have ongoing development, as the Rust compiler generates the latest LLVM IR version. PandA Bambu was the only tool meeting all three criteria <<Fer21>>. Excluding the active development criteria, an older version of LegUp or ahaHLS could be considered as well. There may be closed-source HLS tools that support LLVM IR but none of them actively advertise LLVM support.
 
-=== Evaluating a HLS tool
+=== Evaluating an HLS tool
 
-To evaluate a HLS tool, we need to define a set of criteria. As our focus is on the integration of HLS tools with Rust our main criteria is the supported subset of Rust and reliability. The quality of the synthesized result is also evaluated.
+A set of criteria for evaluating an HLS tool for use with Rust were defined. As the focus is on the integration of HLS tools with Rust the main criteria are the supported subset of Rust and reliability. The quality of the synthesized result is also evaluated.
 
 The supported subset of Rust is evaluated by trying to synthesize a set of Rust functions. The functions are chosen to cover the most common Rust features. The functions are then synthesized with the HLS tool. If the synthesis is successful it is evaluated that the generated module is also correct.
 
-We evaluate the reliability of a HLS tool for Rust by trying to synthesize multiple Rust functions that only use the supported subset of Rust for a given HLS tool. A tool with perfect reliability would be able to synthesize all functions. A tool with poor reliability would require additional tweaking with the exact structure of the function or with the options used for the HLS tool on a per-function basis.
+The reliability of an HLS tool for Rust is evaluated by attempting to synthesize multiple Rust functions that only use the supported subset of Rust for a given HLS tool. A tool with good reliability would be able to synthesize all functions that only use the supported subset. A tool with poor reliability would require additional tweaking with the exact structure of the function or with the options used for the HLS tool on a per-function basis.
 
-We evaluate the performance of a HLS tool for Rust by comparing the module synthesized from Rust with a module synthesized from the preferred input language of the HLS tool. The performance is evaluated by comparing the execution time and the number of LUTs of the modules.
+The performance of an HLS tool is evaluated by comparing the module synthesized from Rust with a module synthesized from the preferred input language of the HLS tool. The performance is evaluated by comparing the execution time of the modules and the amount of space they would take on an FPGA.
 // Currently I am not sure how we can measure these two metrics n a standardized way across multiple tools.
 
 // Possible test functions:

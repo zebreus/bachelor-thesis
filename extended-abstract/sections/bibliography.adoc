@@ -41,7 +41,7 @@ https://ieeexplore.ieee.org/abstract/document/9586110[🔗^]
 https://re.public.polimi.it/retrieve/668507/dac21_bambu.pdf[📁^]
 
 * [[[Rot10]]]
-+F. Ferrandi et al.,+
++Nadav Rotem,+
 _C-to-Verilog. com: High-Level Synthesis Using LLVM_,
 University of Haifa,
 2010.

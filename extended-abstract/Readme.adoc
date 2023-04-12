@@ -9,7 +9,7 @@
 :sectanchors:
 :notitle:
 :title-page: false
-:toc-title: Inhaltsverzeichnis
+// :toc-title: Inhaltsverzeichnis
 :stylesheet: Readme.css
 :toclevels: 3
 
@@ -78,27 +78,15 @@ toc::[]
 :part-signifier: Part
 :partnums:
 
-// <<<
-
 = Extended Abstract
-
-// <<<
 
 include::sections/introduction.adoc[]
 
-// <<<
-
 include::sections/methodology.adoc[]
-
-// <<<
 
 include::sections/results.adoc[]
 
-// <<<
-
 include::sections/summary.adoc[]
-
-// <<<
 
 include::sections/bibliography.adoc[]
 
