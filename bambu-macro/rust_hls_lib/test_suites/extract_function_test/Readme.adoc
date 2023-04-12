@@ -1,0 +1,5 @@
+= Test extracting a function
+
+This crate is used to test the extraction of a function.
+
+// TODO: Add more text
