@@ -7,7 +7,15 @@ use std::{
 pub struct GenerateHlsOptions {
     pub function_name: String,
     pub crate_name: String,
+    pub rust_flags: Option<String>,
+    pub hls_flags: Option<String>,
 }
+
+/// These flags will be used when compiling the extracted crate to LLVM IR.
+pub const DEFAULT_RUST_FLAGS: &str = r#"-C overflow-checks=off -C no-vectorize-loops -C target-cpu=generic -C panic=abort -C opt-level=s -C linker-plugin-lto=on -C embed-bitcode=on -C lto=fat -C llvm-args="--opaque-pointers=false""#;
+
+/// These flags will be used when performing HLS from the generated LLVM IR.
+pub const DEFAULT_HLS_FLAGS: &str = r#"--compiler=I386_CLANG16 -Os"#;
 
 /// Generate the contents of the HLS script.
 ///
@@ -18,18 +26,24 @@ fn generate_hls_script_content(options: &GenerateHlsOptions) -> String {
     let GenerateHlsOptions {
         function_name,
         crate_name,
+        rust_flags,
+        hls_flags,
     } = options;
+
+    let rust_flags = rust_flags.clone().unwrap_or(DEFAULT_RUST_FLAGS.into());
+    let hls_flags = hls_flags.clone().unwrap_or(DEFAULT_HLS_FLAGS.into());
+
     let create_llvm_command = format!(
         r#"
 rm -rf target
-cargo rustc --release -- --emit=llvm-ir -C overflow-checks=off -C no-vectorize-loops -C target-cpu=generic -C panic=abort -C opt-level=s -C linker-plugin-lto=on -C embed-bitcode=on -C lto=fat -C llvm-args="--opaque-pointers=false"
+cargo rustc --release -- --emit=llvm-ir {rust_flags}
 cp target/release/deps/{crate_name}-*.ll {function_name}.ll
 "#
     );
 
     let perform_hls_command = format!(
         r#"
-bambu --clock-name=clk --compiler=I386_CLANG16 -Os --simulator=VERILATOR {function_name}.ll --top-fname={function_name}
+bambu --simulator=VERILATOR {function_name}.ll --top-fname={function_name} --clock-name=clk {hls_flags}
 mv {function_name}.v result.v
 "#
     );
@@ -79,6 +93,8 @@ mod tests {
             &GenerateHlsOptions {
                 function_name: "test".into(),
                 crate_name: "test".into(),
+                rust_flags: None,
+                hls_flags: None,
             },
         )
         .unwrap();
@@ -102,6 +118,8 @@ mod tests {
             &GenerateHlsOptions {
                 function_name: function_name.into(),
                 crate_name: crate_name.into(),
+                rust_flags: None,
+                hls_flags: None,
             },
         )
         .unwrap();

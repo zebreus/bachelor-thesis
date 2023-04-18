@@ -9,7 +9,7 @@ use cargo_toml::Manifest;
 use derive_builder::Builder;
 
 use crate::{
-    extract_function_crate::{self, extract_function_crate, ExtractCrateError, ExtractOptions},
+    extract_function_crate::{extract_function_crate, ExtractCrateError, ExtractOptions},
     generate_hls_script::{generate_hls_script, GenerateHlsOptions},
 };
 
@@ -32,7 +32,7 @@ pub enum RustHlsError {
 }
 
 #[derive(Builder)]
-struct RustHlsOptions {
+pub struct RustHls {
     // #[builder(default = "PathBuf::from(\"./.\")")]
     /// The temporary crate will be created here
     target_crate_path: PathBuf,
@@ -44,9 +44,19 @@ struct RustHlsOptions {
     function_name: String,
     /// File containing the function to synthesize. Relative to crate root.
     function_file: PathBuf,
+    #[builder(default = "None")]
+    /// Select flags that will be passed to the rust compiler.
+    ///
+    /// Defaults to: [super::generate_hls_script::DEFAULT_RUST_FLAGS]
+    rust_flags: Option<String>,
+    #[builder(default = "None")]
+    /// Select flags that will be passed to the HLS tool (bambu).
+    ///
+    /// Defaults to: [super::generate_hls_script::DEFAULT_HLS_FLAGS]
+    hls_flags: Option<String>,
 }
 
-impl RustHlsOptions {
+impl RustHls {
     /// Extract the crate into the target directory
     pub fn extract_crate(&mut self) -> Result<&mut Self, RustHlsError> {
         let extract_options = ExtractOptions {
@@ -74,6 +84,8 @@ impl RustHlsOptions {
         let generate_hls_options = GenerateHlsOptions {
             function_name: self.function_name.clone(),
             crate_name: crate_name,
+            rust_flags: self.rust_flags.clone(),
+            hls_flags: self.hls_flags.clone(),
         };
 
         generate_hls_script(&self.target_crate_path, &generate_hls_options)?;
@@ -88,7 +100,7 @@ impl RustHlsOptions {
             .current_dir(&self.target_crate_path)
             .output()?;
 
-        let exit_code = output.status.code().unwrap();
+        let exit_code = output.status.code().unwrap_or(0);
         if exit_code != 0 {
             println!("stdout: {}", String::from_utf8_lossy(&output.stdout));
             println!("stderr: {}", String::from_utf8_lossy(&output.stderr));
@@ -129,9 +141,6 @@ impl RustHlsOptions {
 
 #[cfg(test)]
 mod tests {
-    use std::process::Command;
-
-    use fs_extra::dir::{copy, CopyOptions};
     use tempfile::TempDir;
 
     use super::*;
@@ -140,7 +149,7 @@ mod tests {
     fn synthesizing_test_crate_creates_verilog_file() {
         let dir = TempDir::new().unwrap();
 
-        let mut options = RustHlsOptionsBuilder::create_empty()
+        let mut options = RustHlsBuilder::create_empty()
             .target_crate_path(dir.path().into())
             .crate_path(PathBuf::from("test_suites/test_crate"))
             .function_name("add".into())

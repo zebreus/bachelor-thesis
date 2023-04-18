@@ -46,9 +46,6 @@ pub fn extract_function_crate(options: &ExtractOptions) -> Result<(), ExtractCra
         function_file,
     } = options;
 
-    // let dir = tempfile::TempDir::new().unwrap();
-    // let target_crate_path = dir.path().join(crate_name).to_path_buf();
-
     copy_crate(original_crate_path, target_crate_path)?;
 
     modify_sources(target_crate_path, function_name, function_file)?;
@@ -58,7 +55,7 @@ pub fn extract_function_crate(options: &ExtractOptions) -> Result<(), ExtractCra
 
 #[cfg(test)]
 mod tests {
-    use std::{fs::create_dir, process::Command};
+    use std::process::Command;
 
     use tempfile::TempDir;
 
@@ -67,8 +64,6 @@ mod tests {
     #[test]
     fn extract_function_declared_in_module_registered_but_not_exported_in_lib() {
         let dir = TempDir::new().unwrap();
-
-        create_dir(dir.path().join("extract_function_test").to_path_buf());
 
         let target_crate_path = dir.path().join("extract_function_test").to_path_buf();
         let original_crate_path = PathBuf::from("test_suites/extract_function_test")
