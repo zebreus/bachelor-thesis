@@ -4,9 +4,9 @@ use std::{
     path::Path,
 };
 
-pub struct Options {
-    function_name: String,
-    crate_name: String,
+pub struct GenerateHlsOptions {
+    pub function_name: String,
+    pub crate_name: String,
 }
 
 /// Generate the contents of the HLS script.
@@ -14,8 +14,8 @@ pub struct Options {
 /// The created script should be executed from a crate directory, that contains the crate described in the options.
 ///
 /// The script will generate a result.v file in the crate directory containing the synthesized Verilog code.
-fn generate_hls_script_content(options: &Options) -> String {
-    let Options {
+fn generate_hls_script_content(options: &GenerateHlsOptions) -> String {
+    let GenerateHlsOptions {
         function_name,
         crate_name,
     } = options;
@@ -29,7 +29,7 @@ cp target/release/deps/{crate_name}-*.ll {function_name}.ll
 
     let perform_hls_command = format!(
         r#"
-bambu --clock-name=clk --compiler=I386_CLANG12 -Os --simulator=VERILATOR {function_name}.ll --top-fname={function_name}
+bambu --clock-name=clk --compiler=I386_CLANG16 -Os --simulator=VERILATOR {function_name}.ll --top-fname={function_name}
 mv {function_name}.v result.v
 "#
     );
@@ -52,7 +52,7 @@ mv {function_name}.v result.v
 /// The created script should be executed from a crate directory, that contains the crate described in the options.
 ///
 /// The script will generate a result.v file in the crate directory containing the synthesized Verilog code.
-pub fn generate_hls_script(crate_path: &Path, options: &Options) -> io::Result<()> {
+pub fn generate_hls_script(crate_path: &Path, options: &GenerateHlsOptions) -> io::Result<()> {
     let path = crate_path.join("hls.sh");
     let mut file = File::create(path)?;
     let content = generate_hls_script_content(options);
@@ -76,7 +76,7 @@ mod tests {
 
         generate_hls_script(
             &dir.path(),
-            &Options {
+            &GenerateHlsOptions {
                 function_name: "test".into(),
                 crate_name: "test".into(),
             },
@@ -99,7 +99,7 @@ mod tests {
 
         generate_hls_script(
             &crate_path,
-            &Options {
+            &GenerateHlsOptions {
                 function_name: function_name.into(),
                 crate_name: crate_name.into(),
             },
