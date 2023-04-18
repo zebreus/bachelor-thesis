@@ -7,8 +7,10 @@ use std::{
 
 use cargo_toml::Manifest;
 use derive_builder::Builder;
+use tempfile::TempDir;
 
 use crate::{
+    caching::CachePath,
     extract_function_crate::{extract_function_crate, ExtractCrateError, ExtractOptions},
     generate_hls_script::{generate_hls_script, GenerateHlsOptions},
 };
@@ -33,13 +35,21 @@ pub enum RustHlsError {
     FailedToParseCargoToml(#[from] cargo_toml::Error),
     #[error("Failed to get a valid package name from cargo toml")]
     FailedToGetPackageName,
+    #[error("Verilog has not yet been generated. Run executeHlsScript first.")]
+    VerilogNotYetGenerated,
+    #[error(transparent)]
+    CachingError(#[from] crate::caching::CachingError),
 }
 
 #[derive(Builder)]
+#[builder(pattern = "owned")]
 pub struct RustHls {
-    // #[builder(default = "PathBuf::from(\"./.\")")]
-    /// The temporary crate will be created here
-    target_crate_path: PathBuf,
+    #[builder(default = "TempDir::new().unwrap()")]
+    /// Used as a temporary directory for the extracted crate
+    temporary_directory: TempDir,
+    #[builder(default = "None")]
+    /// Used as a temporary directory for the extracted crate
+    cache_path: Option<CachePath>,
     #[builder(default = "PathBuf::from(\"./.\")")]
     /// Path to the original crate
     crate_path: PathBuf,
@@ -65,7 +75,7 @@ impl RustHls {
     pub fn extract_crate(&mut self) -> Result<&mut Self, RustHlsError> {
         let extract_options = ExtractOptions {
             original_crate_path: self.crate_path.clone(),
-            target_crate_path: self.target_crate_path.clone(),
+            target_crate_path: self.temporary_directory.path().to_path_buf(),
             function_name: self.function_name.clone(),
             function_file: self.function_file.clone(),
         };
@@ -76,7 +86,11 @@ impl RustHls {
     }
 
     pub fn prepare_hls(&mut self) -> Result<&mut Self, RustHlsError> {
-        let cargo_toml_path = self.target_crate_path.join("Cargo.toml");
+        let cargo_toml_path = self
+            .temporary_directory
+            .path()
+            .to_path_buf()
+            .join("Cargo.toml");
         let cargo_toml_content = fs::read(cargo_toml_path)?;
         let manifest = Manifest::from_slice(cargo_toml_content.as_slice())?;
         let crate_name = manifest
@@ -91,16 +105,35 @@ impl RustHls {
             hls_flags: self.hls_flags.clone(),
         };
 
-        generate_hls_script(&self.target_crate_path, &generate_hls_options)?;
+        generate_hls_script(
+            &self.temporary_directory.path().to_path_buf(),
+            &generate_hls_options,
+        )?;
 
         Ok(self)
     }
 
     pub fn execute_hls_script(&mut self) -> Result<&mut Self, RustHlsError> {
+        let new_cache_path = CachePath::new(self.temporary_directory.path().to_path_buf())?;
+        self.cache_path = Some(new_cache_path.clone());
+
+        // if let CachePath::Cached { .. } = new_cache_path {
+        //     self.cache_path = Some(new_cache_path);
+        //     return Ok(self);
+        // }
+
+        let working_directory = match &new_cache_path {
+            CachePath::Cached { .. } => {
+                self.cache_path = Some(new_cache_path);
+                return Ok(self);
+            }
+            CachePath::Uncached { working_path, .. } => working_path.clone(),
+        };
+
         let output = Command::new("/usr/bin/env")
             .arg("bash")
             .arg("hls.sh")
-            .current_dir(&self.target_crate_path)
+            .current_dir(&working_directory)
             .output()?;
 
         let exit_code = output.status.code().unwrap_or(0);
@@ -114,7 +147,7 @@ impl RustHls {
             });
         }
 
-        let result_path = self.target_crate_path.join("result.v");
+        let result_path = working_directory.join("result.v");
 
         if !result_path.exists() {
             return Err(RustHlsError::HighLevelSynthesisDidNotProduceResult {
@@ -123,11 +156,28 @@ impl RustHls {
             });
         }
 
+        let new_cache_path = new_cache_path.finalize()?;
+        self.cache_path = Some(new_cache_path);
+
         Ok(self)
     }
 
     pub fn get_generated_verilog(&mut self) -> Result<String, RustHlsError> {
-        let result_path = self.target_crate_path.join("result.v");
+        let cache_path = match &self.cache_path {
+            None => {
+                let cache_path = CachePath::new(self.temporary_directory.path().to_path_buf())?;
+                self.cache_path = Some(cache_path);
+                self.cache_path.as_ref().unwrap()
+            }
+            Some(cache_path) => cache_path,
+        };
+
+        let target_crate_path = match cache_path {
+            CachePath::Cached { path } => Ok(path),
+            CachePath::Uncached { .. } => Err(RustHlsError::VerilogNotYetGenerated),
+        }?;
+
+        let result_path = target_crate_path.join("result.v");
         let result = read_to_string(result_path);
         Ok(result?)
     }
@@ -144,16 +194,11 @@ impl RustHls {
 
 #[cfg(test)]
 mod tests {
-    use tempfile::TempDir;
-
     use super::*;
 
     #[test]
     fn synthesizing_test_crate_creates_verilog_file() {
-        let dir = TempDir::new().unwrap();
-
         let mut options = RustHlsBuilder::create_empty()
-            .target_crate_path(dir.path().into())
             .crate_path(PathBuf::from("test_suites/test_crate"))
             .function_name("add".into())
             .function_file(PathBuf::from("add.rs"))
