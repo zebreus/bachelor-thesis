@@ -29,6 +29,10 @@ pub enum RustHlsError {
     },
     #[error("High level synthesis did not fail, but did not produce a result either. See attached logs for details.")]
     HighLevelSynthesisDidNotProduceResult { error: String, out: String },
+    #[error("Failed to parse cargo toml in the generated crate")]
+    FailedToParseCargoToml(#[from] cargo_toml::Error),
+    #[error("Failed to get a valid package name from cargo toml")]
+    FailedToGetPackageName,
 }
 
 #[derive(Builder)]
@@ -73,13 +77,12 @@ impl RustHls {
 
     pub fn prepare_hls(&mut self) -> Result<&mut Self, RustHlsError> {
         let cargo_toml_path = self.target_crate_path.join("Cargo.toml");
-        let cargo_toml_content = fs::read(cargo_toml_path).expect("Failed to read cargo toml");
-        let manifest = Manifest::from_slice(cargo_toml_content.as_slice())
-            .expect("Failed to parse cargo toml");
+        let cargo_toml_content = fs::read(cargo_toml_path)?;
+        let manifest = Manifest::from_slice(cargo_toml_content.as_slice())?;
         let crate_name = manifest
             .package
             .and_then(|package| Some(package.name))
-            .expect("Crate should always have a name");
+            .ok_or(RustHlsError::FailedToGetPackageName)?;
 
         let generate_hls_options = GenerateHlsOptions {
             function_name: self.function_name.clone(),
