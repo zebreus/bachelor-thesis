@@ -66,6 +66,22 @@
         "type": "github"
       }
     },
+    "llvm16-nixpkgs": {
+      "locked": {
+        "lastModified": 1681116465,
+        "narHash": "sha256-TE9//3cPPw4XdeTSxlmGVodkVuVXtWUu3/ZkjW35WgA=",
+        "owner": "RaitoBezarius",
+        "repo": "nixpkgs",
+        "rev": "2c627d9c702202d75746fd45045d20008bf7ed86",
+        "type": "github"
+      },
+      "original": {
+        "owner": "RaitoBezarius",
+        "ref": "2c627d9c702202d75746fd45045d20008bf7ed86",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1673800717,
@@ -115,6 +131,7 @@
       "inputs": {
         "fenix": "fenix",
         "flake-utils": "flake-utils",
+        "llvm16-nixpkgs": "llvm16-nixpkgs",
         "nixpkgs": "nixpkgs",
         "symbolator": "symbolator",
         "unstable-nixpkgs": "unstable-nixpkgs",

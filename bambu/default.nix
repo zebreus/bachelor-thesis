@@ -1,4 +1,16 @@
-{ pkgs ? import <nixpkgs> { } }:
+{ pkgs ? import <nixpkgs> { },
+enableClang7 ? false,
+enableClang8 ? false,
+enableClang10 ? false,
+# Clang 11 is enabled by default, because it is in the nix binary cache
+enableClang11 ? true,
+enableClang12 ? false,
+enableClang13 ? false,
+# Clang 16 is enabled by default, because it is the latest clang version
+enableClang16 ? true,
+enableGcc7 ? false,
+# Gcc 8 is enabled by default, because it is in the nix binary cache
+enableGcc8 ? true, }:
 let
 
   wrapGcc = gcc: pkgs.runCommand (gcc.name + "-with-libs")
@@ -95,14 +107,16 @@ let
 
   clang-with-llvm-7 = combineClangAndLLVM pkgs.pkgsi686Linux.llvmPackages_7;
   clang-with-llvm-8 = combineClangAndLLVM pkgs.pkgsi686Linux.llvmPackages_8;
-  # Clang 9 seems to be broken on upstream
+  # Clang 9 seems to be broken on bambu upstream
   # clang-with-llvm-9 = combineClangAndLLVM pkgs.pkgsi686Linux.llvmPackages_9;
   clang-with-llvm-10 = combineClangAndLLVM pkgs.pkgsi686Linux.llvmPackages_10;
   clang-with-llvm-11 = combineClangAndLLVM pkgs.pkgsi686Linux.llvmPackages_11;
   clang-with-llvm-12 = combineClangAndLLVM pkgs.pkgsi686Linux.llvmPackages_12;
+  clang-with-llvm-13 = combineClangAndLLVM pkgs.pkgsi686Linux.llvmPackages_13;
+  clang-with-llvm-16 = combineClangAndLLVM pkgs.pkgsi686Linux.llvmPackages_16;
 in
 with pkgs;
-stdenv.mkDerivation rec {
+stdenv.mkDerivation {
   pname = "bambu";
   version = "0.9.8";
   enableParallelBuilding = true;
@@ -110,8 +124,8 @@ stdenv.mkDerivation rec {
   src = fetchFromGitHub {
     owner = "zebreus";
     repo = "PandA-bambu";
-    rev = "1443238db2168b91c7d7527e2f3800323cfb91d2";
-    sha256 = "sha256-KH+kAQN9MX8/pcyEym+im1jw/R22lo8WJuHUyiHrQms=";
+    rev = "e18b8f1473dc65d77e4b9b002319ecb568097a7e";
+    sha256 = "sha256-WMssDtny9O5OAeXeusPDHd6UO3t/hZToZc5Ryf+Reec=";
   };
 
   nativeBuildInputs = [
@@ -166,23 +180,17 @@ stdenv.mkDerivation rec {
     mkdir -p ./build
     cd ./build
 
-    export CLANG_7=${clang-with-llvm-7}/bin/clang
-    export CLANG_8=${clang-with-llvm-8}/bin/clang
-    export CLANG_10=${clang-with-llvm-10}/bin/clang
-    export CLANG_11=${clang-with-llvm-11}/bin/clang
-    export CLANG_12=${clang-with-llvm-12}/bin/clang
-    export GCC_7=${self-wrapped-gcc7}/bin/gcc
-    export GCC_8=${self-wrapped-gcc8}/bin/gcc
-
     ../configure --prefix=$out \
       --build=x86_64-linux --target=x86_64-linux --host=x86_64-linux \
-      --with-clang7=$CLANG_7 \
-      --with-clang8=$CLANG_8 \
-      --with-clang10=$CLANG_10 \
-      --with-clang11=$CLANG_11 \
-      --with-clang12=$CLANG_12 \
-      --with-gcc7=$GCC_7 \
-      --with-gcc8=$GCC_8 \
+${if enableClang7 then ''--with-clang7=${clang-with-llvm-7}/bin/clang '' else ""} \
+${if enableClang8 then ''--with-clang8=${clang-with-llvm-8}/bin/clang '' else ""} \
+${if enableClang10 then ''--with-clang10=${clang-with-llvm-10}/bin/clang '' else ""} \
+${if enableClang11 then ''--with-clang11=${clang-with-llvm-11}/bin/clang '' else ""} \
+${if enableClang12 then ''--with-clang12=${clang-with-llvm-12}/bin/clang '' else ""} \
+${if enableClang13 then ''--with-clang13=${clang-with-llvm-13}/bin/clang '' else ""} \
+${if enableClang16 then ''--with-clang16=${clang-with-llvm-16}/bin/clang '' else ""} \
+${if enableGcc7 then ''--with-gcc7=${self-wrapped-gcc7}/bin/gcc '' else ""} \
+${if enableGcc8 then ''--with-gcc8=${self-wrapped-gcc8}/bin/gcc '' else ""} \
       --enable-shared=yes \
       --disable-static \
       --disable-allstatic \
