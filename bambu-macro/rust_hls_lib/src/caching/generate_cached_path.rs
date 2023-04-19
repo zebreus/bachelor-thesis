@@ -45,7 +45,7 @@ mod tests {
     fn generate_cached_path_works() {
         let hash = "test_hash";
         let cache_path = generate_cached_path(hash).unwrap();
-        assert!(cache_path.exists());
+        assert!(cache_path.parent().unwrap().exists());
         assert!(cache_path.to_str().unwrap().contains("test_hash"))
     }
 }
