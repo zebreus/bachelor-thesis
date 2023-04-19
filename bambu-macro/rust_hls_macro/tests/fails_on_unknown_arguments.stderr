@@ -1,0 +1,5 @@
+error: unexpected argument weird_argument
+ --> tests/fails_on_unknown_arguments.rs:5:7
+  |
+5 | #[hls(weird_argument = "")]
+  |       ^^^^^^^^^^^^^^^^^^^

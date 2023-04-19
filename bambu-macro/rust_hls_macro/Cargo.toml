@@ -9,6 +9,7 @@ categories = ["development-tools::build-utils", "compilers"]
 repository = "https://github.com/zebreus/bachelor-thesis"
 homepage = "https://github.com/zebreus/bachelor-thesis/tree/master/bambu-macro/rust_hls_macro"
 description = "High level synthesis support for rust-hdl"
+autotests = false
 
 [lib]
 proc-macro = true
@@ -18,11 +19,12 @@ name = "tests"
 path = "tests/progress.rs"
 
 [dependencies]
+itertools = "0.10.5"
 proc-macro-error = "1.0.4"
 proc-macro2 = "1.0.56"
 quote = "1.0.26"
 rust-hdl = "0.45.1"
-syn = "2.0.15"
+syn = { version = "2.0.15", features = ["full"] }
 
 [dev-dependencies]
-trybuild = "1.0.80"
+trybuild = { version = "1.0.80", features = ["diff"] }
