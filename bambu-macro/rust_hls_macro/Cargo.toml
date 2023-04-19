@@ -13,6 +13,10 @@ autotests = false
 
 [lib]
 proc-macro = true
+rustflags = ["--cfg", "procmacro2_semver_exempt", "--cfg", "super_unstable"]
+
+[build]
+rustflags = ["--cfg", "procmacro2_semver_exempt", "--cfg", "super_unstable"]
 
 [[test]]
 name = "tests"
@@ -20,11 +24,12 @@ path = "tests/progress.rs"
 
 [dependencies]
 itertools = "0.10.5"
-proc-macro-error = "1.0.4"
-proc-macro2 = "1.0.56"
+proc-macro2 = {version = "1.0.56", features = ["span-locations"] }
 quote = "1.0.26"
 rust-hdl = "0.45.1"
+rust_hls_lib = {path = "../rust_hls_lib"}
 syn = { version = "2.0.15", features = ["full"] }
+thiserror = "1.0.40"
 
 [dev-dependencies]
 trybuild = { version = "1.0.80", features = ["diff"] }

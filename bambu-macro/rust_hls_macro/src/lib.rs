@@ -1,11 +1,16 @@
 //! Provides a [`hls!`] macro that can be used to synthesize a function into a rust-hdl module
 
+#![feature(proc_macro_span)]
+
 use std::collections::HashMap;
 
+use locate_file::locate_macro_call;
 use proc_macro2::{Ident, TokenStream};
-use proc_macro_error::proc_macro_error;
 use quote::quote;
-use syn::{spanned::Spanned, ItemFn, LitStr, Token};
+use rust_hls_lib::{RustHls, RustHlsBuilder};
+use syn::{spanned::Spanned, ItemFn, LitStr, Token, Visibility};
+
+mod locate_file;
 
 struct MacroAttributeThing {
     name: Ident,
@@ -78,7 +83,52 @@ fn hls_wrapped(
     let _args = syn::parse::<HlsArguments>(args)?;
     let input = syn::parse::<ItemFn>(input)?;
 
-    Ok(quote!(#input).into())
+    match input.vis {
+        Visibility::Public(_) => {}
+        _ => {
+            return Err(syn::Error::new(
+                input.vis.span(),
+                "hls! macro can only be used on public functions",
+            ))
+        }
+    }
+
+    let location = locate_macro_call().or_else(|error| {
+        Err(syn::Error::new(
+            proc_macro::Span::call_site().into(),
+            format!("error locating macro call: {}", error.to_string()),
+        ))
+    })?;
+
+    let function_name = input.sig.ident.to_string();
+
+    let mut rust_hls = RustHlsBuilder::default()
+        .function_file(location.function_file)
+        .crate_path(location.crate_directory)
+        .function_name(function_name)
+        .build()
+        .or_else(|error| {
+            Err(syn::Error::new(
+                proc_macro::Span::call_site().into(),
+                format!("error creating a rust-hls instance: {}", error.to_string()),
+            ))
+        })?;
+
+    let verilog = rust_hls.do_everything().or_else(|error| {
+        Err(syn::Error::new(
+            proc_macro::Span::call_site().into(),
+            format!("rust-hls error: {}", error.to_string()),
+        ))
+    })?;
+
+    let verilog_literal = LitStr::new(&verilog, proc_macro::Span::call_site().into());
+
+    Ok(quote!(
+        #input
+
+        const GENERATED: &str = #verilog_literal;
+    )
+    .into())
 }
 
 /// Synthesizes a verilog module into a rust-hdl module.
@@ -86,7 +136,6 @@ fn hls_wrapped(
 /// ## Example
 ///
 #[proc_macro_attribute]
-#[proc_macro_error]
 pub fn hls(
     args: proc_macro::TokenStream,
     input: proc_macro::TokenStream,
