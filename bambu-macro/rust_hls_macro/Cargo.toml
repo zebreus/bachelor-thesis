@@ -1,0 +1,28 @@
+[package]
+name = "rust_hls_macro"
+version = "0.1.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+keywords = ["rust-hdl", "verilog", "fpga", "hls", "high-level-synthesis"]
+authors = ["zebreus <lennarteichhorn@googlemail.com>"]
+categories = ["development-tools::build-utils", "compilers"]
+repository = "https://github.com/zebreus/bachelor-thesis"
+homepage = "https://github.com/zebreus/bachelor-thesis/tree/master/bambu-macro/rust_hls_macro"
+description = "High level synthesis support for rust-hdl"
+
+[lib]
+proc-macro = true
+
+[[test]]
+name = "tests"
+path = "tests/progress.rs"
+
+[dependencies]
+proc-macro-error = "1.0.4"
+proc-macro2 = "1.0.56"
+quote = "1.0.26"
+rust-hdl = "0.45.1"
+syn = "2.0.15"
+
+[dev-dependencies]
+trybuild = "1.0.80"
