@@ -27,7 +27,9 @@ pub fn modify_sources(
 
     let function_file_content = std::fs::read_to_string(&function_file_path)?;
 
-    remove_dir_all(crate_path.join("src"))?;
+    let function_file_content = function_file_content.replace("#[hls]", "");
+
+    remove_dir_all(crate_path.join("src")).unwrap_or(());
     create_dir_all(crate_path.join("src"))?;
 
     let mut function_file = File::create(&new_function_path)?;

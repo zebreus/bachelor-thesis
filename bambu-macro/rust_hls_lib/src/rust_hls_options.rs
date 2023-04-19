@@ -1,6 +1,8 @@
 use std::{
-    fs::{self, read_to_string},
-    io,
+    collections::HashMap,
+    env,
+    fs::{self, read_to_string, File},
+    io::{self, Write},
     path::PathBuf,
     process::Command,
 };
@@ -131,9 +133,17 @@ impl RustHls {
             CachePath::Uncached { working_path, .. } => working_path.clone(),
         };
 
+        eprintln!("Executing HLS script in {:?}", working_directory);
+
+        let filtered_env: HashMap<String, String> = env::vars()
+            .filter(|&(ref key, _)| !key.starts_with("CARGO_"))
+            .collect();
+
         let output = Command::new("/usr/bin/env")
             .arg("bash")
             .arg("hls.sh")
+            .env_clear()
+            .envs(&filtered_env)
             .current_dir(&working_directory)
             .output()?;
 
@@ -141,6 +151,10 @@ impl RustHls {
         if exit_code != 0 {
             println!("stdout: {}", String::from_utf8_lossy(&output.stdout));
             println!("stderr: {}", String::from_utf8_lossy(&output.stderr));
+            File::create(working_directory.join("log.stdout"))?
+                .write_all(output.stdout.as_slice())?;
+            File::create(working_directory.join("log.stderr"))?
+                .write_all(output.stderr.as_slice())?;
             return Err(RustHlsError::HighLevelSynthesisFailed {
                 error: String::from_utf8_lossy(&output.stderr).to_string(),
                 out: String::from_utf8_lossy(&output.stdout).to_string(),
@@ -203,6 +217,24 @@ mod tests {
             .crate_path(PathBuf::from("test_suites/test_crate"))
             .function_name("add".into())
             .function_file(PathBuf::from("add.rs"))
+            .build()
+            .unwrap();
+
+        let generated_verilg = options.do_everything().unwrap();
+
+        assert!(generated_verilg.lines().count() > 100);
+    }
+
+    #[test]
+    fn synthesizing_crate_without_src_and_external_function() {
+        let mut options = RustHlsBuilder::create_empty()
+            .crate_path(PathBuf::from("test_suites/crate_without_src"))
+            .function_name("add".into())
+            .function_file(
+                PathBuf::from("test_suites/test_crate/src/add.rs")
+                    .canonicalize()
+                    .unwrap(),
+            )
             .build()
             .unwrap();
 

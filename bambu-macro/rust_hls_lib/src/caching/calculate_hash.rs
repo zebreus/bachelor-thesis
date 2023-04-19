@@ -15,7 +15,9 @@ pub fn calculate_hash(path: &PathBuf) -> Result<String, CachingError> {
                 message: e.to_string(),
             })
         })?;
-    let hash = general_purpose::STANDARD_NO_PAD.encode(&tree.root.item.hash);
+    let hash = general_purpose::STANDARD_NO_PAD
+        .encode(&tree.root.item.hash)
+        .replace("/", "_");
 
     Ok(hash)
 }

@@ -33,11 +33,12 @@ fn generate_hls_script_content(options: &GenerateHlsOptions) -> String {
     let rust_flags = rust_flags.clone().unwrap_or(DEFAULT_RUST_FLAGS.into());
     let hls_flags = hls_flags.clone().unwrap_or(DEFAULT_HLS_FLAGS.into());
 
+    let underscored_crate_name = crate_name.replace("-", "_");
     let create_llvm_command = format!(
         r#"
 rm -rf target
 cargo rustc --release -- --emit=llvm-ir {rust_flags}
-cp target/release/deps/{crate_name}-*.ll {function_name}.ll
+cp target/release/deps/{underscored_crate_name}-*.ll {function_name}.ll
 "#
     );
 
