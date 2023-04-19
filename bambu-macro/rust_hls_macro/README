@@ -1,0 +1,7 @@
+# rust_hls
+
+<!-- cargo-rdme start -->
+
+Provides a [`hls!`] macro that can be used to synthesize a function into a rust-hdl module
+
+<!-- cargo-rdme end -->
