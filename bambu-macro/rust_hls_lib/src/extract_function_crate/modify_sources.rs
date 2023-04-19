@@ -1,10 +1,8 @@
 use std::{
-    fs::{create_dir_all, File},
+    fs::{create_dir_all, remove_dir_all, File},
     io::Write,
     path::PathBuf,
 };
-
-use fs_extra::file::{self, move_file};
 
 use super::ExtractCrateError;
 
@@ -15,27 +13,25 @@ pub fn modify_sources(
     crate_path: &PathBuf,
     function_name: &str,
     function_file: &PathBuf,
-) -> Result<(), ExtractCrateError> {
+) -> Result<PathBuf, ExtractCrateError> {
     let crate_path = crate_path.canonicalize()?;
 
-    let function_file = crate_path.join("src").join(function_file);
+    let function_file_path = crate_path.join("src").join(function_file);
     let new_function_path = crate_path.join("src").join(format!("{function_name}.rs"));
 
-    if !function_file.exists() {
+    if !function_file_path.exists() {
         return Err(ExtractCrateError::FunctionFileDoesNotExist {
-            function_file: function_file.clone(),
+            function_file: function_file_path.clone(),
         });
     }
 
+    let function_file_content = std::fs::read_to_string(&function_file_path)?;
+
+    remove_dir_all(crate_path.join("src"))?;
     create_dir_all(crate_path.join("src"))?;
 
-    if function_file != new_function_path {
-        move_file(
-            function_file,
-            new_function_path,
-            &file::CopyOptions::new().overwrite(true),
-        )?;
-    }
+    let mut function_file = File::create(&new_function_path)?;
+    function_file.write_all(function_file_content.as_bytes())?;
 
     let mut lib_file = File::create(crate_path.join("src/lib.rs"))?;
     let lib_content = format!(
@@ -48,7 +44,7 @@ pub use {function_name}::{function_name};
 
     lib_file.write_all(lib_content.as_bytes())?;
     lib_file.sync_all()?;
-    Ok(())
+    Ok(new_function_path)
 }
 
 #[cfg(test)]

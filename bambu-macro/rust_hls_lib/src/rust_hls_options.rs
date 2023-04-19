@@ -80,7 +80,8 @@ impl RustHls {
             function_file: self.function_file.clone(),
         };
 
-        extract_function_crate(&extract_options)?;
+        let extracted_location = extract_function_crate(&extract_options)?;
+        self.function_file = extracted_location.function_file;
 
         Ok(self)
     }

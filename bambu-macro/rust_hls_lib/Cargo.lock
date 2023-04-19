@@ -536,8 +536,10 @@ dependencies = [
  "fs_extra",
  "merkle_hash",
  "rand",
+ "serde",
  "tempfile",
  "thiserror",
+ "toml",
 ]
 
 [[package]]

@@ -5,10 +5,10 @@ use std::{
 
 mod copy_crate;
 mod modify_sources;
-
+mod sanitize_cargo_toml;
 use copy_crate::copy_crate;
-
 use modify_sources::modify_sources;
+use sanitize_cargo_toml::sanitize_cargo_toml;
 
 use thiserror::Error;
 
@@ -26,6 +26,10 @@ pub enum ExtractCrateError {
     FunctionFileDoesNotExist { function_file: PathBuf },
     #[error("There is already a crate at the target location")]
     TargetCrateAlreadyExists,
+    #[error("Failed to parse cargo toml for the generated crate")]
+    FailedToParseCargoToml(#[from] cargo_toml::Error),
+    #[error("Failed to generate cargo toml for the generated crate")]
+    FailedToGenerateCargoToml(#[from] toml::ser::Error),
 }
 
 pub struct ExtractOptions {
@@ -37,8 +41,15 @@ pub struct ExtractOptions {
     pub function_file: PathBuf,
 }
 
+pub struct ExtractedCrate {
+    pub path: PathBuf,
+    pub function_file: PathBuf,
+}
+
 /// Returns the path to the extracted crate if successful.
-pub fn extract_function_crate(options: &ExtractOptions) -> Result<(), ExtractCrateError> {
+pub fn extract_function_crate(
+    options: &ExtractOptions,
+) -> Result<ExtractedCrate, ExtractCrateError> {
     let ExtractOptions {
         original_crate_path,
         target_crate_path,
@@ -48,9 +59,14 @@ pub fn extract_function_crate(options: &ExtractOptions) -> Result<(), ExtractCra
 
     copy_crate(original_crate_path, target_crate_path)?;
 
-    modify_sources(target_crate_path, function_name, function_file)?;
+    let new_function_file = modify_sources(target_crate_path, function_name, function_file)?;
 
-    return Ok(());
+    sanitize_cargo_toml(&target_crate_path.join("Cargo.toml"))?;
+
+    return Ok(ExtractedCrate {
+        path: target_crate_path.clone(),
+        function_file: new_function_file.clone(),
+    });
 }
 
 #[cfg(test)]
