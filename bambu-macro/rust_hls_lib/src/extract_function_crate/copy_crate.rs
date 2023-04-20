@@ -1,4 +1,7 @@
-use std::{fs::create_dir_all, path::PathBuf};
+use std::{
+    fs::{create_dir_all, remove_dir_all},
+    path::PathBuf,
+};
 
 use fs_extra::dir::{copy, CopyOptions};
 
@@ -23,6 +26,8 @@ pub fn copy_crate(
         target_crate_path,
         &CopyOptions::new().copy_inside(true).content_only(true),
     )?;
+    remove_dir_all(target_crate_path.join("target")).unwrap_or(());
+
     Ok(())
 }
 

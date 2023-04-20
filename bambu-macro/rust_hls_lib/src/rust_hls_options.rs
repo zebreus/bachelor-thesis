@@ -158,30 +158,30 @@ impl RustHls {
         File::create(working_directory.join("Cargo.toml"))?.write_all(buffer.as_bytes())?;
 
         // Modify workspace
-        let workspace_cargo_toml_path = &working_directory.parent().unwrap().join("Cargo.toml");
-        let cargo_toml_content = fs::read(workspace_cargo_toml_path).unwrap_or(
-            r#"
-[workspace]
-members = []
-exclude = ["target", "target/*"]
-"#
-            .into(),
-        );
-        let mut manifest = Manifest::from_slice(cargo_toml_content.as_slice())?;
-        let Some(workspace) = manifest.workspace.as_mut() else  {
-            return Err(RustHlsError::FailedToAccessWorkspacePackage);
-        };
-        let working_directory_string = working_directory.to_str().unwrap().into();
-        if !workspace.members.contains(&working_directory_string) {
-            workspace.members.push(working_directory_string);
-        }
-        workspace
-            .members
-            .retain_mut(|member| PathBuf::from(&member).exists());
-        let mut buffer = String::new();
-        let serializer = toml::Serializer::new(&mut buffer);
-        manifest.serialize(serializer)?;
-        File::create(workspace_cargo_toml_path)?.write_all(buffer.as_bytes())?;
+        //         let workspace_cargo_toml_path = &working_directory.parent().unwrap().join("Cargo.toml");
+        //         let cargo_toml_content = fs::read(workspace_cargo_toml_path).unwrap_or(
+        //             r#"
+        // [workspace]
+        // members = []
+        // exclude = ["target", "target/*"]
+        // "#
+        //             .into(),
+        //         );
+        //         let mut manifest = Manifest::from_slice(cargo_toml_content.as_slice())?;
+        //         let Some(workspace) = manifest.workspace.as_mut() else  {
+        //             return Err(RustHlsError::FailedToAccessWorkspacePackage);
+        //         };
+        //         let working_directory_string = working_directory.to_str().unwrap().into();
+        //         if !workspace.members.contains(&working_directory_string) {
+        //             workspace.members.push(working_directory_string);
+        //         }
+        //         workspace
+        //             .members
+        //             .retain_mut(|member| PathBuf::from(&member).exists());
+        //         let mut buffer = String::new();
+        //         let serializer = toml::Serializer::new(&mut buffer);
+        //         manifest.serialize(serializer)?;
+        //         File::create(workspace_cargo_toml_path)?.write_all(buffer.as_bytes())?;
 
         eprintln!("Executing HLS script in {:?}", working_directory);
 

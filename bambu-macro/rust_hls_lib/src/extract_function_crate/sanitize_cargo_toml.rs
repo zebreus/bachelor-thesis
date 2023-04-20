@@ -43,7 +43,7 @@ pub fn sanitize_cargo_toml(
     // Make paths to dependencies relative to the original Cargo.toml
     let dependencies = &mut manifest.dependencies;
     dependencies.iter_mut().for_each(|dependency| {
-        let (_, dep) = dependency;
+        let (key, dep) = dependency;
         let path = &mut dep.detail_mut().path;
         if let Some(path) = path {
             let fixed_path = original_crate_path
@@ -52,6 +52,10 @@ pub fn sanitize_cargo_toml(
                 .unwrap()
                 .to_string();
             *path = fixed_path;
+        }
+        // Checking only by key may not be enough.
+        if key == "rust_hls" {
+            dep.detail_mut().default_features = false;
         }
     });
 

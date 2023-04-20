@@ -1,11 +1,9 @@
-#![feature(proc_macro_span)]
-
 use std::collections::HashMap;
 
 use locate_file::locate_macro_call;
 use proc_macro2::{Ident, TokenStream};
 use quote::quote;
-use rust_hls_lib::{RustHls, RustHlsBuilder};
+use rust_hls_lib::RustHlsBuilder;
 use syn::{spanned::Spanned, ItemFn, LitStr, Token, Visibility};
 
 mod locate_file;
@@ -124,7 +122,7 @@ pub fn hls_wrapped(
     Ok(quote!(
         #input
 
-        const GENERATED: &str = #verilog_literal;
+        pub const GENERATED: &str = #verilog_literal;
     )
     .into())
 }
