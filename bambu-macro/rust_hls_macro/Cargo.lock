@@ -811,6 +811,7 @@ dependencies = [
  "derive_builder",
  "directories",
  "fs_extra",
+ "itertools",
  "merkle_hash",
  "rand",
  "serde",

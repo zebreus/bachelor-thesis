@@ -13,23 +13,23 @@ autotests = false
 
 [lib]
 proc-macro = true
-rustflags = ["--cfg", "procmacro2_semver_exempt", "--cfg", "super_unstable"]
-
-[build]
-rustflags = ["--cfg", "procmacro2_semver_exempt", "--cfg", "super_unstable"]
 
 [[test]]
 name = "tests"
 path = "tests/progress.rs"
 
+[features]
+default = ["perform-hls"]
+perform-hls = ["dep:itertools", "dep:proc-macro2", "dep:quote", "dep:rust-hdl", "dep:rust_hls_lib", "dep:syn", "dep:thiserror"]
+
 [dependencies]
-itertools = "0.10.5"
-proc-macro2 = {version = "1.0.56", features = ["span-locations"] }
-quote = "1.0.26"
-rust-hdl = "0.45.1"
-rust_hls_lib = {path = "../rust_hls_lib"}
-syn = { version = "2.0.15", features = ["full"] }
-thiserror = "1.0.40"
+itertools =  {version = "0.10.5", optional = true}
+proc-macro2 = {version = "1.0.56", features = ["span-locations"], optional = true }
+quote =  {version = "1.0.26", optional = true}
+rust-hdl =  {version = "0.45.1", optional = true}
+rust_hls_lib = {path = "../rust_hls_lib", optional = true}
+syn = { version = "2.0.15", features = ["full"], optional = true}
+thiserror =  {version = "1.0.40", optional = true}
 
 [dev-dependencies]
 trybuild = { version = "1.0.80", features = ["diff"] }
