@@ -9,6 +9,8 @@ use std::{
 
 use cargo_toml::Manifest;
 use derive_builder::Builder;
+use rand::{distributions::Alphanumeric, thread_rng, Rng};
+use serde::Serialize;
 use tempfile::TempDir;
 
 use crate::{
@@ -41,6 +43,10 @@ pub enum RustHlsError {
     VerilogNotYetGenerated,
     #[error(transparent)]
     CachingError(#[from] crate::caching::CachingError),
+    #[error("Failed to generate cargo toml for the generated crate")]
+    FailedToGenerateCargoToml(#[from] toml::ser::Error),
+    #[error("Failed to access workspace package")]
+    FailedToAccessWorkspacePackage,
 }
 
 #[derive(Builder)]
@@ -89,21 +95,20 @@ impl RustHls {
     }
 
     pub fn prepare_hls(&mut self) -> Result<&mut Self, RustHlsError> {
-        let cargo_toml_path = self
-            .temporary_directory
-            .path()
-            .to_path_buf()
-            .join("Cargo.toml");
-        let cargo_toml_content = fs::read(cargo_toml_path)?;
-        let manifest = Manifest::from_slice(cargo_toml_content.as_slice())?;
-        let crate_name = manifest
-            .package
-            .and_then(|package| Some(package.name))
-            .ok_or(RustHlsError::FailedToGetPackageName)?;
+        // let cargo_toml_path = self
+        //     .temporary_directory
+        //     .path()
+        //     .to_path_buf()
+        //     .join("Cargo.toml");
+        // let cargo_toml_content = fs::read(cargo_toml_path)?;
+        // let manifest = Manifest::from_slice(cargo_toml_content.as_slice())?;
+        // let crate_name = manifest
+        //     .package
+        //     .and_then(|package| Some(package.name))
+        //     .ok_or(RustHlsError::FailedToGetPackageName)?;
 
         let generate_hls_options = GenerateHlsOptions {
             function_name: self.function_name.clone(),
-            crate_name: crate_name,
             rust_flags: self.rust_flags.clone(),
             hls_flags: self.hls_flags.clone(),
         };
@@ -120,11 +125,6 @@ impl RustHls {
         let new_cache_path = CachePath::new(self.temporary_directory.path().to_path_buf())?;
         self.cache_path = Some(new_cache_path.clone());
 
-        // if let CachePath::Cached { .. } = new_cache_path {
-        //     self.cache_path = Some(new_cache_path);
-        //     return Ok(self);
-        // }
-
         let working_directory = match &new_cache_path {
             CachePath::Cached { .. } => {
                 self.cache_path = Some(new_cache_path);
@@ -133,8 +133,59 @@ impl RustHls {
             CachePath::Uncached { working_path, .. } => working_path.clone(),
         };
 
+        // Generate new random package name to avoid conflicts
+        let cargo_toml_content = fs::read(working_directory.join("Cargo.toml"))?;
+        let mut manifest = Manifest::from_slice(cargo_toml_content.as_slice())?;
+        let Some(package) = manifest.package.as_mut() else  {
+            return Err(RustHlsError::FailedToGetPackageName);
+        };
+        let mut new_name: String = working_directory
+            .canonicalize()?
+            .file_name()
+            .and_then(|name| name.to_str().map(|b| b.to_string()))
+            .unwrap_or(
+                thread_rng()
+                    .sample_iter(&Alphanumeric)
+                    .take(50)
+                    .map(char::from)
+                    .collect(),
+            );
+        new_name.retain(|c| c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z');
+        package.name = new_name.clone();
+        let mut buffer = String::new();
+        let serializer = toml::Serializer::new(&mut buffer);
+        manifest.serialize(serializer)?;
+        File::create(working_directory.join("Cargo.toml"))?.write_all(buffer.as_bytes())?;
+
+        // Modify workspace
+        let workspace_cargo_toml_path = &working_directory.parent().unwrap().join("Cargo.toml");
+        let cargo_toml_content = fs::read(workspace_cargo_toml_path).unwrap_or(
+            r#"
+[workspace]
+members = []
+exclude = ["target", "target/*"]
+"#
+            .into(),
+        );
+        let mut manifest = Manifest::from_slice(cargo_toml_content.as_slice())?;
+        let Some(workspace) = manifest.workspace.as_mut() else  {
+            return Err(RustHlsError::FailedToAccessWorkspacePackage);
+        };
+        let working_directory_string = working_directory.to_str().unwrap().into();
+        if !workspace.members.contains(&working_directory_string) {
+            workspace.members.push(working_directory_string);
+        }
+        workspace
+            .members
+            .retain_mut(|member| PathBuf::from(&member).exists());
+        let mut buffer = String::new();
+        let serializer = toml::Serializer::new(&mut buffer);
+        manifest.serialize(serializer)?;
+        File::create(workspace_cargo_toml_path)?.write_all(buffer.as_bytes())?;
+
         eprintln!("Executing HLS script in {:?}", working_directory);
 
+        // Clear all cargo environment variables, so that the script can be executed in a clean environment
         let filtered_env: HashMap<String, String> = env::vars()
             .filter(|&(ref key, _)| !key.starts_with("CARGO_"))
             .collect();

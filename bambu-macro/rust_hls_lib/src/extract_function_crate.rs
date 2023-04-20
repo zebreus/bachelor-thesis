@@ -30,6 +30,8 @@ pub enum ExtractCrateError {
     FailedToParseCargoToml(#[from] cargo_toml::Error),
     #[error("Failed to generate cargo toml for the generated crate")]
     FailedToGenerateCargoToml(#[from] toml::ser::Error),
+    #[error("The generated crate does not have a package field in its Cargo.toml. Make sure that it is no workspace")]
+    CrateHasNoPackageField(),
 }
 
 pub struct ExtractOptions {
@@ -44,6 +46,7 @@ pub struct ExtractOptions {
 pub struct ExtractedCrate {
     pub path: PathBuf,
     pub function_file: PathBuf,
+    pub crate_name: String,
 }
 
 /// Returns the path to the extracted crate if successful.
@@ -61,11 +64,12 @@ pub fn extract_function_crate(
 
     let new_function_file = modify_sources(target_crate_path, function_name, function_file)?;
 
-    sanitize_cargo_toml(&target_crate_path.join("Cargo.toml"))?;
+    let crate_name = sanitize_cargo_toml(&target_crate_path, original_crate_path)?;
 
     return Ok(ExtractedCrate {
         path: target_crate_path.clone(),
         function_file: new_function_file.clone(),
+        crate_name: crate_name.clone(),
     });
 }
 

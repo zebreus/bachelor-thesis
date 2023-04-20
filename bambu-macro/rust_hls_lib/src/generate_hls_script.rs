@@ -6,7 +6,6 @@ use std::{
 
 pub struct GenerateHlsOptions {
     pub function_name: String,
-    pub crate_name: String,
     pub rust_flags: Option<String>,
     pub hls_flags: Option<String>,
 }
@@ -25,7 +24,6 @@ pub const DEFAULT_HLS_FLAGS: &str = r#"--compiler=I386_CLANG16 -Os"#;
 fn generate_hls_script_content(options: &GenerateHlsOptions) -> String {
     let GenerateHlsOptions {
         function_name,
-        crate_name,
         rust_flags,
         hls_flags,
     } = options;
@@ -33,12 +31,13 @@ fn generate_hls_script_content(options: &GenerateHlsOptions) -> String {
     let rust_flags = rust_flags.clone().unwrap_or(DEFAULT_RUST_FLAGS.into());
     let hls_flags = hls_flags.clone().unwrap_or(DEFAULT_HLS_FLAGS.into());
 
-    let underscored_crate_name = crate_name.replace("-", "_");
     let create_llvm_command = format!(
         r#"
-rm -rf target
+CRATE_NAME=$(grep -oP '(?<=name = ")[^"]*' Cargo.toml)
+CRATE_NAME_UNDERSCORED=$(echo $CRATE_NAME | tr '-' '_')
+WORKSPACE_LOCATION="$(dirname $(cargo locate-project --message-format plain --workspace))"
 cargo rustc --release -- --emit=llvm-ir {rust_flags}
-cp target/release/deps/{underscored_crate_name}-*.ll {function_name}.ll
+cp $WORKSPACE_LOCATION/target/release/deps/${{CRATE_NAME_UNDERSCORED}}-*.ll {function_name}.ll
 "#
     );
 
@@ -52,6 +51,7 @@ mv {function_name}.v result.v
     return String::from(format!(
         r#"
 #!/usr/bin/env bash
+set -xe
 
 # Compile to LLVM IR
 {create_llvm_command}
@@ -93,7 +93,6 @@ mod tests {
             &dir.path(),
             &GenerateHlsOptions {
                 function_name: "test".into(),
-                crate_name: "test".into(),
                 rust_flags: None,
                 hls_flags: None,
             },
@@ -118,7 +117,6 @@ mod tests {
             &crate_path,
             &GenerateHlsOptions {
                 function_name: function_name.into(),
-                crate_name: crate_name.into(),
                 rust_flags: None,
                 hls_flags: None,
             },
