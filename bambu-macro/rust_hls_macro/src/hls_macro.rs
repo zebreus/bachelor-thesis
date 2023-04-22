@@ -76,7 +76,7 @@ pub fn hls_wrapped(
     args: proc_macro::TokenStream,
     input: proc_macro::TokenStream,
 ) -> Result<proc_macro::TokenStream, syn::Error> {
-    let _args = syn::parse::<HlsArguments>(args)?;
+    let args = syn::parse::<HlsArguments>(args)?;
 
     let input_fn = syn::parse::<ItemFn>(input.clone())?;
 
@@ -99,10 +99,27 @@ pub fn hls_wrapped(
 
     let function_name = input_fn.sig.ident.to_string();
 
+    let rust_flags = args.rust_flags.map(|flags| flags.value()).and_then(|o| {
+        if o.len() == 0 {
+            None
+        } else {
+            Some(o)
+        }
+    });
+    let hls_flags = args.hls_flags.map(|flags| flags.value()).and_then(|o| {
+        if o.len() == 0 {
+            None
+        } else {
+            Some(o)
+        }
+    });
+
     let mut rust_hls = RustHlsBuilder::default()
         .function_file(location.function_file)
         .crate_path(location.crate_directory)
         .function_name(function_name.clone())
+        .rust_flags(rust_flags)
+        .hls_flags(hls_flags)
         .build()
         .or_else(|error| {
             Err(syn::Error::new(

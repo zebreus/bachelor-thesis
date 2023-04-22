@@ -3,22 +3,26 @@
 use rust_hls::hls;
 
 #[hls(rust_flags = "")]
-fn addition1(a: u32, b: u32) -> u32 {
+#[no_mangle]
+pub fn addition1(a: u32, b: u32) -> u32 {
     a + b
 }
 
 #[hls(hls_flags = "")]
-fn addition2(a: u32, b: u32) -> u32 {
+#[no_mangle]
+pub fn addition2(a: u32, b: u32) -> u32 {
     a + b
 }
 
 #[hls(hls_flags = "", rust_flags = "")]
-fn addition3(a: u32, b: u32) -> u32 {
+#[no_mangle]
+pub fn addition3(a: u32, b: u32) -> u32 {
     a + b
 }
 
 #[hls(rust_flags = "", hls_flags = "")]
-fn addition4(a: u32, b: u32) -> u32 {
+#[no_mangle]
+pub fn addition4(a: u32, b: u32) -> u32 {
     a + b
 }
 
