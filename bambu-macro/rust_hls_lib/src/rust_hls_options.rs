@@ -27,11 +27,14 @@ pub enum RustHlsError {
     IoError(#[from] io::Error),
     #[error(transparent)]
     ExtractCrateError(#[from] ExtractCrateError),
-    #[error("Encountered an error during high level synthesis. See attached logs for details.")]
+    #[error(
+        "Encountered an error during high level synthesis. See attached logs at {path} <{path}> ."
+    )]
     HighLevelSynthesisFailed {
         error: String,
         out: String,
         exitcode: i32,
+        path: String,
     },
     #[error("High level synthesis did not fail, but did not produce a result either. See attached logs for details.")]
     HighLevelSynthesisDidNotProduceResult { error: String, out: String },
@@ -210,6 +213,7 @@ impl RustHls {
                 error: String::from_utf8_lossy(&output.stderr).to_string(),
                 out: String::from_utf8_lossy(&output.stdout).to_string(),
                 exitcode: exit_code,
+                path: working_directory.to_string_lossy().to_string(),
             });
         }
 

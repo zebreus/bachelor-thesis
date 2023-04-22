@@ -77,31 +77,32 @@ pub fn hls_wrapped(
     input: proc_macro::TokenStream,
 ) -> Result<proc_macro::TokenStream, syn::Error> {
     let _args = syn::parse::<HlsArguments>(args)?;
-    let input = syn::parse::<ItemFn>(input)?;
 
-    match input.vis {
+    let input_fn = syn::parse::<ItemFn>(input.clone())?;
+
+    match input_fn.vis {
         Visibility::Public(_) => {}
         _ => {
             return Err(syn::Error::new(
-                input.vis.span(),
+                input_fn.vis.span(),
                 "hls! macro can only be used on public functions",
             ))
         }
     }
 
-    let location = locate_macro_call().or_else(|error| {
+    let location = locate_macro_call(input.clone()).or_else(|error| {
         Err(syn::Error::new(
             proc_macro::Span::call_site().into(),
             format!("error locating macro call: {}", error.to_string()),
         ))
     })?;
 
-    let function_name = input.sig.ident.to_string();
+    let function_name = input_fn.sig.ident.to_string();
 
     let mut rust_hls = RustHlsBuilder::default()
         .function_file(location.function_file)
         .crate_path(location.crate_directory)
-        .function_name(function_name)
+        .function_name(function_name.clone())
         .build()
         .or_else(|error| {
             Err(syn::Error::new(
@@ -119,10 +120,12 @@ pub fn hls_wrapped(
 
     let verilog_literal = LitStr::new(&verilog, proc_macro::Span::call_site().into());
 
-    Ok(quote!(
-        #input
+    let function_name_literal = LitStr::new(&function_name, input_fn.sig.ident.span());
 
-        pub const GENERATED: &str = #verilog_literal;
+    Ok(quote!(
+        #input_fn
+
+        wrap_verilog_in_rust_hdl_macro::wrap_verilog!( #verilog_literal , #function_name_literal );
     )
     .into())
 }
