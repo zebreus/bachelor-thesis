@@ -1,9 +1,7 @@
-use std::{
-    fs::{create_dir_all, remove_dir_all},
-    path::PathBuf,
-};
+use std::{fs::create_dir_all, path::PathBuf};
 
-use fs_extra::dir::{copy, CopyOptions};
+use fs_extra::{copy_items, dir::CopyOptions};
+use itertools::Itertools;
 
 use super::ExtractCrateError;
 
@@ -21,12 +19,32 @@ pub fn copy_crate(
         return Err(ExtractCrateError::TargetCrateAlreadyExists);
     }
     create_dir_all(target_crate_path)?;
-    copy(
-        original_crate_path,
+    // copy(
+    //     original_crate_path,
+    //     target_crate_path,
+    //     &CopyOptions::new().copy_inside(true).content_only(true),
+    // )?;
+
+    let files_to_copy = [
+        original_crate_path.join("Cargo.toml"),
+        original_crate_path.join("Cargo.lock"),
+        original_crate_path.join("src"),
+    ];
+    let files_to_copy = files_to_copy
+        .iter()
+        .filter(|file| file.exists())
+        .collect_vec();
+    copy_items(
+        &files_to_copy.as_slice(),
         target_crate_path,
-        &CopyOptions::new().copy_inside(true).content_only(true),
+        &CopyOptions::new().copy_inside(true),
     )?;
-    remove_dir_all(target_crate_path.join("target")).unwrap_or(());
+    // file::copy(
+    //     original_crate_path,
+    //     target_crate_path,
+    //     &CopyOptions::new().copy_inside(true).content_only(true),
+    // )?;
+    // remove_dir_all(target_crate_path.join("target")).unwrap_or(());
 
     Ok(())
 }
