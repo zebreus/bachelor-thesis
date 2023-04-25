@@ -1,10 +1,12 @@
 use std::{
     collections::HashMap,
     env,
-    fs::{self, read_to_string, File},
+    fs::{self, read_to_string, write, File},
     io::{self, Write},
     path::PathBuf,
     process::Command,
+    thread::sleep,
+    time::Duration,
 };
 
 use cargo_toml::Manifest;
@@ -14,6 +16,7 @@ use serde::Serialize;
 use tempfile::TempDir;
 
 use crate::{
+    cache_workspace::{add_to_workspace, WorkspaceLock},
     caching::CachePath,
     extract_function_crate::{extract_function_crate, ExtractCrateError, ExtractOptions},
     generate_hls_script::{generate_hls_script, GenerateHlsOptions},
@@ -44,7 +47,7 @@ pub enum RustHlsError {
     FailedToGetPackageName,
     #[error("Verilog has not yet been generated. Run executeHlsScript first.")]
     VerilogNotYetGenerated,
-    #[error(transparent)]
+    #[error("Caching error:")]
     CachingError(#[from] crate::caching::CachingError),
     #[error("Failed to generate cargo toml for the generated crate")]
     FailedToGenerateCargoToml(#[from] toml::ser::Error),
@@ -54,6 +57,7 @@ pub enum RustHlsError {
 
 #[derive(Builder)]
 #[builder(pattern = "owned")]
+/// Configuration data for a high-level synthesis process
 pub struct RustHls {
     #[builder(default = "TempDir::new().unwrap()")]
     /// Used as a temporary directory for the extracted crate
@@ -128,6 +132,15 @@ impl RustHls {
         let new_cache_path = CachePath::new(self.temporary_directory.path().to_path_buf())?;
         self.cache_path = Some(new_cache_path.clone());
 
+        if let CachePath::Cached { .. } = new_cache_path {
+            self.cache_path = Some(new_cache_path);
+            return Ok(self);
+        }
+
+        let workspace_lock = WorkspaceLock::new()?;
+
+        let new_cache_path = new_cache_path.update()?;
+
         let working_directory = match &new_cache_path {
             CachePath::Cached { .. } => {
                 self.cache_path = Some(new_cache_path);
@@ -135,6 +148,9 @@ impl RustHls {
             }
             CachePath::Uncached { working_path, .. } => working_path.clone(),
         };
+
+        // Add this package to the workspace
+        add_to_workspace(&working_directory.clone())?;
 
         // Generate new random package name to avoid conflicts
         let cargo_toml_content = fs::read(working_directory.join("Cargo.toml"))?;
@@ -160,33 +176,8 @@ impl RustHls {
         manifest.serialize(serializer)?;
         File::create(working_directory.join("Cargo.toml"))?.write_all(buffer.as_bytes())?;
 
-        // Modify workspace
-        //         let workspace_cargo_toml_path = &working_directory.parent().unwrap().join("Cargo.toml");
-        //         let cargo_toml_content = fs::read(workspace_cargo_toml_path).unwrap_or(
-        //             r#"
-        // [workspace]
-        // members = []
-        // exclude = ["target", "target/*"]
-        // "#
-        //             .into(),
-        //         );
-        //         let mut manifest = Manifest::from_slice(cargo_toml_content.as_slice())?;
-        //         let Some(workspace) = manifest.workspace.as_mut() else  {
-        //             return Err(RustHlsError::FailedToAccessWorkspacePackage);
-        //         };
-        //         let working_directory_string = working_directory.to_str().unwrap().into();
-        //         if !workspace.members.contains(&working_directory_string) {
-        //             workspace.members.push(working_directory_string);
-        //         }
-        //         workspace
-        //             .members
-        //             .retain_mut(|member| PathBuf::from(&member).exists());
-        //         let mut buffer = String::new();
-        //         let serializer = toml::Serializer::new(&mut buffer);
-        //         manifest.serialize(serializer)?;
-        //         File::create(workspace_cargo_toml_path)?.write_all(buffer.as_bytes())?;
-
         eprintln!("Executing HLS script in {:?}", working_directory);
+        sleep(Duration::from_millis(5000));
 
         // Clear all cargo environment variables, so that the script can be executed in a clean environment
         let filtered_env: HashMap<String, String> = env::vars()
@@ -227,7 +218,11 @@ impl RustHls {
         }
 
         let new_cache_path = new_cache_path.finalize()?;
+        // TODO: Remove contents of working directory and replace them with a dummy crate
+        write(working_directory.join("done.txt"), "")?;
         self.cache_path = Some(new_cache_path);
+
+        workspace_lock.unlock();
 
         Ok(self)
     }
@@ -275,9 +270,9 @@ mod tests {
             .build()
             .unwrap();
 
-        let generated_verilg = options.do_everything().unwrap();
+        let generated_verilog = options.do_everything().unwrap();
 
-        assert!(generated_verilg.lines().count() > 100);
+        assert!(generated_verilog.lines().count() > 100);
     }
 
     #[test]
@@ -293,8 +288,8 @@ mod tests {
             .build()
             .unwrap();
 
-        let generated_verilg = options.do_everything().unwrap();
+        let generated_verilog = options.do_everything().unwrap();
 
-        assert!(generated_verilg.lines().count() > 100);
+        assert!(generated_verilog.lines().count() > 100);
     }
 }

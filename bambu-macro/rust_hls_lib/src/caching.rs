@@ -1,10 +1,12 @@
 mod calculate_hash;
 mod generate_cached_path;
-use fs_extra::dir::{copy, move_dir, CopyOptions};
+use fs_extra::dir::{copy, CopyOptions};
 use rand::{distributions::Alphanumeric, thread_rng, Rng};
 use std::{fs, io, path::PathBuf};
 
 use thiserror::Error;
+
+pub use generate_cached_path::get_cache_path;
 
 #[derive(Error, Debug)]
 pub enum CachingError {
@@ -38,17 +40,36 @@ impl CachePath {
                 final_path,
             } => {
                 if final_path.exists() {
-                    fs::remove_dir_all(&working_path).unwrap_or(());
+                    // fs::remove_dir_all(&working_path).unwrap_or(());
                     Ok(CachePath::Cached { path: final_path })
                 } else {
                     fs::create_dir_all(&final_path)?;
-                    move_dir(
+                    copy(
                         &working_path,
                         &final_path,
                         &CopyOptions::new().copy_inside(true).content_only(true),
                     )?;
-                    fs::remove_dir_all(&working_path).unwrap_or(());
                     Ok(CachePath::Cached { path: final_path })
+                }
+            }
+        }
+    }
+
+    /// Get a new CachePath representing the current state
+    pub fn update(self) -> Result<CachePath, CachingError> {
+        match self {
+            CachePath::Cached { .. } => Ok(self),
+            CachePath::Uncached {
+                working_path,
+                final_path,
+            } => {
+                if final_path.exists() {
+                    Ok(CachePath::Cached { path: final_path })
+                } else {
+                    Ok(CachePath::Uncached {
+                        working_path,
+                        final_path,
+                    })
                 }
             }
         }

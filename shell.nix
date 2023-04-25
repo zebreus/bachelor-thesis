@@ -53,6 +53,8 @@ mkShell {
       "rustc"
       "rustfmt"
     ])
+    lldb_14
+    lldb_14.lib
     fenix.rust-analyzer
     cacert
 
