@@ -29,6 +29,9 @@ pub fn sanitize_cargo_toml(
     // Remove all executables
     manifest.bin = Vec::new();
 
+    // Make sure the crate is no workspace
+    manifest.workspace = None;
+
     let Some(package) = manifest.package.as_mut() else  {
         return Err(ExtractCrateError::CrateHasNoPackageField());
     };
