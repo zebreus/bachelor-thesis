@@ -1,3 +1,5 @@
+// This file contains additional scripts that adjust the generated HTML to make it look nicer.
+
 // Remove title page from PDF.
 // This seems to be the only way
 ++++
@@ -73,7 +75,7 @@ linksToRefs.forEach((linkToRef, index) =>{
 
 if(SORT_REFS_BY_NUMBER) {
     const bibliography = document.querySelector("ul.bibliography")
-    while (bibliography.firstChild) {
+    while (bibliography?.firstChild) {
         bibliography.removeChild(bibliography.lastChild);
     }
     orderedRefs.forEach(ref => {

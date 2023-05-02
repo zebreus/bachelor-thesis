@@ -182,13 +182,26 @@ h1 {
 }
 
 .other-people {
-    margin-left: auto;
-    margin-right: auto;
+    dl {
+        display: grid;
+        grid-template-columns: max-content max-content;
+        flex-flow: row wrap;
+        border: none;
+        justify-content: center;
+    }
 
-    * {
-        padding-top: 0;
-        padding-bottom: 0;
-        font-size: $base-font-size;
+    dt {
+        margin: 0;
+        font-weight: normal;
+    }
+
+    dd {
+        margin: 0;
+
+        ::before {
+            content: ":";
+            margin: 0 0.75rem;
+        }
     }
 }
 

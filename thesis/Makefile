@@ -3,7 +3,7 @@ ASCIIDOCTOR     = asciidoctor
 VCD_TO_WAVEDROM     = vcd2wavedrom
 DOCKER = docker
 
-TARGETS_WITHOUT_HTML += 
+TARGETS_WITHOUT_HTML += styles/trailing-scripts.adoc
 TARGETS += $(TARGETS_WITHOUT_HTML) index.html
 
 .EXTRA_PREREQS:=Makefile

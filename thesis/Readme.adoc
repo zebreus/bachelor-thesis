@@ -34,39 +34,34 @@ by +
 [small]+Matriculation number: 759253+ +
 
 
-[.other-people,frame=none,grid=none,width=65%,cols="6,1,20"]
-|===
-
-|First Examiner |: |Prof. Dr. Stefan Rapp
-
-|Second Examiner |: |Prof. Dr. Ronald Charles Moore
-
-|=== 
+[.other-people]
+First Examiner:: Prof. Dr. Stefan Rapp
+Second Examiner:: Prof. Dr. Ronald Charles Moore
 
 <<<
 
 [discrete]
 == Abstract
 
-A short summary of the contents in English of about one page. The following
-points should be addressed in particular:
+// A short summary of the contents in English of about one page. The following
+// points should be addressed in particular:
 
-* Motivation: Why did this work come about? Why is the topic of the
-work interesting (for the general public)? The motivation should be
-abstracted as far as possible from the specific tasks that may be given
-by a company.
-* Content: What is the content of this thesis? What exactly is covered in
-the thesis? The methodology and working method should be briefly
-discussed here.
-* Results: What are the results of this work? A brief overview of the
-most important results as a teaser to read the complete thesis.
+// * Motivation: Why did this work come about? Why is the topic of the
+// work interesting (for the general public)? The motivation should be
+// abstracted as far as possible from the specific tasks that may be given
+// by a company.
+// * Content: What is the content of this thesis? What exactly is covered in
+// the thesis? The methodology and working method should be briefly
+// discussed here.
+// * Results: What are the results of this work? A brief overview of the
+// most important results as a teaser to read the complete thesis.
 
-[NOTE]
-====
-A great guide by Kent Beck how to write good abstracts can be found here:
+// [NOTE]
+// ====
+// A great guide by Kent Beck how to write good abstracts can be found here:
 
-<https://plg.uwaterloo.ca/~migod/research/beckOOPSLA.html>
-====
+// <https://plg.uwaterloo.ca/~migod/research/beckOOPSLA.html>
+// ====
 
 <<<
 
