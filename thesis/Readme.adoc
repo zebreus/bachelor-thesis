@@ -9,7 +9,6 @@
 :sectanchors:
 :notitle:
 :title-page: false
-// :toc-title: Inhaltsverzeichnis
 :stylesheet: Readme.css
 :toclevels: 3
 
@@ -74,43 +73,203 @@ toc::[]
 :part-signifier: Part
 :partnums:
 
-= Extended Abstract
+= Thesis
 
-include::sections/introduction.adoc[]
+== Introduction
 
-include::sections/methodology.adoc[]
+The popularity of the Rust programming language is rising and it is one of the most loved new programming languages. It integrates modern tooling like standardized dependency management, testing, documentation generation, formatting and building. In the future, the adoption will probably increase further and it could replace {cpp} as the most common system programming language <<Bug22>>.
+It is possible that Rust also provides benefits in domains other than systems programming. It has been shown that Rust can be used for other domains such as GPU programming, web development or logic programming <<Sah22>> <<Byc22>> <<Kyr22>>. This enables us to use some of the benefits of Rust <<Bug22>> <<Cos19>>.
 
-include::sections/results.adoc[]
+This paper will explore how Rust can be used in the domain of FPGA firmware development. Usually, FPGA firmware is developed in a Hardware Description Language (HDL) such as Verilog or VHDL. In these languages, the programmer has to describe the hardware in detail. This is a low-level approach that can lead to efficient designs, but it is quite time-consuming <<Mil20>>. The rust-hdl project enables us to express hardware descriptions in Rust similar to traditional HDLs <<rusthdl>>. In addition to manually writing hardware descriptions in an HDL, it is also possible to use High-level synthesis (HLS) to generate hardware descriptions in HDLs from an algorithmic description written in high-level programming languages. This provides increased productivity at the cost of slightly less optimized designs <<Mil20>>. This process is currently mostly used with C or {cpp} because they are the most common system programming languages. There are multiple HLS tools available that can synthesize HDL code from {cpp} code. Multiple of these tools are based around the LLVM compiler infrastructure <<Nan16>>. There is one reported use of Rust as an HLS language but that is of no use to us as their tools are not available <<Har22>>. As Rust is also based on LLVM, it is possible that it can be used with these tools too. 
 
-include::sections/summary.adoc[]
+To figure out whether Rust can be used as a source language for HLS, we searched for HLS tools that can be used for Rust. We developed a modular process for integrating HLS tools with rust-hdl <<rusthdl>>. We used this process to implement a proof-of-concept integration with the PandA Bambu HLS framework and showed that it is possible to use Rust as a source language for HLS. We also evaluated the resulting solution by synthesizing a simple example. We found that the solution is not yet suitable for production use, but that it is a promising starting point for further development.
 
-include::sections/bibliography.adoc[]
+// What exactly is the problem
+// Why is this a problem
+
+== Background
+
+=== Related work
+
+== Concept, implementation and architecture
+
+== Experiments and results
+
+// Perform experiments and collect data about our solution
+
+== Discussion
+
+// Why is this a solution
+// Discuss the results of the experiments
+
+== Conclusion and future work
+
+[glossary]
+== List of abbreviations
+// Use abbreviations like <<FPGA>>
+
+// Abbreviations in a random order and links to read more about them
+[glossary]
+[[FPGA]]FPGA:: Field-programmable gate array https://en.wikipedia.org/wiki/Field-programmable_gate_array[🔗^]
+[[HLS]]HLS:: High-level synthesis https://en.wikipedia.org/wiki/High-level_synthesis[🔗^]
+[[HDL]]HDL:: Hardware description language https://en.wikipedia.org/wiki/Hardware_description_language[🔗^]
+[[ADL]]ADL:: Accelerator design language https://www.sigarch.org/hdl-to-adl/[🔗^]
+[[GPU]]GPU:: Graphics processing unit https://en.wikipedia.org/wiki/Graphics_processing_unit[🔗^]
+
+[bibliography]
+== References
+
+// Claims to have a transpiler from a subset of Rust (RAR) to restriceted algrithmic C (RAC) that can be synthesized to FPGA. No source.
+// The first paper to mention HLS from Rust. 
+* [[[Har22]]]
+Hardin, David,
+_Hardware/Software Co-Assurance using the Rust Programming Language and ACL2_,
+arXiv preprint arXiv:2205.11709,
+2022.
+https://arxiv.org/abs/2205.11709v1[🔗^]
+
+* [[[Rog20]]]
+Rogers, Samuel and Slycord, Joshua and Baharani, Mohammadreza and Tabkhi, Hamed,
+_gem5-SALAM: A System Architecture for LLVM-based Accelerator Modeling_,
+2020 53rd Annual IEEE/ACM International Symposium on Microarchitecture (MICRO), 471-482,
+2020.
+https://ieeexplore.ieee.org/abstract/document/9251937[🔗^]
+
+* [[[Li21]]]
+Li, Rui and Berkley, Lincoln and Yang, Yihang and Manohar, Rajit,
+_Fluid: An Asynchronous High-level Synthesis Tool for Complex Program Structures_,
+2021 27th IEEE International Symposium on Asynchronous Circuits and Systems (ASYNC), 1-8,
+2020.
+https://ieeexplore.ieee.org/abstract/document/9565447[🔗^]
+
+* [[[Lia23]]]
+Liang, Geng-Ming and Yuan, Chuan-Yue and Yuan, Meng-Shiun and Chen, Tai-Liang and Chen, Kuan-Hsun and Lee, Jenq-Kuen,
+_The Support of MLIR HLS Adaptor for LLVM IR_,
+Workshop Proceedings of the 51st International Conference on Parallel Processing, 1-8,
+2020.
+https://doi.org/10.1145/3547276.3548515[🔗^]
+
+* [[[Fer21]]]
++F. Ferrandi et al.+,
+_Invited: Bambu: an Open-Source Research Framework for the High-Level Synthesis of Complex Applications_,
+2021 58th ACM/IEEE Design Automation Conference (DAC), 1327-1330,
+2021.
+https://ieeexplore.ieee.org/abstract/document/9586110[🔗^]
+https://re.public.polimi.it/retrieve/668507/dac21_bambu.pdf[📁^]
+
+* [[[Rot10]]]
++Nadav Rotem,+
+_C-to-Verilog. com: High-Level Synthesis Using LLVM_,
+University of Haifa,
+2010.
+https://llvm.org/devmtg/2010-11/Rotem-CToVerilog.pdf[🔗^]
+
+* [[[Sch20]]]
+Fabian Schuiki, Andreas Kurth, Tobias Grosser, and Luca Benini,
+_LLHD: a multi-level intermediate representation for hardware description languages_,
+In Proceedings of the 41st ACM SIGPLAN Conference on Programming Language Design and Implementation (PLDI 2020), 258-271,
+2020.
+https://doi.org/10.1145/3385412.3386024[🔗^]
+
+// Multiple HLS tools use LLVM
+// C/Cpp are most popular languages for HLS
+* [[[Nan16]]]
++R. Nane et al.+,
+_A Survey and Evaluation of FPGA High-Level Synthesis Tools_,
+IEEE Transactions on Computer-Aided Design of Integrated Circuits and Systems, 1591-1604,
+2016.
+https://ieeexplore.ieee.org/abstract/document/7368920[🔗^]
+https://sci-hub.st/10.1109/tcad.2015.2513673[📁^]
+
+* [[[Nor18]]]
++D. H. Noronha, B. Salehpour and S. J. E. Wilton+,
+_LeFlow: Enabling Flexible FPGA High-Level Synthesis of Tensorflow Deep Neural Networks_,
+Fifth International Workshop on FPGAs for Software Programmers, 1-8,
+2018.
+https://ieeexplore.ieee.org/abstract/document/8470462[🔗^]
+
+* [[[Soz22]]]
+Sozzo, Emanuele Del, et al.,
+_Pushing the level of abstraction of digital system design: A survey on how to program FPGAs_,
+ACM Computing Surveys, 1-48,
+2022.
+https://dl.acm.org/doi/abs/10.1145/3532989[🔗^]
+
+* [[[XLS]]]
+_XLS project page_
+https://google.github.io/xls/[🔗^]
+
+* [[[DSLX]]]
+_DSLX Reference_
+https://google.github.io/xls/dslx_reference/[🔗^]
+
+* [[[rusthdl]]]
+_rust-hdl project overview_
+https://github.com/samitbasu/rust-hdl[🔗^]
 
 
-// === Motivation
+* [[[Zen12]]]
+_Identifying Barriers to Adoption for Rust through Online Discourse_
+https://arxiv.org/pdf/1901.01001.pdf[🔗^]
 
-// == Related work
+* [[[so-trends]]]
+_Stack Overflow Trends_
+https://insights.stackoverflow.com/trends?tags=rust%2Cc%2B%2B[🔗^]
 
-// === HDL
+// Rust has an ecosystem that greatly simplifies any software projec
+// Rust is great
+* [[[Bug22]]]
++William Bugden, Ayman Alahmar+,
+_Rust: The Programming Language for Safety and Performance_,
+asXiv,
+2022.
+https://arxiv.org/pdf/2206.05503.pdf[🔗^]
 
-// === FPGA
+// Rust can be used for GPU programming
+* [[[Byc22]]]
++Andrey Bychkov, Vsevolod Nikolskiy+,
+_Rust Language for GPU Programming_,
+In: Voevodin, V., Sobolev, S., Yakobovskiy, M., Shagaliev, R. (eds) Supercomputing. RuSCDays 2022. Lecture Notes in Computer Science, vol 13708. Springer, Cham, 2022, pp. 522-32,
+2022
+https://doi.org/10.1007/978-3-031-22941-1_38[🔗^]
 
-// === ADL
+// Rust can be used for web programming
+* [[[Kyr22]]]
++Kyriakou K-ID, Tselikas ND+,
+_Complementing JavaScript in High-Performance Node.js and Web Applications with Rust and WebAssembly._,
+Electronics 11, no. 19: 3217,
+2022
+https://doi.org/10.3390/electronics11193217[🔗^]
 
-// === Rust
+// Probably one of the greatest features of the language is the package manager, called cargo.
+* [[[Cos19]]]
++Cosmin Cartas+,
+_Rust - The Programming Language for Every Industry_,
+ECONOMY INFORMATICS JOURNAL, 19, 45-51,
+2019
+https://doi.org/10.12948/ei2019.01.05[🔗^]
 
-// === Rust-HDL
+// state-of-art bottom-up logic programming within the Rust ecosystem
+* [[[Sah22]]]
++Arash Sahebolamri, Thomas Gilray, Kristopher Micinski+,
+_Seamless Deductive Inference via Macros_,
+Proceedings of the 31st ACM SIGPLAN International Conference on Compiler Construction, 77-88,
+2022
+https://doi.org/10.1145/3497776.3517779[🔗^]
 
-// === High-level synthesis
+// Productivity in HLS is better than HDL
+// HLS offers easier design and testing
+// HDL implementation is better than HLS
+* [[[Mil20]]]
++Roberto Millón, Emmanuel Frati, Enzo Rucci+,
+_A Comparative Study between HLS and HDL on SoC for Image Processing Applications_,
+Revista elektron, Vol. 4, No. 2, 100-106,
+2020
+https://doi.org/10.37537/rev.elektron.4.2.117.2020[🔗^]
 
-// === Bambu
 
-// === Other tools
+// Shows that HLS is twice as fast as HDL 
+// M. Pelcat, C. Bourrasset, L. Maggiani and F. Berry, "Design productivity of a high level synthesis compiler versus HDL," 2016 International Conference on Embedded Computer Systems: Architectures, Modeling and Simulation (SAMOS), Agios Konstantinos, Greece, 2016, pp. 140-147, doi: 10.1109/SAMOS.2016.7818341.
+// https://ieeexplore.ieee.org/abstract/document/7818341
 
-// == Implementation
-
-// == Conclusion
-
-
-
-include::sections/trailing-scripts.adoc[]
+include::styles/trailing-scripts.adoc[]

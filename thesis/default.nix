@@ -69,12 +69,32 @@ stdenv.mkDerivation rec {
     cp -r *.html *.css images $out
    
     mkdir -p $out/bin
-    cat <<EOF > $out/bin/${pname}.sh
-    #!/usr/bin/env bash
-    python3 -m http.server --directory $out 8000
+    cat <<EOF > $out/bin/${pname}.py
+    #!/usr/bin/env python3
+    
+    import http.server
+
+    DIRECTORY = "$out"
+    
+    class MyHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, directory=DIRECTORY, **kwargs)
+
+        def end_headers(self):
+            self.send_my_headers()
+            http.server.SimpleHTTPRequestHandler.end_headers(self)
+    
+        def send_my_headers(self):
+            self.send_header("Cache-Control", "no-cache, no-store, must-revalidate")
+            self.send_header("Pragma", "no-cache")
+            self.send_header("Expires", "0")
+    
+    
+    if __name__ == '__main__':
+        http.server.test(HandlerClass=MyHTTPRequestHandler)
     EOF
-    chmod a+x $out/bin/${pname}.sh
+    chmod a+x $out/bin/${pname}.py
   '';
 
-  meta.mainProgram = "${pname}.sh";
+  meta.mainProgram = "${pname}.py";
 }
