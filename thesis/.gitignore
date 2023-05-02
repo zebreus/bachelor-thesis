@@ -1,0 +1,8 @@
+images/*
+.asciidoctor
+!docinfo.html
+!images/logo_hda.svg
+*.scssc
+.sass-cache
+Readme.pdf
+Readme.css

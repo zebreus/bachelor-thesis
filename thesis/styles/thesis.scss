@@ -1,0 +1,379 @@
+@import 'https://fonts.googleapis.com/css2?family=Concert+One&family=Spectral:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap';
+
+@import './default.scss';
+@import './print.scss';
+
+@import './variables.scss';
+
+@page {
+    size: A4;
+    margin: 3.05cm (3.86cm - 0.39687cm) 3.81cm (4.26cm - 0.39687cm);
+}
+
+@page :first {
+    margin-top: 2.4cm;
+}
+
+h1,
+h2,
+h3,
+#toctitle,
+.sidebarblock>.content>.titled {
+    text-transform: uppercase;
+    letter-spacing: 0.08rem;
+}
+
+#_thesis {
+    counter-reset: page 1;
+}
+
+#toc {
+    &>ul {
+        margin-left: 0.25rem;
+
+        &>li>a {
+            color: #ae2230;
+        }
+
+        &>li>ul {
+            margin-left: 0;
+
+            ul {
+                margin-left: 1.1rem;
+
+                ul {
+                    margin-left: 1.8rem;
+                }
+            }
+        }
+    }
+
+    a {
+        letter-spacing: 0rem;
+        color: $heading-text-color;
+
+        &::after {
+            color: $normal-link-color;
+        }
+    }
+}
+
+span.section-number {
+    margin-right: 0.5rem;
+    font-style: normal;
+    text-transform: uppercase;
+    color: currentColor;
+}
+
+// Add lines to h2
+#toctitle,
+h2 {
+    break-before: always;
+    font-size: $h2-font-size;
+    margin-bottom: 2.3rem;
+    position: relative;
+
+    &::after {
+        bottom: -1rem;
+        left: 0;
+        content: "";
+        width: 100%;
+        position: absolute;
+        height: 0.5px;
+        background: black;
+    }
+}
+
+#content h1:first-child {
+    color: #ae2230;
+    font-size: $h2-font-size * 1.1;
+    font-weight: 400;
+    margin-top: 6.5cm;
+
+    span.section-number {
+        text-transform: none;
+        color: $heading-text-color;
+        display: block;
+        margin: 1rem auto 1.2rem;
+        white-space: nowrap;
+        letter-spacing: 0;
+    }
+}
+
+// Add numbers to h2
+h2 {
+    span.section-number {
+        font-size: 7rem;
+        position: absolute;
+        color: lighten($heading-text-color, 50%);
+        right: -5rem;
+        bottom: -1rem;
+    }
+}
+
+h4,
+h5,
+h6 {
+    font-style: italic;
+}
+
+.logo {
+    margin-left: 1rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+
+    img {
+        margin-top: 0rem;
+        width: 7.7cm;
+    }
+}
+
+.university {
+    p {
+        text-align: center;
+        font-size: $huge;
+        font-weight: bold;
+        margin-top: 0.1cm;
+        margin-bottom: 0;
+    }
+}
+
+.faculty {
+    p {
+        text-align: center;
+        font-size: $very-large;
+
+        &::before,
+        &::after {
+            content: "\2013";
+            margin: 0.5rem;
+        }
+    }
+}
+
+h1 {
+    text-align: center;
+    font-size: $very-large;
+    font-weight: bold;
+    margin: 8rem 0;
+}
+
+.description p {
+    text-align: center;
+    font-size: $large;
+}
+
+.presented-by p {
+    text-align: center;
+    font-size: $large;
+    margin: 6rem 0;
+}
+
+.student p {
+    text-align: center;
+    font-size: $large;
+    font-weight: bold;
+}
+
+.student-id p {
+    text-align: center;
+    font-size: $base-font-size;
+}
+
+.other-people {
+    margin-left: auto;
+    margin-right: auto;
+
+    * {
+        padding-top: 0;
+        padding-bottom: 0;
+        font-size: $base-font-size;
+    }
+}
+
+// Adds a line where a signature can be written
+.signature-required {
+    width: 40%;
+    margin-right: 0;
+    margin-left: auto;
+
+    &::before {
+        content: "";
+        background: black;
+        width: 100%;
+        height: 1px;
+        display: block;
+        margin-bottom: 0.5rem;
+        margin-top: 2rem;
+    }
+
+    p {
+        text-align: center;
+    }
+}
+
+a.citation {
+    color: #008000;
+
+    &::before {
+        content: "[";
+        color: $base-text-color;
+    }
+
+    &::after {
+        content: "]";
+        color: $base-text-color;
+    }
+}
+
+ul.bibliography {
+    list-style: none;
+    margin-left: 3rem;
+
+    &>li {
+        a:first-child {
+            position: absolute;
+            left: 0;
+            color: inherit;
+            text-decoration: inherit;
+        }
+    }
+}
+
+// .signature img {
+//     height: 2cm;
+//     margin-left: 1cm;
+//     width: auto;
+// }
+
+// .recipient {
+//     text-align: right;
+//     margin: 1em auto 2em;
+// }
+
+// .main-text {
+//     text-align: justify;
+// }
+
+// .opening,
+// .closing {
+//     margin: 50px 0 20px 0;
+// }
+
+/*
+TOC page numbering and leaders, adapted from https://www.pagedjs.org/posts/2020-02-19-toc/
+The page numbering is straightforward and generally works.
+The leader works by filling the li with dots, and arranging for the <a> and a::after to cover them, using the same background color as the TOC div.
+*/
+// @page {
+//     margin: 1.5cm;
+//     size: A4;
+
+//     @bottom-center {
+//         content: "fdlakdjfdas";
+//         color: green;
+//         background-color: red;
+//         width: 100%;
+//         height: 100%;
+//     }
+// }
+
+// @page {
+//     margin: 1.5cm;
+//     size: A4;
+
+//     @bottom-center {
+//         content: element(bottom-title-block);
+//     }
+// }
+
+// .bottom-title-block {
+//     position: running(bottom-title-block);
+// }
+
+// .page-count::before {
+//     content: counter(page);
+// }
+
+// .page-count::after {
+//     content: counter(pages);
+// }
+
+// table.bottom-title-block {
+//     table-layout: auto;
+//     display: table;
+//     width: 100%;
+// }
+
+// .bottom-title-block {
+//     position: running(bottom-title-block);
+// }
+
+// // completely useless
+// .pagedjs_page .pagedjs_margin-bottom-center {}
+
+// .pagedjs_page .pagedjs_margin-bottom-center>.pagedjs_margin-content>* {
+//     display: table;
+// }
+
+// .contact-us {
+//     width: 6cm;
+//     position: running(runningContact)
+// }
+
+// @page {
+//     margin: 1cm 2cm 4cm 2cm;
+// }
+
+// @page :right {
+//     @bottom-left {
+//         content: element(runningContact)
+//     }
+
+//     @bottom-right {
+//         content: counter(page);
+//         margin: 10pt 10pt 30pt 0;
+//     }
+// }
+
+// @page :left {
+//     @bottom-right {
+//         content: element(runningContact)
+//     }
+
+//     @bottom-left {
+//         content: counter(page);
+//         margin: 10pt 0 30pt 10pt;
+//     }
+// }
+
+// @page :right {
+//     @bottom-right {
+//         content: counter(page);
+//         font-size: 0.8rem;
+//         padding: 10pt 0 0 0;
+//         margin: 10pt 10pt 30pt 10pt;
+//         border-top: .1pt solid #d2d2d2;
+//     }
+
+//     @bottom-left {
+//         margin: 10pt 0 30pt 0;
+//         border-top: .1pt solid #d2d2d2;
+//     }
+// }
+
+// @page :left {
+//     @bottom-right {
+//         margin: 10pt 0 30pt 0;
+//         border-top: .1pt solid #d2d2d2;
+//     }
+
+//     @bottom-left {
+//         content: counter(page);
+//         font-size: 0.8rem;
+//         padding: 10pt 0 0 0;
+//         margin: 10pt 10pt 30pt 10pt;
+//         border-top: .1pt solid #d2d2d2;
+//     }
+// }

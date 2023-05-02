@@ -1,0 +1,121 @@
+:doctype: book
+:last-update-label!:
+:imagesdir: images
+:source-highlighter: rouge
+:rouge-style: github
+:toclevels: 2
+:stem:
+:toc: macro
+:sectanchors:
+:notitle:
+:title-page: false
+// :toc-title: Inhaltsverzeichnis
+:stylesheet: Readme.css
+:toclevels: 3
+
+image::logo_hda.svg[role=logo]
+
+[.university.text-center]
+Darmstadt University of Applied Sciences
+
+[.faculty.text-center]
+Faculty of Computer Science
+
+[discrete]
+= Is High-level synthesis from Rust possible using existing tools?
+
+[.description.text-center]
+Submitted in partial fulfilment of the requirements for the degree of +
+Bachelor of Science (B.Sc.)
+
+[.presented-by.text-center]
+by +
+*Lennart Eichhorn* +
+[small]+Matriculation number: 759253+ +
+
+
+[.other-people,frame=none,grid=none,width=65%,cols="6,1,20"]
+|===
+
+|First Examiner |: |Prof. Dr. Stefan Rapp
+
+|Second Examiner |: |Prof. Dr. Ronald Charles Moore
+
+|=== 
+
+<<<
+
+[discrete]
+== Abstract
+
+A short summary of the contents in English of about one page. The following
+points should be addressed in particular:
+
+* Motivation: Why did this work come about? Why is the topic of the
+work interesting (for the general public)? The motivation should be
+abstracted as far as possible from the specific tasks that may be given
+by a company.
+* Content: What is the content of this thesis? What exactly is covered in
+the thesis? The methodology and working method should be briefly
+discussed here.
+* Results: What are the results of this work? A brief overview of the
+most important results as a teaser to read the complete thesis.
+
+[NOTE]
+====
+A great guide by Kent Beck how to write good abstracts can be found here:
+
+<https://plg.uwaterloo.ca/~migod/research/beckOOPSLA.html>
+====
+
+<<<
+
+toc::[]
+
+<<<
+
+// Start with section and part numbering
+:sectnums:
+:part-signifier: Part
+:partnums:
+
+= Extended Abstract
+
+include::sections/introduction.adoc[]
+
+include::sections/methodology.adoc[]
+
+include::sections/results.adoc[]
+
+include::sections/summary.adoc[]
+
+include::sections/bibliography.adoc[]
+
+
+// === Motivation
+
+// == Related work
+
+// === HDL
+
+// === FPGA
+
+// === ADL
+
+// === Rust
+
+// === Rust-HDL
+
+// === High-level synthesis
+
+// === Bambu
+
+// === Other tools
+
+// == Implementation
+
+// == Conclusion
+
+
+
+include::sections/trailing-scripts.adoc[]
