@@ -87,26 +87,185 @@ To figure out whether Rust can be used as a source language for HLS, we searched
 // What exactly is the problem
 // Why is this a problem
 
-== Background
+== How is hardware design done today
 
-=== Related work
+It is assumed that you have some knowledge of the Rust programming language and systems programming. This section will provide an overview about the topics that are relevant for this paper. It will also provide an overview about the related work that has been done for HLS from Rust.
+
+=== Target platforms
+
+Usually 
+
+=== Accelerator design vs logic design
+
+
+
+=== Netlists are synthesized to hardware
+
+// TODO: This is a stub
+All approaches of hardware design end up generating a structural gate-level description called netlist typically in a subste SystemVerilog. This netlist is then used to generate the actual hardware design in a mostly automated fashion. How this step actually works depends on what kind of Hardware is targeted e.g. FPGA, ASIC or fully custom chips.
+//<<Fla20>>
+
+This step is basically manufacturing a design. The focus of this paper is only on design and not on manufacturing, so we will not go into detail about this step. It is just important to know that a netlist is something that can be manufactured / deployed to a FPGA.
+
+=== Design using traditional Hardware Description Languages
+// What are common HDLs and what are they used for
+// TODO: Systema verilog is most common nowadays
+Traditionally, logic design is done in hardware description languages (HDL). There are two established ones, Verilog and VHDL. VHDL has a slightly higher level of abstraction and some features that make it easier to manage bigger projects. In some ways, the relation between Verilog and VHDL is comparable to the relation between C and {cpp} in terms of features and abstraction. Both can be used to model the structure of hardware equally efficiently, so the choice is mostly a matter of personal preference. <<Smi96>>
+
+// TODO: Mention timing
+
+// What do you describe in HDLs
+// TODO: Citation needed
+Most commonly HDLs are used to describe circuits in a register-transfer level (RTL) abstraction. On RTL these languages describe registers that can hold state and the combinational (time-independent) logic that connects them. In HDLs the registers and combinational logic can be bundled into a module to make it reusable. These modules can then be connected to form a larger circuit. This is the basic structure of an HDL design.
+
+// What distinguishes them from progamming languages
+
+// What is a typical HDL design flow
+A typical HDL design flow consists of four phases, design, verification, synthesis and implementation. In the design phase, the circuit is designed in an HDL. The design is then verified in various ways. To verify the behaviour of a design testbenches are defined. These testbenches (usually also written in HDL) instantiate the module of the design under test (DUT), exercise the inputs and verify that the outputs behave as expected. A logic simulator is used to execute the testbenches. This is comparable to unittesting in programming languages. After the design is verified, a logic synthesis tool is used to synthesize the design into a optimized gate-level logic description (netlist). A formal equivalence tool can then be used to verify that the netlist is equivalent to the original design. In the implementation phase, the netlist is mapped to the target hardware. <<Fla20>>
+ 
+// What are the problems with HDLs
+The use of HDLs is mostly limited to hardware engineers
+
+// What are the possible solutions
+
+==== SystemVerilog sample
+
+=== Design using alternative Hardware description languages
+
+==== Chisel
+
+// TODO: This is a stub
+Probably the most popular alternative HDL
+
+==== rust-hdl
+
+// TODO: This is a stub
+Upcoming HDL embedded in Rust. Can use the Rust ecosystem. This is what we are going to use.
+
+=== Design using High-level synthesis
+// What is HLS
+High-level synthesis (HLS) is a process that can generate HDL code from a high-level description of a circuit. This description is usually written in a high-level programming language such as C or {cpp}. This is a more productive approach than writing HDL code directly, but the resulting designs are less efficient. The generated HDL code can then be used in the same way as manually written HDL code. <<Mil20>>
+
+// What does HLS generate
+// TODO: This is a stub
+The modules generated with HLS tools are usually state-machines. These modules have a clock input that can be used to proceed to the next state and a output that indicates that the state-machine is done.
+
+// What HLS tools are there
+// TODO: This is a stub
+There are some HLS tools that use LLVM IR as an input.
+
+// What are the languages typically used for HLS
+CPP, C, SystemC, LLVM IR
+
+// What are the problems with those languages
+// TODO: This section does probably not belong in this part
+Old programming languages, we have better alternatives nowadays
+More steps in the design flow
+
+==== Bambu HLS
+
+
+=== Design using accelerator design languages
+
+// TODO: This is a stub
+Accelerator design languages (ADL) are a family of programming languages that are specifically designed to be synthesized to HDL. They are mostly similar to programming languages but offer many features that are usually only found in HDLs, like better control over timing, memory access and stuff like that.
 
 == Concept, implementation and architecture
 
+// Short overview of the solution and this section
+The goal of this paper is to use Rust as a source language for HLS using an existing HLS tool. First a suitable toolchain has to be designed. Then a process for integrating the toolchain with a HDL has to be developed. Finally, a proof-of-concept implementation will be done to show that the process works and enable evaluation of the resulting solution.
+
+// TODO: Maybe define some criteria for our solution
+// * Can synthesize a simple Rust program
+// * Can synthesize our md5 implementation
+// * Can synthesize most stateless Rust function
+// * The synthesized function can use Rust crates from crates.io
+// * The existing Rust tooling (linter, formatter, etc.) work with out function
+
+=== Toolchain for synthesizing Rust
+
+As there is currently no tool that can synthesize Rust directly the first step in our toolchain needs to convert the Rust code into a language that can be used by an existing HLS tool. There are multiple HLS tools that support C or {cpp} by using LLVM compiler infrastructure. As a result of using LLVM some of these tools can also use LLVMs intermediate representation (LLVM IR) directly as an input language. <<Nan16>> The Rust compiler can compile Rust code to LLVM IR, so this is a good starting point for our toolchain.
+
+The Rust compiler is frequently updated and the generated LLVM IR usually uses the latest LLVM version. This means that a suited HLS tool needs to be activly maintained to support the generated LLVM IR. The only HLS tool that fulfills these requirements seems to be panda bambu. SmartHLS and Vivado HLS may also be capable of operating on LLVM IR, but they are not open source and only available as part of an IDE and not as standalone programs, which makes them unsuitable for our use case.
+
+.The toolchain
+[pikchr]
+....
+   arrow right 150% "Rust" "Source"
+   box rad 10px "Rust Compiler" "Compiler" "(rustc)" fit
+   arrow right 190% "LLVM IR" "Intermediate"
+   box rad 10px "PandA Bambu" "HLS Synthesizer" "(bambu)" fit
+   arrow right 130% "Verilog" "RTL"
+....
+
+=== Integrating the toolchain with rust-hdl
+
+//TODO: This is a stub
+Being able to synthesize Rust to Verilog in a vacuum is not that usefull. We should be able to use it in a larger HDL design. This paper will use rust-hdl as a HDL. This way the HDL design can be completly written in Rust.
+
+The generated Verilog is wrapped in a rust-hdl module. Rust-hdl is not able to simulate embedded verilog, so we use Verilator to build a library that can be used to simulate the generated Verilog and link the rust program against it.
+
+This also allows us to perform verification directly in rust unit tests. Nice integrated development experience.
+
+Challenge: integrating bambu
+
+//TODO: diagram of the integrated toolchain
+
+
+=== Proof-of-concept implementation
+
+// TODO: This is a stub
+The proof-of-concept implementation uses a Rust procedural macros to transform a Rust function into a rust-hdl module.
+
+// TODO: Show of an example
+
+==== Explain neccessary compiler flags
+
+
 == Experiments and results
+
+=== Show limitations of the synthesizable subset of Rust
+
+Show the limitations of the toolchain. Limitations of the synthesizable subset of Rust.
+
+=== Show how the Rust ecosystem can be used
+
+=== Generated modules
+
+Take a look at the generated modules
+
+=== Performance compared to HLS from {cpp}
+
+Compare performance against {cpp}. basically the same as in first-toolchain.adoc
+
 
 // Perform experiments and collect data about our solution
 
-== Discussion
+== Discussion and evaluation of the experiments
+
+
+Discuss limitations
+
+Discuss the results of the performance experiments
+
+Discuss compiler flags? 
 
 // Why is this a solution
 // Discuss the results of the experiments
 
 == Conclusion and future work
+// TODO: This is a stub
+// This is completely written by copilot and should be rewritten by hand
+In general the toolchain is working quite well. HLS from Rust is definitly possible with little restrictions. The performance of the generated modules is also quite good. The generated modules are not as good as hand written modules, but they are good enough for most applications. The generated modules are also quite large, but this is not a problem for most applications.
+
+// TODO: This is a stub
+// This is completely written by copilot and should be rewritten by hand
+The toolchain is also quite easy to use. The only thing that needs to be done is to add a procedural macro to the function that should be synthesized. This is a very simple change and does not require any changes to the function itself. The procedural macro can also be used to add additional information to the function that can be used by the HLS tool. This is very useful for example to specify the clock frequency of the function.
+
 
 [glossary]
 == List of abbreviations
-// Use abbreviations like <<FPGA>>
+// Abbreviations from here will automatically be linked into the document
 
 // Abbreviations in a random order and links to read more about them
 [glossary]
@@ -116,6 +275,8 @@ To figure out whether Rust can be used as a source language for HLS, we searched
 [[ADL]]ADL:: Accelerator design language https://www.sigarch.org/hdl-to-adl/[🔗^]
 [[GPU]]GPU:: Graphics processing unit https://en.wikipedia.org/wiki/Graphics_processing_unit[🔗^]
 [[LLVM_IR]]LLVM IR:: LLVM intermediate representation https://en.wikipedia.org/wiki/LLVM#Intermediate_representation[🔗^]
+[[RTL]]RTL:: Register-transfer level
+[[DUT]]DUT:: Design under test
 
 [bibliography]
 == References
@@ -267,10 +428,32 @@ _A Comparative Study between HLS and HDL on SoC for Image Processing Application
 Revista elektron, Vol. 4, No. 2, 100-106,
 2020
 https://doi.org/10.37537/rev.elektron.4.2.117.2020[🔗^]
+http://elektron.fi.uba.ar/index.php/elektron/article/view/117/219[📁^]
 
+// Describing the traditional HDL design flow (in 1996)
+// TODO: Find newer source
+* [[[Smi96]]]
++Douglas J. Smith+,
+_VHDL & Verilog compared & contrasted—plus modeled example written in VHDL, Verilog and C._,
+In Proceedings of the 33rd annual Design Automation Conference, pp. 771-776,
+1996
+https://dl.acm.org/doi/pdf/10.1145/240518.240664[🔗^]
+
+// 
+* [[[Fla20]]]
++Peter Flake, Phil Moorby, Steve Golson, Arturo Salz, and Simon J. Davidmann+,
+_Verilog HDL and its ancestors and descendants._,
+Proc. ACM Program. Lang. 4, no. HOPL (2020): 87-1,
+2020
+https://www.researchgate.net/profile/Arturo-Salz-2/publication/342137214_Verilog_HDL_and_its_ancestors_and_descendants/links/613fc7b45d9d0e131b427dbb/Verilog-HDL-and-its-ancestors-and-descendants.pdf[🔗^]
 
 // Shows that HLS is twice as fast as HDL 
 // M. Pelcat, C. Bourrasset, L. Maggiani and F. Berry, "Design productivity of a high level synthesis compiler versus HDL," 2016 International Conference on Embedded Computer Systems: Architectures, Modeling and Simulation (SAMOS), Agios Konstantinos, Greece, 2016, pp. 140-147, doi: 10.1109/SAMOS.2016.7818341.
 // https://ieeexplore.ieee.org/abstract/document/7818341
+
+
+// Reference thesis:
+// * https://webthesis.biblio.polito.it/7573/1/tesi.pdf
+// * https://scholarworks.gvsu.edu/cgi/viewcontent.cgi?article=1754&context=theses
 
 include::styles/trailing-scripts.adoc[]
