@@ -115,6 +115,7 @@ To figure out whether Rust can be used as a source language for HLS, we searched
 [[HDL]]HDL:: Hardware description language https://en.wikipedia.org/wiki/Hardware_description_language[🔗^]
 [[ADL]]ADL:: Accelerator design language https://www.sigarch.org/hdl-to-adl/[🔗^]
 [[GPU]]GPU:: Graphics processing unit https://en.wikipedia.org/wiki/Graphics_processing_unit[🔗^]
+[[LLVM_IR]]LLVM IR:: LLVM intermediate representation https://en.wikipedia.org/wiki/LLVM#Intermediate_representation[🔗^]
 
 [bibliography]
 == References

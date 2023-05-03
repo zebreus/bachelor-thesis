@@ -166,7 +166,7 @@ const reworkTextNode = (textNode, glossaryEntries) => {
 }
 
 function escapeRegExp(string) {
-    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace("_", "[_ ]"); // $& means the whole matched string
 }
 
 const getGlossaryMap = () => {
@@ -178,18 +178,19 @@ const getGlossaryMap = () => {
     const glossaryEntriesArray = [...glossary.querySelectorAll("dt")]
     let glossaryEntries =  glossaryEntriesArray.map((glossaryEntry ) => {
             const link = glossaryEntry.querySelector("a") || undefined
-            const definition = glossaryEntry?.nextElementSibling?.childNodes?.[1]?.childNodes?.[0]?.textContent || undefined;
         
             if (!link) {
                 console.err("Found glossary entry without link")
                 return
             }
+            const abbreviation = link?.nextSibling?.textContent || link.id;
+            const definition = glossaryEntry?.nextElementSibling?.childNodes?.[1]?.childNodes?.[0]?.textContent || abbreviation || undefined;
             const id = link.id
             return {
                 id: id,
                 regex: new RegExp("(?<=^|\\s+|[^\\w\\s\\'])" + escapeRegExp(id) +"(?=s?(?:$|\\s+|[^\\w\\s\\']))", "g"),
                 href: "#" + id,
-                name: id,
+                name: abbreviation,
                 definition: definition
             };
             
