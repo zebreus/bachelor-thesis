@@ -275,8 +275,8 @@ The toolchain is also quite easy to use. The only thing that needs to be done is
 [[ADL]]ADL:: Accelerator design language https://www.sigarch.org/hdl-to-adl/[🔗^]
 [[GPU]]GPU:: Graphics processing unit https://en.wikipedia.org/wiki/Graphics_processing_unit[🔗^]
 [[LLVM_IR]]LLVM IR:: LLVM intermediate representation https://en.wikipedia.org/wiki/LLVM#Intermediate_representation[🔗^]
-[[RTL]]RTL:: Register-transfer level
-[[DUT]]DUT:: Design under test
+[[RTL]]RTL:: Register-transfer level https://en.wikipedia.org/wiki/Register-transfer_level[🔗^]
+[[DUT]]DUT:: Design/Device under test https://en.wikipedia.org/wiki/Test_bench[🔗^]
 
 [bibliography]
 == References
