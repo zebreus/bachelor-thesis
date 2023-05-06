@@ -93,7 +93,35 @@ It is assumed that you have some knowledge of the Rust programming language and 
 
 === Target platforms
 
-Usually 
+There are two target platforms for logic design: field-programmable gate arrays (FPGA) and application specific integrated circuits (ASIC).
+
+==== What is an FPGA
+
+//TODO: Citations
+// TODO: Idk if the intro is appropriate
+CPUs process their instructions one by one. They are purpose-built machines that are carefully designed for processing lots of instructions in sequence. Traditional programming languages reflect this design for the most part. They are designed to make it easy for humans to write programs that can be executed sequentially one instruction at a time. There are approaches to parallelism, but they are either limited to having multiple threads of execution that run from top to bottom simultaneously. Or they have some instructions that perform the same operation on a fixed amount of data elements at the same time.
+
+
+// TODO: citation needed
+Field programmable gate arrays (FPGAs) are not designed to process instructions. As the name field programmable gate array implies, they consist of programmable logic gates with programmable connections between them. So while a CPU is a circuit designed to do one thing, an FPGA is a circuit designed to emulate other circuits. 
+
+// TODO: FPGA 
+
+// An FPGA can be used to emulate a CPU.
+// TODO: citation needed
+For example, a design describing the logic gates and connections that make up a CPU can be programed to the FPGA, so it will behave exactly like the CPU and can process instructions. Such a 'soft' CPU will be much bigger and therefore slower than a real CPU because a circuit emulated on an FPGA takes up more space than an application-specific circuit. This is however really useful for prototyping because you can test the CPU design in hardware with external peripherals, like memory and I/O devices.
+
+// More details on using FPGAs for hardware development
+// TODO: citation needed
+In the past, FPGAs were mostly used like this for prototyping hardware development. Programmers designed a circuit in a hardware description language (HDL) and simulate it as a first stage of verification. If that worked it can be deployed to an FPGA, and get tested there. If everything works as expected the design can be taped out and manufactured as an ASIC.
+
+// FPGA as computational accelerators
+// TODO: citation needed
+This is still the most common use case for FPGAs, but it is not the only one. In recent years the usage of FPGAs as pseudo-general-purpose computational accelerators became more relevant. Here you do not use them to prototype circuits that will eventually be taped out but as the final platform. FPGAs used in this context are known as _computational FPGAs_. It is somewhat comparable to the use of GPUs as computing accelerators. But where GPUs excel at tasks that perform the same operations in parallel on massive amounts of data, FPGAs can be used for some kind of computations with irregular parallelism with static structure. In opposition to GPUs, it is not yet clear what an appropriate abstraction for the computational pattern used with computational FPGAs is.
+
+==== What is an ASIC
+
+
 
 === Accelerator design vs logic design
 
@@ -132,43 +160,124 @@ The use of HDLs is mostly limited to hardware engineers
 
 === Design using alternative Hardware description languages
 
+There are multiple modern HDLs that try to improve on the shortcomings of Verilog and VHDL. Most of them try to bring some features from modern programming languages to hardware design. (linting, formatting, dependency management, namespaces/scoping, better support for multifile projects, ...). These languages are usually transpiled to Verilog and then synthesized to netlists.
+
 ==== Chisel
 
 // TODO: This is a stub
-Probably the most popular alternative HDL
+Probably the most popular alternative HDL. It is a Scala DSL that is transpiled to Verilog.
 
 ==== rust-hdl
 
 // TODO: This is a stub
-Upcoming HDL embedded in Rust. Can use the Rust ecosystem. This is what we are going to use.
+rust-hdl is a Rust project that allows writing RTL logic in Rust and generates Verilog from it. In rust-hdl the interfaces and registers of Verilog modules are defined as a structs. The internal logic is defined in an update function which is called on every clock pulse. This is similar to the way that HDLs work. <<rusthdl>>
+
+//TODO: Test if this compiles
+.Full adder written in Verilog
+[source,verilog]
+----
+module blink (clock, led);
+  input clock;
+  output led;
+
+  reg [31:0] counter = 32'0;
+  reg led_status = 0;
+
+  always @(posedge clock) begin
+    counter <= counter + 1;
+    if (counter > 1000) begin
+      led_status <= !led_status;
+      counter <= 32'0;
+    end
+  end
+
+  assign led = led_status;
+endmodule 
+----
+
+//TODO: Test if this compiles
+.Full adder written in rust-hdl
+[source,rust]
+----
+#[derive(LogicBlock)]
+struct Blinker {
+    pub clock: Signal<In, Clock>,
+    pub led: Signal<Out, bool>,
+    counter: DFF<Bits<32>>,
+    led_status: DFF<bool>,
+    delay: Constant<Bits<32>>,
+}
+
+impl Blinker {
+    pub fn new(delay: u32) -> Self {
+        Self {
+            clock: Default::default(),
+            led: Default::default(),
+            counter: Default::default(),
+            delay: Constant::new(delay.into()),
+        }
+    }
+}
+
+impl Logic for Blinker {
+    #[hdl_gen]
+    fn update(&mut self) {
+        self.counter.clock.next = self.clock.val();
+        self.counter.d.next = self.counter.q.val() + 1u32.to_bits();
+
+        self.led.next = self.led_status.q.val();
+
+        if self.counter.q.val() > self.delay.val() - 1 {
+            self.counter.d.next = 0.into();
+            self.led_status.d.next = ! self.led_status.q.val();
+        }
+    }
+}
+----
+
+The `update` defines the internal logic of the module. The function sets the values of all output ports of the module based on the input ports. The rust-hdl library enforces that a value is assigned to every port at compiletime. If there are multiple assignments to a port the last one is valid. 
+
+// TODO: List limitations of the update function
+As the update function represents combinational logic, only a small subset of Rust is allowed in it.
+
+As rust-hdl Code is just normal Rust code all of the features of the Rust ecosystem can be used. A rust-hdl project can for example be verified using the unit testing framework integrated into Rust. It can also use Rusts build system and package manager cargo. It is also possible to publish rust-hdl libraries to the rust package registry. <<rusthdl>>
+
 
 === Design using High-level synthesis
 // What is HLS
-High-level synthesis (HLS) is a process that can generate HDL code from a high-level description of a circuit. This description is usually written in a high-level programming language such as C or {cpp}. This is a more productive approach than writing HDL code directly, but the resulting designs are less efficient. The generated HDL code can then be used in the same way as manually written HDL code. <<Mil20>>
+High-level synthesis (HLS) is a process that can generate a HDL specification of a circuit from a description in a high-level programming language. This description is usually written in a high-level programming language such as C or {cpp}. This is a more productive approach than writing HDL code directly, but the resulting designs are less efficient. The generated HDL code can then be used in the same way as manually written HDL code. <<Mil20>> <<Nan16>>
 
-// What does HLS generate
+HLS tools can be distingushed into two major categories. Those that accept a general purpose language and those that accept a domain specific language (DSL) a an input. Using a DSL as input can lead to better performing designs, but it also raises challenges for adoption. A general purpose language makes it easier for the algorithm designer, who is usually a software developer, to write code. <<Nan16>> 
+
 // TODO: This is a stub
-The modules generated with HLS tools are usually state-machines. These modules have a clock input that can be used to proceed to the next state and a output that indicates that the state-machine is done.
+A special category of DSLs for HLS are accelerator design languages (ADL).
 
 // What HLS tools are there
-// TODO: This is a stub
-There are some HLS tools that use LLVM IR as an input.
+// TODO: Add citation for vivado
+// TODO: Add citation for usually.
+// TODO: Add citation for bambu is the biggest. 
+HLS tools are usually available as a part of the IDE provided by the FPGA vendors. For example, AMD Xilinx provides the Vivado HLS tool as part of its IDE and Intel Altera includes the Intel HLS Compiler in its Quartus Prime IDE. <<intel-hls>> There are also a few open-source HLS tools available. The biggest open-source HLS tool that is currenlty activly maintained is panda bambu.  <<Nan16>> 
 
-// What are the languages typically used for HLS
-CPP, C, SystemC, LLVM IR
+bambu provides as a research environment to experiment with new ideas in HLS. It can take C/C++ and LLVM IR as input. <<Fer21>>
+
+In this paper we will use bambu as a HLS tool, because it is open-source and supports the latest LLVM version. 
+
+// What does HLS generate. Specifically bambu
+// TODO: This is a stub
+// The modules generated with HLS tools are usually some kind of state-machine. In the case of panda-bambu These modules have a clock input that can be used to proceed to the next state and a output that indicates that the state-machine is done.
 
 // What are the problems with those languages
 // TODO: This section does probably not belong in this part
 Old programming languages, we have better alternatives nowadays
 More steps in the design flow
 
-==== Bambu HLS
+// ==== Bambu HLS
+
 
 
 === Design using accelerator design languages
 
-// TODO: This is a stub
-Accelerator design languages (ADL) are a family of programming languages that are specifically designed to be synthesized to HDL. They are mostly similar to programming languages but offer many features that are usually only found in HDLs, like better control over timing, memory access and stuff like that.
+Accelerator design languages (ADL) are a family of programming languages that are specifically designed to be synthesized to HDL. They are mostly similar to programming languages but offer many features that are usually only found in HDLs, like more fine-grained control over timing and memories memory access. <<hdl-to-adl>>
 
 == Concept, implementation and architecture
 
@@ -376,7 +485,7 @@ https://arxiv.org/pdf/1901.01001.pdf[🔗^]
 
 * [[[so-trends]]]
 _Stack Overflow Trends_
-https://insights.stackoverflow.com/trends?tags=rust%2Cc%2B%2B[🔗^]
+https://insights.stackoverflow.com/trends?tags=rust%2Cc%2B%2B
 
 // Rust has an ecosystem that greatly simplifies any software projec
 // Rust is great
@@ -447,6 +556,13 @@ Proc. ACM Program. Lang. 4, no. HOPL (2020): 87-1,
 2020
 https://www.researchgate.net/profile/Arturo-Salz-2/publication/342137214_Verilog_HDL_and_its_ancestors_and_descendants/links/613fc7b45d9d0e131b427dbb/Verilog-HDL-and-its-ancestors-and-descendants.pdf[🔗^]
 
+* [[[intel-hls]]]
+_Intel® High Level Synthesis Compiler_
+https://www.intel.de/content/www/de/de/software/programmable/quartus-prime/hls-compiler.html
+
+* [[[hdl-to-adl]]]
+_From Hardware Description Languages to Accelerator Design Languages_
+https://www.sigarch.org/hdl-to-adl/
 // Shows that HLS is twice as fast as HDL 
 // M. Pelcat, C. Bourrasset, L. Maggiani and F. Berry, "Design productivity of a high level synthesis compiler versus HDL," 2016 International Conference on Embedded Computer Systems: Architectures, Modeling and Simulation (SAMOS), Agios Konstantinos, Greece, 2016, pp. 140-147, doi: 10.1109/SAMOS.2016.7818341.
 // https://ieeexplore.ieee.org/abstract/document/7818341
