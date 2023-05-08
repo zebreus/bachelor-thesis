@@ -93,17 +93,19 @@ It is assumed that you have some knowledge of the Rust programming language and 
 
 === Target platforms
 
+// TODO: Maybe custom IC instead of ASIC
 There are two target platforms for logic design: field-programmable gate arrays (FPGA) and application specific integrated circuits (ASIC).
 
 ==== What is an FPGA
 
+// What are CPUs?
 //TODO: Citations
 // TODO: Idk if the intro is appropriate
 CPUs process their instructions one by one. They are purpose-built machines that are carefully designed for processing lots of instructions in sequence. Traditional programming languages reflect this design for the most part. They are designed to make it easy for humans to write programs that can be executed sequentially one instruction at a time. There are approaches to parallelism, but they are either limited to having multiple threads of execution that run from top to bottom simultaneously. Or they have some instructions that perform the same operation on a fixed amount of data elements at the same time.
 
 
 // TODO: citation needed
-Field programmable gate arrays (FPGAs) are not designed to process instructions. As the name field programmable gate array implies, they consist of programmable logic gates with programmable connections between them. So while a CPU is a circuit designed to do one thing, an FPGA is a circuit designed to emulate other circuits. 
+Field programmable gate arrays (FPGAs) are not designed to process instructions. As the name field programmable gate array implies, they consist of programmable logic gates with programmable connections between them. So while a CPU is a logic circuit designed to do one thing, an FPGA is a circuit designed to emulate other logic circuits. 
 
 // TODO: FPGA 
 
@@ -113,18 +115,22 @@ For example, a design describing the logic gates and connections that make up a 
 
 // More details on using FPGAs for hardware development
 // TODO: citation needed
-In the past, FPGAs were mostly used like this for prototyping hardware development. Programmers designed a circuit in a hardware description language (HDL) and simulate it as a first stage of verification. If that worked it can be deployed to an FPGA, and get tested there. If everything works as expected the design can be taped out and manufactured as an ASIC.
+In the past, FPGAs were mostly used like this for prototyping hardware development. Hardware designers designed a circuit in a hardware description language (HDL) and simulated it as a first stage of verification. If that worked it can be deployed to an FPGA, and get tested there. If everything works as expected the design can be taped out and manufactured as an ASIC.
+
+// In comparison to an FPGA a CPU is an ASIC, I think. But I have no source for that
 
 // FPGA as computational accelerators
 // TODO: citation needed
 This is still the most common use case for FPGAs, but it is not the only one. In recent years the usage of FPGAs as pseudo-general-purpose computational accelerators became more relevant. Here you do not use them to prototype circuits that will eventually be taped out but as the final platform. FPGAs used in this context are known as _computational FPGAs_. It is somewhat comparable to the use of GPUs as computing accelerators. But where GPUs excel at tasks that perform the same operations in parallel on massive amounts of data, FPGAs can be used for some kind of computations with irregular parallelism with static structure. In opposition to GPUs, it is not yet clear what an appropriate abstraction for the computational pattern used with computational FPGAs is.
 
+// Modern FPGAs have hardware blocks
+
 ==== What is an ASIC
 
+///
 
-
-=== Accelerator design vs logic design
-
+// Not my topic, I think
+// === Accelerator design vs logic design
 
 
 === Netlists are synthesized to hardware
@@ -245,26 +251,21 @@ As rust-hdl Code is just normal Rust code all of the features of the Rust ecosys
 
 === Design using High-level synthesis
 // What is HLS
-High-level synthesis (HLS) is a process that can generate a HDL specification of a circuit from a description in a high-level programming language. This description is usually written in a high-level programming language such as C or {cpp}. This is a more productive approach than writing HDL code directly, but the resulting designs are less efficient. The generated HDL code can then be used in the same way as manually written HDL code. <<Mil20>> <<Nan16>>
+High-level synthesis (HLS) is a process that can generate a RTL specification of a circuit from a description in a high-level programming language. This is a more productive approach than writing RTL code directly, but the resulting designs are usually less efficient. The generated RTL code can then be used in the same way as manually written RTL code. <<Mil20>> <<Nan16>> <<Lah19>>
 
-HLS tools can be distingushed into two major categories. Those that accept a general purpose language and those that accept a domain specific language (DSL) a an input. Using a DSL as input can lead to better performing designs, but it also raises challenges for adoption. A general purpose language makes it easier for the algorithm designer, who is usually a software developer, to write code. <<Nan16>> 
+// HLS compared to RTL
+The main advantages of HLS are reduced design time and lower development cost. On average the development time of HLS designs is only a third than that of equivalent RTL designs. The tradeoff for the lower development time seems to be that HLS designs on average take up around 40% more basic FPGA resources than RTL designs. The performance of HLS designs is around two thirds of that of a RTL design. These metrics generalize over many different HLS tools and input languages and there is a big variance between different experiments. In about 40% of the cases the HLS design was more efficient or performant than the RTL design. These metrics for performance and resource usage show a lot of variance between experiments, in about 40% of designs the HLS design was actually more performant than the RTL design. In about 30% it was more resource efficient. However in terms of development time there is little variance, in 90% of the experiments the HLS design was faster than the RTL design. <<Lah19>>
 
-// TODO: This is a stub
-A special category of DSLs for HLS are accelerator design languages (ADL).
+HLS tools can be distingushed into two major categories. Those that accept a general purpose language and those that accept a domain specific language (DSL) a an input. Using a DSL as input can lead to better performing designs, but it also raises challenges for adoption. A general purpose language makes it easier for the algorithm designer, who is usually a software developer, to write code. <<Nan16>> The most common input languages for HLS are C based, including C, {cpp}, and SystemC. <<Lah19>> 
 
 // What HLS tools are there
-// TODO: Add citation for vivado
 // TODO: Add citation for usually.
 // TODO: Add citation for bambu is the biggest. 
-HLS tools are usually available as a part of the IDE provided by the FPGA vendors. For example, AMD Xilinx provides the Vivado HLS tool as part of its IDE and Intel Altera includes the Intel HLS Compiler in its Quartus Prime IDE. <<intel-hls>> There are also a few open-source HLS tools available. The biggest open-source HLS tool that is currenlty activly maintained is panda bambu.  <<Nan16>> 
+HLS tools are usually available as a part of the IDE provided by the FPGA vendors. For example, AMD Xilinx provides the Vivado HLS tool as part of its IDE and Intel Altera includes the Intel HLS Compiler in its Quartus Prime IDE. <<intel-hls>> The most popular HLS tool in academia is Vivado HLS <<Lah19>>. There are also a few open-source HLS tools available. The biggest open-source HLS tool that is currently activly maintained is panda bambu. <<Nan16>> 
 
 bambu provides as a research environment to experiment with new ideas in HLS. It can take C/C++ and LLVM IR as input. <<Fer21>>
 
 In this paper we will use bambu as a HLS tool, because it is open-source and supports the latest LLVM version. 
-
-// What does HLS generate. Specifically bambu
-// TODO: This is a stub
-// The modules generated with HLS tools are usually some kind of state-machine. In the case of panda-bambu These modules have a clock input that can be used to proceed to the next state and a output that indicates that the state-machine is done.
 
 // What are the problems with those languages
 // TODO: This section does probably not belong in this part
@@ -272,6 +273,8 @@ Old programming languages, we have better alternatives nowadays
 More steps in the design flow
 
 // ==== Bambu HLS
+
+==== Languages used for High-level synthesis
 
 
 
@@ -386,6 +389,15 @@ The toolchain is also quite easy to use. The only thing that needs to be done is
 [[LLVM_IR]]LLVM IR:: LLVM intermediate representation https://en.wikipedia.org/wiki/LLVM#Intermediate_representation[🔗^]
 [[RTL]]RTL:: Register-transfer level https://en.wikipedia.org/wiki/Register-transfer_level[🔗^]
 [[DUT]]DUT:: Design/Device under test https://en.wikipedia.org/wiki/Test_bench[🔗^]
+[[ASIC]]ASIC:: Application specific integrated circuit
+[[QoR]]QoR:: Quality of results
+[[CPU]]CPU:: Central processing unit
+[[LUT]]LUT:: Look-up table
+[[FF]]FF:: Flip-Flop
+[[DFF]]DFF:: D Flip-Flop
+[[BRAM]]BRAM:: Block RAM
+[[DSP]]DSP:: Digital signal processor 
+
 
 [bibliography]
 == References
@@ -489,6 +501,38 @@ https://insights.stackoverflow.com/trends?tags=rust%2Cc%2B%2B
 
 // Rust has an ecosystem that greatly simplifies any software projec
 // Rust is great
+// Rust has been the "most loved" language since 2016
+// Rust is meant to supersede C/C++
+// Rust focus is on saftey and performance
+// Libraries exist for any need you may have
+// Dependencies can be installed using the official cargo tool
+// Rust is the first industry-supported computer programming language to overcome the longstanding trade-off between the control over resource management provided by lower-level languages for systems programming, and the safety guarantees of higher-level languages
+// Rust enables many common systems programming pitfalls to be detected at compiletime
+// Rust surpasses all other common memory-safe languages in terms of performance
+// Rust has data-race prevention
+// Considering performance Rust is one of the best languages
+// Considering saftey Rust is the best language
+// Rust offers many modern features that the more established systems languages tend to lack.
+// Cargo is the package manager for Rust
+// Cargo is the build system for Rust
+// Cargo facilitates downloading and building dependencies
+// Cargo facilitates unit testing and integration testing
+// Cargo facilitates benchmarking
+// Cargo facilitates build management with different profiles
+// Cargo facilitates documentation generation from comments
+// Rustfmt facilitates code formatting
+// Dependency management is handled with a configuration file
+// Dependencies are automatically installed during compilation
+// Dependencies can be easliy found on the official community crates registry
+// Cargo allows to view unified documentation for all dependencies
+// Unit tests are written in the same file as the code they test
+// Benchmarking is done in a similar fashion to unit testing
+// The tooling alone makes Rust a much better development experience than most systems languages
+// The tooling is most likely a considerable contributor to its rise.
+// Rust is approaching the status of a mainstream language in health informatics applications
+// The criticisms of Rust tend to originate from its lack of maturity
+// C and C++ are well-adopted and much more established in the industry than Rust
+// lack of demand for Rust developers in the market
 * [[[Bug22]]]
 +William Bugden, Ayman Alahmar+,
 _Rust: The Programming Language for Safety and Performance_,
@@ -499,7 +543,7 @@ https://arxiv.org/pdf/2206.05503.pdf[🔗^]
 // Rust can be used for GPU programming
 * [[[Byc22]]]
 +Andrey Bychkov, Vsevolod Nikolskiy+,
-_Rust Language for GPU Programming_,
+_Rust Language for GPU Programming_,
 In: Voevodin, V., Sobolev, S., Yakobovskiy, M., Shagaliev, R. (eds) Supercomputing. RuSCDays 2022. Lecture Notes in Computer Science, vol 13708. Springer, Cham, 2022, pp. 522-32,
 2022
 https://doi.org/10.1007/978-3-031-22941-1_38[🔗^]
@@ -513,6 +557,24 @@ Electronics 11, no. 19: 3217,
 https://doi.org/10.3390/electronics11193217[🔗^]
 
 // Probably one of the greatest features of the language is the package manager, called cargo.
+// Rust is a high-level language
+// Rust is very efficient in terms of performance
+// Rust is based on the principle of zero cost abstractions
+// Rust provides a memory safety mechanism without using a garbage collector called the borrow checker
+// Rust is a strongly typed language
+// Rust is provides out of the box a package manager used for importing dependencies, building and distribution of a project.
+// If a variable is declared in a specific context it will be freed when the context is over.
+// The ownership of a variable can be passed to another context
+// More basic description of Rust ownership stuff, will skip that for now
+// Development in {cpp} on a production level requires the use of additional tools such as CMake, Make, etc. This adds a layer of complexity.
+// Rust has mandatory tooling for building, distributing and depending on a project
+// In Rust only a manifest file is needed to configure the project for any scenario possible
+// Rust can be compiled to webassembly
+// Rust is more energy efficient than any other language expect C for IoT applications
+// Rust is faster than any other language expect C for IoT applications
+// Rust can easily integrate with C or C++ code
+// Rust solves the problem of memory safety without using a garbage collector
+// Microsoft states that 70% of security flaws discovered in their systems are related to memory safety
 * [[[Cos19]]]
 +Cosmin Cartas+,
 _Rust - The Programming Language for Every Industry_,
@@ -563,6 +625,46 @@ https://www.intel.de/content/www/de/de/software/programmable/quartus-prime/hls-c
 * [[[hdl-to-adl]]]
 _From Hardware Description Languages to Accelerator Design Languages_
 https://www.sigarch.org/hdl-to-adl/
+
+
+// Survey literature from 2010 to 2016
+// Probably the best comparison of HLS and RTL
+// ALso the newest
+// Shows that the quality of results of RTL is better than that of HLS
+// Shows that development time with HLS is a third of that the RTL flow
+// Shows that the productivity of a designer is over four times higher with HLS than with RTL
+// Vivado HLS is the most common HLS tool. At least it is used significantly more than any other HLS tool in papers.
+// Xilinx is the leading FPGA vendor
+// FPGAs are made of configurable logic blocks (CLB, different vendors, different names).
+// The CLBs are connected with programmable interconnects.
+// The CLBs consist of a few logic cells, logic elements, or adaptive logic modules (ALM) (LC, LE and ALM are the same. Different vendors, different names).
+// Logic cells are made of a comination of programmable look-up tables (LUTs) and flip-flops (FFs).
+// FPGAs can also have other resources, but these are vendor specific. Most commonly DSP blocks and BRAM blocks.
+// There are 4 performance metrics that are commonly used to compare HLS and RTL: performance, execution time, latency, maximum frequency
+// For project bigger than 250 lines of code HLS also needs fewer lines of code than RTL
+// Reduction in development time for HLS seems independet of project size.
+// On average HLS uses 41% more basic FPGA resources than RTL
+// The usage of advanced FPGA resources of HLS is similar to RTL
+// C based languages are the most common, then OpenCL based, then high-level language based.
+// CUDA/OpenCL based HLS is especially resource consuming and has the worst performance
+// The performance of HLS designs is similar to the performance of RTL designs.
+// THe only example in academia where the development time of HLS was more than RTL was when the developer had to learn the HLS tool in the process.
+// Only looks at small to medium designs, 50-500 lines of code
+// It is easier to adopt HLS than RTL for people who have experience in software design
+// HLS allows for efficient behavioral verification
+// The HLS output must still be verified for non-behavioral aspects. This traditional verification is difficult, because there is no direct relationship to the source code.
+// HLS halves verification time in many cases
+// HLS is a particularly good choice when time to market is a dominant issue and there is no compelling need to gain the ultimate performance or smallest resource usage for the product
+// There is no standart example to compare HLS and RTL
+* [[[Lah19]]]
++Sakari Lahti, Panu Sjövall, Jarno Vanne, Timo D. Hämäläinen+,
+_Are We There Yet? A Study on the State of High-Level Synthesis_,
+IEEE Transactions on Computer-Aided Design of Integrated Circuits and Systems, vol. 38, no. 5, pp. 898-911,
+2019
+https://doi.org/10.1109/TCAD.2018.2834439[🔗^]
+https://sci-hub.st/10.1109/tcad.2018.2834439[📁^]
+
+
 // Shows that HLS is twice as fast as HDL 
 // M. Pelcat, C. Bourrasset, L. Maggiani and F. Berry, "Design productivity of a high level synthesis compiler versus HDL," 2016 International Conference on Embedded Computer Systems: Architectures, Modeling and Simulation (SAMOS), Agios Konstantinos, Greece, 2016, pp. 140-147, doi: 10.1109/SAMOS.2016.7818341.
 // https://ieeexplore.ieee.org/abstract/document/7818341
