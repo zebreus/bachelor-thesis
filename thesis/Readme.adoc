@@ -276,11 +276,55 @@ More steps in the design flow
 
 ==== Languages used for High-level synthesis
 
+// TODO explain systems programming language
 
+=== LLVM
+
+// What is LLVM
+// TODO: Find source and describe how LLVM is used today
+LLVM is a modular compiler framework that can be used to build compilers for many different programming languages. It defines a low-level code representation called LLVM intermediate representation (LLVM IR). <<Lat04>>
+
+// What is LLVM IR
+LLVM IR is a strongly typed, static single assignment (SSA) based intermediate representation. LLVM IR is designed to be easy to compile to machine code and to optimize. LLVM IR has a low-level, language independent type system. The type system captures enough type information to safely perform a number of aggressive transformations that would traditionally be attempted only on type-safe languages in source-level compilers. LLVM IR is not intended to be an universal compiler IR, so it does not capture all of the language specific type information. Some of the concepts that are not represented in LLVM IR are classes, inheritance, or exceptionhandling semantics. <<Lat04>>
+
+// How is LLVM used in compilers
+Because of the this compilers based on LLVM provide a front-end that process the program code in the source language. The frontend is able to perform language specific optimizations. The compiler frontend emits LLVM IR which is passed to the LLVM backend which performs a variety of transformation and optimizations. The processed LLVM IR is then passed to a code generator backent to translate it into native code for a given target. <<Lat04>> The LLVM project includes code generator backends for many targets. <<Lat04>> <<rustc-guide>>
+
+
+=== The Rust programming language
+
+// What is Rust
+Rust is a modern systems programming language aiming to replace C and {cpp} as the industry standard systems programming language. It offers zero cost memory saftey, a strong type system and a modern toolchain. Rust surpasses all other common memory-safe languages in terms of performance while offering many modern features that more established systems programming languages tend to lack. For these reasons it has been voted the most loved programming language every year since 2016. <<Bug22>> <<Cos19>> <<Kla23>>
+
+// TODO: Insert rust performance diagram
+
+// What is a systems programming language
+Systems programming languages are programming languages that can deal with low-level details of memory management, data representation and concurrency.
+They are often designed for use in resource-constrained, performance-critical or close-to-hardware programs. They are used to implement operating systems, embedded systems, device drivers and other software that interacts with hardware. Common systems programming languages include C, {CPP} and Rust. <<Kla23>> <<Str12>>
+
+// TODO: Explain how the rust compiler uses LLVM
+// Details for this are already summarized at <<rustc-guide>>
+
+// Explain the borrow checker and memory saftey
+// TODO: Ask about the first sentence being an exact quote
+// TODO: Make the first quote shorter
+Rust is the first industry-supported computer programming language to overcome the longstanding trade-off between the control over resource management provided by lower-level languages for systems programming, and the safety guarantees of higher-level languages <<Bug21>> <<Jun17>>. Rust achieves this by enforcing that every variable is always owned by exactly one scope. When that scope ends the variable is destroyed. For this the time between creation and distruction of a variable is called its lifetime. Rust provides semantics for moving ownership between scopes. <<Kla23>>
+This model of scope based resource management is called RAII. It is used by many systems programming languages including {cpp}. While {cpp} enables the programmer to break out of that system by using pointers to variables that are not owned by the current scope or its parents, Rust does not allow this. <<Str12>> Rust instead uses a type of reference with attached lifetime information called a borrow. The borrow checker statically guarantees at compiletime that borrows always point to valid objects. It does this by ensuring that the lifetime of every borrow ends at or after the lifetime of the current scope. The compiler also makes sure that there can only be either one mutable borrow or multiple immutable borrows to a value at the same time. This ensures that the values of borrows dont change unexpectedly. The programmer can opt out of the borrow checker by annotation code as `unsafe`. This allows the programmer to use raw pointers and other unsafe constructs. Unsafe code is sometimes neccessary to implement lowlevel data structures, such as Heap memory (`Box` or `Vec`) or types with internal mutability (`Ref`). The standard library provides most of these constructs, so most Rust programs do not need to use unsafe code. <<Kla23>> <<Bug21>> There is ongoing work on verifying that the unsafe code in the standard library is safely encapsulated by its types. <<Jun17>>
+
+// Overview about how the compiler processes Rust code
+// TODO: Explain desugaring (the word)
+Rust is a compiled language. The Rust compiler (rustc) can compile Rust code to native code for many different platforms. It accomplishes this by compiling Rust to LLVM IR and then using LLVM for code generation. This allows Rust to support many different platforms without having to implement a backend for every platform. It also enables Rust to utilize the large suite of advanced optimizations collected by the LLVM project. The compiler does not generate LLVM IR directly from the input Rust code. Instead it the input code gets passed through multiple IRs, HIR, THIR and MIR. HIR and THIR still resemble Rust code, but some constructs get desugared. The rust compiler uses these stages to perform typechecking and verification. Verified THIR is converted into MIR, which is a CFG based representation of the code. rustc performs flow-sensitive safety checks like borrow-checking on this level. The MIR is also used to apply various Rust-specific optimizations to the code. The Rust compiler can be configured to output the various intermediate representations instead of the generating machine code. <<rustc-guide>>
+
+// Overview about the tooling related features of Rust
+A important part of what makes the Rust ecosystem so productive is that Rust offers standardized tooling. Every Rust project (also called crate) contains a `Cargo.toml` file specifying the project metadata and dependencies. The `cargo` tool can then be used to perform all standard tasks like building, executing, unit testing, integration testing, formatting the code, generating documentation, downloading dependencies, building dependencies, managing dependencies, publishing the project, benchmarking, setting up projects and some more. The official community crate registry `crates.io` can be used to easily find dependencies. It also links to the automatically generated documentation for every crate. The tooling alone makes Rust a much better development experience than most systems languages. <<Bug22>>
+
+// 
 
 === Design using accelerator design languages
 
 Accelerator design languages (ADL) are a family of programming languages that are specifically designed to be synthesized to HDL. They are mostly similar to programming languages but offer many features that are usually only found in HDLs, like more fine-grained control over timing and memories memory access. <<hdl-to-adl>>
+
+
 
 == Concept, implementation and architecture
 
@@ -353,7 +397,7 @@ Compare performance against {cpp}. basically the same as in first-toolchain.adoc
 
 // Perform experiments and collect data about our solution
 
-== Discussion and evaluation of the experiments
+== Discussion and evaluation
 
 
 Discuss limitations
@@ -381,14 +425,14 @@ The toolchain is also quite easy to use. The only thing that needs to be done is
 
 // Abbreviations in a random order and links to read more about them
 [glossary]
-[[FPGA]]FPGA:: Field-programmable gate array https://en.wikipedia.org/wiki/Field-programmable_gate_array[🔗^]
-[[HLS]]HLS:: High-level synthesis https://en.wikipedia.org/wiki/High-level_synthesis[🔗^]
-[[HDL]]HDL:: Hardware description language https://en.wikipedia.org/wiki/Hardware_description_language[🔗^]
-[[ADL]]ADL:: Accelerator design language https://www.sigarch.org/hdl-to-adl/[🔗^]
-[[GPU]]GPU:: Graphics processing unit https://en.wikipedia.org/wiki/Graphics_processing_unit[🔗^]
-[[LLVM_IR]]LLVM IR:: LLVM intermediate representation https://en.wikipedia.org/wiki/LLVM#Intermediate_representation[🔗^]
-[[RTL]]RTL:: Register-transfer level https://en.wikipedia.org/wiki/Register-transfer_level[🔗^]
-[[DUT]]DUT:: Design/Device under test https://en.wikipedia.org/wiki/Test_bench[🔗^]
+[[FPGA]]FPGA:: Field-programmable gate array link:pass:[https://en.wikipedia.org/wiki/Field-programmable_gate_array][🔗^]
+[[HLS]]HLS:: High-level synthesis link:pass:[https://en.wikipedia.org/wiki/High-level_synthesis][🔗^]
+[[HDL]]HDL:: Hardware description language link:pass:[https://en.wikipedia.org/wiki/Hardware_description_language][🔗^]
+[[ADL]]ADL:: Accelerator design language link:pass:[https://www.sigarch.org/hdl-to-adl/][🔗^]
+[[GPU]]GPU:: Graphics processing unit link:pass:[https://en.wikipedia.org/wiki/Graphics_processing_unit][🔗^]
+[[LLVM_IR]]LLVM IR:: LLVM intermediate representation link:pass:[https://en.wikipedia.org/wiki/LLVM#Intermediate_representation][🔗^]
+[[RTL]]RTL:: Register-transfer level link:pass:[https://en.wikipedia.org/wiki/Register-transfer_level][🔗^]
+[[DUT]]DUT:: Design/Device under test link:pass:[https://en.wikipedia.org/wiki/Test_bench][🔗^]
 [[ASIC]]ASIC:: Application specific integrated circuit
 [[QoR]]QoR:: Quality of results
 [[CPU]]CPU:: Central processing unit
@@ -397,6 +441,14 @@ The toolchain is also quite easy to use. The only thing that needs to be done is
 [[DFF]]DFF:: D Flip-Flop
 [[BRAM]]BRAM:: Block RAM
 [[DSP]]DSP:: Digital signal processor 
+[[CLB]]CLB:: Configurable logic block
+[[LB]]LB:: Logic block
+[[LE]]LE:: Logic element
+[[RAII]]RAII:: Resource Acquisition is Initialization / Scope-Bound Resource Management
+[[HIR]]HIR:: High-Level Intermediate Representation link:pass:[https://rustc-dev-guide.rust-lang.org/hir.html][🔗^]
+[[THIR]]THIR:: Typed HIR link:pass:[https://rustc-dev-guide.rust-lang.org/thir.html][🔗^]
+[[MIR]]MIR:: Mid-level Intermediate Representation link:pass:[https://rustc-dev-guide.rust-lang.org/mir/index.html][🔗^]
+
 
 
 [bibliography]
@@ -409,50 +461,50 @@ Hardin, David,
 _Hardware/Software Co-Assurance using the Rust Programming Language and ACL2_,
 arXiv preprint arXiv:2205.11709,
 2022.
-https://arxiv.org/abs/2205.11709v1[🔗^]
+link:pass:[https://arxiv.org/abs/2205.11709v1][🔗^]
 
 * [[[Rog20]]]
 Rogers, Samuel and Slycord, Joshua and Baharani, Mohammadreza and Tabkhi, Hamed,
 _gem5-SALAM: A System Architecture for LLVM-based Accelerator Modeling_,
 2020 53rd Annual IEEE/ACM International Symposium on Microarchitecture (MICRO), 471-482,
 2020.
-https://ieeexplore.ieee.org/abstract/document/9251937[🔗^]
+link:pass:[https://ieeexplore.ieee.org/abstract/document/9251937][🔗^]
 
 * [[[Li21]]]
 Li, Rui and Berkley, Lincoln and Yang, Yihang and Manohar, Rajit,
 _Fluid: An Asynchronous High-level Synthesis Tool for Complex Program Structures_,
 2021 27th IEEE International Symposium on Asynchronous Circuits and Systems (ASYNC), 1-8,
 2020.
-https://ieeexplore.ieee.org/abstract/document/9565447[🔗^]
+link:pass:[https://ieeexplore.ieee.org/abstract/document/9565447][🔗^]
 
 * [[[Lia23]]]
 Liang, Geng-Ming and Yuan, Chuan-Yue and Yuan, Meng-Shiun and Chen, Tai-Liang and Chen, Kuan-Hsun and Lee, Jenq-Kuen,
 _The Support of MLIR HLS Adaptor for LLVM IR_,
 Workshop Proceedings of the 51st International Conference on Parallel Processing, 1-8,
 2020.
-https://doi.org/10.1145/3547276.3548515[🔗^]
+link:pass:[https://doi.org/10.1145/3547276.3548515][🔗^]
 
 * [[[Fer21]]]
 +F. Ferrandi et al.+,
 _Invited: Bambu: an Open-Source Research Framework for the High-Level Synthesis of Complex Applications_,
 2021 58th ACM/IEEE Design Automation Conference (DAC), 1327-1330,
 2021.
-https://ieeexplore.ieee.org/abstract/document/9586110[🔗^]
-https://re.public.polimi.it/retrieve/668507/dac21_bambu.pdf[📁^]
+link:pass:[https://ieeexplore.ieee.org/abstract/document/9586110][🔗^]
+link:pass:[https://re.public.polimi.it/retrieve/668507/dac21_bambu.pdf][📁^]
 
 * [[[Rot10]]]
 +Nadav Rotem,+
 _C-to-Verilog. com: High-Level Synthesis Using LLVM_,
 University of Haifa,
 2010.
-https://llvm.org/devmtg/2010-11/Rotem-CToVerilog.pdf[🔗^]
+link:pass:[https://llvm.org/devmtg/2010-11/Rotem-CToVerilog.pdf][🔗^]
 
 * [[[Sch20]]]
 Fabian Schuiki, Andreas Kurth, Tobias Grosser, and Luca Benini,
 _LLHD: a multi-level intermediate representation for hardware description languages_,
 In Proceedings of the 41st ACM SIGPLAN Conference on Programming Language Design and Implementation (PLDI 2020), 258-271,
 2020.
-https://doi.org/10.1145/3385412.3386024[🔗^]
+link:pass:[https://doi.org/10.1145/3385412.3386024][🔗^]
 
 // Multiple HLS tools use LLVM
 // C/Cpp are most popular languages for HLS
@@ -461,39 +513,39 @@ https://doi.org/10.1145/3385412.3386024[🔗^]
 _A Survey and Evaluation of FPGA High-Level Synthesis Tools_,
 IEEE Transactions on Computer-Aided Design of Integrated Circuits and Systems, 1591-1604,
 2016.
-https://ieeexplore.ieee.org/abstract/document/7368920[🔗^]
-https://sci-hub.st/10.1109/tcad.2015.2513673[📁^]
+link:pass:[https://ieeexplore.ieee.org/abstract/document/7368920][🔗^]
+link:pass:[https://sci-hub.st/10.1109/tcad.2015.2513673][📁^]
 
 * [[[Nor18]]]
 +D. H. Noronha, B. Salehpour and S. J. E. Wilton+,
 _LeFlow: Enabling Flexible FPGA High-Level Synthesis of Tensorflow Deep Neural Networks_,
 Fifth International Workshop on FPGAs for Software Programmers, 1-8,
 2018.
-https://ieeexplore.ieee.org/abstract/document/8470462[🔗^]
+link:pass:[https://ieeexplore.ieee.org/abstract/document/8470462][🔗^]
 
 * [[[Soz22]]]
 Sozzo, Emanuele Del, et al.,
 _Pushing the level of abstraction of digital system design: A survey on how to program FPGAs_,
 ACM Computing Surveys, 1-48,
 2022.
-https://dl.acm.org/doi/abs/10.1145/3532989[🔗^]
+link:pass:[https://dl.acm.org/doi/abs/10.1145/3532989][🔗^]
 
 * [[[XLS]]]
 _XLS project page_
-https://google.github.io/xls/[🔗^]
+link:pass:[https://google.github.io/xls/][🔗^]
 
 * [[[DSLX]]]
 _DSLX Reference_
-https://google.github.io/xls/dslx_reference/[🔗^]
+link:pass:[https://google.github.io/xls/dslx_reference/][🔗^]
 
 * [[[rusthdl]]]
 _rust-hdl project overview_
-https://github.com/samitbasu/rust-hdl[🔗^]
+link:pass:[https://github.com/samitbasu/rust-hdl][🔗^]
 
 
 * [[[Zen12]]]
 _Identifying Barriers to Adoption for Rust through Online Discourse_
-https://arxiv.org/pdf/1901.01001.pdf[🔗^]
+link:pass:[https://arxiv.org/pdf/1901.01001.pdf][🔗^]
 
 * [[[so-trends]]]
 _Stack Overflow Trends_
@@ -538,7 +590,7 @@ https://insights.stackoverflow.com/trends?tags=rust%2Cc%2B%2B
 _Rust: The Programming Language for Safety and Performance_,
 asXiv,
 2022.
-https://arxiv.org/pdf/2206.05503.pdf[🔗^]
+link:pass:[https://arxiv.org/pdf/2206.05503.pdf][🔗^]
 
 // Rust can be used for GPU programming
 * [[[Byc22]]]
@@ -546,7 +598,7 @@ https://arxiv.org/pdf/2206.05503.pdf[🔗^]
 _Rust Language for GPU Programming_,
 In: Voevodin, V., Sobolev, S., Yakobovskiy, M., Shagaliev, R. (eds) Supercomputing. RuSCDays 2022. Lecture Notes in Computer Science, vol 13708. Springer, Cham, 2022, pp. 522-32,
 2022
-https://doi.org/10.1007/978-3-031-22941-1_38[🔗^]
+link:pass:[https://doi.org/10.1007/978-3-031-22941-1_38][🔗^]
 
 // Rust can be used for web programming
 * [[[Kyr22]]]
@@ -554,7 +606,7 @@ https://doi.org/10.1007/978-3-031-22941-1_38[🔗^]
 _Complementing JavaScript in High-Performance Node.js and Web Applications with Rust and WebAssembly._,
 Electronics 11, no. 19: 3217,
 2022
-https://doi.org/10.3390/electronics11193217[🔗^]
+link:pass:[https://doi.org/10.3390/electronics11193217][🔗^]
 
 // Probably one of the greatest features of the language is the package manager, called cargo.
 // Rust is a high-level language
@@ -580,7 +632,7 @@ https://doi.org/10.3390/electronics11193217[🔗^]
 _Rust - The Programming Language for Every Industry_,
 ECONOMY INFORMATICS JOURNAL, 19, 45-51,
 2019
-https://doi.org/10.12948/ei2019.01.05[🔗^]
+link:pass:[https://doi.org/10.12948/ei2019.01.05][🔗^]
 
 // state-of-art bottom-up logic programming within the Rust ecosystem
 * [[[Sah22]]]
@@ -588,7 +640,7 @@ https://doi.org/10.12948/ei2019.01.05[🔗^]
 _Seamless Deductive Inference via Macros_,
 Proceedings of the 31st ACM SIGPLAN International Conference on Compiler Construction, 77-88,
 2022
-https://doi.org/10.1145/3497776.3517779[🔗^]
+link:pass:[https://doi.org/10.1145/3497776.3517779][🔗^]
 
 // Productivity in HLS is better than HDL
 // HLS offers easier design and testing
@@ -598,7 +650,7 @@ https://doi.org/10.1145/3497776.3517779[🔗^]
 _A Comparative Study between HLS and HDL on SoC for Image Processing Applications_,
 Revista elektron, Vol. 4, No. 2, 100-106,
 2020
-https://doi.org/10.37537/rev.elektron.4.2.117.2020[🔗^]
+link:pass:[https://doi.org/10.37537/rev.elektron.4.2.117.2020][🔗^]
 http://elektron.fi.uba.ar/index.php/elektron/article/view/117/219[📁^]
 
 // Describing the traditional HDL design flow (in 1996)
@@ -608,7 +660,7 @@ http://elektron.fi.uba.ar/index.php/elektron/article/view/117/219[📁^]
 _VHDL & Verilog compared & contrasted—plus modeled example written in VHDL, Verilog and C._,
 In Proceedings of the 33rd annual Design Automation Conference, pp. 771-776,
 1996
-https://dl.acm.org/doi/pdf/10.1145/240518.240664[🔗^]
+link:pass:[https://dl.acm.org/doi/pdf/10.1145/240518.240664][🔗^]
 
 // 
 * [[[Fla20]]]
@@ -616,7 +668,7 @@ https://dl.acm.org/doi/pdf/10.1145/240518.240664[🔗^]
 _Verilog HDL and its ancestors and descendants._,
 Proc. ACM Program. Lang. 4, no. HOPL (2020): 87-1,
 2020
-https://www.researchgate.net/profile/Arturo-Salz-2/publication/342137214_Verilog_HDL_and_its_ancestors_and_descendants/links/613fc7b45d9d0e131b427dbb/Verilog-HDL-and-its-ancestors-and-descendants.pdf[🔗^]
+link:pass:[https://www.researchgate.net/profile/Arturo-Salz-2/publication/342137214_Verilog_HDL_and_its_ancestors_and_descendants/links/613fc7b45d9d0e131b427dbb/Verilog-HDL-and-its-ancestors-and-descendants.pdf][🔗^]
 
 * [[[intel-hls]]]
 _Intel® High Level Synthesis Compiler_
@@ -661,10 +713,99 @@ https://www.sigarch.org/hdl-to-adl/
 _Are We There Yet? A Study on the State of High-Level Synthesis_,
 IEEE Transactions on Computer-Aided Design of Integrated Circuits and Systems, vol. 38, no. 5, pp. 898-911,
 2019
-https://doi.org/10.1109/TCAD.2018.2834439[🔗^]
-https://sci-hub.st/10.1109/tcad.2018.2834439[📁^]
+link:pass:[https://doi.org/10.1109/TCAD.2018.2834439][🔗^]
+link:pass:[https://sci-hub.st/10.1109/tcad.2018.2834439][📁^]
 
 
+// Studied Rust’s ownership discipline in the presence of unsafe code.
+// Shows that various important Rust libraries with unsafe implementations, many of them involving interior mutability, are safely encapsulated by their type
+// NOTE: Did only read abstract and conclusion
+* [[[Jun17]]]
++Ralf Jung, Jacques-Henri Jourdan, Robbert Krebbers, Derek Dreyer+,
+_RustBelt: Securing the Foundations of the Rust Programming Language_,
+Proc. ACM Program. Lang. 2, POPL, Article 66 (January 2018), 34 pages.,
+2017
+link:pass:[https://doi.org/10.1145/3158154][🔗^]
+
+// Cpp uses RAII
+// "In particular, a programmer can choose to write a low-level-C style and/or violate every rule of good programming. That is not my topic here."
+* [[[Str12]]]
++Bjarne Stroustrup+,
+_Foundations of C++_,
+Programming Languages and Systems. ESOP. Springer, pp. 1-25,
+2012
+link:pass:[https://doi.org/10.1007/978-3-642-28869-2_1][🔗^]
+
+* [[[Kla23]]]
++Steve Klabnik, Carol Nichols+,
+_The Rust programming language_,
+No Starch Press,
+2023
+link:pass:[https://doc.rust-lang.org/book/foreword.html][🔗^]
+
+// Rust compiler has multiple intermediate representations (IRs)
+// * MIR (Mid-level IR)
+// * HIR (High-level IR)
+// * THIR (Typed HIR)
+// * LLVM IR
+// Typechecking happens on HIR
+// Optimization happens on MIR
+// MIR is a typed SSA
+// Borrowchecking happens at MIR level
+// Optimizations also happen in LLVM
+// LLVM is used as the backend
+// LLVM can generate machine code for many architectures
+// LLVM is a collection of modular and reusable compiler and toolchain technologies
+// LLVM contains a pluggable compiler backend used by rustc and clang
+// Clang is a C compiler
+// LLVM takes LLVM IR
+// Rust compiler uses LLVM because
+// * They don't have to write their own backend. Reduces implementation and maintenance effort.
+// * Benefit from the large suite of advanced optimizations that LLVM provides
+// * Rust can be compiled to any of the platforms that LLVM supports.
+// * Community benfits. Things like spectre and meltdown only need to be fixed in LLVM and many compilers benfits from that
+// rustc groups LLVM IR into "modules" known as codegen units
+// Rustc can use LLVM to codegen multiple of these modules in parallel utilizing multiple CPU cores
+// The resulting object files are then linked together by the linker
+* [[[rustc-guide]]]
+_Rust Compiler Development Guide_,
+2023
+link:pass:[https://rustc-dev-guide.rust-lang.org/backend/codegen.html][🔗^]
+link:pass:[https://rustc-dev-guide.rust-lang.org/mir/optimizations.html][🔗^]
+
+// LLVM is a compiler framework
+// Defines a a low-level code representation in static single assignment (SSA) form
+// LLVM IR
+// Describes a program using an abstract RISC-like instruction set with higher level information
+// LLVM IR contains type information
+// LLVM IR contains explicit control flow graphs
+// LLVM IR contains explicit dataflow representation (using SSA)
+// Has a low-level, language independent type system
+// Has instructions for performing type conversions and low-level address arithmetic while preserving type information.
+// Low-level exception handling instructions
+// LLVM is not intended to be a universal compiler IR
+// does not represent high-level language features directly
+// LLVM has no notion of highlevel constructs such as classes, inheritance, or exceptionhandling semantics
+// LLVM does not specify a runtime system or particular object model
+// "Type information captured by LLVM is enough to safely perform a number of aggressive transformations that would traditionally be attempted only on type-safe languages in source-level compilers"
+// NOTE: I skipped section 2
+// "The goal of the LLVM compiler framework is to enable sophisticated transformations at link-time, install-time, runtime, and idle-time, by operating on the LLVM representation of a program at all stages"
+// static compiler front-ends emit code in the LLVM representation
+// combined by the LLVM linker
+// Linker performs a variety of link time optimizations
+// The resulting code is then translated to native code for a given target.
+// Language specific optimizations must be performed in the frontend
+// External static LLVM compilers are known as front-ends
+// Frontends translate source language programs into LLVM IR
+// Can perform aggressive interprocedural optimizations across the entire program
+// Some of the interprocedural optimizations are:  inlining, dead global elimination, dead argument elimination, dead type elimination, constant propagation, array bounds check elimination, simple structure field reordering, and Automatic Pool Allocation
+// Uses code generator backends to translate LLVM IR into native code for a given target
+* [[[Lat04]]]
++C. Lattner, V. Adve+,
+_LLVM: a compilation framework for lifelong program analysis & transformation_,
+International Symposium on Code Generation and Optimization, 2004. CGO 2004., San Jose, CA, USA, 2004, pp. 75-86
+link:pass:[https://doi.org/10.1109/CGO.2004.1281665][🔗^]
+link:pass:[https://sci-hub.st/10.1109/cgo.2004.1281665][📁^]
 // Shows that HLS is twice as fast as HDL 
 // M. Pelcat, C. Bourrasset, L. Maggiani and F. Berry, "Design productivity of a high level synthesis compiler versus HDL," 2016 International Conference on Embedded Computer Systems: Architectures, Modeling and Simulation (SAMOS), Agios Konstantinos, Greece, 2016, pp. 140-147, doi: 10.1109/SAMOS.2016.7818341.
 // https://ieeexplore.ieee.org/abstract/document/7818341
