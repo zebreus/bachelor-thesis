@@ -125,13 +125,68 @@ This is still the most common use case for FPGAs, but it is not the only one. In
 
 // Modern FPGAs have hardware blocks
 
-==== What is an ASIC
 
-///
 
-// Not my topic, I think
-// === Accelerator design vs logic design
 
+
+
+// What is an CPU
+
+// What is an GPU
+
+// What is an ASIC / Custom accelerator
+// TODO: This is a stub
+Another solution is to produce a custom chip that implements the operations in hardware.
+
+// What is an FPGA
+Instead of producing the circuit into a chip, it is possible to program the FPGA to emulate the circuit. FPGAs are off-the-shelf reconfigurable ICs capable of implementing any digital circuit. Design cost and time with FPGAs is much lower than for custom chips. Another benfits of using FPGAs is that the circuit can be upgraded after deployment. The downsides of using FPGAs are lower performance and higher power consumption compared to custom chips. They are considered compelling options for small to medium sized projects. Because FPGAs are off-the-shelf components they dont have the high upfront cost of ASICs. <<Bot21>>
+
+// CN: FPGAs are suitable for small to medium sized projects. Because they dont have the high upfront cost of ASICs.
+// CN: They use up more space than ASICs, so they are more expensive than the same ASIC produced at high volume.
+
+// TODO: Early FPGA diagram
+// TODO: improve note
+
+NOTE: Different FPGA vendors use different names for the same things. <<Lah19>> This paper uses LB, made of LEs, made of LUTs and FFs.
+
+// How do basic FPGAs work
+At the core FPGAs are programmable logic elements that can represent a simple logic function. Every logic element has around 4-6 input bits (vendor specific). The inputs are used to address a programmable lookup table. The lookup table contains the truth table of the logic function. The output of the lookup table is coupled with an output register of the LE. This way the LE can also act as a flip-flop. <<Bot21>>
+Multiple logic elements are grouped into a logic block (LB). A logic block provides a local interconnect between the logic elements. The local interconnect is used to connect the inputs of the logic block and the outputs of the logic elements to the inputs of the logic elements. The local interconnect is usually realized as a programmable crossbar. <<Bot21>>
+An FPGA is made up of multiple logic blocks that are connected by programmable routing. There are multiple ways in which global routing can be realized, but the most popular one is an island-style architecture. It is shown in FIGURE XXX. <<Bot21>>
+
+// TODO: Insert a figure on island style architecture
+// FPGAs consist of configurable logic blocks (CLB) that are connected by programmable interconnects. The CLBs consist of multiple basic logic elements (BLE) and a local interconnect. At the core of each BLE is a Lookup table (LUT)<<Lah19>> <<Bot21>> 
+
+// How are FPGAs programmed
+// TODO: Cititation needed
+All the programmable components are controlled by configuration stored in SRAM cells. FPGAs are programmed with a bitstream that contains the individual bits for every SRAM cell in the correct order. They usually have a serial interface where the FPGA can accept the bitstream and program itself. <<citation-needed>>
+
+// The logic blocks are connected by a network of programmable interconnects. The logic blocks and interconnects are programmed by a bitstream. The bitstream is a binary file that configures the FPGA. The bitstream is generated from a hardware description language (HDL) design. <<Bot21>>
+
+// Explain the concept of the critical path
+For every path that the data takes through the circuit it needs a certain amount of time. The longer the path and the more things are in it, the longer it takes to take the path. A critical path is a path that must meet certain timing requirements for the design to function properly. <<Cri95>> If the circuit for example is clocked, then there are probably some actions that should be finished before the next clock cycle. If they do not the clock needs to be slowed down or the circuit will behave in unexpected ways. For this reason the critical path limits the maximum frequency. <<Bot21>>
+
+// What is the difference in modern FPGAs
+Modern FPGAs improve critical path delay by hardening certain features of the FPGA. Hardening means that a feature is implemented in a fixed way instead of being programmable. This Which features are hardened depends on the FPGA model. All modern FPGAs include hardened circuitry for arithmetic operations in their logic blocks. The exact details of the hardening depend on the FPGA model, but it usualy involes a fastpath for a carry bit. This is at least three times faster than a pure LUT based implementation. <<Bot21>>
+
+DSP blocks are another common feature on modern FPGAs. They minimize the number of soft logic operations needed to implement common DSP algorithms. Like LBs they are connected to the programmable routing. Depending on the FPGA model, they can be configured to perform operations like multiplication, addition, subtraction, accumulation, and/or multiplication-accumulation in various sizes. <<Bot21>> <<Lah19>>
+
+Bigger FPGA designs almost always require a memory buffer. Building a memory buffer out of logic blocks is possible, but not very efficient. Modern FPGAs include hardened memory blocks that can be used as memory buffers. They are called block RAM (BRAM). BRAMs are over 100 timer more dense than soft memory made from LUTs. BRAMs are about 25% of the area of modern FPGAs. <<Bot21>> <<Lah19>>
+
+// What are the steps to convert an RTL design to an FPGA
+// TODO: Mapping the netlist to the FPGA architecture is called technology mapping. Citation needed
+Converting an RTL design to a bitstream is a multi-step process. The first step is synthesis. The RTL design is converted to a structural gate-level description. This is called a netlist. The netlist is then mapped to the block types availabe on the specific FPGA model. A series of complex optimizations can also be performed at this stage. After that the blocks  are placed to specific blocks on the FPGA and the connections between them are routed. It is crucial to minimize the routing distance between logic blocks, because routing accounts for over 50% of the critical path delay. As it is now known how every part of the FPGA should behave, the bitstream can be generated. <<Bot21>> 
+
+All these steps are performed by a CAD tool usually provided by the FPGA vendor. For the biggest FPGA vendors these tools are integrated into their respective IDE. <<citation-needed>> Recent developments in the open-source community have led to the development of open-source tools that can perform these steps. <<citation-needed>>
+
+// TODO: Mention timing analyzers and shit
+
+
+// How do they compare to ASICs
+
+// Notable FPGA vendors?
+
+// Context of this paper
 
 === Netlists are synthesized to hardware
 
@@ -448,7 +503,7 @@ The toolchain is also quite easy to use. The only thing that needs to be done is
 [[HIR]]HIR:: High-Level Intermediate Representation link:pass:[https://rustc-dev-guide.rust-lang.org/hir.html][🔗^]
 [[THIR]]THIR:: Typed HIR link:pass:[https://rustc-dev-guide.rust-lang.org/thir.html][🔗^]
 [[MIR]]MIR:: Mid-level Intermediate Representation link:pass:[https://rustc-dev-guide.rust-lang.org/mir/index.html][🔗^]
-
+[[PAL]]PAL:: Programmable array logic
 
 
 [bibliography]
@@ -508,6 +563,26 @@ link:pass:[https://doi.org/10.1145/3385412.3386024][🔗^]
 
 // Multiple HLS tools use LLVM
 // C/Cpp are most popular languages for HLS
+// NOTE: I focused on FPGA descriptions
+// Clock frequency scaling in CPU stalled around 2005
+// A alternative approach for high-throughput and energy efficient processing is to use specific accelerators
+// Specialized accelerators are hard to design and program
+// RTL requires advanced hardware expertise
+// RTL specifies cycle-by-cycle behavior explicitly
+// RTL is a low-level abstraction
+// RTL leads to longer development times
+// FPGAs with HLS can reduce that.
+// FPGAs are configurable integrated circuits
+// Most FPGAs are reconfigurable
+// FPGA vendors provide toolchains to synthesize HTL to bitstream
+// bitstream gets programmed to the FPGA
+// HLS tools start from a HLL and automatically produce a circuit specification in RTL
+// HLS offers enable software engineers to benefit from the performance and energy efficiency of hardware without having hardware expertise
+// HLS tools enable hardware engineers to design systems faster
+// HLS tools enable hardware engineers to rapidly explore the desing space
+// Microsoft uses FPGAs for accelerating bing search
+//
+// 
 * [[[Nan16]]]
 +R. Nane et al.+,
 _A Survey and Evaluation of FPGA High-Level Synthesis Tools_,
@@ -810,6 +885,140 @@ link:pass:[https://sci-hub.st/10.1109/cgo.2004.1281665][📁^]
 // M. Pelcat, C. Bourrasset, L. Maggiani and F. Berry, "Design productivity of a high level synthesis compiler versus HDL," 2016 International Conference on Embedded Computer Systems: Architectures, Modeling and Simulation (SAMOS), Agios Konstantinos, Greece, 2016, pp. 140-147, doi: 10.1109/SAMOS.2016.7818341.
 // https://ieeexplore.ieee.org/abstract/document/7818341
 
+// FPGA inception 30 years ago
+// FPGAs bring faster design cycles then custom chips
+// FPGAs lower dev cost then custom chips
+// low-level hardware recnfigurability
+// FPGA architecutre offers many design choices
+// FPGAs consist of different types of programmable blocks
+// "FPGAs are recofigurable computer chips that can be programmed to implement any digital circuit"
+// prefabricated routing tracks with programmable switches
+// Functionality of all FPGA blocks is controlled by SRAM cells
+// Milloions of SRAM cells
+// HDL is converted to bitstream
+// Bitstream is used to programm all configuration SRAM cells
+// Lower NRE cost then ASICs
+// Shorter time to market then ASICs
+// off the shelf FPGA can be used to implement design in a matter of weeks
+// Skipping phisical design, layout, fabrication and verification
+// Allow continous hardware upgrades by loading new bitstreams in the field
+// Considered a compelling solution for small and medium sized designs 
+// Exact hardware for every application
+// Exact datapath width, pipeline stages, parallel units as required
+// Can achieve higher efficiency than CPU or GPU
+// Can implement instruction-free streaming hardware
+// Can implement a custom instruction set
+// Adopted in many domains.
+// "adoption of FPGAs in many application domains including wireless communi- cations, embedded signal processing, networking, ASIC prototyping, high-frequency trading, and many more"
+// Deployed on large scale in datacenters, packet processing, machine learning
+// Lower efficiency than ASICs
+// FPGA on average 35 times larger than ASIC implementation
+// FPGA on average 4 times slower than ASIC implementation
+// For designs that utilize other FPGA blocks the gap is smaller, still 9 times large
+// FPGA architects seek to reduce gap while maintaining programmability
+// Early FPGAs ere simple arrays of logic blocks
+// Modern FPGAs are complex heterogeneous architectures that have more block types
+// Modern FPGA have blocks like BRAM, DSP, processors, external interfaces
+// FPGA architectures are evaluated based on the efficiency implementing a wide variety of designs
+// There are academic test suites for evaluating FPGA architectures
+// VTR is a CAD system for layouting designs on FPGAs
+// CAD system applies a series of complex optimizations 
+// CAD system converts RTL design to netlist.
+// CAD system maps netlist to FPGA blocks
+// CAD system places blocks on FPGA and routes the connections between them
+// CAD system outputs bitstream implementation
+// total area is a key metric
+// "Total area is the sum of the areas of the FPGA blocks used by the application, along with the programmable routing included with them."
+// Timing analyzer finds the critical path through blocks and routing
+// Critical path limits maximum clock frequency
+// Power consumption is estimated based on resources used and signal toggle rate
+// _hardened_ blocks are blocks that are implemented as ASICs
+// What functionality to harden is a design choice
+// What area of the FPGA to use for hardened blocks is a design choice
+// Hardened blocks can still have some level of configurability
+// How flexible the hardened blocks are is a design choice
+// Hardened blocks are faster, smaller and more power efficient than programmable blocks
+// Tradeoff between flexibility and efficiency
+// Unused hardened blocks are wasted silicon
+// Problems with slow routing to hardened blocks, if they are far away
+// PAL first reconfigurable computing devices
+// PAL does not scale well, area increases quadratically with IO size
+// CPLD includes mulitple PALs and programmable routing in a package
+// 1984 Xilinx pioneers first LUT based FPGA
+// SRAM based LUTs with interconnects between them
+// Scales well
+// Much higher area efficiency than and/or based designs
+// LUTs form the fundamental logic element in all commercial FPGAs
+// Alternative designs perform worse than LUTs
+// K-LUT implements a K-input LUT
+// K-LUT stores truth table in SRAM cells,
+// K input signals are used as multiplexer to select line
+// truth table contains 2^K values
+// A basic logic element (BLE) is a K-LUT with an output register
+// A BLE can implement DFF or a K-LUT
+// A BLE has K inputs and 2 outputs, one for routing and one for feedback inside the LE
+// Logic blocks are composed of multiple (N) BLEs
+// Logic blocks have a local interconnect
+// The local interconnect connects the inputs of the LB and the feedback outputs of the BLEs to the inputs of the BLEs.
+// The local interconnect is often a arranged as a local full or partial crossbar.
+// See figure 4 in the paper.
+// Over time K and N have increased.
+// More K means more functionality in a single LUT
+// More K leads to less logic in the critical path
+// More N means less demand for fast inter-LB routing
+// The area of the LUT increases exponentially with K as more SRAM cells are needed (2^K)
+// More K linearly degrades the speed of the LUT
+// if the local interconnect is a crossbbar, its size increases quadratically with N
+// if the local interconnect is a crossbbar, its size decreases linearly with N
+// Empirically the best size for K is 4-6 and for N it is 3-10
+// First LUT-based FPGA from Xilinx: N = 2, K = 3
+// around 2000: 4-LUTs common
+// Study: 4-LUTs vs 6-LUTS: 6-LUTS:14% more perf, 17% bigger
+// Fracturable LUTs can be broken down into smaller LUTs, but limitations like shared inputs
+// FPGA architectures from Xilinx and Altera converge to relatively large LBs wth 8 and 10 N
+// Future designs even bigger LBs
+// inter-LB wire delay scales poorly with process shrink
+// Larger LB sizes can lead to faster CAD tool runtimes
+// Modern FPGAs have more than 1 FFs per BLE
+// Even though there are optimization the core ideas stayed similiar
+// 22% of logic elements in FPGAs are implementing arithmetic
+// These operations can be implemented with LUTs but are inefficient
+// A ripple carry adder requires 2 * the number of bits LUTs
+// This leads to high logic utilization and long critical paths
+// All modern FPGAs include hardened arithmetic circuitry in their logic blocks
+// How the arithmetic is accelerated is a design choice
+// Can be a dedicated adder between two LUTs
+// Can be just a fastpath for the carry bit
+// At least 3x faster than LUT based implementations
+// NOTE: there is more detail on the different types of arithmetic optimizations in the paper
+// Recently deeplearning has become a key workload
+// Deeplearning has multiply-accumulate operations at its core, which could benefit from hardened bigger hardened arithmetic
+// Programmabble routing is over 50% of the area of an FPGA
+// Programmable routing accounts for over half the critical path delay
+// High multiplier density in signal processing and communication applications
+// Main design philosophy of DSP block is to minimize the number of soft logic used to implement common DSP algorithms
+// FPGA CAD tools will automatically map multiplication to DSP blocks
+// Bigger FPGA designs always always require a memory buffer
+// Making soft memory out of LUTs is over 100x less dense than SRAM cells
+// Modern FPGAs are about 25% BRAM
+* [[[Bot21]]]
++Andrew Boutros, Betz Vaughn+,
+_FPGA architecture: Principles and progression_,
+IEEE Circuits and Systems Magazine 21.2 (2021): 4-29.,
+2021
+link:pass:[https://doi.org/10.1109/MCAS.2021.3071607][🔗^]
+link:pass:[https://sci-hub.st/10.1109/MCAS.2021.3071607][📁^]
+
+// TODO: This is an application note, how to cite?
+// TODO: Especially Cri in the link is wrong
+// TODO: Source for one definition. Necessary?
+// A critical path is a path in the design which must meet certain critical timing requirements in order for the system to function properly
+* [[[Cri95]]]
+_Critical path analysis for field-programmable gate arrays_,
+Microprocessors and Microsystems, Volume 19, Issue 7, Pages 435-439,
+1995
+link:pass:[https://doi.org/10.1016/0141-9331(95)90010-1][🔗^]
+link:pass:[https://sci-hub.st/10.1016/0141-9331(95)90010-1][📁^]
 
 // Reference thesis:
 // * https://webthesis.biblio.polito.it/7573/1/tesi.pdf
