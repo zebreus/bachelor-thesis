@@ -16,24 +16,36 @@
 
   outputs = { self, nixpkgs, fenix, flake-utils, symbolator, vcd2wavedrom, unstable-nixpkgs, llvm16-nixpkgs }:
     flake-utils.lib.eachDefaultSystem (system:
+      let
+        pkgs = import nixpkgs {
+          overlays = [
+            (final: prev: {
+              asciidoctor-web-pdf-with-extensions = import ./nix/asciidoctor-web-pdf-with-extensions.nix { pkgs = final; };
+              asciidoctor-web-pdf = import ./nix/asciidoctor-web-pdf.nix { pkgs = final; };
+              asciidoctor-kroki = import ./nix/asciidoctor-kroki.nix { pkgs = final; };
+            })
+          ];
+          inherit system;
+        };
+      in
       rec {
         name = "thesis";
-        packages.expose = import ./expose/default.nix { pkgs = nixpkgs.legacyPackages.${system}; symbolator = symbolator.packages.${system}.symbolator; };
-        packages.writing = import ./writing/default.nix { pkgs = nixpkgs.legacyPackages.${system}; symbolator = symbolator.packages.${system}.symbolator; };
-        packages.toolchain = import ./toolchain-test/default.nix { pkgs = nixpkgs.legacyPackages.${system}; };
+        packages.expose = import ./expose/default.nix { pkgs = pkgs; symbolator = symbolator.packages.${system}.symbolator; };
+        packages.writing = import ./writing/default.nix { pkgs = pkgs; symbolator = symbolator.packages.${system}.symbolator; };
+        packages.toolchain = import ./toolchain-test/default.nix { pkgs = pkgs; };
         packages.bambu-unwrapped = import ./bambu/default.nix { pkgs = llvm16-nixpkgs.legacyPackages.${system}; };
         packages.bambu-wrapped = import ./bambu/wrapped.nix { pkgs = llvm16-nixpkgs.legacyPackages.${system}; bambu = packages.bambu-unwrapped; };
         packages.bambu = packages.bambu-wrapped;
         packages.bambu-appimage = import ./bambu/appimage.nix { pkgs = nixpkgs.legacyPackages.${system}; };
-        packages.hardware-example = import ./hardware-example/default.nix { pkgs = nixpkgs.legacyPackages.${system}; };
-        packages.hardware-tang = import ./hardware-tang/default.nix { pkgs = nixpkgs.legacyPackages.${system}; fenix = fenix.packages.${system}; symbolator = symbolator.packages.${system}.symbolator; vcd2wavedrom = vcd2wavedrom.packages.${system}.vcd2wavedrom; bambu = packages.bambu; };
-        packages.rusthdl-intro = import ./rusthdl-intro/default.nix { pkgs = nixpkgs.legacyPackages.${system}; fenix = fenix.packages.${system}; symbolator = symbolator.packages.${system}.symbolator; vcd2wavedrom = vcd2wavedrom.packages.${system}.vcd2wavedrom; bambu = packages.bambu; };
-        packages.extended-abstract = import ./extended-abstract/default.nix { pkgs = nixpkgs.legacyPackages.${system}; fenix = fenix.packages.${system}; symbolator = symbolator.packages.${system}.symbolator; vcd2wavedrom = vcd2wavedrom.packages.${system}.vcd2wavedrom; bambu = packages.bambu; };
-        packages.thesis = import ./thesis/default.nix { pkgs = nixpkgs.legacyPackages.${system}; fenix = fenix.packages.${system}; symbolator = symbolator.packages.${system}.symbolator; vcd2wavedrom = vcd2wavedrom.packages.${system}.vcd2wavedrom; bambu = packages.bambu; };
+        packages.hardware-example = import ./hardware-example/default.nix { pkgs = pkgs; };
+        packages.hardware-tang = import ./hardware-tang/default.nix { pkgs = pkgs; fenix = fenix.packages.${system}; symbolator = symbolator.packages.${system}.symbolator; vcd2wavedrom = vcd2wavedrom.packages.${system}.vcd2wavedrom; bambu = packages.bambu; };
+        packages.rusthdl-intro = import ./rusthdl-intro/default.nix { pkgs = pkgs; fenix = fenix.packages.${system}; symbolator = symbolator.packages.${system}.symbolator; vcd2wavedrom = vcd2wavedrom.packages.${system}.vcd2wavedrom; bambu = packages.bambu; };
+        packages.extended-abstract = import ./extended-abstract/default.nix { pkgs = pkgs; fenix = fenix.packages.${system}; symbolator = symbolator.packages.${system}.symbolator; vcd2wavedrom = vcd2wavedrom.packages.${system}.vcd2wavedrom; bambu = packages.bambu; };
+        packages.thesis = import ./thesis/default.nix { pkgs = pkgs; fenix = fenix.packages.${system}; symbolator = symbolator.packages.${system}.symbolator; vcd2wavedrom = vcd2wavedrom.packages.${system}.vcd2wavedrom; bambu = packages.bambu; };
         packages.default = packages.writing;
-        devShells.default = import ./shell.nix { pkgs = nixpkgs.legacyPackages.${system}; fenix = fenix.packages.${system}; symbolator = symbolator.packages.${system}.symbolator; vcd2wavedrom = vcd2wavedrom.packages.${system}.vcd2wavedrom; bambu = packages.bambu; unstable-nixpkgs = unstable-nixpkgs.legacyPackages.${system}; };
+        devShells.default = import ./shell.nix { pkgs = pkgs; fenix = fenix.packages.${system}; symbolator = symbolator.packages.${system}.symbolator; vcd2wavedrom = vcd2wavedrom.packages.${system}.vcd2wavedrom; bambu = packages.bambu; unstable-nixpkgs = unstable-nixpkgs.legacyPackages.${system}; };
 
-        apps.bambu = { type = "app"; program = "" + packages.bambu-wrapped + "/bin/bambu"; };
+        apps.bambu = { type = "app"; program = (pkgs.lib.getExe packages.bambu-wrapped); };
       }
     );
 }

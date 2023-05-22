@@ -38,6 +38,8 @@ mkShell {
     vcd2wavedrom
     sass
 
+    asciidoctor-web-pdf-with-extensions
+
     # Utils
     gnumake
     nixpkgs-fmt

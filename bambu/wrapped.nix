@@ -3,6 +3,7 @@ with pkgs;
 pkgs.runCommand "bambu-wrapped"
 {
   buildInputs = [ pkgs.makeWrapper ];
+  meta.mainProgram = "bambu";
 } ''
   mkdir $out
   ln -s ${bambu}/* $out
