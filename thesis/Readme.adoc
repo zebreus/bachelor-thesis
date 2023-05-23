@@ -361,7 +361,7 @@ Accelerator design languages (ADL) are a family of programming languages that ar
 == Concept, implementation and architecture
 
 // Short overview of the solution and this section
-The goal of this paper is to use Rust as a source language for HLS using an existing HLS tool. First a suitable toolchain has to be designed. Then a process for integrating the toolchain with a HDL has to be developed. Finally, a proof-of-concept implementation will be done to show that the process works and enable evaluation of the resulting solution.
+The goal of this paper is to use Rust as a source language for HLS using an existing HLS tool. First a suitable toolchain has to be designed. Then a concept for integrating the toolchain with rust-hdl has to be developed. Finally, a proof-of-concept implementation will be done to show that the process works and enable evaluation of the resulting solution.
 
 // TODO: Maybe define some criteria for our solution
 // * Can synthesize a simple Rust program
@@ -370,23 +370,38 @@ The goal of this paper is to use Rust as a source language for HLS using an exis
 // * The synthesized function can use Rust crates from crates.io
 // * The existing Rust tooling (linter, formatter, etc.) work with out function
 
-=== Toolchain for synthesizing Rust
+=== Basic toolchain for synthesizing Rust
 
-As there is currently no tool that can synthesize Rust directly the first step in our toolchain needs to convert the Rust code into a language that can be used by an existing HLS tool. There are multiple HLS tools that support C or {cpp} by using LLVM compiler infrastructure. As a result of using LLVM some of these tools can also use LLVMs intermediate representation (LLVM IR) directly as an input language. <<Nan16>> The Rust compiler can compile Rust code to LLVM IR, so this is a good starting point for our toolchain.
+As there is currently no tool that can synthesize Rust directly the first step in the toolchain needs to convert the Rust code into a language that can be used by an existing HLS tool. There are multiple HLS tools that support C or {cpp} by using LLVM compiler infrastructure. As a result of using LLVM some of these tools can also use LLVMs intermediate representation (LLVM IR) directly as an input language. <<Nan16>> The Rust compiler can compile Rust code to LLVM IR. This will be the starting point of the toolchain
 
-The Rust compiler is frequently updated and the generated LLVM IR usually uses the latest LLVM version. This means that a suited HLS tool needs to be activly maintained to support the generated LLVM IR. The only HLS tool that fulfills these requirements seems to be panda bambu. SmartHLS and Vivado HLS may also be capable of operating on LLVM IR, but they are not open source and only available as part of an IDE and not as standalone programs, which makes them unsuitable for our use case.
+The Rust compiler is frequently updated and the generated LLVM IR usually uses the latest LLVM version. <<citation-needed>> This means that a suited HLS tool needs to be activly maintained to support the generated LLVM IR. The only HLS tool that fulfills these requirements seems to be panda bambu. <<Fer21>> SmartHLS and Vivado HLS may also be capable of operating on LLVM IR, but they are not open source and only available as part of an IDE and not as standalone programs, which makes them unsuitable for our use case.
 
 .The toolchain
 [pikchr]
 ....
-   arrow right 150% "Rust" "Source"
-   box rad 10px "Rust Compiler" "Compiler" "(rustc)" fit
-   arrow right 190% "LLVM IR" "Intermediate"
-   box rad 10px "PandA Bambu" "HLS Synthesizer" "(bambu)" fit
+   arrow right 150% "Rust" "function"
+   box rad 10px "Rust Compiler" fit
+   arrow right 190% "LLVM IR" "function"
+   box rad 10px "PandA Bambu" fit
    arrow right 130% "Verilog" "RTL"
 ....
 
+The basic toolchain is relativly straightforward. In a first step the Rust compiler is used to convert a Rust function to a LLVM IR function. The second step passes the generated LLVM IR function to panda bambu which converts it to Verilog. The resulting Verilog can then be used in a larger HDL design.
+
+=== Using the toolchain manually
+
+This toolchain can be used to synthesize Rust functions. In the following example a Rust function that finds the minimum and maximum of an array of integers will be synthesized.
+
+// TODO: Find a good example and explain it.
+
 === Integrating the toolchain with rust-hdl
+
+// TODO: Remove intro
+We want to try using Rust as a source language for HLS, because of the developer experience. As seen in the previous example integrating it with Verilog involves a few manual steps. This is not a good developer experience. In this section the integration with rust-hdl will be explored. This makes it possible to create a single Rust crate containing both RTL and HLS code in the same project.
+
+// With rust macros it is possible to execute arbitrary code transformations at compile-time. This can be used 
+
+
 
 //TODO: This is a stub
 Being able to synthesize Rust to Verilog in a vacuum is not that usefull. We should be able to use it in a larger HDL design. This paper will use rust-hdl as a HDL. This way the HDL design can be completly written in Rust.
