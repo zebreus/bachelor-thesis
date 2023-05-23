@@ -56,12 +56,12 @@ impl Logic for Blinker {
 // end::rust-hdl-logic[]
 // end::rust-hdl-implementation[]
 
-// tag::rust-hdl-test[]
 #[cfg(test)]
 mod tests {
     use super::Blinker;
     use rust_hdl::prelude::*;
 
+    // tag::rust-hdl-test[]
     #[test]
     fn blinker_works() {
         // <1>
@@ -92,5 +92,5 @@ mod tests {
             .run_to_file(Box::new(blinker), 500, &vcd_path!("blinker_works.vcd"))
             .unwrap();
     }
+    // end::rust-hdl-test[]
 }
-// end::rust-hdl-test[]

@@ -230,78 +230,53 @@ Probably the most popular alternative HDL. It is a Scala DSL that is transpiled 
 
 ==== rust-hdl
 
-// TODO: This is a stub
-rust-hdl is a Rust project that allows writing RTL logic in Rust and generates Verilog from it. In rust-hdl the interfaces and registers of Verilog modules are defined as a structs. The internal logic is defined in an update function which is called on every clock pulse. This is similar to the way that HDLs work. <<rusthdl>>
+rust-hdl is a Rust crate that allows describing RTL logic in Rust. The logic can then be transpiled to Verilog. rust-hdl also includes tools for simulation and verification. Because a rust-hdl based design is just a Rust program, it can use most of the Rust ecosystem features. This includes the Rust testing framework for verification and simulation. It also makes it possible to reuse and share designs using the Rust packagemanager cargo. <<rusthdl>>
 
-//TODO: Test if this compiles
-.Full adder written in Verilog
-[source,verilog]
-----
-module blink (clock, led);
-  input clock;
-  output led;
-
-  reg [31:0] counter = 32'0;
-  reg led_status = 0;
-
-  always @(posedge clock) begin
-    counter <= counter + 1;
-    if (counter > 1000) begin
-      led_status <= !led_status;
-      counter <= 32'0;
-    end
-  end
-
-  assign led = led_status;
-endmodule 
-----
-
-//TODO: Test if this compiles
-.Full adder written in rust-hdl
+.rust-hdl struct for a simple blinker module.
 [source,rust]
 ----
-#[derive(LogicBlock)]
-struct Blinker {
-    pub clock: Signal<In, Clock>,
-    pub led: Signal<Out, bool>,
-    counter: DFF<Bits<32>>,
-    led_status: DFF<bool>,
-    delay: Constant<Bits<32>>,
-}
-
-impl Blinker {
-    pub fn new(delay: u32) -> Self {
-        Self {
-            clock: Default::default(),
-            led: Default::default(),
-            counter: Default::default(),
-            delay: Constant::new(delay.into()),
-        }
-    }
-}
-
-impl Logic for Blinker {
-    #[hdl_gen]
-    fn update(&mut self) {
-        self.counter.clock.next = self.clock.val();
-        self.counter.d.next = self.counter.q.val() + 1u32.to_bits();
-
-        self.led.next = self.led_status.q.val();
-
-        if self.counter.q.val() > self.delay.val() - 1 {
-            self.counter.d.next = 0.into();
-            self.led_status.d.next = ! self.led_status.q.val();
-        }
-    }
-}
+include::rusthdl-blinker/src/blinker.rs[tag=rust-hdl-struct]
 ----
 
-The `update` defines the internal logic of the module. The function sets the values of all output ports of the module based on the input ports. The rust-hdl library enforces that a value is assigned to every port at compiletime. If there are multiple assignments to a port the last one is valid. 
+In rust-hdl logic blocks (equivalent to Verilog modules) are defined as structs. The field of these logic blocks corresponds to the external and internal ports of the module. External ports are defined as `Signal` with a direction and a data type. If the logic block is contains another logic block it is also defined here. rust-hdl provides some basic logic blocks for common functions like D flip-flops (DFF) or constants. <<rusthdl>> An example for a logic block definition is shown above in listing XXX.
 
-// TODO: List limitations of the update function
-As the update function represents combinational logic, only a small subset of Rust is allowed in it.
+The combinational logic that connects these signals is described in the update function. Every rust-hdl signal has a .next field that determines the value of the signal after the update function. The update function must assign a value to all the .next fields. If there are multiple assignments to the .next fields the last one is valid, like in normal Rust. As Rust can express much more than just combinational logic, rust-hdl only allows a limited synthesizable subset of Rust in the update function. <<rusthdl>> 
 
-As rust-hdl Code is just normal Rust code all of the features of the Rust ecosystem can be used. A rust-hdl project can for example be verified using the unit testing framework integrated into Rust. It can also use Rusts build system and package manager cargo. It is also possible to publish rust-hdl libraries to the rust package registry. <<rusthdl>>
+.The restrictions of the synthesizable subset include:
+- No local variables
+- Assignments are only allowed to .next fields of signals
+- Function and method calls are limited to a small subset of library functions
+- Only range based for loops are allowed
+
+<<rusthdl>> 
+
+.rust-hdl update function for the blinker.
+[source,rust]
+----
+include::rusthdl-blinker/src/blinker.rs[tag=rust-hdl-logic]
+----
+
+rust-hdl also enforces an additional set of semantic rules about what the update function can contain. For example it does not allow undriven nets, so there must be at least one assignment to the `.next` value of every field. If there are multiple assignment to the next value of a signal, the last one is valid, like in normal Rust. rust-hdl also forbids to use the `.next` value on the right side of an expression. rust-hdl enforces these rules at compiletime and generates somewhat helpful error messages. <<rusthdl>> An example for a update function is shown above in listing XXX.
+
+.Simulating and verifying the blinker
+[source,rust]
+----
+include::rusthdl-blinker/src/blinker.rs[tag=rust-hdl-test]
+----
+
+The Rust unit testing framework can be used to simulate and verify rust-hdl modules. Listing XXX shows a testcase that simulates and verifies that the blinker module toggles its output with the specified frequency (10 cycles in that case). The test case can be run with `cargo test` like any other Rust unit test.
+
+.Generating verilog from the rusthdl blinker
+[source,rust]
+----
+include::rusthdl-blinker/src/main.rs[tag=generate-verilog]
+----
+
+rust-hdl can then be used to generate a Verilog description of the design as shown in listing XXX. The generated Verilog code can then be used with any Verilog toolchain to deploy the design to a FPGA. <<rusthdl>>
+
+// Justify why rust-hdl is a good choice even though it is more verbose
+// TODO: Compare LoC
+rust-hdl code is a more verbose than Verilog code. This is mostly because of the additional type annotations and the need to explicitly assign the .next value of every signal. 
 
 
 === Design using High-level synthesis
@@ -326,6 +301,8 @@ In this paper we will use bambu as a HLS tool, because it is open-source and sup
 // TODO: This section does probably not belong in this part
 Old programming languages, we have better alternatives nowadays
 More steps in the design flow
+More explicit. Register can be anything
+
 
 // ==== Bambu HLS
 
