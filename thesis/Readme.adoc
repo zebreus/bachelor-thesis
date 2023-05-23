@@ -1,8 +1,11 @@
 :doctype: book
 :last-update-label!:
 :imagesdir: images
-:source-highlighter: rouge
+:source-highlighter: highlight.js
 :rouge-style: github
+:highlightjs-languages: rust, verilog
+// Available themes: https://highlightjs.org/static/demo/
+:highlightjs-theme: ../../11.8.0/styles/gradient-light
 :toclevels: 2
 :stem:
 :toc: macro
@@ -219,14 +222,33 @@ The use of HDLs is mostly limited to hardware engineers
 
 ==== SystemVerilog sample
 
+In SystemVerilog units of logic can be encapsulated into modules. Modules can have inputs, outputs and internal state. The following listing shows a simple module that implements a blinker. The blinker has a clock input and a blinker output. At every rising edge of the clock a internal counter is incremented by one. Once the counter reaches a certain value, the blinker output is toggled. The counter is reset to zero when the blinker output is toggled.
+
+.Simple blinker module in SystemVerilog
+[source,verilog]
+----
+include::systemverilog-blinker/blinker.sv[]
+----
+
+Verification in SystemVerilog can be achieved by using testbenches that instantiate the module under test and exercise its inputs. Listing XXX shows a testbench for the blinker module. The testbench instantiates the blinker module and connects it to a clock signal. It also asserts that the blinker output toggles every 10 clock cycles.
+
+.Testbench for the blinker module in SystemVerilog
+[source,verilog]
+----
+include::systemverilog-blinker/blinker_tb.sv[]
+----
+
+// TODO: citations? 
+// TODO: More detail?
+
 === Design using alternative Hardware description languages
 
+// TODO: This is a stub
 There are multiple modern HDLs that try to improve on the shortcomings of Verilog and VHDL. Most of them try to bring some features from modern programming languages to hardware design. (linting, formatting, dependency management, namespaces/scoping, better support for multifile projects, ...). These languages are usually transpiled to Verilog and then synthesized to netlists.
 
-==== Chisel
+// TODO: List of alternative HDLs
 
-// TODO: This is a stub
-Probably the most popular alternative HDL. It is a Scala DSL that is transpiled to Verilog.
+// TODO: Mention timing somewhere
 
 ==== rust-hdl
 

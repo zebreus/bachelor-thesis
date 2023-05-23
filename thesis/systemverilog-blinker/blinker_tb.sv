@@ -4,7 +4,7 @@ module blinker_tb ();
 
   wire blinker;
 
-  Blinker UUT (
+  Blinker DUT (
       .clock  (clock),
       .blinker(blinker)
   );
