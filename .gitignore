@@ -12,3 +12,6 @@ HLS_output
 synthesize_Synthesis_*.sh
 
 .vscode/settings.json
+
+# Rust output folders
+target/

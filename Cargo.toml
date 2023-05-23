@@ -1,0 +1,18 @@
+[workspace]
+members = [
+    "thesis/rusthdl-blinker",
+    "toolchain-test",
+    "rusthdl-intro",
+    "thesis/rusthdl-blinker",
+    "thesis/rusthdl-integration",
+    "rust-md5",
+    "bambu-macro/rust_hls_lib",
+    "bambu-macro/test-macro",
+    "bambu-macro/rust_hls_macro",
+    "bambu-macro/extract_rust_hdl_interface",
+    "bambu-macro/test-crate",
+    "bambu-macro/bambu_build_demo",
+    "bambu-macro/bambu_build_demo/subcrate",
+    "bambu-macro/wrap_verilog_in_rust_hdl_macro",
+]
+exclude = ["bambu-macro/*/test_suites/*", "*/target/*"]
