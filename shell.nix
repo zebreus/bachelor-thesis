@@ -68,6 +68,7 @@ mkShell {
     unstable-nixpkgs.python310Packages.apycula
     unstable-nixpkgs.python3
     verilator
+    verible
 
     # Binaries from oss-cad-suite
     aiger

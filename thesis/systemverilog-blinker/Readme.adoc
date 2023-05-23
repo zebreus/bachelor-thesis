@@ -1,0 +1,7 @@
+= Simple blinker written in SystemVerilog
+
+This is an example showing a blinker written in SystemVerilog.
+
+== Run the testbench
+
+You can run the testbench with icarus verilog using `make test`.
