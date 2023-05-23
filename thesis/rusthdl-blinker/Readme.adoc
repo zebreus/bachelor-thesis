@@ -1,0 +1,7 @@
+= Simple example for rust-hdl
+
+This is a example showing a blinker written in rust-hdl.
+
+== Generate verilog
+
+To generate the Verilog `blinker.v` file execute the project with `cargo run`.
