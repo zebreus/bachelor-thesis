@@ -319,8 +319,7 @@ High-level synthesis tools generate a timed RTL implementation of a circuit from
 Usually HLS tools seperate the HLS process into seven tasks. <<Cou09>> They can be seperated into three stages.
 
 // Compilation of the functional specification
-// TODO: Find a good word for classic software code optimizations
-First the functional specification is compiled into a formal model. The formal model is usually a control and data flow graph (CDFG). In the CDFG every node (called basic block) represents a static sequence of statements. The edges between the nodes represent conditional data flow. Opposed to a normal data flow graph (DFG), the edges can be conditional. <<Cou09>> In this step transformations can be applied to the functional specification. These transformations can include loop unrolling, inlining, dead code elimination and other classic compiler optimizations. <<Cou09>> 
+First the functional specification is compiled into a formal model. The formal model is usually a control and data flow graph (CDFG). In the CDFG every node (called basic block) represents a static sequence of statements. The edges between the nodes represent conditional data flow. Opposed to a normal data flow graph (DFG), the edges can be conditional. <<Cou09>> In this step transformations can be applied to the functional specification. These transformations can include loop unrolling, inlining, dead code elimination and other common software compilation optimizations. <<Cou09>> 
 
 // TODO: I dont have a citation, but say this: While these hardware resources can be real hardware resources, in this stage they are more comparable to Verilog modules. they are not (necessarily) real FPGA hardware resources, but can also be arbirary soft logic. ???
 
@@ -369,6 +368,25 @@ More explicit. Register can be anything
 
 
 ==== Bambu HLS
+// Bambu intro
+Bambu is a open-source academic HLS tool. <<Fer21>> <<Nan16>> Its architecture is designed to make it easy to experiment with new ideas across high-level synthesis and related topics. It supports input specifications in standart C/C++ or the intermediate representations of GCC or clang/LLVM. <<Fer21>>
+
+// Bambu compared to commercial offerings
+// TODO: Nan16 has benchmarks
+
+// Bambu architecture overview
+Bambu is based on a three stage design. The frontend is used to convert input specifications in various formats into a static single assignment (SSA) IR. The middle end performs various transformations and analysis on the SSA IR. The backend performs the actual architectural synthsis. <<Fer21>>
+
+// Frontend
+The frontend is utilizes a plugin for GCC or clang to process a input specification in any of the formats supported by these two compilers. Noteably this includes support for LLVM IR through clang. Bambu then generates its own SSA IR from the control from the call graph and control flow information provided by GCC or clang. <<Fer21>>
+
+
+// Middleend
+// TODO: Last sentence is shit
+The middleend applies a set of analysis and transformations to the specification. This includes common software compilation optimizations such as loop optimizations and dead code eliminatin. It also includes more HLS specific optimizations. For example multiplications and division with constants are replaced with shift and add operations, because real multiplication is expensive in hardware. Bitwidth and range analysis optimizations are also performed, because it does not need to target a data-path with a fixed width (i.e. 32bit, 64bit). <<Fer21>>
+
+// Backend
+The backend performs the actual architectural synthesis. This is mostly done as described in section XXX. Bambus biggest difference is that the synthesis process acts on every function individually. It generates a controller and data path for every function. If a function calls into another function the generated logic for the other function is instatiated as a submodule. Bambu optimizes submodules that are shared between multiple modules. Bambu also provides hardcoded optimized modules for functions from common libraries such as `libc` or `libm`. The resulting architecture can be translated to VHDL or Verilog. <<Fer21>>
 
 ==== Languages used for High-level synthesis
 
@@ -595,6 +613,65 @@ Workshop Proceedings of the 51st International Conference on Parallel Processing
 2020.
 link:pass:[https://doi.org/10.1145/3547276.3548515][🔗^]
 
+// Bambu provides a research environment to experiment with new ideas across HLS, high-level verification and debugging.
+// Bambu input: standart C/c++ specifications, LLVM IR, IRs from GCC
+// Includes many optimizations
+// Makes it easy to integrate new transformations and optimizations
+// Is open-source
+// Bambu is a command line tool
+// Supports most C/C++ constructs
+// Bambu has three phases. frontend, middleend and backend
+// Frontend: Uses clang or gcc
+// Uses a compiler plugin for both to extract the call graph and control flow information
+// Builds its own static single assignment IR
+// This decouples the compiler frontend from the rest of the HLS process.
+// Vivado HLS has a frontend based on clang
+// Middle end:
+// Bambu rebuild the call graph and control data flow graph and adds own data structures.
+// Applies a set of analyses and transformations.
+// Including common software compiliation optimizations
+// Including target specific transformations. Such as replacing multiplication and divisions with constants with shift and add operations.
+// Can exploit custom sized operators
+// TODO: Explore if bambu can use the rust crate for more integer sizes like u21
+// Bambu performs bitwidth and range analysis to minimize bit width
+// Backend: Bambu performs the actual architectural synthesis here
+// The synthesis process acts on every function individually
+// Every function has at least two parts: control ogic and data path
+// Control logic is a FSM
+// Control logic handles the routing of data values and temporal execution of ops
+// Bambu steps:
+// * Function allocation
+// Bambu has a technology library for standart system libraries such as libm or libs
+// This step associates High level functions with hardware resources
+// Bambu supports sharing functions across module boundries
+// * Memory allocation
+// Defines momories to store variables.
+// Defines how dynamic memory is implemented
+// Memories in bambu can be classified as read-only, local, with aligned or unaligned memory access
+// Bambu supports accessing protocol based memories
+// * Resource allocation
+// Maps operations (not mapped onto functions) onto resource units
+// Resource units are available in the bambus resource library
+// Floating point operations are supported through generating soft floating point cores
+// Rich resource library with multiple implementations for the same operation
+// Resource library annotated with latency and resource occupation.
+// * Scheduling
+// Bambu uses List scheduling
+// every operation has a priority
+// a operation is ready when its deps have been satisfied
+// ready operations can be scheduled if the resources are availabe
+// Multiple compenting for a resource: higher priority
+// Also has a speculative scheudling algo
+// * binding
+// Pretty much standart
+// Bambu considers how profitable it is for two operations to share the same resource
+// Resources that occupy a big area are more likely to be shared
+// * netlist generation
+// Translates the architecture in a RTL description
+// In Verilog or VHDL
+//
+// Research topics for bambu: "They range from parallelized hardware accelerator design, dynamic scheduling, verification and de- bugging, design exploration of the compilation flow, machine learning accelerator design, IR development, and integration with logic synthesis tools" , MLIR
+// MLIR dialects that can be translated to LLVM IR
 * [[[Fer21]]]
 +F. Ferrandi et al.+,
 _Invited: Bambu: an Open-Source Research Framework for the High-Level Synthesis of Complex Applications_,
