@@ -10,6 +10,16 @@
     margin: 3.05cm (3.86cm - 0.39687cm) 3.81cm (4.26cm - 0.39687cm);
 }
 
+@page {
+    @bottom-center {
+        content: counter(page);
+        font-size: 0.8rem;
+        padding: 10pt 0 0 0;
+        margin: 10pt 10pt 30pt 10pt;
+        border-top: .1pt solid #d2d2d2;
+    }
+}
+
 @page :first {
     margin-top: 2.4cm;
 }
@@ -384,20 +394,7 @@ The leader works by filling the li with dots, and arranging for the <a> and a::a
 //     }
 // }
 
-// @page :right {
-//     @bottom-right {
-//         content: counter(page);
-//         font-size: 0.8rem;
-//         padding: 10pt 0 0 0;
-//         margin: 10pt 10pt 30pt 10pt;
-//         border-top: .1pt solid #d2d2d2;
-//     }
 
-//     @bottom-left {
-//         margin: 10pt 0 30pt 0;
-//         border-top: .1pt solid #d2d2d2;
-//     }
-// }
 
 // @page :left {
 //     @bottom-right {
