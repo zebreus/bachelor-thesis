@@ -101,32 +101,32 @@ There are two target platforms for logic design: field-programmable gate arrays 
 
 ==== What is an FPGA
 
-// What are CPUs?
-//TODO: Citations
-// TODO: Idk if the intro is appropriate
-CPUs process their instructions one by one. They are purpose-built machines that are carefully designed for processing lots of instructions in sequence. Traditional programming languages reflect this design for the most part. They are designed to make it easy for humans to write programs that can be executed sequentially one instruction at a time. There are approaches to parallelism, but they are either limited to having multiple threads of execution that run from top to bottom simultaneously. Or they have some instructions that perform the same operation on a fixed amount of data elements at the same time.
+// // What are CPUs?
+// //TODO: Citations
+// // TODO: Idk if the intro is appropriate
+// CPUs process their instructions one by one. They are purpose-built machines that are carefully designed for processing lots of instructions in sequence. Traditional programming languages reflect this design for the most part. They are designed to make it easy for humans to write programs that can be executed sequentially one instruction at a time. There are approaches to parallelism, but they are either limited to having multiple threads of execution that run from top to bottom simultaneously. Or they have some instructions that perform the same operation on a fixed amount of data elements at the same time.
 
 
-// TODO: citation needed
-Field programmable gate arrays (FPGAs) are not designed to process instructions. As the name field programmable gate array implies, they consist of programmable logic gates with programmable connections between them. So while a CPU is a logic circuit designed to do one thing, an FPGA is a circuit designed to emulate other logic circuits. 
+// // TODO: citation needed
+// Field programmable gate arrays (FPGAs) are not designed to process instructions. As the name field programmable gate array implies, they consist of programmable logic gates with programmable connections between them. So while a CPU is a logic circuit designed to do one thing, an FPGA is a circuit designed to emulate other logic circuits. 
 
-// TODO: FPGA 
+// // TODO: FPGA 
 
-// An FPGA can be used to emulate a CPU.
-// TODO: citation needed
-For example, a design describing the logic gates and connections that make up a CPU can be programed to the FPGA, so it will behave exactly like the CPU and can process instructions. Such a 'soft' CPU will be much bigger and therefore slower than a real CPU because a circuit emulated on an FPGA takes up more space than an application-specific circuit. This is however really useful for prototyping because you can test the CPU design in hardware with external peripherals, like memory and I/O devices.
+// // An FPGA can be used to emulate a CPU.
+// // TODO: citation needed
+// For example, a design describing the logic gates and connections that make up a CPU can be programed to the FPGA, so it will behave exactly like the CPU and can process instructions. Such a 'soft' CPU will be much bigger and therefore slower than a real CPU because a circuit emulated on an FPGA takes up more space than an application-specific circuit. This is however really useful for prototyping because you can test the CPU design in hardware with external peripherals, like memory and I/O devices.
 
-// More details on using FPGAs for hardware development
-// TODO: citation needed
-In the past, FPGAs were mostly used like this for prototyping hardware development. Hardware designers designed a circuit in a hardware description language (HDL) and simulated it as a first stage of verification. If that worked it can be deployed to an FPGA, and get tested there. If everything works as expected the design can be taped out and manufactured as an ASIC.
+// // More details on using FPGAs for hardware development
+// // TODO: citation needed
+// In the past, FPGAs were mostly used like this for prototyping hardware development. Hardware designers designed a circuit in a hardware description language (HDL) and simulated it as a first stage of verification. If that worked it can be deployed to an FPGA, and get tested there. If everything works as expected the design can be taped out and manufactured as an ASIC.
 
-// In comparison to an FPGA a CPU is an ASIC, I think. But I have no source for that
+// // In comparison to an FPGA a CPU is an ASIC, I think. But I have no source for that
 
-// FPGA as computational accelerators
-// TODO: citation needed
-This is still the most common use case for FPGAs, but it is not the only one. In recent years the usage of FPGAs as pseudo-general-purpose computational accelerators became more relevant. Here you do not use them to prototype circuits that will eventually be taped out but as the final platform. FPGAs used in this context are known as _computational FPGAs_. It is somewhat comparable to the use of GPUs as computing accelerators. But where GPUs excel at tasks that perform the same operations in parallel on massive amounts of data, FPGAs can be used for some kind of computations with irregular parallelism with static structure. In opposition to GPUs, it is not yet clear what an appropriate abstraction for the computational pattern used with computational FPGAs is.
+// // FPGA as computational accelerators
+// // TODO: citation needed
+// This is still the most common use case for FPGAs, but it is not the only one. In recent years the usage of FPGAs as pseudo-general-purpose computational accelerators became more relevant. Here you do not use them to prototype circuits that will eventually be taped out but as the final platform. FPGAs used in this context are known as _computational FPGAs_. It is somewhat comparable to the use of GPUs as computing accelerators. But where GPUs excel at tasks that perform the same operations in parallel on massive amounts of data, FPGAs can be used for some kind of computations with irregular parallelism with static structure. In opposition to GPUs, it is not yet clear what an appropriate abstraction for the computational pattern used with computational FPGAs is.
 
-// Modern FPGAs have hardware blocks
+// // Modern FPGAs have hardware blocks
 
 
 
@@ -303,11 +303,53 @@ rust-hdl code is a more verbose than Verilog code. This is mostly because of the
 
 === Design using High-level synthesis
 // What is HLS
-High-level synthesis (HLS) is a process that can generate a RTL specification of a circuit from a description in a high-level programming language. This is a more productive approach than writing RTL code directly, but the resulting designs are usually less efficient. The generated RTL code can then be used in the same way as manually written RTL code. <<Mil20>> <<Nan16>> <<Lah19>>
+High-level synthesis (HLS) is a process that can generate a RTL specification of a circuit from a description in a high-level programming language. This is a more productive approach than writing RTL code directly, but the resulting designs are usually less efficient. The generated RTL code can then be used in the same way as manually written RTL code. <<Mil20>> <<Nan16>> <<Lah19>> <<Cou09>>
 
-// HLS compared to RTL
+
+// Performance of HLS compared to RTL
+// TODO: Weirdly written, (which experiments?)
 The main advantages of HLS are reduced design time and lower development cost. On average the development time of HLS designs is only a third than that of equivalent RTL designs. The tradeoff for the lower development time seems to be that HLS designs on average take up around 40% more basic FPGA resources than RTL designs. The performance of HLS designs is around two thirds of that of a RTL design. These metrics generalize over many different HLS tools and input languages and there is a big variance between different experiments. In about 40% of the cases the HLS design was more efficient or performant than the RTL design. These metrics for performance and resource usage show a lot of variance between experiments, in about 40% of designs the HLS design was actually more performant than the RTL design. In about 30% it was more resource efficient. However in terms of development time there is little variance, in 90% of the experiments the HLS design was faster than the RTL design. <<Lah19>>
 
+==== How high-level synthesis works
+// Intro
+// TODO: Remove?
+High-level synthesis tools generate a timed RTL implementation of a circuit from a functional specification. A functional specification is a untimed description of the desired behavior of the circuit. <<Cou09>>
+
+// What are the tasks that HLS performs
+Usually HLS tools seperate the HLS process into seven tasks. <<Cou09>> They can be seperated into three stages.
+
+// Compilation of the functional specification
+// TODO: Find a good word for classic software code optimizations
+First the functional specification is compiled into a formal model. The formal model is usually a control and data flow graph (CDFG). In the CDFG every node (called basic block) represents a static sequence of statements. The edges between the nodes represent conditional data flow. Opposed to a normal data flow graph (DFG), the edges can be conditional. <<Cou09>> In this step transformations can be applied to the functional specification. These transformations can include loop unrolling, inlining, dead code elimination and other classic compiler optimizations. <<Cou09>> 
+
+// TODO: I dont have a citation, but say this: While these hardware resources can be real hardware resources, in this stage they are more comparable to Verilog modules. they are not (necessarily) real FPGA hardware resources, but can also be arbirary soft logic. ???
+
+// What are the hardware resources
+The resulting formal model then has to be mapped onto hardware resources. The types of resources are functional units, storage elements and connection units. Functional units perform the actual computation on the data. They can be multipliers, arithmetic logic units, or other custom functions. Storage elements are used to store values over multiple cycles. They include registers, memories, or other custom storage elements. Connection units represent the connections between the functional units and storage elements. They include resources like multiplexers and buses. HLS tools include RTL descriptions for all of their supported resource types. <<Cou09>>
+
+// Scheduling, allocation, binding
+// TODO:  This binding process does not determine the placement of the resources on the FPGA. (maybe it takses it into account, but not neces..)
+Allocation determins the kinds and number of resources that are needed to satisfy the design constraints. Scheduling then schedules the operations into cycles based on the available resource types. Operations that do not have data dependencies between them can be scheduled in parallel.The next step after scheduling is called binding. During binding operations get assigned to specific functional units. Variables that carry a value over multiple cycles must be bound to storage elements. Finally it is assigned which connection units connect which functional units and storage elements. Scheduling information can be used to bind multiple variable with non-overlapping lifetimes to the same storage elements. <<Cou09>> 
+
+// How does the resulting RTL look
+The final step of HLS is to generate the RTL architecture for the design. Classically the architecture consists of a controller and a data path. The data path contains all the storage elements, functional units and connection units described earlier. The controller is responsible for driving the data path. <<Cou09>> 
+
+// Data path
+The data path contains all the storage elements, functional units and connection units described earlier. These components can be connected arbitrarily by buses. The inputs of the data path are data inputs from external sources and control inputs from the controller. The outputs of the data path can be data outputs or control outputs. The data path also receives control signal from the controller. The control signals control how the components get connected; they orchestrate the data flow through the data path. <<Cou09>> 
+
+// Controller
+The controller usualy consists of three parts. The state register contains the id of the current state. The output logic generates the control signals that drive the data path based on the current state. The output logic also generates control outputs that can act as inputs for the data path. The next state logic computes the next state of the FSM based on the inputs and the current state. <<Cou09>> 
+
+// Disclaimer
+While this is the typical architecture, different HLS tools can also do it differently. An alternative approach is for example to generate a processor with a hardcoded program and instruction set that is optimized for the task at hand. <<citation-needed>>
+
+// TODO: Diagram for typical HLS architecture from Cou09
+
+// TODO: IP Core
+
+
+==== High-level synthesis tools
+// Available HLS tools
 HLS tools can be distingushed into two major categories. Those that accept a general purpose language and those that accept a domain specific language (DSL) a an input. Using a DSL as input can lead to better performing designs, but it also raises challenges for adoption. A general purpose language makes it easier for the algorithm designer, who is usually a software developer, to write code. <<Nan16>> The most common input languages for HLS are C based, including C, {cpp}, and SystemC. <<Lah19>> 
 
 // What HLS tools are there
@@ -326,7 +368,7 @@ More steps in the design flow
 More explicit. Register can be anything
 
 
-// ==== Bambu HLS
+==== Bambu HLS
 
 ==== Languages used for High-level synthesis
 
@@ -1034,8 +1076,100 @@ Microprocessors and Microsystems, Volume 19, Issue 7, Pages 435-439,
 link:pass:[https://doi.org/10.1016/0141-9331(95)90010-1][🔗^]
 link:pass:[https://sci-hub.st/10.1016/0141-9331(95)90010-1][📁^]
 
+// Compares RTL/HDL to assembly
+// High level languages improved productivity
+// HDL have enabled wide adoption of simulation tools
+// First HLS tools 1990s
+// In the 2000s: shift to electronic system level (ESL) paradigm that facilitates exploration sythesis and verification of complex SoCs
+// Intro of first languages with system-level abstraction like SystemC or SystemVerilog
+// 2000s transaction level modeling
+// ESL paradigm shift caused by rising system complexities
+// HLS reduced time for creating hardware
+// HLS reduced time for verification
+// HLS enables the reuse of the same specification for different targets (ASICs, FPGAs, different ASICS and FPGAs)
+// functional specification = untimed highlevel description
+// NOTE: contains more info about HLS design flow
+// HLS tools transform an untimed specification into a fully timed implementation
+// HLS tools generate custom architecture to efficiently implement the specification
+// HLS tools generate a RTL implementation
+// DIAGRAM: Highlevel synthesis design steps
+// Generated architecture (usually) consists of a datapath and a controller.
+// Generated architecture also has memorybanks  and communications interfactes.
+// HLS tools usually perform 7 tasks:
+// 1. Compiling the specification
+// 2. Allocating/Creating hardware resources
+// 3. Scheduling operations to clock cycles
+// 4. Binding operations to functional units
+// 5. Binding variables to storage elements
+// 6. Binding transfers to connection units
+// 7. Generating the RTL architecture
+// Steps 2-6 are called interdependent
+// Compiling transforms the specification into a formal description
+// Compiling performs optimizations
+// Formal model clasically exhibits data and control dependencies.
+// Data flow graph: Every operation is a node and the edges are values (input, temporary and output)
+// A pure data flow graph (DFG) models data flow only
+// In some cases a pure DFG can be created. Can be done by completly unrolling loops and multiplexing conditional assignments.
+// Pure DFG is big and impractical
+// Cannot support unbounded iteration and nonstatic control flow (like goto)
+// control and data flow graph (CDFG) models data and control flow
+// CDFG nodes are called basic blocks and are a straight sequence of statements
+// CDFG edges can be conditional and represent if or switch constructs.
+// CDFGs are more expressive ecause the can represent loops with unbounded iteration (those that cannot be unrolled)
+// Allocation defines the types and number of resources the are needed to satisfy the design constraints
+// Resources are functional units, storage elements and communication interfaces
+// HLS tools have a RTL component library with basic resources.
+// Scheduling determines which operations run in which clock cycle.
+// All operations must be scheduled into cycles
+// If there are no data dependencies between operations they can be scheduled in parallel
+// Every variable that carries values over multiple cycles must be bound to a storage element
+// Variables with nonoverlapping lifetimes can be bound to the same storage element
+// Every operation must be bound to a functional unit that can perform the operation
+// Every connection between functional units and storage element must be bound to a connection unit
+// After allocation, scheduling and binding the RTL architecture can be generated and output
+// The architecture is classically includes a controller and a data path
+// storeage elements: registers, memories, ...
+// functional units: ALUs, multipliers, DSPs, other custom functions, ...
+// connection units: buses, tristate drivers, multiplexers, ...
+// The data path consists of the the storage elements, functional units and connection units
+// All these components can be connected arbitrarily through buses
+// They can also be pipelined
+// The controller is a finite state machine (FSM)
+// The controller orchestrates the data path by setting values of control signals of the data path
+// The inputs of the controller can come from primary inputs or from the data path
+// The controller consists of three parts: the next state logic, a state register and the output logic
+// The next state logic computes the next state of the FSM from the current state and the inputs
+// The state register contains the current state of the controller
+// The output logic sets the control signals according to the current state
+// The output logic also sets control outputs that can be used as inputs for the data path
+// The controller is usually build with hardwired logic, but can be more complex with memories and such
+// If the controller is more complex it is usually a custom processor.
+// The state register is then call program counter. This shows that it is just a processor.
+// NOTE: Only read until "Several design flows"
+* [[[Cou09]]]
++Philippe Coussy, Daniel D. Gajski, Michael Meredith, Andres Takach+,
+_An Introduction to High-Level Synthesis_,
+IEEE Design & Test of Computers, Volume 26, Issue 4, Pages 8-17,
+2009
+link:pass:[https://doi.org/10.1109/MDT.2009.69][🔗^]
+link:pass:[https://sci-hub.st/10.1109/MDT.2009.69][📁^]
+
 // Reference thesis:
 // * https://webthesis.biblio.polito.it/7573/1/tesi.pdf
 // * https://scholarworks.gvsu.edu/cgi/viewcontent.cgi?article=1754&context=theses
 
 include::styles/trailing-scripts.adoc[]
+
+
+// Final checklist:
+// * are all abbreviations defined?
+// * are all abbreviations linked to wikipedia (or somewhere else)?
+// * are all references used?
+// * are all references linked to the correct source?
+// * are all TODOs processed?
+// * are the product names consistent? (BambU)
+// * check for duplicate references
+// * check for broken references
+// * archive.org all links
+// * Check for duplication of information
+// * oxford comma
