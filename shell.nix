@@ -45,7 +45,7 @@ mkShell {
     nixpkgs-fmt
     nil
     bambu
-    jq
+    jq # Required for rust-hls-lib
 
     # For rust
     (fenix.complete.withComponents [
@@ -101,6 +101,7 @@ mkShell {
     gcc
     clang
     clang-tools
+    unstable-nixpkgs.llvmPackages_16.libllvm # Required for rust-hls-lib
   ];
 
   # RUST_SRC_PATH = "${unstable-pkgs.rust.packages.stable.rustPlatform.rustLibSrc}";
