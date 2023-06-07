@@ -14,6 +14,7 @@ stdenv.mkDerivation rec {
 
   nativeBuildInputs = [
     # For docs
+    asciidoctor-web-pdf
     asciidoctor-js
     graphviz
     gnuplot
@@ -63,6 +64,8 @@ stdenv.mkDerivation rec {
   installPhase = ''
     mkdir -p $out
     cp -r *.html *.css images $out
+
+    cp thesis.pdf $out
    
     mkdir -p $out/bin
     cat <<EOF > $out/bin/${pname}.py

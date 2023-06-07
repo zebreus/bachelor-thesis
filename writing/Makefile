@@ -14,7 +14,7 @@ BAMBU_FLAG_SPEED = -O5
 BAMBU_FLAG_SIZE = -Os
 
 BAMBU_FLAGS = --simulate --simulator=VERILATOR -v2
-BAMBU_FLAGS_CLANG = $(BAMBU_FLAGS) --compiler=I386_CLANG12
+BAMBU_FLAGS_CLANG = $(BAMBU_FLAGS) --compiler=I386_CLANG16
 BAMBU_FLAGS_GCC = $(BAMBU_FLAGS) --compiler=I386_GCC8
 
 BAMBU_FLAGS_FULL = --top-fname=min_max_rust_idiomatic --compiler=I386_CLANG12 --generate-tb=testbench_llvm.xml
