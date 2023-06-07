@@ -1,7 +1,7 @@
-{ pkgs ? import <nixpkgs> { }, symbolator, vcd2wavedrom, bambu, fenix, unstable-nixpkgs }:
+{ pkgs ? import <nixpkgs> { } }:
 with pkgs;
 let
-  latestNextpnr = unstable-nixpkgs.nextpnr.overrideAttrs (old: {
+  latestNextpnr = pkgs.nextpnr.overrideAttrs (old: {
     pname = "nextpnr";
     version = "0.5"; # usually harmless to omit
     srcs = [
@@ -25,7 +25,6 @@ in
 mkShell {
   buildInputs = [
     # For docs
-    asciidoctor-with-extensions
     graphviz
     gnuplot
     nodePackages.vega-cli
@@ -38,7 +37,8 @@ mkShell {
     vcd2wavedrom
     sass
 
-    asciidoctor-web-pdf-with-extensions
+    asciidoctor-web-pdf
+    asciidoctor-js
 
     # Utils
     gnumake
@@ -61,12 +61,12 @@ mkShell {
     cacert
 
     # For verilog
-    unstable-nixpkgs.yosys
+    yosys
     latestNextpnr
-    unstable-nixpkgs.icestorm
-    unstable-nixpkgs.openfpgaloader
-    unstable-nixpkgs.python310Packages.apycula
-    unstable-nixpkgs.python3
+    icestorm
+    openfpgaloader
+    python310Packages.apycula
+    python3
     verilator
     verible
 
@@ -101,7 +101,7 @@ mkShell {
     gcc
     clang
     clang-tools
-    unstable-nixpkgs.llvmPackages_16.libllvm # Required for rust-hls-lib
+    llvmPackages_16.libllvm # Required for rust-hls-lib
   ];
 
   # RUST_SRC_PATH = "${unstable-pkgs.rust.packages.stable.rustPlatform.rustLibSrc}";

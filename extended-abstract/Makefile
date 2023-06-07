@@ -2,6 +2,7 @@ PWD = $(shell pwd)
 ASCIIDOCTOR     = asciidoctor
 VCD_TO_WAVEDROM     = vcd2wavedrom
 DOCKER = docker
+ASCIIDOCTOR_WEB_PDF = asciidoctor-web-pdf
 
 TARGETS_WITHOUT_HTML += 
 TARGETS += $(TARGETS_WITHOUT_HTML) index.html
@@ -15,10 +16,10 @@ Readme.css: $(SCSS_FILES)
 	cd styles ; sass --update --sourcemap=none thesis.scss:../Readme.css
 
 index.html: Readme.adoc Readme.css $(TARGETS_WITHOUT_HTML)
-	$(ASCIIDOCTOR) -r asciidoctor-diagram Readme.adoc -o index.html
+	$(ASCIIDOCTOR) -r asciidoctor-kroki Readme.adoc -o index.html
 
 Readme.pdf: Readme.adoc Readme.css $(TARGETS_WITHOUT_HTML)
-	$(DOCKER) run -i --rm --volume=$(PWD):"/usr/app" -u $(shell id -u):$(shell id -g) ggrossetie/asciidoctor-web-pdf:latest Readme.adoc
+	$(ASCIIDOCTOR_WEB_PDF) Readme.adoc
 
 %.wavejson: %.vcd
 	$(VCD_TO_WAVEDROM) -i $< | sed 's/TOP\.//' | jq '.signal = (.signal | map(select(.name | length < 30)))' > $@

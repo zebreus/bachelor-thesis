@@ -1,4 +1,4 @@
-{ pkgs ? import <nixpkgs> { }, symbolator
+{ pkgs ? import <nixpkgs> { }
 }:
 
 with pkgs;
@@ -9,7 +9,7 @@ stdenv.mkDerivation {
   src = ./.;
 
   nativeBuildInputs = [
-    asciidoctor-with-extensions
+    asciidoctor-js
     nixpkgs-fmt
     graphviz
     gnuplot
@@ -21,7 +21,7 @@ stdenv.mkDerivation {
   ];
 
   buildPhase = ''
-    asciidoctor -r asciidoctor-diagram first-toolchain.adoc -o index.html
+    asciidoctor -r asciidoctor-kroki first-toolchain.adoc -o index.html
   '';
 
   installPhase = ''
@@ -32,7 +32,7 @@ stdenv.mkDerivation {
     cp results/* $out/results
 
     mkdir -p $out/images
-    cp images/* $out/images
+    # cp images/* $out/images
 
     cp compiler_info.csv $out
 

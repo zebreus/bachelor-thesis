@@ -149,7 +149,7 @@ include::{vega-lite-filename}[]
 ++++
 endif::vega-as-script[]
 ifndef::vega-as-script[]
-// Embed the script with asciidoctor-diagram if we are running in vscode
+// Embed the script with asciidoctor-kroki if we are running in vscode
 [vegalite]
 ....
 include::{vega-lite-filename}[]

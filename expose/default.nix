@@ -1,4 +1,4 @@
-{ pkgs ? import <nixpkgs> { }, symbolator
+{ pkgs ? import <nixpkgs> { }
 }:
 
 with pkgs;
@@ -9,7 +9,7 @@ stdenv.mkDerivation {
   src = ./.;
 
   nativeBuildInputs = [
-    asciidoctor-with-extensions
+    asciidoctor-js
     nixpkgs-fmt
     graphviz
     gnuplot

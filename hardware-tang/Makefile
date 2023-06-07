@@ -6,7 +6,7 @@ GOWINPACK = gowin_pack
 # tag::bambu[] 
 BAMBU     = bambu
 BAMBU_FLAGS += --clock-name=clk
-BAMBU_FLAGS += --compiler=I386_CLANG12
+BAMBU_FLAGS += --compiler=I386_CLANG16
 BAMBU_FLAGS += -Os
 BAMBU_FLAGS += --simulator=ICARUS
 # BAMBU_FLAGS += --experimental-setup=BAMBU
@@ -42,7 +42,7 @@ all: top.fs
 # tag::hide[]
 
 index.html: Readme.adoc $(TARGETS_WITHOUT_HTML)
-	asciidoctor -r asciidoctor-diagram Readme.adoc -o index.html
+	asciidoctor -r asciidoctor-kroki Readme.adoc -o index.html
 # end::hide[]
 # tag::rust[]
 

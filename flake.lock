@@ -81,6 +81,22 @@
         "type": "indirect"
       }
     },
+    "nixpkgs-with-asciidoctorjs": {
+      "locked": {
+        "lastModified": 1686065153,
+        "narHash": "sha256-0Dqszmgln0a9sNokD47eVseSaP4wQ95iISUQcsZCH+s=",
+        "owner": "zebreus",
+        "repo": "nixpkgs",
+        "rev": "f1a3be7a1160cc4810c0274ab76f0fac813eb4d6",
+        "type": "github"
+      },
+      "original": {
+        "owner": "zebreus",
+        "ref": "f1a3be7a1160cc4810c0274ab76f0fac813eb4d6",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nixpkgs_2": {
       "locked": {
         "lastModified": 1673800717,
@@ -116,6 +132,7 @@
         "fenix": "fenix",
         "flake-utils": "flake-utils",
         "nixpkgs": "nixpkgs",
+        "nixpkgs-with-asciidoctorjs": "nixpkgs-with-asciidoctorjs",
         "symbolator": "symbolator",
         "unstable-nixpkgs": "unstable-nixpkgs",
         "vcd2wavedrom": "vcd2wavedrom"

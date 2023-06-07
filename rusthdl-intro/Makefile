@@ -22,7 +22,7 @@ blinky_top.v: blinky.v
 	mv xx00 blinky_top.v
 
 index.html: Readme.adoc blinky.vcd blinky_top.v counter_embedded.v src/counter.rs src/counter_embedded.rs
-	$(ASCIIDOCTOR) -r asciidoctor-diagram Readme.adoc -o index.html
+	$(ASCIIDOCTOR) -r asciidoctor-kroki Readme.adoc -o index.html
 
 top-%.fs: top-%.pack
 	$(GOWINPACK) -d GW1N-9C -o $@ $^

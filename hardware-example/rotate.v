@@ -9,7 +9,7 @@ module rotate(input clk, output D1, output D2, output D3, output D4, output D5);
 
    addition myaddition(
   .clock (clk),
-  .reset (0'b0),
+  .reset (1'b0),
   .start_port (ready),
   .Pd5 (divider),
   .Pd6 (1),

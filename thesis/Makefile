@@ -1,5 +1,5 @@
 PWD = $(shell pwd)
-ASCIIDOCTOR     = asciidoctor -r asciidoctor-diagram
+ASCIIDOCTOR     = asciidoctor -r asciidoctor-kroki
 VCD_TO_WAVEDROM     = vcd2wavedrom
 ASCIIDOCTOR_WEB_PDF = asciidoctor-web-pdf -r asciidoctor-kroki
 

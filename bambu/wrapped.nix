@@ -1,4 +1,4 @@
-{ pkgs ? import <nixpkgs> { }, bambu }:
+{ pkgs ? import <nixpkgs> { } }:
 with pkgs;
 pkgs.runCommand "bambu-wrapped"
 {
@@ -6,10 +6,10 @@ pkgs.runCommand "bambu-wrapped"
   meta.mainProgram = "bambu";
 } ''
   mkdir $out
-  ln -s ${bambu}/* $out
+  ln -s ${bambu-unwrapped}/* $out
   rm $out/bin
   mkdir $out/bin
-  ln -s ${bambu}/bin/* $out/bin
+  ln -s ${bambu-unwrapped}/bin/* $out/bin
   for f in $out/bin/*; do
     if [ -f "$f" ]; then
         wrapProgram "$f" \

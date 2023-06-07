@@ -1,4 +1,4 @@
-{ pkgs ? import <nixpkgs> { }, symbolator, vcd2wavedrom, bambu, fenix
+{ pkgs ? import <nixpkgs> { }
 }:
 
 with pkgs;
@@ -17,7 +17,7 @@ rustPlatform.buildRustPackage rec {
 
   nativeBuildInputs = [
     # For docs
-    asciidoctor-with-extensions
+    asciidoctor-js
     graphviz
     gnuplot
     nodePackages.vega-cli
