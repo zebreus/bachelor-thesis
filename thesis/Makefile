@@ -17,8 +17,8 @@ Readme.css: $(SCSS_FILES)
 index.html: Readme.adoc Readme.css $(TARGETS_WITHOUT_HTML)
 	$(ASCIIDOCTOR) Readme.adoc -o index.html
 
-Readme.pdf: Readme.adoc Readme.css $(TARGETS_WITHOUT_HTML)
-	$(ASCIIDOCTOR_WEB_PDF) Readme.adoc
+thesis.pdf: Readme.adoc Readme.css $(TARGETS_WITHOUT_HTML)
+	$(ASCIIDOCTOR_WEB_PDF) Readme.adoc -o thesis.pdf
 
 %.wavejson: %.vcd
 	$(VCD_TO_WAVEDROM) -i $< | sed 's/TOP\.//' | jq '.signal = (.signal | map(select(.name | length < 30)))' > $@
