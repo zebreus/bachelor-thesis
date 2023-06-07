@@ -48,6 +48,7 @@
         packages.rusthdl-intro = import ./rusthdl-intro/default.nix { pkgs = pkgs; };
         packages.extended-abstract = import ./extended-abstract/default.nix { pkgs = pkgs; };
         packages.thesis = import ./thesis/default.nix { pkgs = pkgs; };
+        packages.thesis-pdf = import ./thesis/pdf.nix { pkgs = pkgs; };
         packages.default = packages.writing;
         devShells.default = import ./shell.nix { pkgs = pkgs; };
 
