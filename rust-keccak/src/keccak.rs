@@ -11,6 +11,7 @@
  * This implementation is faithfully ported from the C implementation from bambu.
  * https://github.com/ferrandi/PandA-bambu/blob/main/examples/crypto_designs/Keccak.c
  */
+// tag::implementation[]
 const NR_ROUNDS: usize = 24;
 
 macro_rules! get_krc_val {
@@ -52,15 +53,9 @@ const KECCAK_RHO_OFFSETS: [u8; NR_LANES] = [
     0, 1, 62, 28, 27, 36, 44, 6, 55, 20, 3, 10, 43, 25, 39, 41, 45, 15, 21, 8, 18, 2, 61, 56, 14,
 ];
 
-macro_rules! index_unsigned {
-    ($x:expr, $y:expr) => {
-        usize::try_from((($x) % 5) + 5 * (($y) % 5)).unwrap_unchecked()
-    };
-}
-
 macro_rules! index {
     ($x:expr, $y:expr) => {
-        isize::try_from((($x) % 5) + 5 * (($y) % 5)).unwrap_unchecked()
+        (($x) % 5) + 5 * (($y) % 5)
     };
 }
 
@@ -81,7 +76,7 @@ unsafe fn theta(a: *mut u64) -> () {
     for x in 0..5 {
         c[x] = 0;
         for y in 0..5 {
-            c[x] ^= *a.offset(index!(x, y));
+            c[x] ^= *a.add(index!(x, y));
         }
     }
     for x in 0..5 {
@@ -89,7 +84,7 @@ unsafe fn theta(a: *mut u64) -> () {
     }
     for x in 0..5 {
         for y in 0..5 {
-            *a.offset(index!(x, y)) ^= d[x];
+            *a.add(index!(x, y)) ^= d[x];
         }
     }
 }
@@ -97,10 +92,7 @@ unsafe fn theta(a: *mut u64) -> () {
 unsafe fn rho(a: *mut u64) -> () {
     for x in 0..5 {
         for y in 0..5 {
-            *a.offset(index!(x, y)) = rol64!(
-                *a.offset(index!(x, y)),
-                KECCAK_RHO_OFFSETS[index_unsigned!(x, y)]
-            );
+            *a.add(index!(x, y)) = rol64!(*a.add(index!(x, y)), KECCAK_RHO_OFFSETS[index!(x, y)]);
         }
     }
 }
@@ -110,13 +102,13 @@ unsafe fn pi(a: *mut u64) -> () {
 
     for x in 0..5 {
         for y in 0..5 {
-            temp_a[index_unsigned!(x, y)] = *a.offset(index!(x, y));
+            temp_a[index!(x, y)] = *a.add(index!(x, y));
         }
     }
 
     for x in 0..5 {
         for y in 0..5 {
-            *a.offset(index!(0 * x + 1 * y, 2 * x + 3 * y)) = temp_a[index_unsigned!(x, y)];
+            *a.add(index!(0 * x + 1 * y, 2 * x + 3 * y)) = temp_a[index!(x, y)];
         }
     }
 }
@@ -126,11 +118,10 @@ unsafe fn chi(a: *mut u64) -> () {
 
     for y in 0..5 {
         for x in 0..5 {
-            c[x] = *a.offset(index!(x, y))
-                ^ ((!*a.offset(index!(x + 1, y))) & *a.offset(index!(x + 2, y)));
+            c[x] = *a.add(index!(x, y)) ^ ((!*a.add(index!(x + 1, y))) & *a.add(index!(x + 2, y)));
         }
         for x in 0..5 {
-            *a.offset(index!(x, y)) = c[x];
+            *a.add(index!(x, y)) = c[x];
         }
     }
 }
@@ -139,6 +130,7 @@ unsafe fn iota(a: *mut u64, index_round: usize) -> () {
     *a ^= get_krc_val!(index_round);
 }
 
+// tag::main-function[]
 #[no_mangle]
 pub unsafe extern "C" fn keccak(a: *mut u64) -> () {
     for i in 0..NR_ROUNDS {
@@ -149,7 +141,10 @@ pub unsafe extern "C" fn keccak(a: *mut u64) -> () {
         iota(a, i);
     }
 }
+// end::main-function[]
+// end::implementation[]
 
+// tag::tests[]
 #[cfg(test)]
 mod tests {
 
@@ -192,3 +187,4 @@ mod tests {
         }
     }
 }
+// end::tests[]
