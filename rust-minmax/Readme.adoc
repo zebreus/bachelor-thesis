@@ -1,0 +1,3 @@
+= Minmax test crate
+
+This crate provides a simple minmax function for testing HLS.
