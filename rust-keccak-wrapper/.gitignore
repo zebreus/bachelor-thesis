@@ -1,0 +1,12 @@
+# Intermediate and output files
+*.ll
+*.bc
+*.mem
+*.v
+!panic.ll
+HLS_output
+bambu_results*
+*array_ref*
+synthesize_*
+simulate_*
+results.txt

@@ -1,0 +1,7 @@
+= Keccak test crate
+
+This crate provides a simple keccak (sha-3) function for testing HLS. It is just a wrapper around the keccak crate.
+
+keccak seems to be a reasonable algorithm for testing HLS, because it has some computational complexity and can be compared for throughput.
+
+The interface of the function is kept in C style, because that makes HLS and testing easier.

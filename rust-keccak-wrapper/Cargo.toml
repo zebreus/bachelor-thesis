@@ -1,0 +1,11 @@
+[package]
+name = "rust-keccak-wrapper"
+description = "Rust keccak function for benchmarking. Just a wrapper around the keccak crate."
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+array-macro = "2.1.5"
+keccak = "0.1.4"
