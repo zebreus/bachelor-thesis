@@ -39,7 +39,7 @@ CRATE_NAME_UNDERSCORED=$(echo $CRATE_NAME | tr '-' '_')
 export RUSTFLAGS='--emit=llvm-bc {rust_flags}'
 LLVM_BITCODE_FILES=($(cargo build --release -Z unstable-options --build-plan | jq '.invocations[].outputs[]' -r | grep -Po "^.*\.rlib$" | sed -E 's/lib([^\/]*)\.rlib/\1\.bc /' | tr -d '\n'))
 cargo build --release -Z unstable-options
-llvm-link "${{LLVM_BITCODE_FILES[@]}}" --opaque-pointers=false | llvm-dis -o {function_name}.ll
+llvm-link --opaque-pointers=false "${{LLVM_BITCODE_FILES[@]}}" | llvm-dis --opaque-pointers=false -o {function_name}.ll
 # cp $WORKSPACE_LOCATION/target/release/deps/${{CRATE_NAME_UNDERSCORED}}-*.ll {function_name}.ll
 "#
     );
