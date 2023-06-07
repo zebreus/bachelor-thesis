@@ -7,3 +7,10 @@ define void @_ZN4core9panicking5panic17h2a2cd64c1c1612ffE([0 x i8]* noalias noun
 start:
   unreachable
 }
+
+; core::panicking::panic_bounds_check
+; Function Attrs: cold noinline noreturn nounwind nonlazybind optsize
+define void @_ZN4core9panicking18panic_bounds_check17ha723b51b27c76082E(i64 %0, i64 %1, %"core::panic::location::Location<'_>"* align 8 %2) unnamed_addr #5 {
+start:
+  unreachable
+}
