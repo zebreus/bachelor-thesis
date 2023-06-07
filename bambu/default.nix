@@ -1,16 +1,18 @@
-{ pkgs ? import <nixpkgs> { },
-enableClang7 ? false,
-enableClang8 ? false,
-enableClang10 ? false,
-# Clang 11 is enabled by default, because it is in the nix binary cache
-enableClang11 ? true,
-enableClang12 ? false,
-enableClang13 ? false,
-# Clang 16 is enabled by default, because it is the latest clang version
-enableClang16 ? true,
-enableGcc7 ? false,
-# Gcc 8 is enabled by default, because it is in the nix binary cache
-enableGcc8 ? true, }:
+{ pkgs ? import <nixpkgs> { }
+, enableClang7 ? false
+, enableClang8 ? false
+, enableClang10 ? false
+, # Clang 11 is enabled by default, because it is in the nix binary cache
+  enableClang11 ? true
+, enableClang12 ? false
+, enableClang13 ? false
+, # Clang 16 is enabled by default, because it is the latest clang version
+  enableClang16 ? true
+, enableGcc7 ? false
+, # Gcc 8 is enabled by default, because it is in the nix binary cache
+  enableGcc8 ? true
+,
+}:
 let
 
   wrapGcc = gcc: pkgs.runCommand (gcc.name + "-with-libs")
@@ -118,14 +120,14 @@ in
 with pkgs;
 stdenv.mkDerivation {
   pname = "bambu";
-  version = "0.9.8";
+  version = "git";
   enableParallelBuilding = true;
 
   src = fetchFromGitHub {
-    owner = "zebreus";
+    owner = "ferrandi";
     repo = "PandA-bambu";
-    rev = "e18b8f1473dc65d77e4b9b002319ecb568097a7e";
-    sha256 = "sha256-WMssDtny9O5OAeXeusPDHd6UO3t/hZToZc5Ryf+Reec=";
+    rev = "f321f0085334b1a819eb0f08c6c6f94a5c7ffc7e";
+    sha256 = "sha256-s2b+SFky1HnHB3FCaHzDzVWBfwFbJPUxQB3Gxz5/9Fw=";
   };
 
   nativeBuildInputs = [
@@ -175,29 +177,29 @@ stdenv.mkDerivation {
   '';
 
   configurePhase = ''
-    make -f Makefile.init
+        make -f Makefile.init
     
-    mkdir -p ./build
-    cd ./build
+        mkdir -p ./build
+        cd ./build
 
-    ../configure --prefix=$out \
-      --build=x86_64-linux --target=x86_64-linux --host=x86_64-linux \
-${if enableClang7 then ''--with-clang7=${clang-with-llvm-7}/bin/clang '' else ""} \
-${if enableClang8 then ''--with-clang8=${clang-with-llvm-8}/bin/clang '' else ""} \
-${if enableClang10 then ''--with-clang10=${clang-with-llvm-10}/bin/clang '' else ""} \
-${if enableClang11 then ''--with-clang11=${clang-with-llvm-11}/bin/clang '' else ""} \
-${if enableClang12 then ''--with-clang12=${clang-with-llvm-12}/bin/clang '' else ""} \
-${if enableClang13 then ''--with-clang13=${clang-with-llvm-13}/bin/clang '' else ""} \
-${if enableClang16 then ''--with-clang16=${clang-with-llvm-16}/bin/clang '' else ""} \
-${if enableGcc7 then ''--with-gcc7=${self-wrapped-gcc7}/bin/gcc '' else ""} \
-${if enableGcc8 then ''--with-gcc8=${self-wrapped-gcc8}/bin/gcc '' else ""} \
-      --enable-shared=yes \
-      --disable-static \
-      --disable-allstatic \
-      --enable-bambu \
-      --disable-flopoco \
-      --program-prefix="" \
-      --program-suffix=""
+        ../configure --prefix=$out \
+          --build=x86_64-linux --target=x86_64-linux --host=x86_64-linux \
+    ${if enableClang7 then ''--with-clang7=${clang-with-llvm-7}/bin/clang '' else ""} \
+    ${if enableClang8 then ''--with-clang8=${clang-with-llvm-8}/bin/clang '' else ""} \
+    ${if enableClang10 then ''--with-clang10=${clang-with-llvm-10}/bin/clang '' else ""} \
+    ${if enableClang11 then ''--with-clang11=${clang-with-llvm-11}/bin/clang '' else ""} \
+    ${if enableClang12 then ''--with-clang12=${clang-with-llvm-12}/bin/clang '' else ""} \
+    ${if enableClang13 then ''--with-clang13=${clang-with-llvm-13}/bin/clang '' else ""} \
+    ${if enableClang16 then ''--with-clang16=${clang-with-llvm-16}/bin/clang '' else ""} \
+    ${if enableGcc7 then ''--with-gcc7=${self-wrapped-gcc7}/bin/gcc '' else ""} \
+    ${if enableGcc8 then ''--with-gcc8=${self-wrapped-gcc8}/bin/gcc '' else ""} \
+          --enable-shared=yes \
+          --disable-static \
+          --disable-allstatic \
+          --enable-bambu \
+          --disable-flopoco \
+          --program-prefix="" \
+          --program-suffix=""
   '';
 
   buildPhase = ''
