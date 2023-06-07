@@ -1,0 +1,5 @@
+= Keccak test crate
+
+This crate provides a simple keccak (sha-3) function for testing HLS.
+
+The implementation is a rust port of the example implementation from bambu.
