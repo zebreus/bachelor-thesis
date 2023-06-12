@@ -18,11 +18,12 @@
     flake-utils.lib.eachDefaultSystem (system:
       rec {
         pkgs-with-asciidoctorjs = import nixpkgs-with-asciidoctorjs { inherit system; };
+        asciidoctor-kroki = import ./nix/asciidoctor-kroki.nix { pkgs = pkgs; };
         pkgs = import unstable-nixpkgs {
           overlays = [
             (final: prev: {
-              inherit (pkgs-with-asciidoctorjs) asciidoctor-js asciidoctor-web-pdf;
-              asciidoctor-kroki = import ./nix/asciidoctor-kroki.nix { pkgs = final; };
+              asciidoctor-js = (pkgs-with-asciidoctorjs.asciidoctor-js.asciidoctor-js).override { extensions = [ asciidoctor-kroki ]; };
+              asciidoctor-web-pdf = pkgs-with-asciidoctorjs.asciidoctor-web-pdf.override { extensions = [ asciidoctor-kroki ]; };
               symbolator = symbolator.packages.${system}.symbolator;
               fenix = fenix.packages.${system};
               vcd2wavedrom = vcd2wavedrom.packages.${system}.vcd2wavedrom;

@@ -8,8 +8,8 @@ buildNpmPackage rec {
   src = fetchFromGitHub {
     owner = "zebreus";
     repo = pname;
-    rev = "01b1fce9c53739fb1cce0b26b2f93e5be478ca99";
-    hash = "sha256-osCrIXwHfrCDShXnvzKVbEbDQd59Mk/sQvW6IapEVU8=";
+    rev = "ebe6041364294d77b60081b5584743b0b13fc2f9";
+    hash = "sha256-it11dDBGOnPlCuqb3Fht2+3vtKxE912iWSQTsQfR2sA=";
   };
 
   PUPPETEER_SKIP_DOWNLOAD = "1";

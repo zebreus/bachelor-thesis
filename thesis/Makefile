@@ -1,7 +1,7 @@
 PWD = $(shell pwd)
-ASCIIDOCTOR     = asciidoctor -r asciidoctor-kroki
+ASCIIDOCTOR     = asciidoctor -r asciidoctor-kroki -a kroki-server-url=http://localhost:8000
 VCD_TO_WAVEDROM     = vcd2wavedrom
-ASCIIDOCTOR_WEB_PDF = asciidoctor-web-pdf -r asciidoctor-kroki
+ASCIIDOCTOR_WEB_PDF = asciidoctor-web-pdf -r asciidoctor-kroki -a kroki-server-url=http://localhost:8000
 
 TARGETS_WITHOUT_HTML += styles/trailing-scripts.adoc
 TARGETS += $(TARGETS_WITHOUT_HTML) index.html
