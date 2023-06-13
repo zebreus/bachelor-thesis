@@ -14,6 +14,7 @@
 :title-page: false
 :stylesheet: Readme.css
 :toclevels: 3
+:kroki-server-url: http://localhost:8000
 
 image::logo_hda.svg[role=logo]
 
@@ -470,7 +471,7 @@ The Rust compiler is frequently updated and the generated LLVM IR usually uses t
 
 The basic toolchain is relativly straightforward. In a first step the Rust compiler is used to convert a Rust function to a LLVM IR function. The second step passes the generated LLVM IR function to panda bambu which converts it to Verilog. The resulting Verilog can then be used in a larger HDL design.
 
-=== Toolchain proof of concept
+==== Toolchain proof of concept
 
 // Intro
 // TODO: Add a short section on keccak
@@ -557,13 +558,111 @@ bambu minmax.ll \
 
 The LLVM IR can then be used with bambu to generate Verilog. The command shown in Listing XXX instructs bambu to generate a Verilog module named `minmax` from the LLVM IR file `minmax.ll`. The `--compiler=I386_CLANG16` option instructs bambu to use clang 16 as the frontend for processing input. bambu supports multiple versions of clang and GCC. The `--top-fname=minmax` option specifies the name of the top level function. The top level function will be used as the entrypoint in the hardware design, comparable to the `main` function in a C program. This will also be the name of the generated Verilog module. The `-O3` option instructs bambu to also perform optimizations in its front and middleend.
 
+// TODO: insert gitpod link or something to the full code sample
+
+==== Interface of the generated Verilog module
+
+
+.Interface of the counter
+[symbolator]
+....
+module minmax(
+  //# {{control|Control}}
+  input clk;
+  input reset;
+  input start_port;
+  output done_port;
+  //# {{data|Parameters}}
+  input [31:0] Pd5;
+  input [31:0] Pd6;
+  input [31:0] Pd7;
+  input [31:0] Pd8;
+  //# {{power|Memory}}
+  input [63:0] M_Rdata_ram;
+  input [1:0] M_DataRdy;
+  output [1:0] Mout_oe_ram;
+  output [1:0] Mout_we_ram;
+  output [63:0] Mout_addr_ram;
+  output [63:0] Mout_Wdata_ram;
+  output [11:0] Mout_data_ram_size;
+);
+
+endmodule
+....
+
+.Descriptions of the control signals
+[cols="1,4"]
+|===
+|Port |Description
+
+|`clock`
+|The clock signal is used to clock the module
+
+|`reset`
+|Resets the module if set to 0.
+
+|`start_port`
+|The module will start executing, if this is high and the function is finished. Pinning this to high will cause the function to repeat.
+
+|`done_port`
+|Pulses high for one cycle, when the module is done.
+
+|`return_port`
+|Contains the return value while `done_port` is high. Can contain random values during function execution. Does only exist if the function has a return value.
+
+|===
+
+The interface of the component is shown in figure XXX and can be split into four categories. The first section contains clocking and control signal including clock, reset signal, start port and done port. The exact meanings of these signal is described in table XXX.
+
+The second section contains the function parameters. When LLVM IR is used as input for bambu the real names of the function parameters get lost and they are replaced with numbered names like `Pd5`. The order of the signals stays the same as the order of the inputs to the original function. The original name of the parameters can be inferred by the order of the numbered names, because bambu always numbers the parameters in the order they appear. In this case `Pd5` is `numbers_length`, `Pd6` is `numbers`, `Pd7` is `out_max` and `Pd8` is `out_min`. Memory pointers got converted to 32 bit numbers, but bambu can also be configured to generate other address sizes.
+
+// TODO: Ask if this kind of memory interface has a name
+The original function takes a pointer to memory as input. This means that the generated module needs to have a way to access that memory. Because of this bambu generates a memory interface for the component which needs to be connected to memory. During function execution the component will use this memory interface to retrieve and modify the input values. By default bambu generates a memory interface for a memory with 32-bit data and 32-bit addresses with two parallel direct connections. Most of the signals are double the size they would need to be for a single connection. For these signals the first half controls the first channel and the second half contains the second channel. Table XXX describes the memory interface in more detail.
+
+// TODO: Make tables wider than text if neccessary
+.Descriptions of the memory interface
+[cols="1,1,3"]
+|===
+|Port |Size per channel (bit) |Description
+
+|`Mout_oe_ram`
+|1
+|Set to 1 to read from the channel.
+
+|`Mout_we_ram`
+|1
+|Set to 1 to write to the channel.
+
+|`Mout_data_ram_size`
+|log2(dataWidth) + 1
+|Set the width of bits that should be written to the memory. Can be a value between 0 and the width of your data.
+
+|`Mout_addr_ram`
+|addressWidth
+|Select the address this channel should operate on.
+
+|`M_Wdata_ram`
+|dataWidth
+|Contains the data that will be written to memory if `Mout_we_ram` is set.
+
+|`M_Rdata_ram`
+|dataWidth
+|Contains the data that was read from memory if `Mout_oe_ram` was set in the last cycle.
+
+|`M_DataRdy`
+|1
+|Nonzero if the memory is not ready
+
+|===
+
+
 === Integrating the toolchain with rust-hdl
 
 // TODO: Remove intro
 We want to try using Rust as a source language for HLS, because of the developer experience. As seen in the previous example integrating it with Verilog involves a few manual steps. This is not a good developer experience. In this section the integration with rust-hdl will be explored. This makes it possible to create a single Rust crate containing both RTL and HLS code in the same project.
 
 // With rust macros it is possible to execute arbitrary code transformations at compile-time. This can be used 
-
+To make testing easier and more reproducable
 
 
 //TODO: This is a stub
@@ -589,6 +688,11 @@ The proof-of-concept implementation uses a Rust procedural macros to transform a
 
 
 == Experiments and results
+
+Hypothesis: HLS from Rust is as performant as HLS from C++
+Hypothesis: Using packages makes development faster
+Hypothesis: With rust we can easily use packages
+
 
 === Show limitations of the synthesizable subset of Rust
 
