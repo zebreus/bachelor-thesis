@@ -24,3 +24,18 @@ serde = "1.0.160"
 tempfile = "3.5.0"
 thiserror = "1.0.40"
 toml = "0.7.3"
+proc-macro2 = { version = "1.0.60" }
+syn = { version = "2.0.18", features = [
+    "full",
+    "parsing",
+    "extra-traits",
+    "printing",
+    "clone-impls",
+    "derive",
+    "visit",
+    "visit-mut",
+    "fold",
+], default-features = false }
+prettyplease = { version = "0.2.6", default-features = false }
+quote = { version = "1.0.28", default-features = false }
+glob = "0.3.1"

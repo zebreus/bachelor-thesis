@@ -6,11 +6,14 @@
 //! A bash script containing the commands to synthesize the temporary crate is then created and executed.
 //! The resulting Verilog is then returned as a string.
 
+mod buildscript_hls;
 mod cache_workspace;
 mod caching;
 mod extract_function_crate;
 mod generate_hls_script;
 mod rust_hls_options;
+
+pub use buildscript_hls::buildscript_hls;
 
 pub use rust_hls_options::RustHls;
 pub use rust_hls_options::RustHlsBuilder;
