@@ -11,13 +11,13 @@ mod cache_workspace;
 mod caching;
 mod extract_function_crate;
 mod generate_hls_script;
+mod rust_hls_old;
 mod rust_hls_options;
 
 pub use buildscript_hls::buildscript_hls;
 
 pub use rust_hls_options::RustHls;
-pub use rust_hls_options::RustHlsBuilder;
-pub use rust_hls_options::RustHlsBuilderError;
 pub use rust_hls_options::RustHlsError;
+pub use rust_hls_options::RustHlsResult;
 
 pub use generate_hls_script::{DEFAULT_HLS_FLAGS, DEFAULT_RUST_FLAGS};

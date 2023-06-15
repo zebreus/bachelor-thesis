@@ -63,7 +63,7 @@ mod tests {
         let dir = TempDir::new().unwrap();
 
         let target_crate_path = dir.path().join("nonexisting").to_path_buf();
-        let original_crate_path = Path::new("test_suites/extract_function_test")
+        let original_crate_path = Path::new("test_suites/test_crate")
             .to_path_buf()
             .canonicalize()
             .unwrap();

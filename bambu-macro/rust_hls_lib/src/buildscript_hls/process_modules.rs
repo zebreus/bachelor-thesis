@@ -6,6 +6,8 @@ mod get_available_dependencies;
 pub use get_available_dependencies::*;
 mod find_function_name;
 pub use find_function_name::*;
+mod get_module_paths;
+pub use get_module_paths::*;
 
 #[derive(Error, Debug)]
 pub enum ProcessModulesError {

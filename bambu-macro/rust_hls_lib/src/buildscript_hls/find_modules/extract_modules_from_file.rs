@@ -217,7 +217,7 @@ mod tests {
         let module = result.first().unwrap();
         assert_eq!(module.module_name, "hls_module");
         assert_eq!(module.module_path, "hls_module");
-        assert_eq!(module.source_file, root.join(file_with_one_hls_module));
+        assert_eq!(module.source_file, file_with_one_hls_module);
     }
 
     #[test]
@@ -243,12 +243,12 @@ mod tests {
         let module = result.get(0).unwrap();
         assert_eq!(module.module_name, "hls_module_a");
         assert_eq!(module.module_path, "hls_module_a");
-        assert_eq!(module.source_file, root.join(&file_with_two_hls_modules));
+        assert_eq!(&module.source_file, &file_with_two_hls_modules);
 
         let module = result.get(1).unwrap();
         assert_eq!(module.module_name, "hls_module_b");
         assert_eq!(module.module_path, "hls_module_b");
-        assert_eq!(module.source_file, root.join(&file_with_two_hls_modules));
+        assert_eq!(&module.source_file, &file_with_two_hls_modules);
     }
 
     #[test]

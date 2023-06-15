@@ -4,6 +4,7 @@ use std::path::PathBuf;
 use process_modules::*;
 mod find_modules;
 use find_modules::*;
+mod perform_hls;
 
 use thiserror::Error;
 #[derive(Error, Debug)]

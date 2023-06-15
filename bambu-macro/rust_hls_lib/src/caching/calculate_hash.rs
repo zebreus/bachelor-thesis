@@ -1,25 +1,22 @@
-use std::path::PathBuf;
-
-use base64::{engine::general_purpose, Engine};
-use merkle_hash::{Algorithm, MerkleTree};
+use std::{
+    collections::hash_map::DefaultHasher,
+    hash::{Hash, Hasher},
+    path::PathBuf,
+};
 
 use super::CachingError;
 
-pub fn calculate_hash(path: &PathBuf) -> Result<String, CachingError> {
-    let tree = MerkleTree::builder(&path.to_str().unwrap_or("shouldalwaysbeinvalid"))
-        .algorithm(Algorithm::Blake3)
-        .hash_names(false)
-        .build()
-        .or_else(|e| {
-            Err(CachingError::FailedToCalculateHash {
-                message: e.to_string(),
-            })
-        })?;
-    let hash = general_purpose::STANDARD_NO_PAD
-        .encode(&tree.root.item.hash)
-        .replace("/", "_");
+pub fn calculate_hash<U: Hash + Clone>(files: &Vec<U>) -> Result<String, CachingError> {
+    let mut s = DefaultHasher::new();
+    files.hash(&mut s);
+    let first_u64 = s.finish();
+    let reverse_files: Vec<&U> = files.iter().rev().collect();
+    reverse_files.hash(&mut s);
+    let second_u64 = s.finish();
 
-    Ok(hash)
+    let result = format!("{:x}{:x}", first_u64, second_u64);
+
+    Ok(result)
 }
 
 #[cfg(test)]
@@ -27,35 +24,29 @@ mod tests {
 
     use std::path::Path;
 
+    use crate::rust_hls::CrateFile;
+
     use super::*;
 
     #[test]
     fn caching_the_same_direcctory_twice_returns_the_same_hash() {
-        let crate_path = Path::new("test_suites/extract_function_test");
+        let files = vec!["alpha", "beta"];
 
-        let hash1 = calculate_hash(&crate_path.to_path_buf()).unwrap();
-        let hash2 = calculate_hash(&crate_path.to_path_buf()).unwrap();
+        let hash1 = calculate_hash(&files).unwrap();
+        let hash2 = calculate_hash(&files).unwrap();
 
         assert_eq!(hash1, hash2);
     }
 
     #[test]
     fn caching_two_different_direcctories_returns_different_hashes() {
-        let crate_path1 = Path::new("test_suites/test_crate");
-        let crate_path2 = Path::new("test_suites/extract_function_test");
+        let files = vec!["alpha", "beta"];
 
-        let hash1 = calculate_hash(&crate_path1.to_path_buf()).unwrap();
-        let hash2 = calculate_hash(&crate_path2.to_path_buf()).unwrap();
+        let files2 = vec!["alpha", "gamma"];
+
+        let hash1 = calculate_hash(&files).unwrap();
+        let hash2 = calculate_hash(&files2).unwrap();
 
         assert_ne!(hash1, hash2);
-    }
-
-    #[test]
-    fn hashing_a_nonexistent_directory_returns_an_error() {
-        let nonexistent_directory = Path::new("test_suites/sdfsadfadf");
-
-        let hash1 = calculate_hash(&nonexistent_directory.to_path_buf());
-
-        assert!(matches!(hash1, Err(_)));
     }
 }

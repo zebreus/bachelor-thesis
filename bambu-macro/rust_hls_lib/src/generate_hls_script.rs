@@ -22,7 +22,7 @@ pub const DEFAULT_HLS_FLAGS: &str = r#"--compiler=I386_CLANG16 -Os"#;
 /// The created script should be executed from a crate directory, that contains the crate described in the options.
 ///
 /// The script will generate a result.v file in the crate directory containing the synthesized Verilog code.
-fn generate_hls_script_content(options: &GenerateHlsOptions) -> String {
+pub fn generate_hls_script(options: &GenerateHlsOptions) -> String {
     let GenerateHlsOptions {
         function_name,
         rust_flags,
@@ -71,10 +71,10 @@ set -xe
 /// The created script should be executed from a crate directory, that contains the crate described in the options.
 ///
 /// The script will generate a result.v file in the crate directory containing the synthesized Verilog code.
-pub fn generate_hls_script(crate_path: &Path, options: &GenerateHlsOptions) -> io::Result<()> {
+pub fn generate_hls_script_file(crate_path: &Path, options: &GenerateHlsOptions) -> io::Result<()> {
     let path = crate_path.join("hls.sh");
     let mut file = File::create(path)?;
-    let content = generate_hls_script_content(options);
+    let content = generate_hls_script(options);
     file.write_all(content.as_bytes())?;
     file.sync_all()?;
     Ok(())
@@ -93,7 +93,7 @@ mod tests {
     fn generate_hls_script_creates_a_file() {
         let dir = TempDir::new().unwrap();
 
-        generate_hls_script(
+        generate_hls_script_file(
             &dir.path(),
             &GenerateHlsOptions {
                 function_name: "test".into(),
@@ -117,7 +117,7 @@ mod tests {
         let crate_name = "test_crate";
         let function_name = "add";
 
-        generate_hls_script(
+        generate_hls_script_file(
             &crate_path,
             &GenerateHlsOptions {
                 function_name: function_name.into(),

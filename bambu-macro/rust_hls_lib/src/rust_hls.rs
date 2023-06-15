@@ -10,15 +10,13 @@ use std::{
 };
 
 use cargo_toml::Manifest;
-use derive_builder::Builder;
 use rand::{distributions::Alphanumeric, thread_rng, Rng};
 use serde::Serialize;
-use tempfile::TempDir;
 
 use crate::{
     cache_workspace::{add_to_workspace, WorkspaceLock},
     caching::CachePath,
-    extract_function_crate::{extract_function_crate, ExtractCrateError, ExtractOptions},
+    extract_function_crate::ExtractCrateError,
     generate_hls_script::{generate_hls_script, GenerateHlsOptions},
 };
 
@@ -55,86 +53,67 @@ pub enum RustHlsError {
     FailedToAccessWorkspacePackage,
 }
 
-#[derive(Builder)]
-#[builder(pattern = "owned")]
-/// Configuration data for a high-level synthesis process
+#[derive(Debug, Clone, Serialize, Hash)]
+pub struct CrateFile {
+    /// The path of the file relative to the crate root
+    pub path: PathBuf,
+    /// The content of the file
+    pub content: String,
+}
+
+impl CrateFile {
+    pub fn new(path: PathBuf, content: String) -> Self {
+        Self { path, content }
+    }
+    pub fn from_file(path: PathBuf) -> Result<Self, io::Error> {
+        Ok(Self {
+            path: path.clone(),
+            content: read_to_string(path)?,
+        })
+    }
+}
+
+/// The HLS process is instrumented and controlled by this struct.
+///
+/// You can create a new instance of this struct using the `new` function.
+///
+/// The `execute` function will write the files to disk, execute the HLS process and return the resulting Verilog.
 pub struct RustHls {
-    #[builder(default = "TempDir::new().unwrap()")]
-    /// Used as a temporary directory for the extracted crate
-    temporary_directory: TempDir,
-    #[builder(default = "None")]
-    /// Used as a temporary directory for the extracted crate
-    cache_path: Option<CachePath>,
-    #[builder(default = "PathBuf::from(\"./.\")")]
-    /// Path to the original crate
-    crate_path: PathBuf,
-    #[builder(default = "String::from(\"add\")")]
-    /// Name of the function to synthesize
-    function_name: String,
-    /// File containing the function to synthesize. Relative to crate root.
-    function_file: PathBuf,
-    #[builder(default = "None")]
-    /// Select flags that will be passed to the rust compiler.
-    ///
-    /// Defaults to: [super::generate_hls_script::DEFAULT_RUST_FLAGS]
-    rust_flags: Option<String>,
-    #[builder(default = "None")]
-    /// Select flags that will be passed to the HLS tool (bambu).
-    ///
-    /// Defaults to: [super::generate_hls_script::DEFAULT_HLS_FLAGS]
-    hls_flags: Option<String>,
+    /// List of all files in the temporary crate
+    files: Vec<CrateFile>,
+}
+
+pub struct RustHlsResult {
+    /// Content of the verilog file
+    pub verilog: String,
+    /// Relevant generated files
+    pub files: Vec<CrateFile>,
 }
 
 impl RustHls {
-    /// Extract the crate into the target directory
-    pub fn extract_crate(&mut self) -> Result<&mut Self, RustHlsError> {
-        let extract_options = ExtractOptions {
-            original_crate_path: self.crate_path.clone(),
-            target_crate_path: self.temporary_directory.path().to_path_buf(),
-            function_name: self.function_name.clone(),
-            function_file: self.function_file.clone(),
-        };
+    /// Creates a new instance of RustHls.
+    ///
+    /// The new instance will synthesize from a temporary crate containing the given files.
+    ///
+    /// A hls.sh script will be generated and added to the crate.
+    pub fn new(mut files: Vec<CrateFile>, hls_options: GenerateHlsOptions) -> Self {
+        let script = generate_hls_script(&hls_options);
+        files.push(CrateFile {
+            path: PathBuf::from("hls.sh"),
+            content: script,
+        });
 
-        let extracted_location = extract_function_crate(&extract_options)?;
-        self.function_file = extracted_location.function_file;
-
-        Ok(self)
+        Self { files }
     }
 
-    pub fn prepare_hls(&mut self) -> Result<&mut Self, RustHlsError> {
-        // let cargo_toml_path = self
-        //     .temporary_directory
-        //     .path()
-        //     .to_path_buf()
-        //     .join("Cargo.toml");
-        // let cargo_toml_content = fs::read(cargo_toml_path)?;
-        // let manifest = Manifest::from_slice(cargo_toml_content.as_slice())?;
-        // let crate_name = manifest
-        //     .package
-        //     .and_then(|package| Some(package.name))
-        //     .ok_or(RustHlsError::FailedToGetPackageName)?;
-
-        let generate_hls_options = GenerateHlsOptions {
-            function_name: self.function_name.clone(),
-            rust_flags: self.rust_flags.clone(),
-            hls_flags: self.hls_flags.clone(),
-        };
-
-        generate_hls_script(
-            &self.temporary_directory.path().to_path_buf(),
-            &generate_hls_options,
-        )?;
-
-        Ok(self)
-    }
-
-    pub fn execute_hls_script(&mut self) -> Result<&mut Self, RustHlsError> {
-        let new_cache_path = CachePath::new(self.temporary_directory.path().to_path_buf())?;
-        self.cache_path = Some(new_cache_path.clone());
+    /// Writes the files to disk, execute the HLS process and return the resulting Verilog.
+    ///
+    /// The results are cached, so if you call this function again with the same files, it will return the cached result.
+    pub fn execute(&self) -> Result<RustHlsResult, RustHlsError> {
+        let new_cache_path = CachePath::from_files(&self.files)?;
 
         if let CachePath::Cached { .. } = new_cache_path {
-            self.cache_path = Some(new_cache_path);
-            return Ok(self);
+            return self.get_result(&new_cache_path);
         }
 
         let workspace_lock = WorkspaceLock::new()?;
@@ -143,8 +122,7 @@ impl RustHls {
 
         let working_directory = match &new_cache_path {
             CachePath::Cached { .. } => {
-                self.cache_path = Some(new_cache_path);
-                return Ok(self);
+                return self.get_result(&new_cache_path);
             }
             CachePath::Uncached { working_path, .. } => working_path.clone(),
         };
@@ -220,40 +198,27 @@ impl RustHls {
         let new_cache_path = new_cache_path.finalize()?;
         // TODO: Remove contents of working directory and replace them with a dummy crate
         write(working_directory.join("done.txt"), "")?;
-        self.cache_path = Some(new_cache_path);
 
         workspace_lock.unlock();
 
-        Ok(self)
+        self.get_result(&new_cache_path)
     }
 
-    pub fn get_generated_verilog(&mut self) -> Result<String, RustHlsError> {
-        let cache_path = match &self.cache_path {
-            None => {
-                let cache_path = CachePath::new(self.temporary_directory.path().to_path_buf())?;
-                self.cache_path = Some(cache_path);
-                self.cache_path.as_ref().unwrap()
-            }
-            Some(cache_path) => cache_path,
-        };
-
-        let target_crate_path = match cache_path {
+    fn get_result(&self, cache_path: &CachePath) -> Result<RustHlsResult, RustHlsError> {
+        let final_path = match cache_path {
             CachePath::Cached { path } => Ok(path),
             CachePath::Uncached { .. } => Err(RustHlsError::VerilogNotYetGenerated),
         }?;
-
-        let result_path = target_crate_path.join("result.v");
-        let result = read_to_string(result_path);
-        Ok(result?)
-    }
-
-    pub fn do_everything(&mut self) -> Result<String, RustHlsError> {
-        let result = self
-            .extract_crate()?
-            .prepare_hls()?
-            .execute_hls_script()?
-            .get_generated_verilog()?;
-        Ok(result)
+        let verilog_path = final_path.join("result.v");
+        let verilog = read_to_string(&verilog_path)?;
+        let verilog_file = CrateFile {
+            path: verilog_path,
+            content: verilog.clone(),
+        };
+        return Ok(RustHlsResult {
+            verilog: verilog,
+            files: vec![verilog_file],
+        });
     }
 }
 
@@ -263,33 +228,42 @@ mod tests {
 
     #[test]
     fn synthesizing_test_crate_creates_verilog_file() {
-        let mut options = RustHlsBuilder::create_empty()
-            .crate_path(PathBuf::from("test_suites/test_crate"))
-            .function_name("add".into())
-            .function_file(PathBuf::from("add.rs"))
-            .build()
-            .unwrap();
+        let files = vec![
+            CrateFile {
+                path: PathBuf::from("Cargo.toml"),
+                content: String::from(
+                    r#"
+                [package]
+                name = "test_crate"
+                version = "0.1.0"
+                
+                "#,
+                ),
+            },
+            CrateFile {
+                path: PathBuf::from("src/lib.rs"),
+                content: String::from(
+                    r#"
+                    #[no_mangle]
+                    pub extern fn add779(left: usize, right: usize) -> usize {
+                        left + right
+                    }
+                "#,
+                ),
+            },
+        ];
 
-        let generated_verilog = options.do_everything().unwrap();
+        let options = GenerateHlsOptions {
+            function_name: "add779".into(),
+            rust_flags: None,
+            hls_flags: None,
+        };
 
-        assert!(generated_verilog.lines().count() > 100);
-    }
+        let rust_hls = RustHls::new(files, options);
 
-    #[test]
-    fn synthesizing_crate_without_src_and_external_function() {
-        let mut options = RustHlsBuilder::create_empty()
-            .crate_path(PathBuf::from("test_suites/crate_without_src"))
-            .function_name("add".into())
-            .function_file(
-                PathBuf::from("test_suites/test_crate/src/add.rs")
-                    .canonicalize()
-                    .unwrap(),
-            )
-            .build()
-            .unwrap();
+        let result = rust_hls.execute().unwrap();
 
-        let generated_verilog = options.do_everything().unwrap();
-
-        assert!(generated_verilog.lines().count() > 100);
+        assert!(result.verilog.lines().count() > 100);
+        assert!(result.verilog.contains("add779"));
     }
 }
