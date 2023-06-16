@@ -1,5 +1,12 @@
-use std::{fs, path::PathBuf};
+use cargo_toml::Manifest;
+use fs_extra::file::write_all;
+use std::{
+    fs::{self, create_dir_all},
+    path::PathBuf,
+    thread::current,
+};
 use syn::Item;
+use tempfile::TempDir;
 // /// Returns all source files of the crate
 // fn get_source_files(root: &PathBuf) -> Vec<PathBuf> {
 //     let base = env::var("CARGO_MANIFEST_DIR").unwrap();
@@ -7,14 +14,24 @@ use syn::Item;
 //     print!("{:?}", result);
 //     result
 // }
+use itertools::Itertools;
 use thiserror::Error;
 
-use super::{extract_rust_hls_macro, HlsArguments, HlsMacroError};
+use crate::generated_file::{
+    extract_file_hash, filename_to_module_path, generate_output_filename, module_path_to_filename,
+    ExtractHashError, ExtractModulePathError,
+};
+
+use super::{extract_rust_hls_macro, find_modules, HlsArguments, HlsMacroError};
 
 #[derive(Error, Debug)]
 pub enum ExtractModuleError {
     #[error(transparent)]
     HlsMacroError(#[from] HlsMacroError),
+    #[error(transparent)]
+    ExtractHashError(#[from] ExtractHashError),
+    #[error(transparent)]
+    ExtractModulePathError(#[from] ExtractModulePathError),
     #[error(transparent)]
     IoError(#[from] std::io::Error),
     #[error("Failed to parse file {file}: {message}")]
@@ -59,11 +76,48 @@ pub struct MacroModule {
     /// Path to the original crate root
     pub crate_root: PathBuf,
     /// Path to the module in the original file. Like "something::something::module_name"
-    pub module_path: String,
-    /// Name of the module, if available
-    pub module_name: String,
+    pub module_path: Vec<String>,
+    /// Absolute path to the module in the original crate.
+    ///
+    /// Can be used to address the module with crate::
+    pub absolute_module_path: Vec<String>,
     /// Original type of the module
     pub module_type: ModuleType,
+    /// Cargo.toml of the crate.
+    pub cargo_toml: String,
+    /// The hash that is currently present in the output file
+    ///
+    /// None if the output file does not exist
+    pub previous_hash: Option<String>,
+    /// The path to the output file
+    pub output_file: PathBuf,
+}
+
+impl MacroModule {
+    pub fn new_for_tests(content: proc_macro2::TokenStream, filename: &str) -> (Self, TempDir) {
+        let file: syn::File = syn::parse2(content).unwrap();
+        let content = prettyplease::unparse(&file);
+        Self::new_for_tests_string(&content, filename)
+    }
+    pub fn new_for_tests_string(content: &str, filename: &str) -> (Self, TempDir) {
+        let dir = TempDir::new().unwrap();
+        create_dir_all(dir.path().join("src")).unwrap();
+        write_all(dir.path().join(filename), content).unwrap();
+        write_all(
+            dir.path().join("Cargo.toml"),
+            r#"[package]
+        name = "test-crate"
+        version = "1.0.0"
+        edition = "2021""#,
+        )
+        .unwrap();
+
+        let modules = find_modules(&dir.path().into()).unwrap();
+
+        let first_module = modules.into_iter().nth(0).unwrap();
+
+        (first_module, dir)
+    }
 }
 
 // Rust-hls rules
@@ -76,7 +130,7 @@ fn extract_module_from_item(
     item: &syn::Item,
     crate_root: &PathBuf,
     file: &PathBuf,
-    current_module_path: &str,
+    current_module_path: &Vec<String>,
 ) -> Result<Vec<MacroModule>, ExtractModuleError> {
     match item {
         Item::Macro(_)
@@ -97,11 +151,11 @@ fn extract_module_from_item(
         Item::Mod(module) => {
             let module_name = module.ident.to_string();
 
-            let current_module_path = if current_module_path.len() == 0 {
-                module_name.clone()
-            } else {
-                format!("{current_module_path}::{module_name}")
-            };
+            let current_module_path = current_module_path
+                .iter()
+                .cloned()
+                .chain(std::iter::once(module_name.clone()))
+                .collect();
 
             let rust_hls_options = extract_rust_hls_macro(&module.attrs)?;
 
@@ -116,7 +170,7 @@ fn extract_module_from_item(
 
             let Some(module_content) = &module.content else {
                 return Err(ExtractModuleError::RustHlsMacroOnModuleImport {
-                    module: current_module_path.into(),
+                    module: current_module_path.iter().join("::"),
                     file: file.to_string_lossy().to_string(),
                 })
             };
@@ -127,15 +181,34 @@ fn extract_module_from_item(
                 items: module_content.1.clone(),
             };
 
+            let input_module_path = filename_to_module_path(&file, &current_module_path)?;
+            let output_file = generate_output_filename(&input_module_path);
+            let output_file_content = std::fs::read_to_string(crate_root.join(&output_file));
+
+            let previous_hash = match output_file_content {
+                Ok(content) => Some(extract_file_hash(&content)?),
+                Err(_) => None,
+            };
+
+            let cargo_toml = std::fs::read_to_string(crate_root.join("Cargo.toml")).unwrap_or(
+                r#"[package]
+name = "temporary"
+edition = "2021""#
+                    .into(),
+            );
+
             let result: Result<Vec<MacroModule>, ExtractModuleError> = Ok(vec![MacroModule {
                 module_content_string: prettyplease::unparse(&module_file),
                 module_content: module_file,
                 source_file: file.clone(),
                 crate_root: crate_root.clone(),
-                module_path: current_module_path.to_string(),
-                module_name: module_name,
+                module_path: current_module_path.clone(),
+                absolute_module_path: input_module_path,
                 hls_arguments: rust_hls_arguments,
                 module_type: ModuleType::Inline,
+                cargo_toml: cargo_toml,
+                previous_hash,
+                output_file,
             }]);
 
             result
@@ -149,7 +222,7 @@ pub fn extract_hls_modules(
     items: &Vec<syn::Item>,
     crate_root: &PathBuf,
     file: &PathBuf,
-    current_module_path: &str,
+    current_module_path: &Vec<String>,
 ) -> Result<Vec<MacroModule>, ExtractModuleError> {
     items
         .iter()
@@ -177,13 +250,14 @@ pub fn extract_modules_from_file(
     })?;
     let items = parsed_file.items;
 
-    extract_hls_modules(&items, crate_root, file, "")
+    extract_hls_modules(&items, crate_root, file, &vec![])
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
     use glob::glob;
+    use quote::quote;
 
     const TEST_FILES_ROOT: &str = "test_suites/test_files";
 
@@ -215,8 +289,8 @@ mod tests {
 
         assert_eq!(result.len(), 1);
         let module = result.first().unwrap();
-        assert_eq!(module.module_name, "hls_module");
-        assert_eq!(module.module_path, "hls_module");
+        assert_eq!(module.absolute_module_path.last().unwrap(), "hls_module");
+        assert_eq!(module.module_path, vec!("hls_module"));
         assert_eq!(module.source_file, file_with_one_hls_module);
     }
 
@@ -241,13 +315,13 @@ mod tests {
 
         assert_eq!(result.len(), 2);
         let module = result.get(0).unwrap();
-        assert_eq!(module.module_name, "hls_module_a");
-        assert_eq!(module.module_path, "hls_module_a");
+        assert_eq!(module.absolute_module_path.last().unwrap(), "hls_module_a");
+        assert_eq!(module.module_path, vec!("hls_module_a"));
         assert_eq!(&module.source_file, &file_with_two_hls_modules);
 
         let module = result.get(1).unwrap();
-        assert_eq!(module.module_name, "hls_module_b");
-        assert_eq!(module.module_path, "hls_module_b");
+        assert_eq!(module.absolute_module_path.last().unwrap(), "hls_module_b");
+        assert_eq!(module.module_path, vec!("hls_module_b"));
         assert_eq!(&module.source_file, &file_with_two_hls_modules);
     }
 
@@ -276,5 +350,24 @@ mod tests {
         let result =
             extract_modules_from_file(&root, &file_with_hls_module_without_function).unwrap();
         assert_eq!(result.len(), 1);
+    }
+
+    #[test]
+    fn new_for_tests_seems_to_work() {
+        let module = MacroModule::new_for_tests(
+            quote!(
+                #[hls]
+                mod toast {
+                    #[hls]
+                    #[no_mangle]
+                    pub extern "C" fn add(a: u32, b: u32) {
+                        a + b
+                    }
+                }
+            ),
+            "src/lib.rs",
+        );
+
+        assert_eq!(module.0.absolute_module_path.last().unwrap(), "toast");
     }
 }

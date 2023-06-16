@@ -40,7 +40,7 @@ mod hls_macro_arguments {
         }
     }
 
-    #[derive(Debug, Default, PartialEq, Eq, Clone)]
+    #[derive(Debug, Default, PartialEq, Eq, Clone, Hash)]
     pub struct HlsArguments {
         #[allow(dead_code)]
         pub hls_flags: Option<LitStr>,

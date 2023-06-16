@@ -4,10 +4,9 @@ use std::{
     path::PathBuf,
 };
 
+use crate::extract_function_crate::ExtractCrateError;
 use cargo_toml::Manifest;
 use serde::Serialize;
-
-use crate::extract_function_crate::ExtractCrateError;
 
 pub fn sanitize_cargo_toml(
     target_crate_path: &PathBuf,

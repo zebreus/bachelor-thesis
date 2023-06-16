@@ -1,3 +1,9 @@
+use std::path::PathBuf;
+
+use crate::{
+    calculate_hash, generate_hls_script::GenerateHlsOptions, rust_hls::CrateFile, RustHls,
+};
+
 use super::find_modules::MacroModule;
 use thiserror::Error;
 mod analyze_dependencies;
@@ -6,17 +12,23 @@ mod get_available_dependencies;
 pub use get_available_dependencies::*;
 mod find_function_name;
 pub use find_function_name::*;
-mod get_module_paths;
-pub use get_module_paths::*;
+mod generate_cargo_toml;
+pub use generate_cargo_toml::*;
+mod remove_hls_macros;
+pub use remove_hls_macros::*;
 
 #[derive(Error, Debug)]
-pub enum ProcessModulesError {
+pub enum ProcessModuleError {
     #[error(transparent)]
     AnalyzeDependenciesError(#[from] AnalyzeDependenciesError),
     #[error(transparent)]
     GetDependenciesError(#[from] GetDependenciesError),
     #[error(transparent)]
     FindFunctionNameError(#[from] FindFunctionNameError),
+    #[error(transparent)]
+    GenerateCargoTomlError(#[from] GenerateCargoTomlError),
+    #[error(transparent)]
+    RemoveHlsMacrosError(#[from] RemoveHlsMacrosError),
 }
 
 // TODO: Passthrough features and patch from Cargo.toml
@@ -24,29 +36,77 @@ pub enum ProcessModulesError {
 /// A macro module that has been checked and processed that it is most likley synthesizable
 ///
 /// It should not be neccessary to analyze the module further as this type should contain all information required to build a crate and run bambu
+#[derive(Debug, Hash)]
 pub struct ProcessedModule {
     /// Content of the module
     pub content: String,
     /// The main function name
     pub function_name: String,
-    /// The name of the module
-    pub module_name: String,
     /// The dependencies that are required to build the module
-    pub dependencies: Vec<String>,
+    pub cargo_toml: String,
     /// Arguments for rust_hls
     pub rust_hls_args: super::HlsArguments,
 }
 
-pub fn process_module(module: MacroModule) -> Result<ProcessedModule, ProcessModulesError> {
-    let available_dependencies = get_available_dependencies(&module.crate_root)?;
+impl ProcessedModule {
+    pub fn get_files(&self) -> Vec<CrateFile> {
+        let mut files = Vec::new();
+        files.push(CrateFile {
+            path: PathBuf::from("Cargo.toml"),
+            content: self.cargo_toml.clone(),
+        });
+        files.push(CrateFile {
+            path: PathBuf::from("src/lib.rs"),
+            content: self.content.clone(),
+        });
+        return files;
+    }
+
+    pub fn calculate_hash(&self) -> String {
+        let files = self.get_files();
+        let hash = calculate_hash(&files);
+        return hash;
+    }
+
+    // TODO: Refactor rust hls args and GenerateHlsOptions
+
+    pub fn to_rust_hls(&self) -> RustHls {
+        let files = self.get_files();
+
+        let options = GenerateHlsOptions {
+            function_name: self.function_name.clone(),
+            rust_flags: self
+                .rust_hls_args
+                .rust_flags
+                .clone()
+                .and_then(|f| Some(f.value())),
+            hls_flags: self
+                .rust_hls_args
+                .hls_flags
+                .clone()
+                .and_then(|f| Some(f.value())),
+        };
+
+        let rust_hls = RustHls::new(files, options);
+        return rust_hls;
+    }
+}
+
+pub fn process_module(module: &MacroModule) -> Result<ProcessedModule, ProcessModuleError> {
+    let available_dependencies = get_available_dependencies(&module.cargo_toml)?;
     let dependencies = analyze_dependencies(&module, &available_dependencies)?;
     let (function_name, function_hls_arguments) = find_function_name(&module.module_content)?;
     let hls_args = module.hls_arguments.overlay(&function_hls_arguments);
+    let cargo_toml = generate_cargo_toml(&module.crate_root, &module.cargo_toml, &dependencies)?;
+
+    // Create a mutable copy of content, so we can remove the hls! macro
+    let mut new_content = module.module_content.clone();
+    remove_hls_macros(&mut new_content)?;
+
     let processed_module = ProcessedModule {
-        content: module.module_content_string,
+        content: prettyplease::unparse(&new_content),
         function_name,
-        module_name: module.module_name,
-        dependencies: dependencies.into_iter().collect(),
+        cargo_toml: cargo_toml.content,
         rust_hls_args: hls_args,
     };
     return Ok(processed_module);
@@ -56,10 +116,10 @@ pub fn process_module(module: MacroModule) -> Result<ProcessedModule, ProcessMod
 ///
 /// Processed modules are modules that are ready to be synthesized.
 pub fn process_modules(
-    modules: Vec<MacroModule>,
-) -> Result<Vec<ProcessedModule>, ProcessModulesError> {
+    modules: &Vec<MacroModule>,
+) -> Result<Vec<ProcessedModule>, ProcessModuleError> {
     modules
         .into_iter()
-        .map(|module| process_module(module))
+        .map(|module| process_module(&module))
         .collect()
 }

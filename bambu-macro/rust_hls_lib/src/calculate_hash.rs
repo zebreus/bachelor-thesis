@@ -1,30 +1,23 @@
 use std::{
     collections::hash_map::DefaultHasher,
     hash::{Hash, Hasher},
-    path::PathBuf,
 };
 
-use super::CachingError;
-
-pub fn calculate_hash<U: Hash + Clone>(files: &Vec<U>) -> Result<String, CachingError> {
+pub fn calculate_hash<U: Hash + Clone>(input: &Vec<U>) -> String {
     let mut s = DefaultHasher::new();
-    files.hash(&mut s);
+    input.hash(&mut s);
     let first_u64 = s.finish();
-    let reverse_files: Vec<&U> = files.iter().rev().collect();
+    let reverse_files: Vec<&U> = input.iter().rev().collect();
     reverse_files.hash(&mut s);
     let second_u64 = s.finish();
 
     let result = format!("{:x}{:x}", first_u64, second_u64);
 
-    Ok(result)
+    result
 }
 
 #[cfg(test)]
 mod tests {
-
-    use std::path::Path;
-
-    use crate::rust_hls::CrateFile;
 
     use super::*;
 
@@ -32,8 +25,8 @@ mod tests {
     fn caching_the_same_direcctory_twice_returns_the_same_hash() {
         let files = vec!["alpha", "beta"];
 
-        let hash1 = calculate_hash(&files).unwrap();
-        let hash2 = calculate_hash(&files).unwrap();
+        let hash1 = calculate_hash(&files);
+        let hash2 = calculate_hash(&files);
 
         assert_eq!(hash1, hash2);
     }
@@ -44,8 +37,8 @@ mod tests {
 
         let files2 = vec!["alpha", "gamma"];
 
-        let hash1 = calculate_hash(&files).unwrap();
-        let hash2 = calculate_hash(&files2).unwrap();
+        let hash1 = calculate_hash(&files);
+        let hash2 = calculate_hash(&files2);
 
         assert_ne!(hash1, hash2);
     }

@@ -1,4 +1,3 @@
-mod calculate_hash;
 mod generate_cached_path;
 use fs_extra::dir::{copy, CopyOptions};
 use rand::{distributions::Alphanumeric, thread_rng, Rng};
@@ -12,7 +11,7 @@ use thiserror::Error;
 
 pub use generate_cached_path::get_cache_path;
 
-use crate::rust_hls::CrateFile;
+use crate::{calculate_hash, rust_hls::CrateFile};
 
 #[derive(Error, Debug)]
 pub enum CachingError {
@@ -82,7 +81,7 @@ impl CachePath {
     }
 
     pub fn from_files(based_on: &Vec<CrateFile>) -> Result<CachePath, CachingError> {
-        let hash = calculate_hash::calculate_hash(based_on)?;
+        let hash = calculate_hash(based_on);
         let ready_cache_path = generate_cached_path::generate_cached_path(&hash)?;
         if ready_cache_path.exists() {
             Ok(CachePath::Cached {

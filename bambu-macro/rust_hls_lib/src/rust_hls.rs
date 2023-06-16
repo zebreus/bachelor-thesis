@@ -31,12 +31,7 @@ pub enum RustHlsError {
     #[error(
         "Encountered an error during high level synthesis. See attached logs at {path} <{path}> ."
     )]
-    HighLevelSynthesisFailed {
-        error: String,
-        out: String,
-        exitcode: i32,
-        path: String,
-    },
+    HighLevelSynthesisFailed { exitcode: i32, path: String },
     #[error("High level synthesis did not fail, but did not produce a result either. See attached logs for details.")]
     HighLevelSynthesisDidNotProduceResult { error: String, out: String },
     #[error("Failed to parse cargo toml in the generated crate")]
@@ -70,6 +65,14 @@ impl CrateFile {
             path: path.clone(),
             content: read_to_string(path)?,
         })
+    }
+    pub fn write(&self) -> Result<(), io::Error> {
+        let parent = self.path.parent().ok_or(std::io::Error::new(
+            std::io::ErrorKind::Other,
+            "Failed to get parent directory",
+        ))?;
+        fs::create_dir_all(parent)?;
+        write(&self.path, &self.content)
     }
 }
 
@@ -179,8 +182,7 @@ impl RustHls {
             File::create(working_directory.join("log.stderr"))?
                 .write_all(output.stderr.as_slice())?;
             return Err(RustHlsError::HighLevelSynthesisFailed {
-                error: String::from_utf8_lossy(&output.stderr).to_string(),
-                out: String::from_utf8_lossy(&output.stdout).to_string(),
+                // TODO: Classify errors by parsing stderr
                 exitcode: exit_code,
                 path: working_directory.to_string_lossy().to_string(),
             });

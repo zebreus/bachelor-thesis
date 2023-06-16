@@ -4,10 +4,14 @@ use cargo_toml::Manifest;
 
 use thiserror::Error;
 
+use super::generate_cargo_toml::{load_cargo_toml, LoadCargoTomlError};
+
 #[derive(Error, Debug)]
 pub enum GetDependenciesError {
     #[error(transparent)]
     IoError(#[from] io::Error),
+    #[error(transparent)]
+    LoadCargoTomlError(#[from] LoadCargoTomlError),
     #[error("The source crate does not contain a Cargo.toml file")]
     NoCargoToml,
     #[error("Failed to parse cargo toml for the generated crate")]
@@ -17,17 +21,12 @@ pub enum GetDependenciesError {
 }
 
 pub fn get_available_dependencies(
-    crate_path: &PathBuf,
+    cargo_toml: &String,
 ) -> Result<HashSet<String>, GetDependenciesError> {
-    let cargo_toml_path = &crate_path.join("Cargo.toml");
-    if !cargo_toml_path.exists() {
-        return Err(GetDependenciesError::NoCargoToml);
-    }
+    let manifest = Manifest::from_str(cargo_toml.as_str())?;
 
-    let cargo_toml_content = fs::read(cargo_toml_path)?;
-    let manifest = Manifest::from_slice(cargo_toml_content.as_slice())?;
-
-    let dependencies = manifest.dependencies;
+    let dependencies: std::collections::BTreeMap<String, cargo_toml::Dependency> =
+        manifest.dependencies;
     let dependency_names_iterator = dependencies.into_iter().map(|dependency| dependency.0);
 
     let dependency_names = HashSet::from_iter(dependency_names_iterator);
@@ -48,7 +47,9 @@ mod tests {
             .canonicalize()
             .unwrap();
 
-        let available_dependencies = get_available_dependencies(&original_crate_path).unwrap();
+        let cargo_toml = fs::read_to_string(original_crate_path.join("Cargo.toml")).unwrap();
+
+        let available_dependencies = get_available_dependencies(&cargo_toml).unwrap();
 
         assert_eq!(available_dependencies.len(), 1);
         assert!(available_dependencies.contains("test_crate"));

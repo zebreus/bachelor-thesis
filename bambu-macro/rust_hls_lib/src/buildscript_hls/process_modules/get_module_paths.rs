@@ -86,12 +86,18 @@ pub struct ModulePathInformation {
 }
 
 /// This function calculates information about the module path of a module.
+///
+/// Arguments:
+/// * `source_file`: The path to the source file of the module. Relative to the crate root
+/// * `module_path`: The path to the module inside the source file
+/// * `function_name`: The name of the function that is being synthesized
 pub fn get_module_path_information(
-    module: &MacroModule,
-    function_name: String,
+    source_file: &PathBuf,
+    module_path: &String,
+    function_name: &String,
 ) -> Result<ModulePathInformation, GetModulePathsError> {
-    let module_path_to_file = file_to_module_path(&module.source_file)?;
-    let module_path_in_file = module_path_string_to_vec(module.module_path.clone())?;
+    let module_path_to_file = file_to_module_path(&source_file)?;
+    let module_path_in_file = module_path_string_to_vec(module_path.clone())?;
     let absolute_input_module_path = module_path_to_file
         .iter()
         .chain(module_path_in_file.iter())
@@ -102,7 +108,7 @@ pub fn get_module_path_information(
     let last_module = absolute_module_path.pop().unwrap_or("lib".into());
     absolute_module_path.push(format!("{last_module}_synthesized"));
 
-    let input_file = module.source_file.clone();
+    let input_file = source_file.clone();
     let output_file = PathBuf::from(format!(
         "src/{}.rs",
         absolute_module_path
