@@ -1,14 +1,14 @@
 use itertools::Itertools;
 
-use crate::{extract_rust_hdl_interface::as_snake_case, extract_verilog_interface::Port};
+use crate::Signal;
 
 /// Generate the body of the Verilog module
-pub fn generate_verilog_body(ports: Vec<Port>, module_name: &str) -> String {
-    let mut port_strings = ports.iter().map(|port| {
+pub fn generate_verilog_body(signals: &Vec<Signal>, module_name: &str) -> String {
+    let mut port_strings = signals.iter().map(|signal| {
         format!(
             ".{}({})",
-            port.identifier.as_str(),
-            as_snake_case(port.identifier.as_str())
+            signal.internal_name.as_str(),
+            signal.name.as_str()
         )
     });
     let port_string = port_strings.join(", ");
@@ -17,39 +17,42 @@ pub fn generate_verilog_body(ports: Vec<Port>, module_name: &str) -> String {
 
 #[cfg(test)]
 mod tests {
-    use crate::extract_verilog_interface::{DataSize, Direction, NetType};
+    use crate::{extract_verilog_interface::Direction, SignalType};
 
     use super::*;
 
     #[test]
     fn can_extract_the_interface_of_counter() {
         let ports = Vec::from([
-            Port {
-                identifier: "clock".to_string(),
+            Signal {
+                name: "clock".to_string(),
+                internal_name: "clock".to_string(),
                 direction: Direction::In,
-                data_size: DataSize::Bit,
-                net_type: NetType::Wire,
+                signal_type: SignalType::Clock,
+                driven: false,
             },
-            Port {
-                identifier: "led".to_string(),
+            Signal {
+                name: "led".to_string(),
+                internal_name: "led".to_string(),
                 direction: Direction::Out,
-                data_size: DataSize::Bits(6),
-                net_type: NetType::Wire,
+                signal_type: SignalType::Bits(6),
+                driven: true,
             },
         ]);
-        let code = generate_verilog_body(ports, "counter");
+        let code = generate_verilog_body(&ports, "counter");
         assert_eq!(code, "counter counter_inst(.clock(clock), .led(led));");
     }
 
     #[test]
-    fn converts_external_ports_to_snake_case() {
-        let ports = Vec::from([Port {
-            identifier: "coolPort".to_string(),
-            direction: Direction::In,
-            data_size: DataSize::Bit,
-            net_type: NetType::Wire,
+    fn puts_external_name_and_internal_name_in_the_right_places() {
+        let ports = Vec::from([Signal {
+            name: "cool_port".to_string(),
+            internal_name: "coolPort".to_string(),
+            direction: Direction::Out,
+            signal_type: SignalType::Bits(6),
+            driven: true,
         }]);
-        let code = generate_verilog_body(ports, "counter");
+        let code = generate_verilog_body(&ports, "counter");
         assert_eq!(code, "counter counter_inst(.coolPort(cool_port));");
     }
 }

@@ -24,6 +24,7 @@ impl Port {
 
         Signal {
             name: as_snake_case(self.identifier.as_str()),
+            internal_name: self.identifier.to_string(),
             signal_type: signal_type,
             direction: direction,
             driven: driven,

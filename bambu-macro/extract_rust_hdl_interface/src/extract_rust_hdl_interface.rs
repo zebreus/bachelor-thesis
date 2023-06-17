@@ -3,8 +3,6 @@ mod as_snake_case;
 mod convert_port_to_signal;
 mod generate_verilog_body;
 
-use as_snake_case::as_snake_case;
-
 pub use generate_verilog_body::generate_verilog_body;
 
 use itertools::Itertools;
@@ -23,11 +21,39 @@ use self::as_pascal_case::as_pascal_case;
 pub struct RustHdlModule {
     /// Name for the rust-hdl struct
     pub name: String,
+    /// The interface of the rust-hdl module
     pub signals: Vec<Signal>,
-    /// Verilog that represents the logic of our module
-    pub internal_verilog: String,
+    /// Name of the verilog module
+    verilog_name: String,
     /// Verilog that represents external libraries
-    pub external_verilog: String,
+    external_verilog: String,
+}
+
+impl RustHdlModule {
+    pub fn new(verilog_name: String, signals: Vec<Signal>, verilog: String) -> Self {
+        RustHdlModule {
+            name: as_pascal_case(verilog_name.as_str()),
+            verilog_name,
+            signals,
+            external_verilog: verilog,
+        }
+    }
+    /// Verilog that should be used as the internal logic of the rust-hdl module.
+    ///
+    /// It just instantiates the external module and connects the ports.
+    pub fn internal_verilog(&self) -> String {
+        return generate_verilog_body(&self.signals, &self.verilog_name);
+    }
+    /// Verilog that contains the module that is being wrapped.
+    ///
+    /// This needs to be included besides the internal verilog.
+    pub fn external_verilog(&self) -> &str {
+        return self.external_verilog.as_str();
+    }
+    /// The name of the verilog module that is being wrapped.
+    pub fn verilog_name(&self) -> &str {
+        return self.verilog_name.as_str();
+    }
 }
 
 /// The type of a signal.
@@ -45,6 +71,8 @@ pub enum SignalType {
 pub struct Signal {
     /// Name of the signal
     pub name: String,
+    /// Internal name of the signal
+    pub internal_name: String,
     /// Direction of the signal
     pub direction: Direction,
     /// Datatype of the signal
@@ -75,13 +103,12 @@ pub fn extract_rust_hdl_interface(
     let ports = extract_verilog_interface(&syntax_tree, Some(module_name));
     let signals: Vec<Signal> = ports.iter().map_into().collect();
 
-    let internal_verilog = generate_verilog_body(ports, module_name);
     let external_verilog = String::from(verilog);
 
     Ok(RustHdlModule {
         name: as_pascal_case(module_name),
+        verilog_name: module_name.into(),
         signals,
-        internal_verilog,
         external_verilog,
     })
 }
@@ -122,23 +149,70 @@ mod tests {
             rust_hdl_module,
             RustHdlModule {
                 name: "Counter".to_string(),
+                verilog_name: "counter".to_string(),
                 signals: vec![
                     Signal {
                         name: "clock".to_string(),
+                        internal_name: "clock".to_string(),
                         direction: Direction::In,
                         signal_type: SignalType::Clock,
                         driven: false,
                     },
                     Signal {
                         name: "led".to_string(),
+                        internal_name: "led".to_string(),
                         direction: Direction::Out,
                         signal_type: SignalType::Bits(6),
                         driven: true,
                     },
                 ],
-                internal_verilog: String::from("counter counter_inst(.clock(clock), .led(led));"),
                 external_verilog: String::from(VERILOG_COUNTER)
             }
+        );
+
+        assert_eq!(
+            rust_hdl_module.internal_verilog(),
+            "counter counter_inst(.clock(clock), .led(led));"
+        );
+    }
+
+    #[test]
+    fn renaming_interface_of_the_rusthdl_module_works() {
+        let mut rust_hdl_module = extract_rust_hdl_interface(VERILOG_COUNTER, "counter").unwrap();
+
+        rust_hdl_module.signals.first_mut().map(|first_signal| {
+            first_signal.name = "cool_external_name".to_string();
+            Some(())
+        });
+
+        assert_eq!(
+            rust_hdl_module,
+            RustHdlModule {
+                name: "Counter".to_string(),
+                verilog_name: "counter".to_string(),
+                signals: vec![
+                    Signal {
+                        name: "cool_external_name".to_string(),
+                        internal_name: "clock".to_string(),
+                        direction: Direction::In,
+                        signal_type: SignalType::Clock,
+                        driven: false,
+                    },
+                    Signal {
+                        name: "led".to_string(),
+                        internal_name: "led".to_string(),
+                        direction: Direction::Out,
+                        signal_type: SignalType::Bits(6),
+                        driven: true,
+                    },
+                ],
+                external_verilog: String::from(VERILOG_COUNTER)
+            }
+        );
+
+        assert_eq!(
+            rust_hdl_module.internal_verilog(),
+            "counter counter_inst(.clock(cool_external_name), .led(led));"
         );
     }
 }
