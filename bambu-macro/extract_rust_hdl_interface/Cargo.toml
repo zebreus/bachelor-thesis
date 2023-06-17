@@ -1,6 +1,6 @@
 [package]
 name = "extract_rust_hdl_interface"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 license = "MIT"
 keywords = ["rust-hdl", "verilog", "fpga"]
@@ -12,4 +12,4 @@ description = "Extracts the information needed for a rust-hdl module from a veri
 
 [dependencies]
 itertools = "0.10.5"
-sv-parser = "0.13.0"
+sv-parser = "0.13.1"
