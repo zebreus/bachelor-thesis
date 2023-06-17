@@ -1,7 +1,7 @@
-mod process_modules;
+mod process_module;
 use std::{io, path::PathBuf};
 
-use process_modules::*;
+use process_module::*;
 mod find_modules;
 use find_modules::*;
 mod perform_hls;

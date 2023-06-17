@@ -1,9 +1,3 @@
-use std::{
-    fs::File,
-    io::{self, Write},
-    path::Path,
-};
-
 pub struct GenerateHlsOptions {
     pub function_name: String,
     pub rust_flags: Option<String>,
@@ -66,28 +60,27 @@ set -xe
     ));
 }
 
-/// Generate the contents of the HLS script.
-///
-/// The created script should be executed from a crate directory, that contains the crate described in the options.
-///
-/// The script will generate a result.v file in the crate directory containing the synthesized Verilog code.
-pub fn generate_hls_script_file(crate_path: &Path, options: &GenerateHlsOptions) -> io::Result<()> {
-    let path = crate_path.join("hls.sh");
-    let mut file = File::create(path)?;
-    let content = generate_hls_script(options);
-    file.write_all(content.as_bytes())?;
-    file.sync_all()?;
-    Ok(())
-}
-
 #[cfg(test)]
 mod tests {
-    use std::process::Command;
-
     use fs_extra::dir::{copy, CopyOptions};
+    use std::process::Command;
+    use std::{
+        fs::File,
+        io::{self, Write},
+        path::Path,
+    };
     use tempfile::TempDir;
 
     use super::*;
+
+    fn generate_hls_script_file(crate_path: &Path, options: &GenerateHlsOptions) -> io::Result<()> {
+        let path = crate_path.join("hls.sh");
+        let mut file = File::create(path)?;
+        let content = generate_hls_script(options);
+        file.write_all(content.as_bytes())?;
+        file.sync_all()?;
+        Ok(())
+    }
 
     #[test]
     fn generate_hls_script_creates_a_file() {

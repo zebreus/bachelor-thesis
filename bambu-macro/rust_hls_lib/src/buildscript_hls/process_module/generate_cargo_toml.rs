@@ -1,6 +1,5 @@
 use std::{
     collections::{BTreeMap, HashSet},
-    fs, io,
     path::PathBuf,
 };
 
@@ -10,16 +9,6 @@ use serde::Serialize;
 use thiserror::Error;
 
 use crate::rust_hls::CrateFile;
-
-#[derive(Error, Debug)]
-pub enum LoadCargoTomlError {
-    #[error(transparent)]
-    IoError(#[from] io::Error),
-    #[error("The source crate does not contain a Cargo.toml file")]
-    NoCargoToml,
-    #[error("Failed to parse cargo toml for the generated crate")]
-    FailedToParseCargoToml(#[from] cargo_toml::Error),
-}
 
 #[derive(Error, Debug)]
 pub enum GenerateCargoTomlFromManifestError {
@@ -37,19 +26,6 @@ pub enum GenerateCargoTomlError {
     GenerateCargoTomlFromManifestError(#[from] GenerateCargoTomlFromManifestError),
     #[error("Failed to serialize cargo toml for the generated crate")]
     FailedToSerializeCargoToml(#[from] toml::ser::Error),
-}
-
-/// Load the cargo toml of the crate at the given path
-pub fn load_cargo_toml(crate_root: &PathBuf) -> Result<Manifest, LoadCargoTomlError> {
-    let cargo_toml_path = &crate_root.join("Cargo.toml");
-    if !cargo_toml_path.exists() {
-        return Err(LoadCargoTomlError::NoCargoToml);
-    }
-
-    let cargo_toml_content = fs::read(cargo_toml_path)?;
-    let manifest = Manifest::from_slice(cargo_toml_content.as_slice())?;
-
-    return Ok(manifest);
 }
 
 /// Generates a new cargo.toml file for the generated crate.

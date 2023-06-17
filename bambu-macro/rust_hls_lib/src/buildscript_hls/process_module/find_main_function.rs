@@ -17,13 +17,26 @@ pub enum FindFunctionNameError {
     NoMangleMissingOnHlsMainFunction,
     #[error("HLS main function needs to be extern")]
     ExternMissingOnHlsMainFunction,
+    #[error("The HLS main function can not use self")]
+    HlsMainFunctionHasSelfParameter,
+    #[error("The HLS main function must only use ident parameters. Idk how this error can occur.")]
+    HlsMainFunctionHasParameterWithoutIdentifier,
     #[error(transparent)]
     HlsMacroError(#[from] HlsMacroError),
 }
 
-pub fn find_function_name(
-    content: &syn::File,
-) -> Result<(String, HlsArguments), FindFunctionNameError> {
+/// Contains information about the HLS main function
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct HlsFunctionInfo {
+    /// Name of the function
+    pub function_name: String,
+    /// Parameters of the function
+    pub parameters: Vec<(String, syn::Type)>,
+    /// Arguemtns of the function
+    pub hls_arguments: HlsArguments,
+}
+
+pub fn find_main_function(content: &syn::File) -> Result<HlsFunctionInfo, FindFunctionNameError> {
     let items = &content.items;
     let hls_functions: Result<Vec<_>, _> = items
         .iter()
@@ -56,9 +69,35 @@ pub fn find_function_name(
     assert_function_is_extern(function)?;
     assert_function_is_nomangle(function)?;
 
-    let function_name = &function.sig.ident.to_string();
+    let function_name = function.sig.ident.to_string();
 
-    return Ok((function_name.clone(), hls_arguments));
+    let parameter_names = function
+        .sig
+        .inputs
+        .iter()
+        .map(|input| {
+            let syn::FnArg::Typed(input) = input else {
+                return Err(FindFunctionNameError::HlsMainFunctionHasSelfParameter);
+            };
+
+            let syn::Pat::Ident(syn::PatIdent{ident,..}) = &input.pat.as_ref() else {
+                return Err(FindFunctionNameError::HlsMainFunctionHasParameterWithoutIdentifier);
+            };
+
+            let parameter_name = ident.to_string();
+            let ty = input.ty.as_ref().clone();
+
+            Ok((parameter_name, ty))
+        })
+        .collect::<Result<Vec<_>, _>>()?;
+
+    let function_info = HlsFunctionInfo {
+        function_name,
+        parameters: parameter_names,
+        hls_arguments,
+    };
+
+    return Ok(function_info);
 }
 
 #[cfg(test)]
@@ -78,8 +117,8 @@ mod tests {
         })
         .unwrap();
 
-        let function_name = find_function_name(&with_no_mangle).unwrap();
-        assert_eq!(function_name.0, "add");
+        let info = find_main_function(&with_no_mangle).unwrap();
+        assert_eq!(info.function_name, "add");
     }
 
     #[test]
@@ -100,7 +139,7 @@ mod tests {
         })
         .unwrap();
 
-        find_function_name(&with_no_mangle)
+        find_main_function(&with_no_mangle)
             .expect_err("Should return an error that multiple hls functions were found");
     }
 
@@ -115,7 +154,7 @@ mod tests {
         })
         .unwrap();
 
-        find_function_name(&with_no_mangle)
+        find_main_function(&with_no_mangle)
             .expect_err("Should return an error that no hls function was found");
     }
 
@@ -131,7 +170,7 @@ mod tests {
         })
         .unwrap();
 
-        find_function_name(&with_no_mangle)
+        find_main_function(&with_no_mangle)
             .expect_err("Should return an error that extern is missing");
     }
 
@@ -146,7 +185,7 @@ mod tests {
         })
         .unwrap();
 
-        find_function_name(&with_no_mangle)
+        find_main_function(&with_no_mangle)
             .expect_err("Should return an error that no_mangle is missing");
     }
 }

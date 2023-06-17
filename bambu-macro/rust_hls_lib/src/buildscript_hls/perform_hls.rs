@@ -1,16 +1,16 @@
 use crate::{
-    buildscript_hls::process_modules::process_module,
+    buildscript_hls::process_module::process_module,
     generated_file::{
-        extract_file_hash, filename_to_module_path, generate_file, generate_output_filename,
-        ExtractHashError, ExtractModulePathError,
+        generate_file, ExtractHashError, ExtractModulePathError, GenerateRustHdlStructError,
     },
     rust_hls::CrateFile,
     RustHlsError,
 };
 
-use super::{find_modules::MacroModule, process_modules::ProcessModuleError};
+use super::{find_modules::MacroModule, process_module::ProcessModuleError};
 
 use convert_case::{Case, Casing};
+use itertools::Itertools;
 use thiserror::Error;
 
 #[derive(Error, Debug)]
@@ -23,6 +23,8 @@ pub enum PerformHlsError {
     ExtractHashError(#[from] ExtractHashError),
     #[error(transparent)]
     RustHlsError(#[from] RustHlsError),
+    #[error(transparent)]
+    FailedToGenerateOutputFile(#[from] GenerateRustHdlStructError),
 }
 
 pub fn perform_hls(module: &MacroModule) -> Result<Vec<CrateFile>, PerformHlsError> {
@@ -50,7 +52,12 @@ pub fn perform_hls(module: &MacroModule) -> Result<Vec<CrateFile>, PerformHlsErr
         &processed_module.function_name,
         &struct_name,
         &new_hash,
-    );
+        &processed_module
+            .parameters
+            .into_iter()
+            .map(|(name, _ty)| name)
+            .collect_vec(),
+    )?;
 
     return Ok(vec![file]);
 }
@@ -61,7 +68,27 @@ mod tests {
     use quote::quote;
 
     #[test]
-    fn new_for_tests_seems_to_work() {
+    fn hls_seems_to_work_on_simple_example() {
+        let module = MacroModule::new_for_tests(
+            quote!(
+                #[hls]
+                mod toast {
+                    #[hls]
+                    #[no_mangle]
+                    pub extern "C" fn add(a: u32, b: u32) -> u32 {
+                        a + b
+                    }
+                }
+            ),
+            "src/lib.rs",
+        )
+        .0;
+
+        perform_hls(&module).unwrap();
+    }
+
+    #[test]
+    fn hls_seems_to_create_synthesized_output() {
         let module = MacroModule::new_for_tests(
             quote!(
                 #[hls]
@@ -78,5 +105,9 @@ mod tests {
         .0;
 
         let result = perform_hls(&module).unwrap();
+        assert_eq!(result.len(), 1);
+        assert_eq!(result[0].path.to_str().unwrap(), "src/toast_synthesized.rs");
+        assert!(result[0].content.contains("pub struct Add"));
+        assert!(result[0].content.contains("Code created using PandA"));
     }
 }

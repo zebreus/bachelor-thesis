@@ -3,8 +3,13 @@ use std::{
     hash::{Hash, Hasher},
 };
 
+// TODO: Disable this in production?
+// This variable is used to force new hashes
+const CACHE_BUSTER: u64 = 1;
+
 pub fn calculate_hash<U: Hash + Clone>(input: &Vec<U>) -> String {
     let mut s = DefaultHasher::new();
+    s.write_u64(CACHE_BUSTER);
     input.hash(&mut s);
     let first_u64 = s.finish();
     let reverse_files: Vec<&U> = input.iter().rev().collect();

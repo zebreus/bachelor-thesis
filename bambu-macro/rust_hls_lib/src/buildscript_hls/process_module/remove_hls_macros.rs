@@ -29,19 +29,13 @@ impl RemoveHlsMacrosVisitor {
 
 impl<'ast> Visit<'ast> for RemoveHlsMacrosVisitor {
     fn visit_attribute(&mut self, attribute: &'ast syn::Attribute) {
-        if parse_rust_hls_macro(attribute)
-            .or(Err(()))
-            .and_then(|r| match r {
-                Some(_) => Err(()),
-                None => Ok(()),
-            })
-            .is_err()
-        {
+        if match parse_rust_hls_macro(attribute) {
+            Ok(Some(_)) | Err(_) => true,
+            Ok(None) => false,
+        } {
             self.errors
                 .push(RemoveHlsMacrosError::CannotUseHlsMacroInsideHlsModules);
-            return;
         }
-        return;
     }
 }
 
@@ -54,18 +48,15 @@ pub fn remove_hls_macros(content: &mut syn::File) -> Result<(), RemoveHlsMacrosE
     for item in items {
         let  syn::Item::Fn(item_fn) = item else {continue};
 
+        // TODO: Use drain_filter once its stablized
         let vec = &mut item_fn.attrs;
 
         let mut i = 0;
         while i < vec.len() {
-            if parse_rust_hls_macro(&mut vec[i])
-                .or(Err(()))
-                .and_then(|r| match r {
-                    Some(_) => Err(()),
-                    None => Ok(()),
-                })
-                .is_err()
-            {
+            if match parse_rust_hls_macro(&mut vec[i]) {
+                Ok(Some(_)) | Err(_) => true,
+                Ok(None) => false,
+            } {
                 vec.remove(i);
             } else {
                 i += 1;

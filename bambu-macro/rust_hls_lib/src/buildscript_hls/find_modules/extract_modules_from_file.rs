@@ -1,28 +1,17 @@
-use cargo_toml::Manifest;
-use fs_extra::file::write_all;
+use itertools::Itertools;
 use std::{
-    fs::{self, create_dir_all},
+    fs::{self},
     path::PathBuf,
-    thread::current,
 };
 use syn::Item;
-use tempfile::TempDir;
-// /// Returns all source files of the crate
-// fn get_source_files(root: &PathBuf) -> Vec<PathBuf> {
-//     let base = env::var("CARGO_MANIFEST_DIR").unwrap();
-//     let result = vec![String::from(format!("{base}/src/main.rs"))];
-//     print!("{:?}", result);
-//     result
-// }
-use itertools::Itertools;
 use thiserror::Error;
 
 use crate::generated_file::{
-    extract_file_hash, filename_to_module_path, generate_output_filename, module_path_to_filename,
-    ExtractHashError, ExtractModulePathError,
+    extract_file_hash, filename_to_module_path, generate_output_filename, ExtractHashError,
+    ExtractModulePathError,
 };
 
-use super::{extract_rust_hls_macro, find_modules, HlsArguments, HlsMacroError};
+use super::{extract_rust_hls_macro, HlsArguments, HlsMacroError};
 
 #[derive(Error, Debug)]
 pub enum ExtractModuleError {
@@ -93,33 +82,42 @@ pub struct MacroModule {
     pub output_file: PathBuf,
 }
 
-impl MacroModule {
-    pub fn new_for_tests(content: proc_macro2::TokenStream, filename: &str) -> (Self, TempDir) {
-        let file: syn::File = syn::parse2(content).unwrap();
-        let content = prettyplease::unparse(&file);
-        Self::new_for_tests_string(&content, filename)
-    }
-    pub fn new_for_tests_string(content: &str, filename: &str) -> (Self, TempDir) {
-        let dir = TempDir::new().unwrap();
-        create_dir_all(dir.path().join("src")).unwrap();
-        write_all(dir.path().join(filename), content).unwrap();
-        write_all(
-            dir.path().join("Cargo.toml"),
-            r#"[package]
+#[cfg(test)]
+mod test_impl {
+    use super::super::find_modules;
+    use super::MacroModule;
+    use fs_extra::file::write_all;
+    use std::fs::create_dir_all;
+    use tempfile::TempDir;
+    impl MacroModule {
+        /// Helper for creating MacroModules in tests
+        pub fn new_for_tests(content: proc_macro2::TokenStream, filename: &str) -> (Self, TempDir) {
+            let file: syn::File = syn::parse2(content).unwrap();
+            let content = prettyplease::unparse(&file);
+            Self::new_for_tests_string(&content, filename)
+        }
+        /// Helper for creating MacroModules in tests
+        pub fn new_for_tests_string(content: &str, filename: &str) -> (Self, TempDir) {
+            let dir = TempDir::new().unwrap();
+            create_dir_all(dir.path().join("src")).unwrap();
+            write_all(dir.path().join(filename), content).unwrap();
+            write_all(
+                dir.path().join("Cargo.toml"),
+                r#"[package]
         name = "test-crate"
         version = "1.0.0"
         edition = "2021""#,
-        )
-        .unwrap();
+            )
+            .unwrap();
 
-        let modules = find_modules(&dir.path().into()).unwrap();
+            let modules = find_modules(&dir.path().into()).unwrap();
 
-        let first_module = modules.into_iter().nth(0).unwrap();
+            let first_module = modules.into_iter().nth(0).unwrap();
 
-        (first_module, dir)
+            (first_module, dir)
+        }
     }
 }
-
 // Rust-hls rules
 // No external mods
 // No references to the same crate

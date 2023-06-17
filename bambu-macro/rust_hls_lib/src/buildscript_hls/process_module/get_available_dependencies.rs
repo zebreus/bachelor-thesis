@@ -1,17 +1,13 @@
-use std::{collections::HashSet, fs, io, path::PathBuf};
+use std::{collections::HashSet, io};
 
 use cargo_toml::Manifest;
 
 use thiserror::Error;
 
-use super::generate_cargo_toml::{load_cargo_toml, LoadCargoTomlError};
-
 #[derive(Error, Debug)]
 pub enum GetDependenciesError {
     #[error(transparent)]
     IoError(#[from] io::Error),
-    #[error(transparent)]
-    LoadCargoTomlError(#[from] LoadCargoTomlError),
     #[error("The source crate does not contain a Cargo.toml file")]
     NoCargoToml,
     #[error("Failed to parse cargo toml for the generated crate")]
@@ -36,7 +32,7 @@ pub fn get_available_dependencies(
 #[cfg(test)]
 mod tests {
 
-    use std::path::Path;
+    use std::{fs, path::Path};
 
     use super::*;
 

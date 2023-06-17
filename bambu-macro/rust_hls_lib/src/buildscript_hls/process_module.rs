@@ -10,8 +10,8 @@ mod analyze_dependencies;
 pub use analyze_dependencies::*;
 mod get_available_dependencies;
 pub use get_available_dependencies::*;
-mod find_function_name;
-pub use find_function_name::*;
+mod find_main_function;
+pub use find_main_function::*;
 mod generate_cargo_toml;
 pub use generate_cargo_toml::*;
 mod remove_hls_macros;
@@ -46,6 +46,8 @@ pub struct ProcessedModule {
     pub cargo_toml: String,
     /// Arguments for rust_hls
     pub rust_hls_args: super::HlsArguments,
+    /// The parameters of the function
+    pub parameters: Vec<(String, syn::Type)>,
 }
 
 impl ProcessedModule {
@@ -95,8 +97,12 @@ impl ProcessedModule {
 pub fn process_module(module: &MacroModule) -> Result<ProcessedModule, ProcessModuleError> {
     let available_dependencies = get_available_dependencies(&module.cargo_toml)?;
     let dependencies = analyze_dependencies(&module, &available_dependencies)?;
-    let (function_name, function_hls_arguments) = find_function_name(&module.module_content)?;
-    let hls_args = module.hls_arguments.overlay(&function_hls_arguments);
+    let HlsFunctionInfo {
+        function_name,
+        hls_arguments,
+        parameters,
+    } = find_main_function(&module.module_content)?;
+    let hls_args = module.hls_arguments.overlay(&hls_arguments);
     let cargo_toml = generate_cargo_toml(&module.crate_root, &module.cargo_toml, &dependencies)?;
 
     // Create a mutable copy of content, so we can remove the hls! macro
@@ -108,18 +114,7 @@ pub fn process_module(module: &MacroModule) -> Result<ProcessedModule, ProcessMo
         function_name,
         cargo_toml: cargo_toml.content,
         rust_hls_args: hls_args,
+        parameters: parameters,
     };
     return Ok(processed_module);
-}
-
-/// Convert a list of macro modules into a list of processed modules
-///
-/// Processed modules are modules that are ready to be synthesized.
-pub fn process_modules(
-    modules: &Vec<MacroModule>,
-) -> Result<Vec<ProcessedModule>, ProcessModuleError> {
-    modules
-        .into_iter()
-        .map(|module| process_module(&module))
-        .collect()
 }
