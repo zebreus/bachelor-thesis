@@ -16,7 +16,6 @@ use serde::Serialize;
 use crate::{
     cache_workspace::{add_to_workspace, WorkspaceLock},
     caching::CachePath,
-    extract_function_crate::ExtractCrateError,
     generate_hls_script::{generate_hls_script, GenerateHlsOptions},
 };
 
@@ -26,8 +25,6 @@ use thiserror::Error;
 pub enum RustHlsError {
     #[error(transparent)]
     IoError(#[from] io::Error),
-    #[error(transparent)]
-    ExtractCrateError(#[from] ExtractCrateError),
     #[error(
         "Encountered an error during high level synthesis. See attached logs at {path} <{path}> ."
     )]
