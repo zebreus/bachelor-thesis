@@ -1,14 +1,12 @@
 use syn::spanned::Spanned;
 
 mod assert_function_is_extern;
-mod assert_function_is_nomangle;
 use assert_function_is_extern::*;
-use assert_function_is_nomangle::*;
 
 use crate::{extract_hls_macro, HlsMacroArguments};
 
 /// Contains information about the HLS main function
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Default)]
 pub struct HlsFunctionInfo {
     /// Name of the function
     pub function_name: String,
@@ -16,41 +14,6 @@ pub struct HlsFunctionInfo {
     pub parameters: Vec<(String, syn::Type)>,
     /// Arguemtns of the function
     pub hls_arguments: HlsMacroArguments,
-    /// Syn item
-    pub function: syn::ItemFn,
-}
-
-impl Default for HlsFunctionInfo {
-    fn default() -> Self {
-        Self {
-            function_name: String::new(),
-            parameters: Vec::new(),
-            hls_arguments: HlsMacroArguments::default(),
-            function: syn::ItemFn {
-                attrs: Vec::new(),
-                vis: syn::Visibility::Inherited,
-                sig: syn::Signature {
-                    constness: None,
-                    asyncness: None,
-                    unsafety: None,
-                    abi: None,
-                    fn_token: syn::token::Fn {
-                        span: proc_macro2::Span::call_site(),
-                    },
-                    ident: syn::Ident::new("default", proc_macro2::Span::call_site()),
-                    generics: syn::Generics::default(),
-                    paren_token: syn::token::Paren::default(),
-                    inputs: syn::punctuated::Punctuated::new(),
-                    variadic: None,
-                    output: syn::ReturnType::Default,
-                },
-                block: Box::new(syn::Block {
-                    brace_token: syn::token::Brace::default(),
-                    stmts: Vec::new(),
-                }),
-            },
-        }
-    }
 }
 
 /// Finds a HLS main function in the given content.
@@ -100,7 +63,6 @@ pub fn find_main_function(
     };
 
     errors.handle_in(|| assert_function_is_extern(function));
-    errors.handle_in(|| assert_function_is_nomangle(function));
 
     let function_name = function.sig.ident.to_string();
 
@@ -130,7 +92,6 @@ pub fn find_main_function(
         function_name,
         parameters: parameter_names,
         hls_arguments,
-        function: function.clone(),
     };
 
     return errors.finish_with(function_info);

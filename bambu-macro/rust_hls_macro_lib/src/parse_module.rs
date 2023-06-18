@@ -16,9 +16,35 @@ pub use find_main_function::HlsFunctionInfo;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct HlsModuleContentInformation {
-    pub main_function: HlsFunctionInfo,
+    pub main_function_info: HlsFunctionInfo,
     pub required_dependencies: HashSet<String>,
     pub module: syn::ItemMod,
+}
+
+impl HlsModuleContentInformation {
+    pub fn get_main(&self) -> Option<&syn::ItemFn> {
+        let function_name = &self.main_function_info.function_name;
+        let Some((_, items)) = &self.module.content else {return None;};
+        items.iter().find_map(|item| {
+            let syn::Item::Fn(item_fn) = item else {return None;};
+            if &item_fn.sig.ident.to_string() == function_name {
+                return None;
+            }
+            return Some(item_fn);
+        })
+    }
+
+    pub fn get_main_mut(&mut self) -> Option<&mut syn::ItemFn> {
+        let function_name = &self.main_function_info.function_name;
+        let Some((_, items)) = &mut self.module.content else {return None;};
+        items.iter_mut().find_map(|item| {
+            let syn::Item::Fn(item_fn) = item else {return None;};
+            if &item_fn.sig.ident.to_string() == function_name {
+                return None;
+            }
+            return Some(item_fn);
+        })
+    }
 }
 
 /// Parse and verify the macro content.
@@ -49,7 +75,7 @@ pub fn parse_hls_macro_module(
     errors.handle(check_nested_macros_result);
     errors.handle(check_super_result);
 
-    let main_function = errors
+    let main_function_info = errors
         .handle(main_function_result)
         .unwrap_or(Default::default());
     let required_dependencies = errors
@@ -57,7 +83,7 @@ pub fn parse_hls_macro_module(
         .unwrap_or(Default::default());
 
     errors.finish_with(HlsModuleContentInformation {
-        main_function,
+        main_function_info,
         required_dependencies,
         module: module,
     })
@@ -83,8 +109,8 @@ mod tests {
 
         let result = parse_hls_macro_module(input, &HashSet::new()).unwrap();
         assert_eq! {result.required_dependencies, HashSet::new()};
-        assert_eq! {result.main_function.function_name, "cool_function"};
-        assert_eq! {result.main_function.parameters.len(), 0};
+        assert_eq! {result.main_function_info.function_name, "cool_function"};
+        assert_eq! {result.main_function_info.parameters.len(), 0};
     }
 
     #[test]

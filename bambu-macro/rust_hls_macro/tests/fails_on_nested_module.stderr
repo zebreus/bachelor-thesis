@@ -1,11 +1,11 @@
 error: HLS modules must not be nested
-  --> tests/fails_on_nested_module.rs:13:13
+  --> tests/fails_on_nested_module.rs:12:13
    |
-13 |     pub mod other {
+12 |     pub mod other {
    |             ^^^^^
 
 error: HLS macro must only be applied to modules and the main function
-  --> tests/fails_on_nested_module.rs:14:11
+  --> tests/fails_on_nested_module.rs:13:11
    |
-14 |         #[hls]
+13 |         #[hls]
    |           ^^^
