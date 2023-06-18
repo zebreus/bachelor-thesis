@@ -1,8 +1,6 @@
-// Unknown flags should result in an error
-
 use rust_hls::hls;
 
-#[hls(unknown_flag = "something")]
+#[hls]
 pub mod adder_module {
     #[hls]
     #[no_mangle]
@@ -11,4 +9,7 @@ pub mod adder_module {
     }
 }
 
-fn main() {}
+fn main() {
+    let result = adder_module::adder(1, 2);
+    assert_eq!(result, 3)
+}

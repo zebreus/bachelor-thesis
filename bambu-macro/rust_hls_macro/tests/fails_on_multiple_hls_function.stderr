@@ -1,0 +1,5 @@
+error: Multiple hls functions
+  --> tests/fails_on_multiple_hls_function.rs:14:23
+   |
+14 |     pub extern "C" fn adderTwo(a: u32, b: u32) -> u32 {
+   |                       ^^^^^^^^

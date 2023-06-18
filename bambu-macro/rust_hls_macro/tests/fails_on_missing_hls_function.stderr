@@ -1,0 +1,5 @@
+error: No hls main function found
+ --> tests/fails_on_missing_hls_function.rs:5:9
+  |
+5 | pub mod adder {}
+  |         ^^^^^

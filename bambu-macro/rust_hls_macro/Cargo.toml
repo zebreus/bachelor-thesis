@@ -18,20 +18,16 @@ proc-macro = true
 name = "tests"
 path = "tests/progress.rs"
 
-[features]
-default = ["perform-hls"]
-perform-hls = ["dep:itertools", "dep:proc-macro2", "dep:quote", "dep:rust-hdl", "dep:rust_hls_lib", "dep:syn", "dep:thiserror", "dep:wrap_verilog_in_rust_hdl_macro"]
-
 [dependencies]
-itertools =  {version = "0.10.5", optional = true}
-proc-macro2 = {version = "1.0.56", features = ["span-locations"], optional = true }
-quote =  {version = "1.0.26", optional = true}
-rust-hdl =  {version = "0.45.1", optional = true}
-rust_hls_lib = {path = "../rust_hls_lib", optional = true}
-syn = { version = "2.0.15", features = ["full"], optional = true}
+darling = "0.20.1"
+itertools = { version = "0.10.5" }
+proc-macro2 = { version = "1.0.56", features = ["span-locations"] }
+quote = { version = "1.0.26" }
+rust-hdl = { version = "0.45.1" }
+rust_hls_macro_lib = { path = "../rust_hls_macro_lib" }
+syn = { version = "2.0.15", features = ["full"] }
 tempfile = "3.5.0"
-thiserror =  {version = "1.0.40", optional = true}
-wrap_verilog_in_rust_hdl_macro = { version = "0.1.0", optional = true }
+thiserror = "1.0.40"
 
 [dev-dependencies]
 trybuild = { version = "1.0.80", features = ["diff"] }

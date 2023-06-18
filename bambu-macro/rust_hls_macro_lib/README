@@ -1,0 +1,10 @@
+= rust_hls_macro_lib
+
+This library contains helper functions shared between the `rust_hls_macro` and the `rust_hls_lib` crates.
+
+This crate will contain
+
+* Everything related to parsing the attribute macro. (`#[hls( ... )]`)
+* Some functions for checking that the macro is used correctly.
+
+This crate uses darling::Error as its error type, because that supports bundling errors and span information.
