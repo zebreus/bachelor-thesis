@@ -1,8 +1,6 @@
 use thiserror::Error;
 mod extract_modules_from_file;
-mod hls_macro_functions;
 pub use extract_modules_from_file::*;
-pub use hls_macro_functions::*;
 
 use glob::glob;
 use std::path::PathBuf;

@@ -17,4 +17,4 @@ pub use hls_macro_helpers::extract_hls_macro;
 pub use hls_macro_helpers::is_rust_hls_macro;
 pub use hls_macro_helpers::parse_hls_macro_attribute;
 pub use parse_arguments::parse_hls_macro_args;
-pub use parse_arguments::HlsMacroArguments;
+pub use parse_arguments::HlsArguments;

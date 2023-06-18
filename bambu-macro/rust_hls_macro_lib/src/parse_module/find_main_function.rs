@@ -3,7 +3,7 @@ use syn::spanned::Spanned;
 mod assert_function_is_extern;
 use assert_function_is_extern::*;
 
-use crate::{extract_hls_macro, HlsMacroArguments};
+use crate::{extract_hls_macro, HlsArguments};
 
 /// Contains information about the HLS main function
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Default)]
@@ -13,7 +13,7 @@ pub struct HlsFunctionInfo {
     /// Parameters of the function
     pub parameters: Vec<(String, syn::Type)>,
     /// Arguemtns of the function
-    pub hls_arguments: HlsMacroArguments,
+    pub hls_arguments: HlsArguments,
 }
 
 /// Finds a HLS main function in the given content.

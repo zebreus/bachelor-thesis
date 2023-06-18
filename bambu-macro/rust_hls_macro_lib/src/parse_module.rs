@@ -35,11 +35,14 @@ impl HlsModuleContentInformation {
     }
 
     pub fn get_main_mut(&mut self) -> Option<&mut syn::ItemFn> {
-        let function_name = &self.main_function_info.function_name;
-        let Some((_, items)) = &mut self.module.content else {return None;};
+        let function_name = self.main_function_info.function_name.clone();
+        let Some((_, items)) = &mut self.module.content else {
+            panic!("This should not happen");
+        };
         items.iter_mut().find_map(|item| {
             let syn::Item::Fn(item_fn) = item else {return None;};
-            if &item_fn.sig.ident.to_string() == function_name {
+            let current_name = item_fn.sig.ident.to_string();
+            if current_name != function_name {
                 return None;
             }
             return Some(item_fn);

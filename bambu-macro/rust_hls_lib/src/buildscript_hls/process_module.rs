@@ -5,30 +5,27 @@ use crate::{
 };
 
 use super::find_modules::MacroModule;
+use rust_hls_macro_lib::{parse_hls_macro_module, HlsArguments};
 use thiserror::Error;
-mod analyze_dependencies;
-pub use analyze_dependencies::*;
 mod get_available_dependencies;
 pub use get_available_dependencies::*;
-mod find_main_function;
-pub use find_main_function::*;
 mod generate_cargo_toml;
 pub use generate_cargo_toml::*;
-mod remove_hls_macros;
-pub use remove_hls_macros::*;
+mod make_function_no_mangle;
+pub use make_function_no_mangle::*;
 
 #[derive(Error, Debug)]
 pub enum ProcessModuleError {
     #[error(transparent)]
-    AnalyzeDependenciesError(#[from] AnalyzeDependenciesError),
+    ParseModuleError(#[from] darling::Error),
     #[error(transparent)]
     GetDependenciesError(#[from] GetDependenciesError),
     #[error(transparent)]
-    FindFunctionNameError(#[from] FindFunctionNameError),
-    #[error(transparent)]
     GenerateCargoTomlError(#[from] GenerateCargoTomlError),
-    #[error(transparent)]
-    RemoveHlsMacrosError(#[from] RemoveHlsMacrosError),
+    #[error("Failed to get main function. Please report this as a bug.")]
+    FailedToGetMainFunction(),
+    #[error("Parsed module suddenly changed its mind about having content. Please report this as a bug.")]
+    FailedToGetItemsFromModule(),
 }
 
 // TODO: Passthrough features and patch from Cargo.toml
@@ -45,7 +42,7 @@ pub struct ProcessedModule {
     /// The dependencies that are required to build the module
     pub cargo_toml: String,
     /// Arguments for rust_hls
-    pub rust_hls_args: super::HlsArguments,
+    pub rust_hls_args: HlsArguments,
     /// The parameters of the function
     pub parameters: Vec<(String, syn::Type)>,
 }
@@ -96,25 +93,41 @@ impl ProcessedModule {
 
 pub fn process_module(module: &MacroModule) -> Result<ProcessedModule, ProcessModuleError> {
     let available_dependencies = get_available_dependencies(&module.cargo_toml)?;
-    let dependencies = analyze_dependencies(&module, &available_dependencies)?;
-    let HlsFunctionInfo {
-        function_name,
-        hls_arguments,
-        parameters,
-    } = find_main_function(&module.module_content)?;
-    let hls_args = module.hls_arguments.overlay(&hls_arguments);
-    let cargo_toml = generate_cargo_toml(&module.crate_root, &module.cargo_toml, &dependencies)?;
+    let mut parsed_module =
+        parse_hls_macro_module(module.item_mod.clone(), &available_dependencies)?;
 
-    // Create a mutable copy of content, so we can remove the hls! macro
-    let mut new_content = module.module_content.clone();
-    remove_hls_macros(&mut new_content)?;
+    let mut main_function = parsed_module
+        .get_main_mut()
+        .ok_or(ProcessModuleError::FailedToGetMainFunction())?;
+
+    make_function_no_mangle(&mut main_function);
+
+    let hls_args = module
+        .hls_arguments
+        .overlay(&parsed_module.main_function_info.hls_arguments);
+
+    let cargo_toml = generate_cargo_toml(
+        &module.crate_root,
+        &module.cargo_toml,
+        &parsed_module.required_dependencies,
+    )?;
+
+    let module_file = syn::File {
+        shebang: None,
+        attrs: Vec::new(),
+        items: parsed_module
+            .module
+            .content
+            .ok_or(ProcessModuleError::FailedToGetItemsFromModule())?
+            .1,
+    };
 
     let processed_module = ProcessedModule {
-        content: prettyplease::unparse(&new_content),
-        function_name,
+        content: prettyplease::unparse(&module_file),
+        function_name: parsed_module.main_function_info.function_name,
         cargo_toml: cargo_toml.content,
         rust_hls_args: hls_args,
-        parameters: parameters,
+        parameters: parsed_module.main_function_info.parameters,
     };
     return Ok(processed_module);
 }

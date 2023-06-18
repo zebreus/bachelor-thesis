@@ -1,4 +1,5 @@
 use itertools::Itertools;
+use rust_hls_macro_lib::{extract_hls_macro, HlsArguments};
 use std::{
     fs::{self},
     path::PathBuf,
@@ -11,12 +12,10 @@ use crate::generated_file::{
     ExtractModulePathError,
 };
 
-use super::{extract_rust_hls_macro, HlsArguments, HlsMacroError};
-
 #[derive(Error, Debug)]
 pub enum ExtractModuleError {
     #[error(transparent)]
-    HlsMacroError(#[from] HlsMacroError),
+    HlsMacroError(#[from] darling::Error),
     #[error(transparent)]
     ExtractHashError(#[from] ExtractHashError),
     #[error(transparent)]
@@ -55,7 +54,7 @@ pub enum ModuleType {
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub struct MacroModule {
     /// Content of the macro call module
-    pub module_content: syn::File,
+    pub item_mod: syn::ItemMod,
     /// Content of the macro call module as a stringified syn::File
     pub module_content_string: String,
     /// The arguments that should be used when converting the macro
@@ -125,7 +124,7 @@ mod test_impl {
 /// Extracts a module from an item, if it is a Item::Mod. Otherwise returns an empty vector.
 ///
 fn extract_module_from_item(
-    item: &syn::Item,
+    item: syn::Item,
     crate_root: &PathBuf,
     file: &PathBuf,
     current_module_path: &Vec<String>,
@@ -155,12 +154,12 @@ fn extract_module_from_item(
                 .chain(std::iter::once(module_name.clone()))
                 .collect();
 
-            let rust_hls_options = extract_rust_hls_macro(&module.attrs)?;
+            let rust_hls_options = extract_hls_macro(&module.attrs)?;
 
             let Some(rust_hls_arguments) = rust_hls_options else {
                 // Could not find a rust-hls macro
-                let thing: Result<Vec<MacroModule>, ExtractModuleError> = match &module.content {
-                    Some((_, items)) => extract_hls_modules(&items, crate_root, file, &current_module_path),
+                let thing: Result<Vec<MacroModule>, ExtractModuleError> = match module.content {
+                    Some((_, items)) => extract_hls_modules(items, crate_root, file, &current_module_path),
                     None => Ok(Vec::new()),
                 };
                 return thing;
@@ -197,7 +196,7 @@ edition = "2021""#
 
             let result: Result<Vec<MacroModule>, ExtractModuleError> = Ok(vec![MacroModule {
                 module_content_string: prettyplease::unparse(&module_file),
-                module_content: module_file,
+                item_mod: module,
                 source_file: file.clone(),
                 crate_root: crate_root.clone(),
                 module_path: current_module_path.clone(),
@@ -217,13 +216,13 @@ edition = "2021""#
 
 /// Finds all modules that look like they are rust-hls modules in this file.
 pub fn extract_hls_modules(
-    items: &Vec<syn::Item>,
+    items: Vec<syn::Item>,
     crate_root: &PathBuf,
     file: &PathBuf,
     current_module_path: &Vec<String>,
 ) -> Result<Vec<MacroModule>, ExtractModuleError> {
     items
-        .iter()
+        .into_iter()
         .map(|item| {
             let modules = extract_module_from_item(item, crate_root, file, current_module_path);
             modules
@@ -248,7 +247,7 @@ pub fn extract_modules_from_file(
     })?;
     let items = parsed_file.items;
 
-    extract_hls_modules(&items, crate_root, file, &vec![])
+    extract_hls_modules(items, crate_root, file, &vec![])
 }
 
 #[cfg(test)]

@@ -43,3 +43,5 @@ regex = "1.8.4"
 convert_case = "0.6.0"
 clap = { version = "4.3.4", features = ["derive"] }
 extract_rust_hdl_interface = "0.2.0"
+rust_hls_macro_lib = { path = "../rust_hls_macro_lib" }
+darling = "0.20.1"

@@ -1,6 +1,6 @@
 //! Functions that make it easier to parse rust_hls macros
 
-use crate::{parse_hls_macro_args, HlsMacroArguments};
+use crate::{parse_hls_macro_args, HlsArguments};
 use syn::spanned::Spanned;
 
 /// Check if path looks like a rust_hls macro call
@@ -22,7 +22,7 @@ pub fn is_rust_hls_macro(path: &syn::Path) -> bool {
 /// Should only be called on macros that are known to be rust_hls macros
 pub fn parse_hls_macro_attribute(
     attribute: &syn::Attribute,
-) -> Result<Option<HlsMacroArguments>, darling::Error> {
+) -> Result<Option<HlsArguments>, darling::Error> {
     let mut errors = darling::Error::accumulator();
     // let errorsRef = &mut errors;
 
@@ -32,7 +32,7 @@ pub fn parse_hls_macro_attribute(
     }
 
     let arguments = match &attribute.meta {
-        syn::Meta::Path(_) => Some(HlsMacroArguments::default()),
+        syn::Meta::Path(_) => Some(HlsArguments::default()),
         syn::Meta::List(list) => match parse_hls_macro_args(list.tokens.clone()) {
             Ok(v) => Some(v),
             Err(e) => {
@@ -59,10 +59,10 @@ pub fn parse_hls_macro_attribute(
 /// Returns Ok(Some(HlsArguments)) if there is a rust_hls macro
 pub fn extract_hls_macro(
     attributes: &Vec<syn::Attribute>,
-) -> Result<Option<HlsMacroArguments>, darling::Error> {
+) -> Result<Option<HlsArguments>, darling::Error> {
     let mut errors = darling::Error::accumulator();
 
-    let rust_hls_options: Option<HlsMacroArguments> =
+    let rust_hls_options: Option<HlsArguments> =
         attributes.iter().fold(Option::None, |first, attribute| {
             let arguments = parse_hls_macro_attribute(attribute);
             let arguments = errors.handle(arguments);
