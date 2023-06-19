@@ -1,0 +1,17 @@
+[package]
+name = "spanned_error_message"
+version = "0.1.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+keywords = ["buildscript", "cargo", "error", "message", "span"]
+authors = ["zebreus <lennarteichhorn@googlemail.com>"]
+# TODO: Add categories
+categories = []
+repository = "https://github.com/zebreus/bachelor-thesis"
+homepage = "https://github.com/zebreus/bachelor-thesis/tree/master/bambu-macro/spanned_error_message"
+description = "Pretty error messages with spans outside of proc macros"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+proc-macro2 = { version = "1.0.60", features = ["span-locations"] }
