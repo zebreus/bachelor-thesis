@@ -21,7 +21,7 @@ pub fn generate_output_filename(source_module_path: &Vec<String>) -> PathBuf {
 pub fn generate_output_module_path(source_module_path: &Vec<String>) -> Vec<String> {
     let mut synthesized_module_path = source_module_path.clone();
     let last_module = synthesized_module_path.pop().unwrap_or("lib".into());
-    synthesized_module_path.push(format!("{last_module}_synthesized"));
+    synthesized_module_path.push(rust_hls_macro_lib::synthesized_module_name(&last_module));
     return synthesized_module_path;
 }
 

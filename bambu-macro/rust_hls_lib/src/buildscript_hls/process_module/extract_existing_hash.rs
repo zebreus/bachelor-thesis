@@ -45,7 +45,7 @@ pub fn get_module_path_information(
 
     let mut absolute_module_path = absolute_input_module_path.clone();
     let last_module = absolute_module_path.pop().unwrap_or("lib".into());
-    absolute_module_path.push(format!("{last_module}_synthesized"));
+    absolute_module_path.push(rust_hls_macro_lib::synthesized_module_name(&last_module));
 
     let input_file = source_file.clone();
     let output_file = PathBuf::from(format!(

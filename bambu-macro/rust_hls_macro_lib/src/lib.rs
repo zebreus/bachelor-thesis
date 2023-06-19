@@ -1,9 +1,12 @@
+mod generate_names;
 mod hls_macro_helpers;
 mod make_content_compile;
 mod parse_arguments;
 mod parse_content;
 mod parse_module;
 
+pub use generate_names::synthesized_module_name;
+pub use generate_names::synthesized_struct_name;
 pub use parse_content::parse_hls_macro_content;
 pub use parse_module::check_nested_macros;
 pub use parse_module::check_super;

@@ -22,3 +22,4 @@ syn = { version = "2.0.18", features = [
 quote = { version = "1.0.28", default-features = false }
 darling = "0.20.1"
 prettyplease = "0.2.7"
+convert_case = "0.6.0"

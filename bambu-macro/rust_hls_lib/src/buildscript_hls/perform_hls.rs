@@ -9,8 +9,8 @@ use crate::{
 
 use super::{find_modules::MacroModule, process_module::ProcessModuleError};
 
-use convert_case::{Case, Casing};
 use itertools::Itertools;
+use rust_hls_macro_lib::synthesized_struct_name;
 use thiserror::Error;
 
 #[derive(Error, Debug)]
@@ -44,7 +44,7 @@ pub fn perform_hls(module: &MacroModule) -> Result<Vec<CrateFile>, PerformHlsErr
 
     let result = rust_hls.execute()?;
 
-    let struct_name = processed_module.function_name.to_case(Case::Pascal);
+    let struct_name = synthesized_struct_name(&processed_module.function_name);
 
     let file = generate_file(
         &input_module_path,
@@ -106,7 +106,13 @@ mod tests {
 
         let result = perform_hls(&module).unwrap();
         assert_eq!(result.len(), 1);
-        assert_eq!(result[0].path.to_str().unwrap(), "src/toast_synthesized.rs");
+        assert_eq!(
+            result[0].path.to_str().unwrap(),
+            format!(
+                "src/{}.rs",
+                rust_hls_macro_lib::synthesized_module_name("toast")
+            )
+        );
         assert!(result[0].content.contains("pub struct Add"));
         assert!(result[0].content.contains("Code created using PandA"));
     }

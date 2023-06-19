@@ -2,7 +2,10 @@ use std::collections::HashSet;
 
 use proc_macro2::TokenStream;
 use quote::quote;
-use rust_hls_macro_lib::{make_content_compile, parse_hls_macro_args, parse_hls_macro_content};
+use rust_hls_macro_lib::{
+    make_content_compile, parse_hls_macro_args, parse_hls_macro_content, synthesized_module_name,
+    synthesized_struct_name,
+};
 
 pub fn hls_wrapped(
     args: proc_macro2::TokenStream,
@@ -20,41 +23,21 @@ pub fn hls_wrapped(
             return Err(darling::Error::multiple(vec![e1, e2]));
         }
     };
+    // body.main_function_info.function_name
+    let module_name = synthesized_module_name(&body.module.ident.to_string());
+    let module_ident = quote::format_ident!("{}", module_name, span = body.module.ident.span());
+    let struct_name = synthesized_struct_name(&body.main_function_info.function_name);
+    let struct_ident = quote::format_ident!("{}", struct_name, span = body.module.ident.span());
+
+    let module_visibility = body.module.vis.clone();
 
     let module = body.module;
-    return Ok(quote!(#module));
+    return Ok(quote!(
+        #module
 
-    // todo!()
-    // let attr_args = match NestedMeta::parse_meta_list(args.into()) {
-    //     Ok(v) => v,
-    //     Err(e) => {
-    //         return TokenStream::from(Error::from(e).write_errors());
-    //     }
-    // };
-    // let _input = syn::parse_macro_input!(input as ItemFn);
-
-    // let _args = match HlsMacroArguments::from_list(&attr_args) {
-    //     Ok(v) => v,
-    //     Err(e) => {
-    //         return TokenStream::from(e.write_errors());
-    //     }
-    // };
-    // let args = syn::parse::<HlsMacroArguments>(args)?;
-    // // Err(syn::Error::new(
-    // //     proc_macro::Span::call_site().into(),
-    // //     format!("error creating a rust-hls instance: {}", error.to_string()),
-    // // ))
-
-    // let input_fn = syn::parse::<ItemFn>(input.clone())?;
-
-    // // let location = locate_macro_call(input.clone()).or_else(|error| {
-    // //     Err(syn::Error::new(
-    // //         proc_macro::Span::call_site().into(),
-    // //         format!("error locating macro call: {}", error.to_string()),
-    // //     ))
-    // // })?;
-
-    // // let function_name = input_fn.sig.ident.to_string();
+        #module_visibility mod #module_ident;
+        #module_visibility use self :: #module_ident :: #struct_ident;
+    ));
 }
 
 pub fn hls_macro(
