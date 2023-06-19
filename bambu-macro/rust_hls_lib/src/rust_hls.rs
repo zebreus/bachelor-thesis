@@ -172,12 +172,8 @@ impl RustHls {
 
         let exit_code = output.status.code().unwrap_or(0);
         if exit_code != 0 {
-            println!("stdout: {}", String::from_utf8_lossy(&output.stdout));
-            println!("stderr: {}", String::from_utf8_lossy(&output.stderr));
-            File::create(working_directory.join("log.stdout"))?
-                .write_all(output.stdout.as_slice())?;
-            File::create(working_directory.join("log.stderr"))?
-                .write_all(output.stderr.as_slice())?;
+            println!("stdout:\n{}", String::from_utf8_lossy(&output.stdout));
+            println!("stderr:\n{}", String::from_utf8_lossy(&output.stderr));
             return Err(RustHlsError::HighLevelSynthesisFailed {
                 // TODO: Classify errors by parsing stderr
                 exitcode: exit_code,

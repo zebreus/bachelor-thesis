@@ -49,13 +49,20 @@ mv {function_name}.v result.v
     return String::from(format!(
         r#"
 #!/usr/bin/env bash
-set -xe
 
+function main {{
+set -xe
+    
 # Compile to LLVM IR
 {create_llvm_command}
 
 # Perform HLS
 {perform_hls_command}
+
+}}
+
+# Execute and log the output into files
+main > >(tee -a stdout.log) 2> >(tee -a stderr.log 1>&2)
 "#
     ));
 }
@@ -145,5 +152,48 @@ mod tests {
         assert_eq!(exit_code, 0);
 
         assert!(crate_path.join("result.v").exists());
+    }
+
+    #[test]
+    fn synthesizing_test_crate_creates_stdout_and_stderr_logs() {
+        let dir = TempDir::new().unwrap();
+        copy("test_suites/test_crate", dir.path(), &CopyOptions::new()).unwrap();
+
+        let crate_path = dir.path().join("test_crate");
+        let function_name = "add";
+
+        generate_hls_script_file(
+            &crate_path,
+            &GenerateHlsOptions {
+                function_name: function_name.into(),
+                rust_flags: None,
+                hls_flags: None,
+            },
+        )
+        .unwrap();
+
+        let output = Command::new("sh")
+            .arg("hls.sh")
+            .current_dir(&crate_path)
+            .output()
+            .unwrap();
+
+        let exit_code = output.status.code().unwrap();
+        assert_eq!(exit_code, 0);
+
+        let stdout_file = crate_path.join("stdout.log");
+        let stderr_file = crate_path.join("stderr.log");
+
+        assert!(stdout_file.exists());
+        assert!(stderr_file.exists());
+
+        let stdout = String::from_utf8_lossy(&output.stdout).to_string();
+        let stderr = String::from_utf8_lossy(&output.stderr).to_string();
+
+        let stdout_from_file = std::fs::read_to_string(stdout_file).unwrap();
+        let stderr_from_file = std::fs::read_to_string(stderr_file).unwrap();
+
+        assert_eq!(stdout, stdout_from_file);
+        assert_eq!(stderr, stderr_from_file);
     }
 }
