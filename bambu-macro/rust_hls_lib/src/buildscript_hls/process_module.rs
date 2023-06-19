@@ -1,7 +1,8 @@
 use std::path::PathBuf;
 
 use crate::{
-    calculate_hash, generate_hls_script::GenerateHlsOptions, rust_hls::CrateFile, RustHls,
+    calculate_hash, darling_error_outside_macro::DarlingErrorOutsideMacro,
+    generate_hls_script::GenerateHlsOptions, rust_hls::CrateFile, RustHls,
 };
 
 use super::find_modules::MacroModule;
@@ -17,7 +18,7 @@ pub use make_function_no_mangle::*;
 #[derive(Error, Debug)]
 pub enum ProcessModuleError {
     #[error(transparent)]
-    ParseModuleError(#[from] darling::Error),
+    ParseModuleError(#[from] DarlingErrorOutsideMacro),
     #[error(transparent)]
     GetDependenciesError(#[from] GetDependenciesError),
     #[error(transparent)]
@@ -94,7 +95,14 @@ impl ProcessedModule {
 pub fn process_module(module: &MacroModule) -> Result<ProcessedModule, ProcessModuleError> {
     let available_dependencies = get_available_dependencies(&module.cargo_toml)?;
     let mut parsed_module =
-        parse_hls_macro_module(module.item_mod.clone(), &available_dependencies)?;
+        parse_hls_macro_module(module.item_mod.clone(), &available_dependencies).or_else(
+            |err| {
+                Err(DarlingErrorOutsideMacro::new(
+                    &err,
+                    &module.crate_root.join(&module.source_file),
+                ))
+            },
+        )?;
 
     let mut main_function = parsed_module
         .get_main_mut()

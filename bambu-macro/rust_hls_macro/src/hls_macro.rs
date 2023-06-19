@@ -2,7 +2,7 @@ use std::collections::HashSet;
 
 use proc_macro2::TokenStream;
 use quote::quote;
-use rust_hls_macro_lib::{parse_hls_macro_args, parse_hls_macro_content};
+use rust_hls_macro_lib::{make_content_compile, parse_hls_macro_args, parse_hls_macro_content};
 
 pub fn hls_wrapped(
     args: proc_macro2::TokenStream,
@@ -69,9 +69,13 @@ pub fn hls_macro(
     match result {
         Ok(stream) => quote!(#stream).into(),
         Err(error) => {
+            let fixed_input = make_content_compile(input2);
+
             let compile_error = TokenStream::from(error.write_errors());
 
             quote!(
+                #fixed_input
+
                 #compile_error
             )
             .into()

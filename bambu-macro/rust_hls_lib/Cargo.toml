@@ -24,7 +24,7 @@ serde = "1.0.160"
 tempfile = "3.5.0"
 thiserror = "1.0.40"
 toml = "0.7.3"
-proc-macro2 = { version = "1.0.60" }
+proc-macro2 = { version = "1.0.60", features = ["span-locations"] }
 syn = { version = "2.0.18", features = [
     "full",
     "parsing",
@@ -44,4 +44,5 @@ convert_case = "0.6.0"
 clap = { version = "4.3.4", features = ["derive"] }
 extract_rust_hdl_interface = "0.2.0"
 rust_hls_macro_lib = { path = "../rust_hls_macro_lib" }
+spanned_error_message = { path = "../spanned_error_message" }
 darling = "0.20.1"

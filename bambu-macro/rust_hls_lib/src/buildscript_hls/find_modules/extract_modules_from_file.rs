@@ -7,29 +7,28 @@ use std::{
 use syn::Item;
 use thiserror::Error;
 
-use crate::generated_file::{
-    extract_file_hash, filename_to_module_path, generate_output_filename, ExtractHashError,
-    ExtractModulePathError,
+use crate::{
+    darling_error_outside_macro::DarlingErrorOutsideMacro,
+    generated_file::{
+        extract_file_hash, filename_to_module_path, generate_output_filename, ExtractHashError,
+        ExtractModulePathError,
+    },
 };
 
 #[derive(Error, Debug)]
 pub enum ExtractModuleError {
     #[error(transparent)]
-    HlsMacroError(#[from] darling::Error),
+    HlsMacroError(#[from] DarlingErrorOutsideMacro),
     #[error(transparent)]
     ExtractHashError(#[from] ExtractHashError),
     #[error(transparent)]
     ExtractModulePathError(#[from] ExtractModulePathError),
     #[error(transparent)]
     IoError(#[from] std::io::Error),
-    #[error("Failed to parse file {file}: {message}")]
-    FailedToParseFile { file: PathBuf, message: String },
-    #[error("Failed to parse macro arguments: {message}")]
-    FailedToParseMacroArguments { message: String },
+    #[error("{error}")]
+    FailedToParseFile { error: DarlingErrorOutsideMacro },
     #[error("You can not use the rust_hls macro on a module import ({file} {module})")]
     RustHlsMacroOnModuleImport { file: String, module: String },
-    #[error("You can only have a single hls macro on a module. ({file} {module})")]
-    MultipleRustHlsMacrosOnModule { file: String, module: String },
 }
 
 /// Parse a file at a path into a syn AST
@@ -37,8 +36,7 @@ fn parse_file(source_file: &PathBuf) -> Result<syn::File, ExtractModuleError> {
     let content = fs::read_to_string(&source_file)?;
     let parsed_file = syn::parse_file(content.as_str()).or_else(|err| {
         Err(ExtractModuleError::FailedToParseFile {
-            file: source_file.clone(),
-            message: err.to_string(),
+            error: DarlingErrorOutsideMacro::from_syn_error(err, &source_file),
         })
     })?;
     Ok(parsed_file)
@@ -117,6 +115,7 @@ mod test_impl {
         }
     }
 }
+
 // Rust-hls rules
 // No external mods
 // No references to the same crate
@@ -154,7 +153,10 @@ fn extract_module_from_item(
                 .chain(std::iter::once(module_name.clone()))
                 .collect();
 
-            let rust_hls_options = extract_hls_macro(&module.attrs)?;
+            let rust_hls_options = extract_hls_macro(&module.attrs).or_else(|err| {
+                let error = DarlingErrorOutsideMacro::new(&err, &crate_root.join(file));
+                return Err(error);
+            })?;
 
             let Some(rust_hls_arguments) = rust_hls_options else {
                 // Could not find a rust-hls macro
@@ -239,12 +241,7 @@ pub fn extract_modules_from_file(
     file: &PathBuf,
 ) -> Result<Vec<MacroModule>, ExtractModuleError> {
     let source_file = crate_root.join(file);
-    let parsed_file = parse_file(&source_file).or_else(|err| {
-        Err(ExtractModuleError::FailedToParseFile {
-            file: source_file.clone(),
-            message: err.to_string(),
-        })
-    })?;
+    let parsed_file = parse_file(&source_file)?;
     let items = parsed_file.items;
 
     extract_hls_modules(items, crate_root, file, &vec![])
