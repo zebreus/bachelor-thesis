@@ -1,4 +1,4 @@
-{ pkgs ? import <nixpkgs> { } }:
+{ pkgs ? import <nixpkgs> { }, old-pkgs }:
 with pkgs;
 let
   latestNextpnr = pkgs.nextpnr.overrideAttrs (old: {
@@ -67,7 +67,7 @@ mkShell {
     openfpgaloader
     python310Packages.apycula
     python3
-    verilator
+    old-pkgs.verilator
     verible
 
     # Binaries from oss-cad-suite

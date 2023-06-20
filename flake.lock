@@ -127,12 +127,28 @@
         "type": "indirect"
       }
     },
+    "old-nixpkgs": {
+      "locked": {
+        "lastModified": 1659914493,
+        "narHash": "sha256-lkA5X3VNMKirvA+SUzvEhfA7XquWLci+CGi505YFAIs=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "022caabb5f2265ad4006c1fa5b1ebe69fb0c3faf",
+        "type": "github"
+      },
+      "original": {
+        "id": "nixpkgs",
+        "ref": "nixos-21.05",
+        "type": "indirect"
+      }
+    },
     "root": {
       "inputs": {
         "fenix": "fenix",
         "flake-utils": "flake-utils",
         "nixpkgs": "nixpkgs",
         "nixpkgs-with-asciidoctorjs": "nixpkgs-with-asciidoctorjs",
+        "old-nixpkgs": "old-nixpkgs",
         "symbolator": "symbolator",
         "unstable-nixpkgs": "unstable-nixpkgs",
         "vcd2wavedrom": "vcd2wavedrom"
