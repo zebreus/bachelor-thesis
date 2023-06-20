@@ -103,7 +103,6 @@ mod tests {
     #[test]
     fn works_with_nonansi_without_range() {
         let ast = parse_verilog_string("module alpha(clock); input clock; endmodule").unwrap();
-        println!("{:#?}", ast);
         let port_direction =
             get_port_data_size_ansi(unwrap_node!(&ast, ModuleDeclaration).unwrap(), &ast).unwrap();
         assert_eq!(port_direction, DataSize::Bit);

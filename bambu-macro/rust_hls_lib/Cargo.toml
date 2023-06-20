@@ -10,6 +10,10 @@ repository = "https://github.com/zebreus/bachelor-thesis"
 homepage = "https://github.com/zebreus/bachelor-thesis/tree/master/bambu-macro/rust_hls_lib"
 description = "Support crate for rust_hls"
 
+[features]
+default = ["verilator"]
+verilator = ["dep:verilator", "dep:verilated", "dep:verilated-module"]
+
 [dependencies]
 base64 = "0.21.0"
 cargo_toml = "0.15.2"
@@ -46,3 +50,7 @@ extract_rust_hdl_interface = "0.2.0"
 rust_hls_macro_lib = { path = "../rust_hls_macro_lib" }
 spanned_error_message = { path = "../spanned_error_message" }
 darling = "0.20.1"
+
+verilated = { version = "0.1.0", optional = true }
+verilated-module = { version = "0.1.0", optional = true }
+verilator = { features = ["gen", "module"], version = "0.1.0", optional = true }
