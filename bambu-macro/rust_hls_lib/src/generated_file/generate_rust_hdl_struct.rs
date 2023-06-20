@@ -135,7 +135,7 @@ pub fn generate_update_function(
                         panic!("Unsupported bit width")
                     };
                     let _size_ident = format_ident!("{}", size);
-                    let masked_value = quote! { (verilated_module . #internal_name () & #mask)};
+                    let masked_value = quote! { verilated_module . #internal_name () & #mask};
                     let bit_length = x as usize;
 
                     quote! { rust_hdl::prelude::ToBits::to_bits::<#bit_length>(#masked_value) }
@@ -194,7 +194,13 @@ pub fn generate_rust_hdl_struct(
     )?;
 
     #[cfg(feature = "verilator")]
-    let verilated_module = verilator_shim.rust_module;
+    let verilated_module = {
+        let verilated_module = verilator_shim.rust_module;
+        quote!(
+            #[allow(dead_code, unused)]
+            #verilated_module
+        )
+    };
 
     #[cfg(not(feature = "verilator"))]
     let verilated_module = quote! {};
@@ -308,6 +314,7 @@ pub fn generate_rust_hdl_struct(
     });
 
     let logic_block_impl = quote! {
+        #[automatically_derived]
         impl ::rust_hdl::prelude::block::Block for #module_ident {
             fn connect_all(&mut self) {
                 self.connect();
@@ -345,12 +352,14 @@ pub fn generate_rust_hdl_struct(
 
         #logic_block_impl
 
+        #[automatically_derived]
         impl #module_ident {
             pub fn new() -> Self {
                 Self::default()
             }
         }
 
+        #[automatically_derived]
         impl ::rust_hdl::prelude::Logic for #module_ident {
             fn update(&mut self) {
                 #update_function_impl
