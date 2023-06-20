@@ -32,9 +32,9 @@ module top
         .clk(slowClock),
         .reset(1),
         .start_port(start),
-        .Pd458(32'h40000000),
-        .Pd459(32'h40000100),
-        .Pd460(32'h40000200),
+        .Pd456(32'h40000000),
+        .Pd457(32'h40000100),
+        .Pd458(32'h40000200),
         .M_Rdata_ram(current_read_data),
         .M_DataRdy(data_ready),
 
