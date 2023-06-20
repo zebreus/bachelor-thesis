@@ -1,0 +1,16 @@
+[package]
+name = "rust_hls_example"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+rust-hdl = "0.45.1"
+rust_hls = { path = "../rust_hls_macro" }
+verilated = { version = "0.1.0" }
+verilated-module = { version = "0.1.0" }
+
+[build-dependencies]
+rust_hls_lib = { path = "../rust_hls_lib", features = ["verilator"] }
+verilator = { features = ["gen", "module"], version = "0.1.0" }
