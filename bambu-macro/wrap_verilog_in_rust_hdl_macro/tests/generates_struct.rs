@@ -29,5 +29,5 @@ endmodule
 );
 
 fn main() {
-    let c = Counter::default();
+    let _c = Counter::default();
 }

@@ -31,6 +31,7 @@ const B0: u32 = 0xefcdab89;
 const C0: u32 = 0x98badcfe;
 const D0: u32 = 0x10325476;
 
+#[allow(unused)]
 #[no_mangle]
 pub unsafe extern "C" fn md5(
     message_pointer: *const u32,
