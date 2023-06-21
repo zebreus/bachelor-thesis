@@ -183,8 +183,8 @@ pub fn wrap_verilog(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
             });
 
     let module_ident = format_ident!("{}", &parsed_module.name);
-    let internal_verilog = &parsed_module.internal_verilog;
-    let external_verilog = &parsed_module.external_verilog;
+    let internal_verilog = &parsed_module.internal_verilog();
+    let external_verilog = &parsed_module.external_verilog();
     let signals: Vec<SignalTokens> = parsed_module
         .signals
         .iter()

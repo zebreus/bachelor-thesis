@@ -1039,7 +1039,7 @@ dependencies = [
  "proc-macro2",
  "quote",
  "rust-hdl 0.45.1",
- "rust_hls_lib",
+ "rust_hls",
  "syn 2.0.15",
  "tempfile",
  "thiserror",
@@ -1048,7 +1048,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "rust_hls_lib"
+name = "rust_hls"
 version = "0.1.1"
 dependencies = [
  "base64 0.21.0",

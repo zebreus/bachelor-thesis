@@ -172,7 +172,7 @@ mod tests {
     }
 
     #[test]
-    fn fails_on_hls_function_without_no_mangle() {
+    fn allows_hls_function_without_no_mangle() {
         // The test file should contain a lot of modules. At least three
         let content: syn::File = syn::parse2(::quote::quote! {
             #[hls]
@@ -182,7 +182,6 @@ mod tests {
         })
         .unwrap();
 
-        find_main_function(&content.items, &content.span())
-            .expect_err("Should return an error that no_mangle is missing");
+        find_main_function(&content.items, &content.span()).unwrap();
     }
 }

@@ -67,15 +67,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9c7d0618f0e0b7e8ff11427422b64564d5fb0be1940354bfe2e0529b18a9d9b8"
 
 [[package]]
-name = "approx"
-version = "0.5.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cab112f0a86d568ea0e627cc1d6be74a1e9cd55214684db5561995f6dad897c6"
-dependencies = [
- "num-traits",
-]
-
-[[package]]
 name = "array-init"
 version = "2.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -176,12 +167,6 @@ name = "bytecount"
 version = "0.6.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2c676a478f63e9fa2dd5368a42f28bba0d6c560b775f38583c8bbaa7fcd67c9c"
-
-[[package]]
-name = "bytemuck"
-version = "1.13.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "17febce684fd15d89027105661fec94afb475cb995fbc59d2865198446ba2eea"
 
 [[package]]
 name = "camino"
@@ -546,16 +531,6 @@ checksum = "cfc25fd417983cc7f203394ebb89eba18e2df1b0ac1be2673091b5aca52b595f"
 
 [[package]]
 name = "extract_rust_hdl_interface"
-version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d40bd95b8879442228c2f3f2738ddf50bc571662489fd911f8fe44dce82675f7"
-dependencies = [
- "itertools",
- "sv-parser",
-]
-
-[[package]]
-name = "extract_rust_hdl_interface"
 version = "0.2.0"
 dependencies = [
  "itertools",
@@ -768,16 +743,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "matrixmultiply"
-version = "0.3.7"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "090126dc04f95dc0d1c1c91f61bdd474b3930ca064c1edc8a849da2c6cbe1e77"
-dependencies = [
- "autocfg",
- "rawpointer",
-]
-
-[[package]]
 name = "memchr"
 version = "2.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -809,33 +774,6 @@ name = "minimal-lexical"
 version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "68354c5c6bd36d73ff3feceb05efa59b6acb7626617f4962be322a825e61f79a"
-
-[[package]]
-name = "nalgebra"
-version = "0.32.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d68d47bba83f9e2006d117a9a33af1524e655516b8919caac694427a6fb1e511"
-dependencies = [
- "approx",
- "matrixmultiply",
- "nalgebra-macros",
- "num-complex",
- "num-rational",
- "num-traits",
- "simba",
- "typenum",
-]
-
-[[package]]
-name = "nalgebra-macros"
-version = "0.2.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d232c68884c0c99810a5a4d333ef7e47689cfd0edc85efc9e54e1e6bf5212766"
-dependencies = [
- "proc-macro2 1.0.60",
- "quote 1.0.28",
- "syn 1.0.109",
-]
 
 [[package]]
 name = "nom"
@@ -941,32 +879,12 @@ dependencies = [
 ]
 
 [[package]]
-name = "num-complex"
-version = "0.4.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "02e0d21255c828d6f128a1e41534206671e8c3ea0c62f32291e808dc82cff17d"
-dependencies = [
- "num-traits",
-]
-
-[[package]]
 name = "num-integer"
 version = "0.1.45"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "225d3389fb3509a24c93f5c29eb6bde2586b98d9f016636dff58d7c6f7569cd9"
 dependencies = [
  "autocfg",
- "num-traits",
-]
-
-[[package]]
-name = "num-rational"
-version = "0.4.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0638a1c9d0a3c0914158145bc76cff373a75a627e6ecbfb71cbe6f453a5a19b0"
-dependencies = [
- "autocfg",
- "num-integer",
  "num-traits",
 ]
 
@@ -1000,12 +918,6 @@ name = "option-ext"
 version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "04744f49eae99ab78e0d5c0b603ab218f515ea8cfe5a456d7629ad883a3b6e7d"
-
-[[package]]
-name = "paste"
-version = "1.0.12"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9f746c4065a8fa3fe23974dd82f15431cc8d40779821001404d10d2e79ca7d79"
 
 [[package]]
 name = "petgraph"
@@ -1122,12 +1034,6 @@ checksum = "ec0be4795e2f6a28069bec0b5ff3e2ac9bafc99e6a9a7dc3547996c5c816922c"
 dependencies = [
  "getrandom",
 ]
-
-[[package]]
-name = "rawpointer"
-version = "0.2.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "60a357793950651c4ed0f3f52338f53b2f809f32d83a07f72909fa13e4c6c1e3"
 
 [[package]]
 name = "rayon"
@@ -1412,35 +1318,7 @@ version = "0.1.0"
 
 [[package]]
 name = "rust_hls"
-version = "0.1.1"
-dependencies = [
- "darling 0.20.1",
- "itertools",
- "proc-macro2 1.0.60",
- "quote 1.0.28",
- "rust-hdl 0.45.1",
- "rust_hls_macro_lib",
- "syn 2.0.18",
- "tempfile",
- "thiserror",
- "trybuild",
-]
-
-[[package]]
-name = "rust_hls_example"
-version = "0.1.0"
-dependencies = [
- "rust-hdl 0.45.1",
- "rust_hls",
- "rust_hls_lib",
- "verilated",
- "verilated-module",
- "verilator",
-]
-
-[[package]]
-name = "rust_hls_lib"
-version = "0.1.1"
+version = "0.2.0"
 dependencies = [
  "base64 0.21.1",
  "cargo_toml",
@@ -1460,6 +1338,7 @@ dependencies = [
  "quote 1.0.28",
  "rand",
  "regex",
+ "rust_hls_macro",
  "rust_hls_macro_lib",
  "serde",
  "spanned_error_message",
@@ -1470,6 +1349,31 @@ dependencies = [
  "verilated",
  "verilated-module",
  "verilator",
+]
+
+[[package]]
+name = "rust_hls_example"
+version = "0.1.0"
+dependencies = [
+ "rust-hdl 0.45.1",
+ "rust_hls",
+ "rust_hls_macro",
+]
+
+[[package]]
+name = "rust_hls_macro"
+version = "0.2.0"
+dependencies = [
+ "darling 0.20.1",
+ "itertools",
+ "proc-macro2 1.0.60",
+ "quote 1.0.28",
+ "rust-hdl 0.45.1",
+ "rust_hls_macro_lib",
+ "syn 2.0.18",
+ "tempfile",
+ "thiserror",
+ "trybuild",
 ]
 
 [[package]]
@@ -1518,15 +1422,6 @@ name = "ryu"
 version = "1.0.13"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f91339c0467de62360649f8d3e185ca8de4224ff281f66000de5eb2a77a79041"
-
-[[package]]
-name = "safe_arch"
-version = "0.6.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "794821e4ccb0d9f979512f9c1973480123f9bd62a90d74ab0f9426fcf8f4a529"
-dependencies = [
- "bytemuck",
-]
 
 [[package]]
 name = "same-file"
@@ -1587,19 +1482,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "93107647184f6027e3b7dcb2e11034cf95ffa1e3a682c67951963ac69c1c007d"
 dependencies = [
  "serde",
-]
-
-[[package]]
-name = "simba"
-version = "0.8.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "061507c94fc6ab4ba1c9a0305018408e312e17c041eb63bef8aa726fa33aceae"
-dependencies = [
- "approx",
- "num-complex",
- "num-traits",
- "paste",
- "wide",
 ]
 
 [[package]]
@@ -1773,28 +1655,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "be55cf8942feac5c765c2c993422806843c9a9a45d4d5c407ad6dd2ea95eb9b6"
 dependencies = [
  "winapi-util",
-]
-
-[[package]]
-name = "test-crate"
-version = "0.1.0"
-dependencies = [
- "nalgebra",
- "rust-hdl 0.45.1",
- "rust_hls",
- "wrap_verilog_in_rust_hdl_macro 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
-]
-
-[[package]]
-name = "test-macro"
-version = "0.1.0"
-dependencies = [
- "proc-macro-error",
- "proc-macro2 1.0.60",
- "quote 1.0.28",
- "rust-hdl 0.44.2",
- "syn 1.0.109",
- "wrap_verilog_in_rust_hdl_macro 0.1.0",
 ]
 
 [[package]]
@@ -2016,16 +1876,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ed9d5b4305409d1fc9482fee2d7f9bcbf24b3972bf59817ef757e23982242a93"
 
 [[package]]
-name = "wide"
-version = "0.7.9"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5cd0496a71f3cc6bc4bf0ed91346426a5099e93d89807e663162dc5a1069ff65"
-dependencies = [
- "bytemuck",
- "safe_arch",
-]
-
-[[package]]
 name = "winapi"
 version = "0.3.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2199,27 +2049,13 @@ dependencies = [
 
 [[package]]
 name = "wrap_verilog_in_rust_hdl_macro"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
- "extract_rust_hdl_interface 0.1.0",
+ "extract_rust_hdl_interface 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "proc-macro-error",
  "proc-macro2 1.0.60",
  "quote 1.0.28",
- "rust-hdl 0.44.2",
- "syn 1.0.109",
+ "rust-hdl 0.45.1",
+ "syn 2.0.18",
  "trybuild",
-]
-
-[[package]]
-name = "wrap_verilog_in_rust_hdl_macro"
-version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "aaa343455360233f2f2b431445d412b3294cf62e5ec9e7484f89695a3a5ff173"
-dependencies = [
- "extract_rust_hdl_interface 0.1.0",
- "proc-macro-error",
- "proc-macro2 1.0.60",
- "quote 1.0.28",
- "rust-hdl 0.44.2",
- "syn 1.0.109",
 ]

@@ -1,6 +1,6 @@
 [package]
-name = "rust_hls"
-version = "0.1.1"
+name = "rust_hls_macro"
+version = "0.2.0"
 edition = "2021"
 license = "MIT OR Apache-2.0"
 keywords = ["rust-hdl", "verilog", "fpga", "hls", "high-level-synthesis"]
@@ -24,7 +24,7 @@ itertools = { version = "0.10.5" }
 proc-macro2 = { version = "1.0.56", features = ["span-locations"] }
 quote = { version = "1.0.26" }
 rust-hdl = { version = "0.45.1" }
-rust_hls_macro_lib = { path = "../rust_hls_macro_lib" }
+rust_hls_macro_lib = { path = "../rust_hls_macro_lib", version = "0.1.0" }
 syn = { version = "2.0.15", features = ["full"] }
 tempfile = "3.5.0"
 thiserror = "1.0.40"

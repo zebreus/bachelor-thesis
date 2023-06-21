@@ -1159,7 +1159,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "rust_hls_lib"
+name = "rust_hls"
 version = "0.1.1"
 dependencies = [
  "base64 0.21.0",
@@ -1444,7 +1444,7 @@ dependencies = [
  "nalgebra",
  "rust-hdl",
  "rust_hls",
- "rust_hls_lib",
+ "rust_hls",
  "syn 2.0.18",
 ]
 

@@ -1,3 +1,8 @@
+//! A library containing support functions for [rust_hls](https://crates.io/crates/rust_hls) and [rust_hls_macro](https://crates.io/crates/rust_hls_macro)
+//!
+//! This basically contains all functions related to parsing the HLS macros from files. These functions are shared between the macro and the buildscript so they both parse in the same way and produce the same error messages.
+//!
+//! This crate uses darling::Error as its error type, because that supports bundling errors and span information.
 mod generate_names;
 mod hls_macro_helpers;
 mod make_content_compile;

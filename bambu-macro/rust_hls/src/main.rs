@@ -1,5 +1,5 @@
 use clap::Parser;
-use rust_hls_lib::Build;
+use rust_hls::Build;
 
 /// Search for a pattern in a file and display the lines that contain it.
 #[derive(Parser)]

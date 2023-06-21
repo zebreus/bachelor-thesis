@@ -7,13 +7,13 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug unit tests in library 'rust_hls_lib'",
+            "name": "Debug unit tests in library 'rust_hls'",
             "cargo": {
                 "args": [
                     "test",
                     "--no-run",
                     "--lib",
-                    "--package=rust_hls_lib"
+                    "--package=rust_hls"
                 ]
             },
             "args": [ ],

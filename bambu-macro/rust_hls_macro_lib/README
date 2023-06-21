@@ -1,10 +1,11 @@
-= rust_hls_macro_lib
+# rust_hls_macro_lib
 
-This library contains helper functions shared between the `rust_hls_macro` and the `rust_hls_lib` crates.
+<!-- cargo-rdme start -->
 
-This crate will contain
+A library containing support functions for rust_hls and rust_hls
 
-* Everything related to parsing the attribute macro. (`#[hls( ... )]`)
-* Some functions for checking that the macro is used correctly.
+This basically contains all functions related to parsing the HLS macros from files. These functions are shared between the macro and the buildscript so they both parse in the same way and produce the same error messages.
 
 This crate uses darling::Error as its error type, because that supports bundling errors and span information.
+
+<!-- cargo-rdme end -->
