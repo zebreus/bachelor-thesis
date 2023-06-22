@@ -658,24 +658,54 @@ The original function takes a pointer to memory as input. This means that the ge
 
 === Integrating the toolchain with rust-hdl
 
-// TODO: Remove intro
-We want to try using Rust as a source language for HLS, because of the developer experience. As seen in the previous example integrating it with Verilog involves a few manual steps. This is not a good developer experience. In this section the integration with rust-hdl will be explored. This makes it possible to create a single Rust crate containing both RTL and HLS code in the same project.
-
+//TODO: Verilator background section
 // With rust macros it is possible to execute arbitrary code transformations at compile-time. This can be used 
-To make testing easier and more reproducable
+Using the toolchain as shown in the previous section requires a few manual steps. Especially the changing parameter names are difficult to work with as they need to be adjusted after every modification. To make the toolchain easier to use, a library for integration with rust-hdl was created. The library makes it possible to create a single Rust crate containing both RTL and HLS code in the same project. The library contains steps for synthesizing specific functions from a bigger Rust project, wrapping synthesized Verilog in a rust-hdl structs, highlighting errors in the source code before synthesis, and for generating simulations with Verilator.
 
+// TODO: Move to background
+Cargo provides a way to hook into the build process using buildscripts. These are small Rust programs that can modify the Source code before it is passed to the Rust compiler. The Rust compiler also allows custom code transformations at compile-time using procedural macros. Procedural macros backed by Rust functions that are executed at compile-time and can modify the code they are applied to.
 
-//TODO: This is a stub
-Being able to synthesize Rust to Verilog in a vacuum is not that usefull. We should be able to use it in a larger HDL design. This paper will use rust-hdl as a HDL. This way the HDL design can be completly written in Rust.
+The Rust library provides a `#[hls]` macro that can be used to mark Rust modules for HLS. The macro is evaluated two times. Before compilation a buildscript finds all `#[hls]` macros. It then extracts every marked module into a seperate temporary crate. This crate is then synthesized to Verilog using the toolchain mentioned above. A Rust module containing a rust-hdl struct that wraps the synthesized Verilog is then generated. That Rust module is then placed alongside the original source code. During compilation the `#[hls]` macro is evaluated by the Rust compiler. The macro then emits import directives for the module that were synthesized during the buildscript. It also evaluates if the macro is used in a valid context and emits useful error messages if it is not. Diagram XXX shows the macro evaluation process.
 
-The generated Verilog is wrapped in a rust-hdl module. Rust-hdl is not able to simulate embedded verilog, so we use Verilator to build a library that can be used to simulate the generated Verilog and link the rust program against it.
+.Block diagram of the macro evaluation
+[nomnoml]
+....
+#direction: right
+[Rust crate]->[cargo build]
 
-This also allows us to perform verification directly in rust unit tests. Nice integrated development experience.
+#.downwards: direction=down
+[cargo build|
+[<downwards> Buildscript|
+  [parse rust crate]->[find hls modules]
+  [find hls modules]->[extract crate]
+  [extract crate]->[compile to LLVM IR]
+  [compile to LLVM IR]->[synthesize with bambu]
+  [synthesize with bambu]->[parse result]
+  [parse result]->[fix parameter names]
+  [fix parameter names]->[generate rust_hdl interface]
+  [generate rust_hdl interface]->[create rust_hdl module]
+  [parse result]->[create C++ library]
+  [create C++ library]->[create rust_hdl module]
+  [create rust_hdl module]->[place new rust file in original crate]
+  [place new rust file in original crate]->[emit directives to link C++ library]
+]
 
-Challenge: integrating bambu
+[<downwards>Rust compiler|
+[<downwards> HLS macro evaluation|
+  [parse rust macro]->[check for errors]
+  [check for errors]->[emit import directives for synthesized module]
+]
+[<downwards> Compilation]
+[HLS macro evaluation]->[Compilation]
+]
 
-//TODO: diagram of the integrated toolchain
+[Buildscript]->[Rust compiler]
+]
+....
 
+Rust-hdl is not able to simulate embedded verilog. Verilator can create a {cpp} library from Verilog that simulates a single component. Such a library is created for every synthesized module. The generated rust-hdl structs contain the glue code neccessary to call their library. The buildscript emits the directives neccessary to link the generated libraries. Then cargo will link the libraries into the final binary after compilation.
+
+By using this approach it is possible to use the toolchain in a rust-hdl project. The modules can be used, simulated, and tested like normal a rust-hdl module. This also allows us to perform behavioral verification directly in rust unit tests. This workflow makes it possible to use HLS from Rust in a fully automated way.
 
 === Proof-of-concept implementation
 
