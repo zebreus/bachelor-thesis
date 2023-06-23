@@ -1,8 +1,11 @@
 use std::path::PathBuf;
 
 use crate::{
-    calculate_hash, darling_error_outside_macro::DarlingErrorOutsideMacro,
-    generate_hls_script::GenerateHlsOptions, rust_hls::CrateFile, RustHls,
+    calculate_hash,
+    darling_error_outside_macro::DarlingErrorOutsideMacro,
+    generate_hls_script::{generate_hls_script, GenerateHlsOptions},
+    rust_hls::CrateFile,
+    RustHls,
 };
 
 use super::find_modules::MacroModule;
@@ -42,6 +45,8 @@ pub struct ProcessedModule {
     pub function_name: String,
     /// The dependencies that are required to build the module
     pub cargo_toml: String,
+    /// The script that can be called to perform hls
+    pub hls_script: String,
     /// Arguments for rust_hls
     pub rust_hls_args: HlsArguments,
     /// The parameters of the function
@@ -54,6 +59,10 @@ impl ProcessedModule {
         files.push(CrateFile {
             path: PathBuf::from("Cargo.toml"),
             content: self.cargo_toml.clone(),
+        });
+        files.push(CrateFile {
+            path: PathBuf::from("hls.sh"),
+            content: self.hls_script.clone(),
         });
         files.push(CrateFile {
             path: PathBuf::from("src/lib.rs"),
@@ -73,21 +82,7 @@ impl ProcessedModule {
     pub fn to_rust_hls(&self) -> RustHls {
         let files = self.get_files();
 
-        let options = GenerateHlsOptions {
-            function_name: self.function_name.clone(),
-            rust_flags: self
-                .rust_hls_args
-                .rust_flags
-                .clone()
-                .and_then(|f| Some(f.value())),
-            hls_flags: self
-                .rust_hls_args
-                .hls_flags
-                .clone()
-                .and_then(|f| Some(f.value())),
-        };
-
-        let rust_hls = RustHls::new(files, options);
+        let rust_hls = RustHls::new(files);
         return rust_hls;
     }
 }
@@ -130,10 +125,17 @@ pub fn process_module(module: &MacroModule) -> Result<ProcessedModule, ProcessMo
             .1,
     };
 
+    let hls_options = GenerateHlsOptions {
+        function_name: parsed_module.main_function_info.function_name.clone(),
+        hls_arguments: hls_args.clone(),
+    };
+    let script = generate_hls_script(&hls_options);
+
     let processed_module = ProcessedModule {
         content: prettyplease::unparse(&module_file),
         function_name: parsed_module.main_function_info.function_name,
         cargo_toml: cargo_toml.content,
+        hls_script: script,
         rust_hls_args: hls_args,
         parameters: parsed_module.main_function_info.parameters,
     };

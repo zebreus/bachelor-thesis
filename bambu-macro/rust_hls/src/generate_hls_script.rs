@@ -1,7 +1,10 @@
+use std::ops::Add;
+
+use rust_hls_macro_lib::HlsArguments;
+
 pub struct GenerateHlsOptions {
     pub function_name: String,
-    pub rust_flags: Option<String>,
-    pub hls_flags: Option<String>,
+    pub hls_arguments: HlsArguments,
 }
 
 /// These flags will be used when compiling the extracted crate to LLVM IR.
@@ -19,12 +22,20 @@ pub const DEFAULT_HLS_FLAGS: &str = r#"--compiler=I386_CLANG16 -Os"#;
 pub fn generate_hls_script(options: &GenerateHlsOptions) -> String {
     let GenerateHlsOptions {
         function_name,
-        rust_flags,
-        hls_flags,
+        hls_arguments,
     } = options;
 
-    let rust_flags = rust_flags.clone().unwrap_or(DEFAULT_RUST_FLAGS.into());
-    let hls_flags = hls_flags.clone().unwrap_or(DEFAULT_HLS_FLAGS.into());
+    let rust_flags = match hls_arguments.skip_default_rust_flags.unwrap_or(false) {
+        true => String::new(),
+        false => DEFAULT_RUST_FLAGS.into(),
+    }
+    .add(&hls_arguments.rust_flags());
+
+    let hls_flags = match hls_arguments.skip_default_bambu_flags.unwrap_or(false) {
+        true => String::new(),
+        false => DEFAULT_HLS_FLAGS.into(),
+    }
+    .add(&hls_arguments.bambu_flags());
 
     let create_llvm_command = format!(
         r#"
@@ -97,8 +108,7 @@ mod tests {
             &dir.path(),
             &GenerateHlsOptions {
                 function_name: "test".into(),
-                rust_flags: None,
-                hls_flags: None,
+                hls_arguments: HlsArguments::default(),
             },
         )
         .unwrap();
@@ -121,8 +131,7 @@ mod tests {
             &crate_path,
             &GenerateHlsOptions {
                 function_name: function_name.into(),
-                rust_flags: None,
-                hls_flags: None,
+                hls_arguments: HlsArguments::default(),
             },
         )
         .unwrap();
@@ -166,8 +175,7 @@ mod tests {
             &crate_path,
             &GenerateHlsOptions {
                 function_name: function_name.into(),
-                rust_flags: None,
-                hls_flags: None,
+                hls_arguments: HlsArguments::default(),
             },
         )
         .unwrap();

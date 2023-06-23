@@ -16,7 +16,6 @@ use serde::Serialize;
 use crate::{
     cache_workspace::{add_to_workspace, WorkspaceLock},
     caching::CachePath,
-    generate_hls_script::{generate_hls_script, GenerateHlsOptions},
 };
 
 use thiserror::Error;
@@ -96,13 +95,7 @@ impl RustHls {
     /// The new instance will synthesize from a temporary crate containing the given files.
     ///
     /// A hls.sh script will be generated and added to the crate.
-    pub fn new(mut files: Vec<CrateFile>, hls_options: GenerateHlsOptions) -> Self {
-        let script = generate_hls_script(&hls_options);
-        files.push(CrateFile {
-            path: PathBuf::from("hls.sh"),
-            content: script,
-        });
-
+    pub fn new(files: Vec<CrateFile>) -> Self {
         Self { files }
     }
 
@@ -219,10 +212,19 @@ impl RustHls {
 
 #[cfg(test)]
 mod tests {
+    use rust_hls_macro_lib::HlsArguments;
+
+    use crate::generate_hls_script::{generate_hls_script, GenerateHlsOptions};
+
     use super::*;
 
     #[test]
     fn synthesizing_test_crate_creates_verilog_file() {
+        let options = GenerateHlsOptions {
+            function_name: "add779".into(),
+            hls_arguments: HlsArguments::default(),
+        };
+
         let files = vec![
             CrateFile {
                 path: PathBuf::from("Cargo.toml"),
@@ -246,15 +248,10 @@ mod tests {
                 "#,
                 ),
             },
+            CrateFile::new("hls.sh".into(), generate_hls_script(&options)),
         ];
 
-        let options = GenerateHlsOptions {
-            function_name: "add779".into(),
-            rust_flags: None,
-            hls_flags: None,
-        };
-
-        let rust_hls = RustHls::new(files, options);
+        let rust_hls = RustHls::new(files);
 
         let result = rust_hls.execute().unwrap();
 
