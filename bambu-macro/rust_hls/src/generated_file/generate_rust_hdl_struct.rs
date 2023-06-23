@@ -354,6 +354,7 @@ pub fn generate_rust_hdl_struct(
 
         #[automatically_derived]
         impl #module_ident {
+            #[allow(unused)]
             pub fn new() -> Self {
                 Self::default()
             }

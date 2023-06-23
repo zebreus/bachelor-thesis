@@ -81,9 +81,10 @@ pub fn buildscript_hls(root: &PathBuf) -> Result<(), HlsBuildscriptError> {
             verilator
                 .with_coverage(true)
                 .with_trace(true)
+                .no_warn("width")
                 .file_with_standard(
                     &root.join(result.verilog_file_path()),
-                    Standard::Verilog2001,
+                    Standard::Verilog2005,
                 )
                 .file(&root.join(cpp_file))
                 .build(result.function_name());
