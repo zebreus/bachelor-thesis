@@ -484,24 +484,21 @@ This toolchain can be used to synthesize Rust functions. The following section w
 /// Minmax function that is as similar as possible as the equivalent cpp function
 #[no_mangle]
 pub unsafe extern "C" fn minmax(
-    numbers: *mut i32,
-    numbers_length: i32,
+    input: *mut i32,
+    num_elements: i32,
     out_max: &mut i32,
     out_min: &mut i32,
 ) {
-    let input = std::slice::from_raw_parts_mut(numbers, numbers_length as usize);
-    let mut local_max = input[0];
-    let mut local_min = input[0];
-
-    for i in 0..numbers_length as usize {
-        if input[i] > local_max {
-            local_max = input[i];
+    let mut local_max = *input.offset(0);
+    let mut local_min = *input.offset(0);
+    for i in 0..num_elements {
+        if *input.offset(i as isize) > local_max {
+            local_max = *input.offset(i as isize);
         }
-        if input[i] < local_min {
-            local_min = input[i];
+        if *input.offset(i as isize) < local_min {
+            local_min = *input.offset(i as isize);
         }
     }
-
     *out_max = local_max;
     *out_min = local_min;
 }
@@ -667,12 +664,10 @@ Cargo provides a way to hook into the build process using buildscripts. These ar
 
 The Rust library provides a `#[hls]` macro that can be used to mark Rust modules for HLS. The macro is evaluated two times. Before compilation a buildscript finds all `#[hls]` macros. It then extracts every marked module into a seperate temporary crate. This crate is then synthesized to Verilog using the toolchain mentioned above. A Rust module containing a rust-hdl struct that wraps the synthesized Verilog is then generated. That Rust module is then placed alongside the original source code. During compilation the `#[hls]` macro is evaluated by the Rust compiler. The macro then emits import directives for the module that were synthesized during the buildscript. It also evaluates if the macro is used in a valid context and emits useful error messages if it is not. Diagram XXX shows the macro evaluation process.
 
-.Block diagram of the macro evaluation
+.Block diagram of the macro evaluation before and during compilation
 [nomnoml]
 ....
 #direction: right
-[Rust crate]->[cargo build]
-
 #.downwards: direction=down
 [cargo build|
 [<downwards> Buildscript|
@@ -707,15 +702,10 @@ Rust-hdl is not able to simulate embedded verilog. Verilator can create a {cpp} 
 
 By using this approach it is possible to use the toolchain in a rust-hdl project. The modules can be used, simulated, and tested like normal a rust-hdl module. This also allows us to perform behavioral verification directly in rust unit tests. This workflow makes it possible to use HLS from Rust in a fully automated way.
 
-=== Proof-of-concept implementation
+=== Example of using the integration
 
-// TODO: This is a stub
-The proof-of-concept implementation uses a Rust procedural macros to transform a Rust function into a rust-hdl module.
-
-// TODO: Show of an example
-
-==== Explain neccessary compiler flags
-
+// TODO: Write section
+Lorem ipsum dolor sit amet.
 
 == Experiments and results
 

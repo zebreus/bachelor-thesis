@@ -1294,6 +1294,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "rust-hls-minmax"
+version = "0.1.0"
+dependencies = [
+ "rust-hdl 0.45.1",
+ "rust_hls",
+ "rust_hls_macro",
+ "verilated 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
 name = "rust-keccak"
 version = "0.1.0"
 
@@ -1346,9 +1356,9 @@ dependencies = [
  "tempfile",
  "thiserror",
  "toml",
- "verilated",
+ "verilated 0.1.2",
  "verilated-module",
- "verilator",
+ "verilator 0.1.6",
 ]
 
 [[package]]
@@ -1358,6 +1368,7 @@ dependencies = [
  "rust-hdl 0.45.1",
  "rust_hls",
  "rust_hls_macro",
+ "verilated 0.1.2",
 ]
 
 [[package]]
@@ -1770,20 +1781,37 @@ checksum = "84a5ed196124bf3bb32418e5f79cd7548a455500bba37e094f7ef4cfe91161fc"
 [[package]]
 name = "verilated"
 version = "0.1.2"
+dependencies = [
+ "cc",
+ "verilator 0.1.6",
+]
+
+[[package]]
+name = "verilated"
+version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "75fc6dd4b98e0d993edc1d343579d0be679f1fbd002711e28412a84c2381eb2d"
 dependencies = [
  "cc",
- "verilator",
+ "verilator 0.1.6 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
 name = "verilated-module"
 version = "0.1.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4aa4d7b07179ef219fd42510429c7e8b2d9f7bcff06ec3cb52a8fa91488741a6"
 dependencies = [
  "quote 0.5.2",
+ "syn 0.13.11",
+]
+
+[[package]]
+name = "verilator"
+version = "0.1.6"
+dependencies = [
+ "cc",
+ "fnv",
+ "glob",
+ "regex",
  "syn 0.13.11",
 ]
 
@@ -1793,10 +1821,7 @@ version = "0.1.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "13e46bfe915a966ca1bd7cdb30a283c9917e67c643b47605bfce429668cf1c50"
 dependencies = [
- "cc",
- "fnv",
  "regex",
- "syn 0.13.11",
 ]
 
 [[package]]
