@@ -79,9 +79,11 @@ pub fn buildscript_hls(root: &PathBuf) -> Result<(), HlsBuildscriptError> {
             // Generate CPP from Verilog
             let mut verilator = Verilator::default();
             verilator
-                .with_coverage(true)
+                .with_coverage(false)
                 .with_trace(true)
                 .no_warn("width")
+                .no_warn("pinmissing")
+                .with_performance_optimizations(true)
                 .file_with_standard(
                     &root.join(result.verilog_file_path()),
                     Standard::Verilog2005,

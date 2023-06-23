@@ -1294,6 +1294,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "rust-hls-keccak"
+version = "0.1.0"
+dependencies = [
+ "keccak",
+ "rust-hdl 0.45.1",
+ "rust_hls",
+ "rust_hls_macro",
+ "verilated 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
 name = "rust-hls-minmax"
 version = "0.1.0"
 dependencies = [
