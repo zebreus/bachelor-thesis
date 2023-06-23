@@ -1,0 +1,17 @@
+[package]
+name = "rust-hls-keccak"
+description = "Rust keccak function for benchmarking."
+version = "0.1.0"
+edition = "2021"
+
+
+[dependencies]
+rust-hdl = "0.45.1"
+rust_hls_macro = { path = "../bambu-macro/rust_hls_macro", version = "0.2.0" }
+verilated = { version = "0.1.0" }
+keccak = "0.1.4"
+
+[build-dependencies]
+rust_hls = { path = "../bambu-macro/rust_hls", features = [
+    "verilator",
+], version = "0.2.0" }

@@ -67,27 +67,74 @@ macro_rules! function_complete {
     };
 }
 #[allow(unused)]
+macro_rules! memory_address {
+    ($memory_size:ident, $address: ident, $memory_length: expr) => {{
+        let address_value = $address as usize / to_bytes!($memory_size);
+        if address_value >= $memory_length {
+            println!(
+                "Address {} out of bounds. Wrapping around to {}",
+                address_value,
+                address_value % $memory_length
+            );
+        }
+        address_value % $memory_length
+    }};
+}
+#[allow(unused)]
+macro_rules! to_bytes {
+    (u128) => {
+        16
+    };
+    (u64) => {
+        8
+    };
+    (u32) => {
+        4
+    };
+    (u16) => {
+        2
+    };
+    (u8) => {
+        1
+    };
+}
+#[allow(unused)]
+macro_rules! to_size {
+    (u128, $bits: expr) => {
+        $bits.to_u128()
+    };
+    (u64, $bits: expr) => {
+        $bits.to_u64()
+    };
+    (u32, $bits: expr) => {
+        $bits.to_u32()
+    };
+    (u16, $bits: expr) => {
+        $bits.to_u16()
+    };
+    (u8, $bits: expr) => {
+        $bits.to_u8()
+    };
+}
+
+#[allow(unused)]
 macro_rules! wait_clock_cycle_with_memory {
     ($sim: ident, $clock: ident, $module: ident, $memory: ident) => {
-        // Only if ready
-        let mout_addr_ram = ($module.mout_addr_ram.val().to_u32() / 4) as usize;
+        wait_clock_cycle_with_memory!($sim, $clock, $module, $memory, u64)
+    };
+    ($sim: ident, $clock: ident, $module: ident, $memory: ident, $memory_size: ident) => {
+        let mout_addr_ram = ($module.mout_addr_ram.val().to_u32()) as usize;
         // let mout_data_ram_size = adder.$module.mout_data_ram_size.val().to_u32() & 0b111111;
         let mout_we_ram = $module.mout_we_ram.val();
-        let mout_wdata_ram = $module.mout_wdata_ram.val().to_u32();
+        let mout_wdata_ram = to_size!($memory_size, $module.mout_wdata_ram.val());
 
         wait_clock_cycle!($sim, $clock, $module);
         // let mout_oe_ram = $module.mout_oe_ram.val();
         // TODO: Divide in rising and falling edge
-        $module.m_rdata_ram.next = $memory[mout_addr_ram].to_bits();
-
-        // if mout_oe_ram == true {
-        //     // $module.m_rdata_ram.next = $memory[mout_addr_ram].to_bits();
-        //     $module.m_data_rdy.next = true.into();
-        // } else {
-        //     $module.m_data_rdy.next = false.into();
-        // }
+        let address = memory_address!($memory_size, mout_addr_ram, $memory.len());
+        $module.m_rdata_ram.next = $memory[address].to_bits();
         if mout_we_ram == true {
-            $memory[mout_addr_ram] = mout_wdata_ram;
+            $memory[address] = mout_wdata_ram;
         }
     };
     ($sim: ident, $clock: ident, $module: ident) => {
@@ -96,37 +143,37 @@ macro_rules! wait_clock_cycle_with_memory {
 }
 #[allow(unused)]
 macro_rules! wait_until_function_complete {
-    ($sim: ident, $module: ident $(, $memory: ident)? ) => {
+    ($sim: ident, $module: ident $(, $memory: ident, $memory_size: ident)? ) => {
         while !function_complete!($module) {
-            wait_clock_cycle_with_memory!($sim, clk, $module $(, $memory)?);
+            wait_clock_cycle_with_memory!($sim, clk, $module $(, $memory, $memory_size)?);
         }
     };
 }
 #[allow(unused)]
 macro_rules! hls_sim {
-    ($module_type: ident, $module: ident $(, $memory: ident $( = $initial_value: expr)?)? , { $($preparation:expr ;)* }, { $($verification:expr ;)* }) => {
-        simple_sim!($module_type, clk, 1000000000, sim, {
+    ($module_type: ident, $module: ident $(, $memory: ident $( = $initial_value: expr)?, $memory_size:ident)? , { $($preparation:expr ;)* }, { $($verification:expr ;)* } $(,)?) => {
+        {simple_sim!($module_type, clk, 1000000000, sim, {
             let mut $module = sim.init()?;
             init_hls!($module);
 
-            $(let mut $memory: Vec<u32> = $( if true { $initial_value.into() } else )? { vec![0; 64] };)?
+            $(let mut $memory: Vec<$memory_size> = $( if true { $initial_value.into() } else )? { vec![0; 1050] };)?
 
 
             $($preparation ;)*
 
-            wait_until_function_complete!(sim, $module $(, $memory)?);
+            wait_until_function_complete!(sim, $module $(, $memory, $memory_size)?);
 
             $($verification ;)*
 
             sim.done($module)
-        });
+        })}
     };
 }
 #[allow(unused)]
 macro_rules! hls_test {
-    ($module_type: ident, $module: ident $(, $memory: ident $( = $initial_value: expr)?)? , { $($preparation:expr ;)* }, { $($verification:expr ;)* }) => {
+    ($module_type: ident, $module: ident $(, $memory: ident $( = $initial_value: expr)?, $memory_size:ident)? , { $($preparation:expr ;)* }, { $($verification:expr ;)* } $(,)?) => {
         let frequency = 1000000000;
-        let mut simulation = hls_sim!($module_type, $module $(, $memory  $( = $initial_value)?)?, { $($preparation ;)* }, { $($verification ;)* });
+        let mut simulation = hls_sim!($module_type, $module $(, $memory  $( = $initial_value)?, $memory_size)?, { $($preparation ;)* }, { $($verification ;)* });
 
         let hls_module = $module_type::new();
         let max_cycles = 1000;
@@ -137,9 +184,9 @@ macro_rules! hls_test {
             )
             .unwrap();
     };
-    ($module_type: ident, $module: ident $(, $memory: ident $( = $initial_value: expr)?)? , { $($preparation:expr ;)* }, { $($verification:expr ;)* }, $vcd_file: expr) => {
+    ($module_type: ident, $module: ident $(, $memory: ident $( = $initial_value: expr)?, $memory_size:ident)? , { $($preparation:expr ;)* }, { $($verification:expr ;)* }, $vcd_file: expr) => {
         let frequency = 1000000000;
-        let mut simulation = hls_sim!($module_type, $module $(, $memory $( = $initial_value)?)?, { $($preparation ;)* }, { $($verification ;)* });
+        let mut simulation = hls_sim!($module_type, $module $(, $memory $( = $initial_value)?, $memory_size)?, { $($preparation ;)* }, { $($verification ;)* } );
 
         let hls_module = $module_type::new();
         let max_cycles = 1000;
@@ -170,6 +217,7 @@ mod tests {
                 0x01F22F1A, 0x05E5635A, 0x64BEFEF2, 0x61367095, 0x787C5A55, 0x3C3EE88A, 0x040C7922,
                 0x1841F924, 0x16F53526, 0x75F644E9, 0x3AF1FF7B, 0, 0
             ],
+            u32,
             {
                 // Setup
                 min_max.out_max.next = (4 * 26u32).to_bits();
