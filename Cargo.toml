@@ -11,6 +11,7 @@ members = [
     "bambu-macro/rust_hls",
     "rust-hls-minmax",
     "rust-hls-keccak",
+    "rust-hls-md5",
     "bambu-macro/rust_hls_macro",
     "bambu-macro/rust_hls_macro_lib",
     "bambu-macro/spanned_error_message",
