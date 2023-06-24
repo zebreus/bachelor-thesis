@@ -713,10 +713,37 @@ Hypothesis: HLS from Rust is as performant as HLS from C++
 Hypothesis: Using packages makes development faster
 Hypothesis: With rust we can easily use packages
 
+=== Experimental setup
+// Algorithm -(implementation)> implementation -(synthesis)> design
 
-=== Show limitations of the synthesizable subset of Rust
+// TODO: I think there is probably a better word for `equivalent Rust implementation`. Maybe `algorithmicly identical Rust implementation`?
+To determine how HLS from Rust compares to HLS from C++ a set of algorithms will be compared. Every algorithm will have a {cpp} implementation and a equivalent Rust implementation. The equivalent Rust implementation is algorithmicly as close to the {cpp} implementation as possible. When possible a idiomatic Rust implementation will also be compared. The goal of the equivalent Rust implementation is to compare the performance of the toolchain and compiler. Comparing the idiomatic Rust implementation can show whether the toolchain is able to synthetize idiomatic Rust code. If a implementation for a specific algorithm is available on crates.io that implemention we also be compared. This will show whether we can use the Rust ecosystem to speed up development.
 
-Show the limitations of the toolchain. Limitations of the synthesizable subset of Rust.
+The {cpp} implementations will be synthesized using bambu with both the GCC and clang frontend. Rust implementations will be synthesized using the toolchain described in the previous section, which is also based around bambu. All implementations will be synthesized once with optimizations for size (`-Os`) and once with optimizations for speed (`-O3`).
+
+Different designs will be evaluated for the area of a FPGA they take up, their clock maximum frequency and the amount of clock cycles they take for a single operation. In case a design has a varying amount of clock cycles the average of all testcases will be used. The area and maximum frequency of a design will be taken from the placement report of nextpnr. nextpnr will be configured to target the XXX FPGA. The amount of clock cycles will be measured using the rust_hdl simulator for Rust designs and the Verilator simulator for C++ designs.
+
+=== Tested algorithms
+//TODO: Stop using algorithm and function interchangably
+
+Three functions will be compared.
+
+The minmax function finds the minimum and maximum value in a array of integers. This algorithm is chosen because it is simple and can be implemented in a single function. This makes it easy to compare the performance of the toolchain and compiler. It is also one of the examples included in the bambu repository.
+
+// TODO: Background section on keccak
+// TODO: Stylize keccak-f[1600] with latexmath
+The keccak-f[1600] function is a cryptographic function often used as a hash function. It was chosen because it is a real world algorithm that is used in many applications. This makes it a good example of how well the toolchain can optimize complex algorithms. It takes a pointer to 25 64-bit numbers and permutates them in place.
+
+// TODO: This is not good. Rewrite
+The md5 hash function is another hash function. It was also chosen because it is a real world algorithm. While md5 is no longer considered secure, it is also reasonably easy to implement.
+
+// TODO: Find better functions. At least not 2 hash functions
+
+// TODO: If there is time add an FIR filter: https://www.hackster.io/michi_michi/fpga-fir-filter-hls-kria-kv260-pynq-2eec35
+
+// TODO: === Show limitations of the synthesizable subset of Rust
+// Show the limitations of the toolchain. Limitations of the synthesizable subset of Rust.
+// Somewhere but not here
 
 === Show how the Rust ecosystem can be used
 
@@ -1435,6 +1462,13 @@ IEEE Design & Test of Computers, Volume 26, Issue 4, Pages 8-17,
 2009
 link:pass:[https://doi.org/10.1109/MDT.2009.69][🔗^]
 link:pass:[https://sci-hub.st/10.1109/MDT.2009.69][📁^]
+
+* [[[Ber09]]]
++Guido Bertoni, Joan Daemen, Michaël Peeters, Gilles Van Assche+
+_Keccak sponge function family main document._,
+Submission to NIST (Round 2) 3, no. 30 (2009): 320-337,
+2009
+link:pass:[https://keccak.team/files/Keccak-submission-3.pdf][📁^]
 
 // Reference thesis:
 // * https://webthesis.biblio.polito.it/7573/1/tesi.pdf
