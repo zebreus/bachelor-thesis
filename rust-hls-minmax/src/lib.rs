@@ -1,5 +1,5 @@
 mod memory;
-mod minmax;
+pub mod minmax;
 
 use memory::Memory;
 use minmax::MinMax;
@@ -7,7 +7,7 @@ use rust_hdl::prelude::*;
 use std::collections::BTreeMap;
 
 #[derive(LogicBlock)]
-pub struct TestBench {
+struct TestBench {
     pub clock: Signal<In, Clock>,
     memory: Memory,
     min_max: MinMax,

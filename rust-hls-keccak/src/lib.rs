@@ -1,1 +1,1 @@
-mod keccak;
+pub mod keccak;

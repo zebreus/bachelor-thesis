@@ -1,1 +1,1 @@
-mod md5;
+pub mod md5;
