@@ -1,0 +1,13 @@
+[package]
+name = "rust-hls-experiments"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+rust-hdl = "0.45.1"
+rust-hls-md5 = { path = "../../../rust-hls-md5" }
+rust-hls-keccak = { path = "../../../rust-hls-keccak" }
+rust-hls-minmax = { path = "../../../rust-hls-minmax" }
+seq-macro = "0.3.3"
