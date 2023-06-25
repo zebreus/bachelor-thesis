@@ -1,4 +1,4 @@
-void min_max_cpp(int *numbers, int numbers_length, int *out_max, int *out_min) {
+void minmax(int *numbers, int numbers_length, int *out_max, int *out_min) {
   int local_max = numbers[0];
   int local_min = numbers[0];
   int i = 0;

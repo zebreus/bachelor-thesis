@@ -15,7 +15,7 @@ pub fn run_experiments() {
 
     let results = [
         run_test("only zeroes", [0u64; 25]),
-        run_test("only deadbeef", [0xdeadbeefu64; 25]),
+        run_test("only deadbeef", [0xDeadbeefDeadbeefu64; 25]),
         run_test(
             "result of only zeroes again",
             [

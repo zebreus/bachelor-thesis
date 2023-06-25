@@ -78,7 +78,7 @@ fn run_test(test_name: &str, input: &[i32], expected_min: i32, expected_max: i32
             },
             {
                 // Verification
-                println!("Memory: {:X?}", memory);
+                // println!("Memory: {:X?}", memory);
                 assert_eq!(memory[(input_length) as usize], expected_min as u32);
                 assert_eq!(memory[(input_length + 1) as usize], expected_max as u32);
                 let mut thing = cloned_cycles.lock().unwrap();

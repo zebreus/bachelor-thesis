@@ -1,0 +1,3 @@
+only zeroes
+only deadbeef
+result of only zeroes again

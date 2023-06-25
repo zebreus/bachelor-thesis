@@ -33,6 +33,8 @@ fn run_test(input: &str, expected_hash: &str) -> usize {
     let expected_result = expected_hash.to_string();
 
     let mut backing_memory: [u32; 20] = [0; 20];
+    println!("input: {:?}", first_md5_block(input.as_bytes()));
+
     backing_memory[0..16].copy_from_slice(&input_array);
 
     // TODO: This can be done better
