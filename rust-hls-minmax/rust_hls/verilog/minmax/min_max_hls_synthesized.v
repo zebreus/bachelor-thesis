@@ -1,6 +1,6 @@
 // 
 // Politecnico di Milano
-// Code created using PandA - Version: PandA 2023.2 - Revision 891ec3caed502474cab0813cc4a9fc678deabaa5 - Date 2023-06-23T19:22:59
+// Code created using PandA - Version: PandA 2023.2 - Revision 891ec3caed502474cab0813cc4a9fc678deabaa5 - Date 2023-06-25T14:07:17
 // /nix/store/9c5lz0md936sjhs9hw1ya6kghvkfc4zg-bambu-wrapped/bin/bambu executed with: /nix/store/9c5lz0md936sjhs9hw1ya6kghvkfc4zg-bambu-wrapped/bin/bambu --simulator=VERILATOR --top-fname=min_max --clock-name=clk --compiler=I386_CLANG16 -Os --channels-type=MEM_ACC_11 --channels-number=1 min_max.ll 
 // 
 // Send any bug to: panda-info@polimi.it

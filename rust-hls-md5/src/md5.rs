@@ -1,8 +1,5 @@
-#[cfg(test)]
 pub mod encode_input;
-#[cfg(test)]
 pub mod encode_result;
-#[cfg(test)]
 pub mod padding;
 
 /// Minmax function that is as similar as possible as the equivalent cpp function

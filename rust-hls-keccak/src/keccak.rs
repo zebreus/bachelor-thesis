@@ -3,8 +3,8 @@
 #[rust_hls_macro::hls]
 pub mod keccak_hls {
     #[hls(bambu_flag = "--channels-type=MEM_ACC_11 --channels-number=1")]
-    pub unsafe extern "C" fn keccak(input: *mut u64) -> () {
-        let thing: &mut [u64; 25] = std::mem::transmute(input);
+    pub unsafe extern "C" fn keccak(input_pointer: *mut u64) -> () {
+        let thing: &mut [u64; 25] = std::mem::transmute(input_pointer);
         ::keccak::f1600(thing);
     }
 
@@ -16,7 +16,7 @@ pub mod keccak_hls {
 
         #[test]
         fn all_zeroes_get_hashed_correctly() {
-            let mut input = [0u64; 25];
+            let mut input_pointer = [0u64; 25];
             let expected_result: [u64; 25] = [
                 0xF1258F7940E1DDE7,
                 0x84D5CCF933C0478A,
@@ -45,14 +45,14 @@ pub mod keccak_hls {
                 0xEAF1FF7B5CECA249,
             ];
             unsafe {
-                let input_pointer: *mut u64 = std::mem::transmute(&mut input);
-                keccak(input_pointer);
-                assert_eq!(input, expected_result)
+                let raw_input_pointer: *mut u64 = std::mem::transmute(&mut input_pointer);
+                keccak(raw_input_pointer);
+                assert_eq!(input_pointer, expected_result)
             }
         }
         #[test]
         fn real_value_get_hashed_correctly() {
-            let mut input: [u64; 25] = [
+            let mut input_pointer: [u64; 25] = [
                 0xF1258F7940E1DDE7,
                 0x84D5CCF933C0478A,
                 0xD598261EA65AA9EE,
@@ -107,9 +107,9 @@ pub mod keccak_hls {
                 0x20D06CD26A8FBF5C,
             ];
             unsafe {
-                let input_pointer: *mut u64 = std::mem::transmute(&mut input);
-                keccak(input_pointer);
-                assert_eq!(input, expected_result)
+                let raw_input_pointer: *mut u64 = std::mem::transmute(&mut input_pointer);
+                keccak(raw_input_pointer);
+                assert_eq!(input_pointer, expected_result)
             }
         }
     }
@@ -273,7 +273,7 @@ mod tests {
 
     #[test]
     fn all_zeroes_get_hashed_correctly() {
-        let input: [u64; 25] = [0; 25];
+        let input_pointer: [u64; 25] = [0; 25];
         let expected_result: [u64; 25] = [
             0xF1258F7940E1DDE7,
             0x84D5CCF933C0478A,
@@ -305,11 +305,11 @@ mod tests {
         hls_test!(
             Keccak,
             keccak,
-            memory = input,
+            memory = input_pointer,
             u64,
             {
                 // Setup
-                keccak.input.next = 0u64.to_bits();
+                keccak.input_pointer.next = 0u64.to_bits();
             },
             {
                 // Verification
@@ -322,7 +322,7 @@ mod tests {
 
     #[test]
     fn real_value_get_hashed_correctly() {
-        let input: [u64; 25] = [
+        let input_pointer: [u64; 25] = [
             0xF1258F7940E1DDE7,
             0x84D5CCF933C0478A,
             0xD598261EA65AA9EE,
@@ -380,11 +380,11 @@ mod tests {
         hls_test!(
             Keccak,
             keccak,
-            memory = input,
+            memory = input_pointer,
             u64,
             {
                 // Setup
-                keccak.input.next = 0u64.to_bits();
+                keccak.input_pointer.next = 0u64.to_bits();
             },
             {
                 // Verification

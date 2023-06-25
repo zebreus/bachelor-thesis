@@ -14,6 +14,7 @@ struct TestBench {
 }
 
 impl TestBench {
+    #[allow(unused)]
     pub fn new(values: BTreeMap<Bits<32>, Bits<32>>) -> Self {
         Self {
             clock: Default::default(),
@@ -33,7 +34,7 @@ impl Logic for TestBench {
 
         self.min_max.out_max.next = 22u32.to_bits();
         self.min_max.out_min.next = 21u32.to_bits();
-        self.min_max.input.next = 0u32.to_bits();
+        self.min_max.elements.next = 0u32.to_bits();
         self.min_max.num_elements.next = 20u32.to_bits();
 
         self.min_max.m_data_rdy.next = self.memory.m_data_rdy.val();

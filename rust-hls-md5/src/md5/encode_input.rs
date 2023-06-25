@@ -33,7 +33,6 @@ impl ToMd5Bytes for [u32; 16] {
     }
 }
 
-#[cfg(test)]
 pub fn first_md5_block(input: &[u8]) -> [u32; 16] {
     use super::padding::IteratorExt;
 

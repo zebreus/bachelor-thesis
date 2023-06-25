@@ -1,9 +1,12 @@
 use syn::spanned::Spanned;
 
 mod assert_function_is_extern;
+mod check_parameter;
 use assert_function_is_extern::*;
 
 use crate::{extract_hls_macro, HlsArguments};
+
+use self::check_parameter::check_parameter;
 
 /// Contains information about the HLS main function
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Default)]
@@ -71,20 +74,12 @@ pub fn find_main_function(
         .inputs
         .iter()
         .filter_map(|input| {
-            let syn::FnArg::Typed(input) = input else {
-                errors.push(darling::Error::custom("HLS main function can not use self parameter").with_span(&input.span()));
-                return None;
-            };
-
-            let syn::Pat::Ident(syn::PatIdent{ident,..}) = &input.pat.as_ref() else {
-                errors.push(darling::Error::custom("The HLS main function must only use ident parameters. Idk how this error can occur.").with_span(&input.span()));
-                return None;
-            };
-
-            let parameter_name = ident.to_string();
-            let ty = input.ty.as_ref().clone();
-
-            Some((parameter_name, ty))
+            check_parameter(input)
+                .or_else(|error| {
+                    errors.push(error);
+                    Err(())
+                })
+                .ok()
         })
         .collect::<Vec<_>>();
 
