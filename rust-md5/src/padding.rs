@@ -53,13 +53,24 @@ impl<A: Iterator<Item = u8>> Iterator for Md5PaddingIterator<A> {
 }
 pub trait IteratorExt<A: Iterator<Item = u8>> {
     fn pad_md5_bytes(self) -> Md5PaddingIterator<A>;
-    fn pad_md5_blocks(self) -> std::iter::ArrayChunks<Md5PaddingIterator<A>, 64>
+    fn pad_md5_blocks(self) -> std::vec::IntoIter<[u8; 64]>
     where
         Self: Sized,
     {
         let blocks_iter = self.pad_md5_bytes();
-        let chunks = blocks_iter.array_chunks::<64>();
-        return chunks;
+        // TODO: This can be replaced with one line once `array_chunks` is stable
+        let mut chunks: Vec<[u8; 64]> = Vec::new();
+        let mut current_chunk = [0u8; 64];
+        let mut current_fill = 0;
+        for byte in blocks_iter {
+            current_chunk[current_fill] = byte;
+            current_fill += 1;
+            if current_fill == 64 {
+                chunks.push(current_chunk);
+                current_fill = 0;
+            }
+        }
+        return chunks.into_iter();
     }
 }
 impl<A: Iterator<Item = u8>> IteratorExt<A> for A {

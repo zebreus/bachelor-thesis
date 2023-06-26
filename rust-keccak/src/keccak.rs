@@ -131,7 +131,6 @@ unsafe fn iota(a: *mut u64, index_round: usize) -> () {
 }
 
 // tag::main-function[]
-#[no_mangle]
 pub unsafe extern "C" fn keccak(a: *mut u64) -> () {
     for i in 0..NR_ROUNDS {
         theta(a);

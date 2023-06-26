@@ -130,7 +130,6 @@ unsafe fn iota(a: &mut [u64; 25], index_round: usize) -> () {
     a[0] ^= get_krc_val!(index_round);
 }
 
-#[no_mangle]
 pub unsafe extern "C" fn keccak(a: *mut u64) -> () {
     let a: &mut [u64; 25] = std::mem::transmute(a);
     for i in 0..NR_ROUNDS {

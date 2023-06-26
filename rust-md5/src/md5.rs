@@ -1,10 +1,3 @@
-#[cfg(test)]
-pub mod encode_input;
-#[cfg(test)]
-pub mod encode_result;
-#[cfg(test)]
-pub mod padding;
-
 // tag::md5-implementation[]
 const SHIFT_PER_ROUND: [u32; 64] = [
     7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 5, 9, 14, 20, 5, 9, 14, 20, 5, 9,
@@ -28,12 +21,8 @@ const B0: u32 = 0xefcdab89;
 const C0: u32 = 0x98badcfe;
 const D0: u32 = 0x10325476;
 
-#[no_mangle]
-pub unsafe extern "C" fn md5(
-    message_pointer: *const u32,
-    result_pointer: *mut u32,
-    debug_pointer: *mut u32,
-) -> () {
+/// Based on the pseudocode from https://en.wikipedia.org/wiki/MD5
+pub unsafe extern "C" fn md5(message_pointer: *const u32, result_pointer: *mut u32) -> () {
     let message = std::slice::from_raw_parts(message_pointer, 16);
     let mut a = A0; // A
     let mut b = B0; // B
@@ -42,8 +31,6 @@ pub unsafe extern "C" fn md5(
 
     // for i from 0 to 63 do
     for i in 0u32..64 {
-        *debug_pointer = a;
-
         // var int F, g
         let f: u32;
         let g: u32;
@@ -118,7 +105,8 @@ pub unsafe extern "C" fn md5(
 #[cfg(test)]
 mod tests {
 
-    use super::{encode_input::first_md5_block, encode_result::ToHashString, *};
+    use super::md5;
+    use crate::{encode_input::first_md5_block, encode_result::ToHashString};
 
     #[test]
     fn hashing_empty_string_from_manually_specified_input_generates_correct_result() {
@@ -126,11 +114,7 @@ mod tests {
         unsafe {
             let input_pointer = &input as *const u32;
             let mut result = [0u32; 4];
-            md5(
-                input_pointer,
-                &mut result as *mut u32,
-                &mut [0u32; 1] as *mut u32,
-            );
+            md5(input_pointer, &mut result as *mut u32);
             assert_eq!(
                 result.into_hash_string(),
                 "d41d8cd98f00b204e9800998ecf8427e"
@@ -145,11 +129,7 @@ mod tests {
         let mut result = [0u32; 4];
 
         unsafe {
-            md5(
-                &input as *const u32,
-                &mut result as *mut u32,
-                &mut [0u32; 1] as *mut u32,
-            );
+            md5(&input as *const u32, &mut result as *mut u32);
         }
 
         assert_eq!(
@@ -164,11 +144,7 @@ mod tests {
         let mut result = [0u32; 4];
 
         unsafe {
-            md5(
-                &input as *const u32,
-                &mut result as *mut u32,
-                &mut [0u32; 1] as *mut u32,
-            );
+            md5(&input as *const u32, &mut result as *mut u32);
         }
 
         assert_eq!(
@@ -184,11 +160,7 @@ mod tests {
         let mut result = [0u32; 4];
 
         unsafe {
-            md5(
-                &input as *const u32,
-                &mut result as *mut u32,
-                &mut [0u32; 1] as *mut u32,
-            );
+            md5(&input as *const u32, &mut result as *mut u32);
         }
 
         assert_eq!(
@@ -203,11 +175,7 @@ mod tests {
         let mut result = [0u32; 4];
 
         unsafe {
-            md5(
-                &input as *const u32,
-                &mut result as *mut u32,
-                &mut [0u32; 1] as *mut u32,
-            );
+            md5(&input as *const u32, &mut result as *mut u32);
         }
 
         assert_eq!(
