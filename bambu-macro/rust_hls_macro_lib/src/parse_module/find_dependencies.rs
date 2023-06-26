@@ -45,9 +45,15 @@ impl<'ast> Visit<'ast> for DependencyFinder {
             return;
         }
 
-        if self.unused_dependencies.contains(&first_segment_ident) {
-            self.unused_dependencies.remove(&first_segment_ident);
-            self.used_dependencies.insert(first_segment_ident);
+        let found_dependency = self
+            .unused_dependencies
+            .iter()
+            .find(|dep| &dep.replace("-", "_") == &first_segment_ident)
+            .cloned();
+
+        if let Some(found_dependency) = found_dependency {
+            self.unused_dependencies.remove(&found_dependency);
+            self.used_dependencies.insert(found_dependency);
         }
     }
     fn visit_use_tree(&mut self, usetree: &'ast syn::UseTree) {
@@ -127,6 +133,25 @@ mod tests {
 
         let mut available_deps = HashSet::new();
         available_deps.insert("std".into());
+
+        let result = find_dependencies(&module.items, &available_deps).unwrap();
+        assert_eq!(result.len(), 1);
+    }
+
+    #[test]
+    fn dependency_checker_finds_hyphenated_dependency() {
+        // The test file should contain a lot of modules. At least three
+        let module: File = syn::parse2(::quote::quote! {
+            use cool_package::max;
+
+            pub fn add(left: usize, right: usize) -> usize {
+                let x = max(left, right);
+            }
+        })
+        .unwrap();
+
+        let mut available_deps = HashSet::new();
+        available_deps.insert("cool-package".into());
 
         let result = find_dependencies(&module.items, &available_deps).unwrap();
         assert_eq!(result.len(), 1);
