@@ -1,4 +1,3 @@
-use quote::ToTokens;
 use syn::spanned::Spanned;
 
 const VERILOG_2001_RESERVED_NAMES: [&str; 102] = [

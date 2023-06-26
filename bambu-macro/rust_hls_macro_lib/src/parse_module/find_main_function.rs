@@ -1,5 +1,3 @@
-use syn::spanned::Spanned;
-
 mod assert_function_is_extern;
 mod check_parameter;
 use assert_function_is_extern::*;
@@ -94,6 +92,8 @@ pub fn find_main_function(
 
 #[cfg(test)]
 mod tests {
+
+    use syn::spanned::Spanned;
 
     use super::*;
 
