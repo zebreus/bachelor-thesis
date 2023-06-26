@@ -1,0 +1,205 @@
+{
+"$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+"title": "Estimated area",
+"data": {
+"values": 
+[
+  {
+    "id": "min_max_cpp_clang_size",
+    "Compiler": "C++ clang",
+    "Optimized for": "size",
+    "Setup": "C++ clang -Os",
+    "color": "#3454D1"
+  },
+  {
+    "id": "min_max_cpp_clang_speed",
+    "Compiler": "C++ clang",
+    "Optimized for": "speed",
+    "Setup": "C++ clang -O3",
+    "color": "#7A8FE1"
+  },
+  {
+    "id": "min_max_cpp_gcc_size",
+    "Compiler": "C++ gcc",
+    "Optimized for": "size",
+    "Setup": "C++ gcc -Os",
+    "color": "#34D1BF"
+  },
+  {
+    "id": "min_max_cpp_gcc_speed",
+    "Compiler": "C++ gcc",
+    "Optimized for": "speed",
+    "Setup": "C++ gcc -O3",
+    "color": "#7AE1D5"
+  },
+  {
+    "id": "min_max_rust_size",
+    "Compiler": "Rust",
+    "Optimized for": "size",
+    "Setup": "Rust -Os",
+    "color": "#C1292E"
+  },
+  {
+    "id": "min_max_rust_speed",
+    "Compiler": "Rust",
+    "Optimized for": "speed",
+    "Setup": "Rust -O3",
+    "color": "#E2787C"
+  },
+  {
+    "id": "min_max_rust_idiomatic_size",
+    "Compiler": "Idiomatic Rust",
+    "Optimized for": "size",
+    "Setup": "Idiomatic Rust -Os",
+    "color": "#F65D00"
+  },
+  {
+    "id": "min_max_rust_idiomatic_speed",
+    "Compiler": "Idiomatic Rust",
+    "Optimized for": "speed",
+    "Setup": "Idiomatic Rust -O3",
+    "color": "#FF9A5C"
+  }
+]
+},
+"transform": [
+{
+"lookup": "id",
+"as": "Estimated area",
+"from": {
+"data": {
+"values": 
+[
+  {
+    "id": "min_max_cpp_clang_size",
+    "value": "278"
+  },
+  {
+    "id": "min_max_cpp_clang_speed",
+    "value": "1106"
+  },
+  {
+    "id": "min_max_cpp_gcc_size",
+    "value": "242"
+  },
+  {
+    "id": "min_max_cpp_gcc_speed",
+    "value": "259"
+  },
+  {
+    "id": "min_max_rust_idiomatic_size",
+    "value": "202"
+  },
+  {
+    "id": "min_max_rust_idiomatic_speed",
+    "value": "930"
+  },
+  {
+    "id": "min_max_rust_size",
+    "value": "306"
+  },
+  {
+    "id": "min_max_rust_speed",
+    "value": "1262"
+  }
+]
+},
+"key": "id",
+"fields": [
+"value"
+]
+}
+}
+],
+"width": 300,
+"height": 165,
+"encoding": {
+"x": {
+"field": "Compiler",
+"type": "nominal",
+"axis": {
+"labelAngle": 45
+},
+"title": null,
+"scale": {
+"padding": 0.6
+}
+},
+"y": {
+"field": "Optimized for",
+"type": "nominal",
+"scale": {
+"padding": 0.55
+}
+}
+},
+"layer": [
+{
+"mark": {
+"type": "circle",
+"tooltip": true,
+"stroke": "black"
+},
+"encoding": {
+"size": {
+"field": "Estimated area",
+"type": "quantitative",
+"legend": null,
+"scale": {
+"range": [
+0,
+5000
+]
+}
+},
+"color": {
+"legend": null,
+"field": "color",
+"type": "nominal",
+"scale": {
+"range": {
+"field": "color"
+}
+}
+},
+"tooltip": [
+{
+"field": "Setup"
+},
+{
+"field": "Estimated area",
+"type": "quantitative"
+}
+],
+"strokeWidth": {
+"condition": [
+{
+"param": "hover",
+"empty": false,
+"value": 0.5
+}
+],
+"value": 0
+}
+},
+"params": [
+{
+"name": "hover",
+"select": {
+"type": "point",
+"on": "mouseover"
+}
+}
+]
+},
+{
+"mark": "text",
+"encoding": {
+"text": {
+"field": "Estimated area",
+"type": "quantitative"
+}
+}
+}
+]
+}

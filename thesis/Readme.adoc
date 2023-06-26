@@ -721,7 +721,9 @@ To determine how HLS from Rust compares to HLS from C++ a set of algorithms will
 
 The {cpp} implementations will be synthesized using bambu with both the GCC and clang frontend. Rust implementations will be synthesized using the toolchain described in the previous section, which is also based around bambu. All implementations will be synthesized once with optimizations for size (`-Os`) and once with optimizations for speed (`-O3`).
 
-Different designs will be evaluated for the area of a FPGA they take up, their clock maximum frequency and the amount of clock cycles they take for a single operation. In case a design has a varying amount of clock cycles the average of all testcases will be used. The area and maximum frequency of a design will be taken from the placement report of nextpnr. nextpnr will be configured to target a Lattice ECP5 FPGA with 44k LUT and a speed grade of 6 (LFE5U-45F-6BG381C) for all tests. The amount of clock cycles will be measured using the rust_hdl simulator for Rust designs and the Verilator simulator for C++ designs. 
+// TODO area is also RAM and DSPs
+
+Different designs will be evaluated for the area of a FPGA they take up, their clock maximum frequency and the amount of clock cycles they take for a single operation. In case a design has a varying amount of clock cycles the average of all testcases will be used. The area and maximum frequency of a design will be taken from the placement report of nextpnr. nextpnr will be configured to target a Lattice ECP5 FPGA with 44k LUT and a speed grade of 6 (LFE5U-45F-6BG381C) for all tests. The area of a design is in this case measured as the sum of the number of LUTs (`TRELLIS_COMB`) and the number of flip-flops (`TRELLIS_FF`) from the nextpnr report. The amount of clock cycles will be measured using the rust_hdl simulator for Rust designs and the Verilator simulator for C++ designs. 
 
 === Tested algorithms
 //TODO: Stop using algorithm and function interchangably
@@ -745,24 +747,28 @@ The md5 hash function is another hash function. It was also chosen because it is
 // Show the limitations of the toolchain. Limitations of the synthesizable subset of Rust.
 // Somewhere but not here
 
-The follwing combinations of optimizations and implementations will be tested:
-
-* minmax_rust_speed
-* minmax_rust_size
-* minmax_rust_idiomatic_speed
-* minmax_rust_idiomatic_size
-* minmax_gcc_speed
-* minmax_gcc_size
-* minmax_clang_speed
-* minmax_clang_size
-
-
+Each {cpp} implemetation was tested in four configuration. Either compiled with bambus gcc or clang frontend, each once with optimization profiles for speed (`-O5`) and size (`-Os`). The equivalent Rust implementations were also tested once with optimization profiles for speed and size. When optimizing a Rust implementation for speed rustc is set to `-O3` and bambu to `-O5`. When optimizing for size rustc is set to `-Oz` and bambu to `-Os`.
 
 // TODO:  === Show how the Rust ecosystem can be used
 // not here
-=== Generated modules
+// TODO:  === Generated modules
+// not here
 
-Take a look at the generated modules
+=== Testing the minmax functions
+
+Three implementations will be tested for the minmax function. 
+
+The {cpp} reference implementation is based on a 
+
+.Area of the different minmax designs
+:vega-lite-filename: processed-charts/chart_estimated_area.vl.json
+include::vega-chart.adoc[]
+
+.Maximum frequency of the different minmax designs
+
+.Average clock cycles per test of the different minmax designs
+
+.Clock cycles in relation to the input length
 
 === Performance compared to HLS from {cpp}
 

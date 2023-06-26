@@ -3,22 +3,33 @@ ASCIIDOCTOR     = asciidoctor -r asciidoctor-kroki -a kroki-server-url=http://lo
 VCD_TO_WAVEDROM     = vcd2wavedrom
 ASCIIDOCTOR_WEB_PDF = asciidoctor-web-pdf -r asciidoctor-kroki -a kroki-server-url=http://localhost:8000
 
-TARGETS_WITHOUT_HTML += styles/trailing-scripts.adoc
+VEGA_CHART_FILES = $(shell find charts -name '*.json')
+VEGA_DATA_FILES = $(shell find data -type f)
+PROCESSED_CHARTS = $(addprefix processed-charts/,$(notdir $(VEGA_CHART_FILES)))
+
 TARGETS += $(TARGETS_WITHOUT_HTML) index.html
+TARGETS_WITHOUT_HTML += styles/trailing-scripts.adoc $(PROCESSED_CHARTS) vega-chart.adoc
 
 .EXTRA_PREREQS:=Makefile
 all: index.html
+
+process-charts: $(PROCESSED_CHARTS)
 
 SCSS_FILES = $(wildcard styles/*.scss) $(wildcard styles/*/*.scss) $(wildcard styles/*/*/*.scss)
 
 Readme.css: $(SCSS_FILES)
 	cd styles ; sass --update --sourcemap=none thesis.scss:../Readme.css
 
-index.html: Readme.adoc Readme.css $(TARGETS_WITHOUT_HTML)
-	$(ASCIIDOCTOR) Readme.adoc -o index.html
+index.html: Readme.adoc Readme.css $(TARGETS_WITHOUT_HTML) 
+	$(ASCIIDOCTOR) -S unsafe Readme.adoc -o index.html
 
-thesis.pdf: Readme.adoc Readme.css $(TARGETS_WITHOUT_HTML)
+thesis.pdf: Readme.adoc Readme.css $(TARGETS_WITHOUT_HTML) $(PROCESSED_CHARTS)
 	$(ASCIIDOCTOR_WEB_PDF) Readme.adoc -o thesis.pdf
+
+$(PROCESSED_CHARTS) : processed-charts/%.vl.json : charts/%.vl.json $(VEGA_DATA_FILES)
+	mkdir -p $(dir $@)
+	bash process_chart.sh $< > $@
+	touch $@
 
 %.wavejson: %.vcd
 	$(VCD_TO_WAVEDROM) -i $< | sed 's/TOP\.//' | jq '.signal = (.signal | map(select(.name | length < 30)))' > $@
@@ -29,4 +40,4 @@ clean:
 dist-clean: clean
 	rm -rf $(TARGETS)
 
-.PHONY: clean all dist-clean
+.PHONY: clean all dist-clean process-charts
