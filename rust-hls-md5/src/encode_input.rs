@@ -46,7 +46,7 @@ pub fn first_md5_block(input: &[u8]) -> [u32; 16] {
 
 #[cfg(test)]
 mod tests {
-    use crate::md5::padding::IteratorExt;
+    use crate::padding::IteratorExt;
 
     use super::*;
 

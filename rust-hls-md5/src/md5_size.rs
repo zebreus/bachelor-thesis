@@ -1,7 +1,3 @@
-pub mod encode_input;
-pub mod encode_result;
-pub mod padding;
-
 /// Minmax function that is as similar as possible as the equivalent cpp function
 
 #[rust_hls_macro::hls]
@@ -32,8 +28,11 @@ pub mod md5_hls {
     const C0: u32 = 0x98badcfe;
     const D0: u32 = 0x10325476;
 
-    #[hls(bambu_flag = "--channels-type=MEM_ACC_11 --channels-number=1")]
-    pub unsafe extern "C" fn md5(message_pointer: *const u32, result_pointer: *mut u32) -> () {
+    #[hls(
+        bambu_flag = "--channels-type=MEM_ACC_11 --channels-number=1 -Os",
+        rust_flag = "-C opt-level=s"
+    )]
+    pub unsafe extern "C" fn md5_size(message_pointer: *const u32, result_pointer: *mut u32) -> () {
         let message = std::slice::from_raw_parts(message_pointer, 16);
         let mut a = A0; // A
         let mut b = B0; // B
@@ -221,11 +220,11 @@ macro_rules! hls_sim {
             $(let mut $memory: Vec<$memory_size> = $( if true { $initial_value.into() } else )? { vec![0; 1050] };)?
 
 
-            $($preparation ;)*
+            $($preparation)*
 
             wait_until_function_complete!(sim, $module $(, $memory, $memory_size)?);
 
-            $($verification ;)*
+            $($verification)*
 
             sim.done($module)
         })}
@@ -264,11 +263,11 @@ macro_rules! hls_test {
 
 #[cfg(test)]
 mod tests {
-    use crate::md5::encode_result::ToHashNumbers;
+    use crate::encode_result::ToHashNumbers;
 
     use super::md5_hls::*;
-    use super::Md5;
-    use super::{encode_input::first_md5_block, encode_result::ToHashString, *};
+    use super::Md5Size;
+    use crate::{encode_input::first_md5_block, encode_result::ToHashString};
     use rust_hdl::prelude::*;
 
     #[test]
@@ -277,7 +276,7 @@ mod tests {
         unsafe {
             let input_pointer = &input as *const u32;
             let mut result = [0u32; 4];
-            md5(input_pointer, &mut result as *mut u32);
+            md5_size(input_pointer, &mut result as *mut u32);
             assert_eq!(
                 result.into_hash_string(),
                 "d41d8cd98f00b204e9800998ecf8427e"
@@ -292,7 +291,7 @@ mod tests {
         let mut result = [0u32; 4];
 
         unsafe {
-            md5(&input as *const u32, &mut result as *mut u32);
+            md5_size(&input as *const u32, &mut result as *mut u32);
         }
 
         assert_eq!(
@@ -307,7 +306,7 @@ mod tests {
         let mut result = [0u32; 4];
 
         unsafe {
-            md5(&input as *const u32, &mut result as *mut u32);
+            md5_size(&input as *const u32, &mut result as *mut u32);
         }
 
         assert_eq!(
@@ -323,7 +322,7 @@ mod tests {
         let mut result = [0u32; 4];
 
         unsafe {
-            md5(&input as *const u32, &mut result as *mut u32);
+            md5_size(&input as *const u32, &mut result as *mut u32);
         }
 
         assert_eq!(
@@ -338,7 +337,7 @@ mod tests {
         let mut result = [0u32; 4];
 
         unsafe {
-            md5(&input as *const u32, &mut result as *mut u32);
+            md5_size(&input as *const u32, &mut result as *mut u32);
         }
 
         assert_eq!(
@@ -358,7 +357,7 @@ mod tests {
         backing_memory[0..16].copy_from_slice(&input);
 
         hls_test!(
-            Md5,
+            Md5Size,
             md5,
             memory = backing_memory,
             u32,
@@ -386,7 +385,7 @@ mod tests {
         backing_memory[0..16].copy_from_slice(&input);
 
         hls_test!(
-            Md5,
+            Md5Size,
             md5,
             memory = backing_memory,
             u32,

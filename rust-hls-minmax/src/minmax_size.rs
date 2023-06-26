@@ -1,54 +1,36 @@
 /// Minmax function that is as similar as possible as the equivalent cpp function
 #[rust_hls_macro::hls]
 pub mod min_max_hls {
-    #[hls(bambu_flag = "--channels-type=MEM_ACC_11 --channels-number=1")]
+    #[repr(C)]
+    pub struct MinMax {
+        pub max: i32,
+        pub min: i32,
+    }
+
+    #[hls(
+        bambu_flag = "--channels-type=MEM_ACC_11 --channels-number=1 -Os",
+        rust_flag = "-C opt-level=z"
+    )]
     /// Based on [bambu example](https://github.com/ferrandi/PandA-bambu/blob/main/documentation/tutorial_date_2022/bambu.ipynb)
-    #[no_mangle]
-    pub unsafe extern "C" fn min_max(
-        elements: *mut i32,
-        num_elements: i32,
-        out_max: &mut i32,
-        out_min: &mut i32,
-    ) {
-        let mut local_max = *elements.offset(0);
-        let mut local_min = *elements.offset(0);
-        for i in 0..num_elements {
-            if *elements.offset(i as isize) > local_max {
-                local_max = *elements.offset(i as isize);
-            }
-            if *elements.offset(i as isize) < local_min {
-                local_min = *elements.offset(i as isize);
-            }
-        }
-        *out_max = local_max;
-        *out_min = local_min;
+    pub unsafe extern "C" fn min_max(numbers: *mut i32, numbers_length: i32) -> MinMax {
+        let slice = std::slice::from_raw_parts_mut(numbers, numbers_length as usize);
+
+        slice.iter().fold(
+            MinMax {
+                max: i32::MIN,
+                min: i32::MAX,
+            },
+            |mut acc, &x| {
+                if x > acc.max {
+                    acc.max = x;
+                }
+                if x < acc.min {
+                    acc.min = x;
+                }
+                acc
+            },
+        )
     }
-
-    // tag::tests[]
-    #[cfg(test)]
-    mod tests {
-
-        use super::min_max;
-
-        #[test]
-        fn minmax_works_as_expected() {
-            let mut numbers: [i32; 25] = [
-                0x21258F79, 0x34D5CCF9, 0x3598261E, 0x7D154730, 0x5B284E05, 0x5F97A42D, 0x10FEE5A0,
-                0x2C5BDA0C, 0x4D30A6F7, 0x30935AB7, 0x4B5AA93F, 0x49A6E626, 0x61A57C16, 0x43B831CD,
-                0x01F22F1A, 0x05E5635A, 0x64BEFEF2, 0x61367095, 0x787C5A55, 0x3C3EE88A, 0x040C7922,
-                0x1841F924, 0x16F53526, 0x75F644E9, 0x3AF1FF7B,
-            ];
-            let mut result_max = 0;
-            let mut result_min = 0;
-            unsafe {
-                let input_pointer: *mut i32 = std::mem::transmute(&mut numbers);
-                min_max(input_pointer, 25, &mut result_max, &mut result_min);
-            }
-            assert_eq!(result_max, 0x7D154730);
-            assert_eq!(result_min, 0x01F22F1A);
-        }
-    }
-    // end::tests[]
 }
 
 #[allow(unused)]
@@ -202,9 +184,27 @@ macro_rules! hls_test {
 
 #[cfg(test)]
 mod tests {
-    use crate::minmax::MinMax;
+    use super::MinMax;
 
     use rust_hdl::prelude::*;
+
+    use super::min_max_hls::min_max;
+
+    #[test]
+    fn minmax_works_as_expected() {
+        let mut numbers: [i32; 25] = [
+            0x21258F79, 0x34D5CCF9, 0x3598261E, 0x7D154730, 0x5B284E05, 0x5F97A42D, 0x10FEE5A0,
+            0x2C5BDA0C, 0x4D30A6F7, 0x30935AB7, 0x4B5AA93F, 0x49A6E626, 0x61A57C16, 0x43B831CD,
+            0x01F22F1A, 0x05E5635A, 0x64BEFEF2, 0x61367095, 0x787C5A55, 0x3C3EE88A, 0x040C7922,
+            0x1841F924, 0x16F53526, 0x75F644E9, 0x3AF1FF7B,
+        ];
+        unsafe {
+            let input_pointer: *mut i32 = std::mem::transmute(&mut numbers);
+            let result = min_max(input_pointer, 25);
+            assert_eq!(result.max, 0x7D154730);
+            assert_eq!(result.min, 0x01F22F1A);
+        }
+    }
 
     #[test]
     fn min_max_works() {
@@ -215,19 +215,18 @@ mod tests {
                 0x21258F79, 0x34D5CCF9, 0x3598261E, 0x7D154730, 0x5B284E05, 0x5F97A42D, 0x10FEE5A0,
                 0x2C5BDA0C, 0x4D30A6F7, 0x30935AB7, 0x4B5AA93F, 0x49A6E626, 0x61A57C16, 0x43B831CD,
                 0x01F22F1A, 0x05E5635A, 0x64BEFEF2, 0x61367095, 0x787C5A55, 0x3C3EE88A, 0x040C7922,
-                0x1841F924, 0x16F53526, 0x75F644E9, 0x3AF1FF7B, 0, 0
+                0x1841F924, 0x16F53526, 0x75F644E9, 0x3AF1FF7B, 0, 0, 0
             ],
             u32,
             {
                 // Setup
-                min_max.out_max.next = (4 * 26u32).to_bits();
-                min_max.out_min.next = (4 * 25u32).to_bits();
-                min_max.elements.next = 0u32.to_bits();
-                min_max.num_elements.next = 25u32.to_bits();
+                // min_max.return_port.next = (4 * 25u32).to_bits();
+                min_max.numbers.next = 0u32.to_bits();
+                min_max.numbers_length.next = 25u32.to_bits();
             },
             {
                 // Verification
-                // println!("Memory: {:X?}", memory);
+                println!("Memory: {:X?}", min_max.return_port.val().to_u64());
                 assert_eq!(memory[26], 0x7D154730);
                 assert_eq!(memory[25], 0x01F22F1A);
             } // ,"trace_working.vcd"
