@@ -1,0 +1,19 @@
+[package]
+name = "keccak_rust_sspeed"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+rust-hdl = "0.45.1"
+rust-keccak = { path = "../../../../rust-keccak", version = "0.1.0" }
+rust_hls_macro = { path = "../../../../bambu-macro/rust_hls_macro", version = "0.2.0" }
+verilated = { version = "0.1.0" }
+rust-hls-test-helpers = { path = "../rust-hls-test-helpers", version = "0.1.0" }
+
+[build-dependencies]
+rust_hls = { path = "../../../../bambu-macro/rust_hls", features = [
+    "verilator",
+], version = "0.2.0" }
+verilated = { version = "0.1.0" }

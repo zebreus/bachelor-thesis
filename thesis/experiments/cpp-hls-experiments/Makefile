@@ -1,51 +1,54 @@
-BUILD_DIR = build
+CPP_DIR ?= 
+cpp_BUILD_DIR = $(CPP_DIR)build
 
-CPP_DESIGNS = minmax keccak md5
+cpp_CPP_DESIGNS = minmax keccak md5
 
-CLANG_BASE_DESIGNS = $(addsuffix _clang,$(CPP_DESIGNS))
-GCC_BASE_DESIGNS = $(addsuffix _gcc,$(CPP_DESIGNS))
-ALL_BASE_DESIGNS = $(CLANG_BASE_DESIGNS) $(GCC_BASE_DESIGNS)
+cpp_CLANG_BASE_DESIGNS = $(addsuffix _clang,$(cpp_CPP_DESIGNS))
+cpp_GCC_BASE_DESIGNS = $(addsuffix _gcc,$(cpp_CPP_DESIGNS))
+cpp_ALL_BASE_DESIGNS = $(cpp_CLANG_BASE_DESIGNS) $(cpp_GCC_BASE_DESIGNS)
 
-SPEED_DESIGNS = $(addsuffix _speed,$(ALL_BASE_DESIGNS))
-SIZE_DESIGNS = $(addsuffix _speed,$(ALL_BASE_DESIGNS))
-ALL_DESIGNS = $(SPEED_DESIGNS) $(SIZE_DESIGNS)
+cpp_SPEED_DESIGNS = $(addsuffix _speed,$(cpp_ALL_BASE_DESIGNS))
+cpp_SIZE_DESIGNS = $(addsuffix _size,$(cpp_ALL_BASE_DESIGNS))
+CPP_DESIGNS = $(cpp_SPEED_DESIGNS) $(cpp_SIZE_DESIGNS)
 
-VERILOG_FILES = $(addsuffix .v,$(ALL_DESIGNS))
-TEST_RESULT_FILES = $(addsuffix .testresult,$(ALL_DESIGNS))
+cpp_VERILOG_FILES = $(addprefix $(CPP_DIR),$(addsuffix .v,$(CPP_DESIGNS)))
+cpp_TEST_RESULT_FILES = $(addprefix $(CPP_DIR),$(addsuffix .testresult,$(CPP_DESIGNS)))
 
-BAMBU_COMMON_FLAGS = --simulator=VERILATOR --clock-name=clk --channels-type=MEM_ACC_11 --channels-number=1
+BAMBU_COMMON_FLAGS = --simulator=ICARUS --clock-name=clk --channels-type=MEM_ACC_11 --channels-number=1
+# Results dont seem to be different with device, but simulation requires proprietary IDE. --device-name=LFE5U85F8BG756C
 
-BAMBU_CLANG_SPEED_FLAGS = --compiler=I386_CLANG16 -O3
-BAMBU_CLANG_SIZE_FLAGS = --compiler=I386_CLANG16 -Os
-BAMBU_GCC_SPEED_FLAGS = --compiler=I386_GCC8 -O3
-BAMBU_GCC_SIZE_FLAGS = --compiler=I386_GCC8 -Os
+BAMBU_CLANG_SPEED_FLAGS = --compiler=I386_CLANG16 -O3 --std=c++2a
+BAMBU_CLANG_SIZE_FLAGS = --compiler=I386_CLANG16 -Os --std=c++2a
+BAMBU_GCC_SPEED_FLAGS = --compiler=I386_GCC8 -O3 --std=c++2a
+BAMBU_GCC_SIZE_FLAGS = --compiler=I386_GCC8 -Os --std=c++2a
 
-all: $(VERILOG_FILES)
+CLEAN_FILES += $(cpp_BUILD_DIR) $(cpp_VERILOG_FILES) $(cpp_TEST_RESULT_FILES)
 
-%_clang_speed.v %_clang_speed.testresult &: %.cpp
-	mkdir -p $(BUILD_DIR)/$(basename $@)
-	cd $(BUILD_DIR)/$(basename $@) && bambu ../../$< --top-fname=$* --generate-tb=../../$*-testbench.xml --simulate $(BAMBU_COMMON_FLAGS) $(BAMBU_CLANG_SPEED_FLAGS)
-	cp $(BUILD_DIR)/$(basename $@)/*.v $(basename $@).v
-	cat $(BUILD_DIR)/$(basename $@)/results.txt | cut -f2 | sed 's/\s*//' | paste -d"," $*-testnames.txt - | sed 's/^/$(basename $@),/' > $(basename $@).testresult
+verilog-cpp: $(cpp_VERILOG_FILES) $(cpp_TEST_RESULT_FILES)
 
-%_clang_size.v %_clang_size.testresult &: %.cpp
-	mkdir -p $(BUILD_DIR)/$(basename $@)
-	cd $(BUILD_DIR)/$(basename $@) && bambu ../../$< --top-fname=$* $(BAMBU_COMMON_FLAGS) $(BAMBU_CLANG_SIZE_FLAGS)
-	cp $(BUILD_DIR)/$(basename $@)/*.v $(basename $@).v
-	cat $(BUILD_DIR)/$(basename $@)/results.txt | cut -f2 | sed 's/\s*//' | paste -d"," $*-testnames.txt - | sed 's/^/$(basename $@),/' > $(basename $@).testresult
+$(CPP_DIR)%_clang_speed.v $(CPP_DIR)%_clang_speed.testresult &: $(CPP_DIR)%.cpp
+	mkdir -p $(cpp_BUILD_DIR)/$(basename $(notdir $@))
+	cd $(cpp_BUILD_DIR)/$(basename $(notdir $@)) && bambu $(abspath $<) --top-fname=$* --generate-tb=$(abspath $(CPP_DIR)$*-testbench.xml) --simulate $(BAMBU_COMMON_FLAGS) $(BAMBU_CLANG_SPEED_FLAGS)
+	cp $(cpp_BUILD_DIR)/$(basename $(notdir $@))/*.v $(basename $@).v
+	cat $(cpp_BUILD_DIR)/$(basename $(notdir $@))/results.txt | cut -f2 | sed 's/\s*//' | paste -d"," $(CPP_DIR)$*-testnames.txt - | sed 's/^/$(basename $(notdir $@)),/' > $(basename $@).testresult
 
-%_gcc_speed.v %_gcc_speed.testresult &: %.cpp
-	mkdir -p $(BUILD_DIR)/$(basename $@)
-	cd $(BUILD_DIR)/$(basename $@) && bambu ../../$< --top-fname=$* $(BAMBU_COMMON_FLAGS) $(BAMBU_GCC_SPEED_FLAGS)
-	cp $(BUILD_DIR)/$(basename $@)/*.v $(basename $@).v
-	cat $(BUILD_DIR)/$(basename $@)/results.txt | cut -f2 | sed 's/\s*//' | paste -d"," $*-testnames.txt - | sed 's/^/$(basename $@),/' > $(basename $@).testresult
+$(CPP_DIR)%_clang_size.v $(CPP_DIR)%_clang_size.testresult &: $(CPP_DIR)%.cpp
+	mkdir -p $(cpp_BUILD_DIR)/$(basename $(notdir $@))
+	cd $(cpp_BUILD_DIR)/$(basename $(notdir $@)) && bambu $(abspath $<) --top-fname=$* --generate-tb=$(abspath $(CPP_DIR)$*-testbench.xml) --simulate $(BAMBU_COMMON_FLAGS) $(BAMBU_CLANG_SIZE_FLAGS)
+	cp $(cpp_BUILD_DIR)/$(basename $(notdir $@))/*.v $(basename $@).v
+	cat $(cpp_BUILD_DIR)/$(basename $(notdir $@))/results.txt | cut -f2 | sed 's/\s*//' | paste -d"," $(CPP_DIR)$*-testnames.txt - | sed 's/^/$(basename $(notdir $@)),/' > $(basename $@).testresult
 
-%_gcc_size.v %_gcc_size.testresult &: %.cpp
-	mkdir -p $(BUILD_DIR)/$(basename $@)
-	cd $(BUILD_DIR)/$(basename $@) && bambu ../../$< --top-fname=$* $(BAMBU_COMMON_FLAGS) $(BAMBU_GCC_SIZE_FLAGS)
-	cp $(BUILD_DIR)/$(basename $@)/*.v $(basename $@).v
-	cat $(BUILD_DIR)/$(basename $@)/results.txt | cut -f2 | sed 's/\s*//' | paste -d"," $*-testnames.txt - | sed 's/^/$(basename $@),/' > $(basename $@).testresult
+$(CPP_DIR)%_gcc_speed.v $(CPP_DIR)%_gcc_speed.testresult &: $(CPP_DIR)%.cpp
+	mkdir -p $(cpp_BUILD_DIR)/$(basename $(notdir $@))
+	cd $(cpp_BUILD_DIR)/$(basename $(notdir $@)) && bambu $(abspath $<) --top-fname=$* --generate-tb=$(abspath $(CPP_DIR)$*-testbench.xml) --simulate $(BAMBU_COMMON_FLAGS) $(BAMBU_GCC_SPEED_FLAGS)
+	cp $(cpp_BUILD_DIR)/$(basename $(notdir $@))/*.v $(basename $@).v
+	cat $(cpp_BUILD_DIR)/$(basename $(notdir $@))/results.txt | cut -f2 | sed 's/\s*//' | paste -d"," $(CPP_DIR)$*-testnames.txt - | sed 's/^/$(basename $(notdir $@)),/' > $(basename $@).testresult
 
+$(CPP_DIR)%_gcc_size.v $(CPP_DIR)%_gcc_size.testresult &: $(CPP_DIR)%.cpp
+	mkdir -p $(cpp_BUILD_DIR)/$(basename $(notdir $@))
+	cd $(cpp_BUILD_DIR)/$(basename $(notdir $@)) && bambu $(abspath $<) --top-fname=$* --generate-tb=$(abspath $(CPP_DIR)$*-testbench.xml) --simulate $(BAMBU_COMMON_FLAGS) $(BAMBU_GCC_SIZE_FLAGS)
+	cp $(cpp_BUILD_DIR)/$(basename $(notdir $@))/*.v $(basename $@).v
+	cat $(cpp_BUILD_DIR)/$(basename $(notdir $@))/results.txt | cut -f2 | sed 's/\s*//' | paste -d"," $(CPP_DIR)$*-testnames.txt - | sed 's/^/$(basename $(notdir $@)),/' > $(basename $@).testresult
 
-clean:
-	rm -rf $(BUILD_DIR) $(VERILOG_FILES) $(TEST_RESULT_FILES)
+clean-cpp:
+	rm -rf $(CLEAN_FILES)

@@ -722,6 +722,30 @@ dependencies = [
 ]
 
 [[package]]
+name = "keccak_rust_size"
+version = "0.1.0"
+dependencies = [
+ "rust-hdl 0.45.1",
+ "rust-hls-test-helpers",
+ "rust-keccak",
+ "rust_hls",
+ "rust_hls_macro",
+ "verilated 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "keccak_rust_sspeed"
+version = "0.1.0"
+dependencies = [
+ "rust-hdl 0.45.1",
+ "rust-hls-test-helpers",
+ "rust-keccak",
+ "rust_hls",
+ "rust_hls_macro",
+ "verilated 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
 name = "libc"
 version = "0.2.144"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -740,6 +764,30 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "abb12e687cfb44aa40f41fc3978ef76448f9b6038cad6aef4259d3c095a2382e"
 dependencies = [
  "cfg-if",
+]
+
+[[package]]
+name = "md5_rust_size"
+version = "0.1.0"
+dependencies = [
+ "rust-hdl 0.45.1",
+ "rust-hls-test-helpers",
+ "rust-md5",
+ "rust_hls",
+ "rust_hls_macro",
+ "verilated 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "md5_rust_speed"
+version = "0.1.0"
+dependencies = [
+ "rust-hdl 0.45.1",
+ "rust-hls-test-helpers",
+ "rust-md5",
+ "rust_hls",
+ "rust_hls_macro",
+ "verilated 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -774,6 +822,54 @@ name = "minimal-lexical"
 version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "68354c5c6bd36d73ff3feceb05efa59b6acb7626617f4962be322a825e61f79a"
+
+[[package]]
+name = "minmax_idiom_size"
+version = "0.1.0"
+dependencies = [
+ "rust-hdl 0.45.1",
+ "rust-hls-test-helpers",
+ "rust-minmax",
+ "rust_hls",
+ "rust_hls_macro",
+ "verilated 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "minmax_idiom_speed"
+version = "0.1.0"
+dependencies = [
+ "rust-hdl 0.45.1",
+ "rust-hls-test-helpers",
+ "rust-minmax",
+ "rust_hls",
+ "rust_hls_macro",
+ "verilated 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "minmax_rust_size"
+version = "0.1.0"
+dependencies = [
+ "rust-hdl 0.45.1",
+ "rust-hls-test-helpers",
+ "rust-minmax",
+ "rust_hls",
+ "rust_hls_macro",
+ "verilated 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "minmax_rust_speed"
+version = "0.1.0"
+dependencies = [
+ "rust-hdl 0.45.1",
+ "rust-hls-test-helpers",
+ "rust-minmax",
+ "rust_hls",
+ "rust_hls_macro",
+ "verilated 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
+]
 
 [[package]]
 name = "nom"
@@ -1324,6 +1420,10 @@ dependencies = [
  "rust_hls_macro",
  "verilated 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
+
+[[package]]
+name = "rust-hls-test-helpers"
+version = "0.1.0"
 
 [[package]]
 name = "rust-keccak"

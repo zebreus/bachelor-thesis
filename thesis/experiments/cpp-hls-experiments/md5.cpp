@@ -1,5 +1,4 @@
 // tag::md5-implementation[]
-#include <bit>
 #include <cstdint>
 
 constexpr uint32_t SHIFT_PER_ROUND[64] = {
@@ -27,6 +26,10 @@ constexpr uint32_t A0 = 0x67452301;
 constexpr uint32_t B0 = 0xefcdab89;
 constexpr uint32_t C0 = 0x98badcfe;
 constexpr uint32_t D0 = 0x10325476;
+
+uint32_t rotl(uint32_t n, int d){
+     return (n << d)|(n >> (32 - d));
+}
 
 void md5(uint32_t *message_pointer, uint32_t *result_pointer) {
   uint32_t a = A0;
@@ -58,7 +61,7 @@ void md5(uint32_t *message_pointer, uint32_t *result_pointer) {
     a = d;
     d = c;
     c = b;
-    b = b + std::rotl(rot, SHIFT_PER_ROUND[i]);
+    b = b + rotl(rot, SHIFT_PER_ROUND[i]);
   }
 
   a = a + A0;

@@ -1,17 +1,32 @@
 use rust_hdl::prelude::*;
-use rust_hls_keccak::keccak::keccak_hls::keccak;
-use rust_hls_keccak::keccak::Keccak;
-use std::fs::{self};
-use std::sync::{Arc, Mutex};
+use rust_hls_test_helpers::*;
+use rust_hls_test_helpers::{hls_test, write_subject_result, write_test_result};
+use std::{
+    fs,
+    sync::{Arc, Mutex},
+};
 
-use crate::test_macros::{write_subject_result, write_test_result};
-use crate::*;
+const TEST_NAME: &str = "keccak_rust_size";
 
-pub fn run_experiments() {
+#[rust_hls_macro::hls]
+pub mod keccak_hls {
+    #[hls(
+        bambu_flag = "--channels-type=MEM_ACC_11 --channels-number=1 -Os",
+        rust_flag = "-C opt-level=z"
+    )]
+    #[allow(unused)]
+    pub unsafe extern "C" fn keccak(input_pointer: *mut u64) {
+        rust_keccak::keccak(input_pointer)
+    }
+}
+
+fn main() {
+    clear_reports();
+    write_title_lines();
     let mut device = Keccak::default();
     device.connect_all();
     let data = generate_verilog(&device);
-    fs::write("./keccak.v", data).expect("Unable to write file");
+    fs::write(format!("./{}.v", TEST_NAME), data).expect("Unable to write file");
 
     let results = [
         run_test("only zeroes", [0u64; 25]),
@@ -50,14 +65,14 @@ pub fn run_experiments() {
     let average_cycles = (results.iter().sum::<usize>() as f64) / (results.len() as f64);
     let same_cycles_for_every_test = results.iter().all(|&x| x == results[0]);
 
-    write_subject_result("keccak", &average_cycles, &same_cycles_for_every_test);
+    write_subject_result(TEST_NAME, &average_cycles, &same_cycles_for_every_test);
 }
 
 fn run_test(test_name: &str, input: [u64; 25]) -> usize {
     let mut expected_result = input.clone();
     unsafe {
         let cloned_input_pointer = expected_result.as_mut_ptr();
-        keccak(cloned_input_pointer);
+        rust_keccak::keccak(cloned_input_pointer);
     }
 
     // TODO: This can be done better
@@ -81,11 +96,12 @@ fn run_test(test_name: &str, input: [u64; 25]) -> usize {
                 let mut thing = cloned_cycles.lock().unwrap();
                 *thing = measured_cycles;
             },
-            measured_cycles // , "trace_abc.vcd"
+            measured_cycles, // , "trace_abc.vcd"
+            max_cycles = 1000000
         );
     }
     let thing = cycles.lock().unwrap();
     let cycles = thing.clone();
-    write_test_result("keccak", test_name, &(cycles as f64));
+    write_test_result(TEST_NAME, test_name, &(cycles as f64));
     cycles
 }

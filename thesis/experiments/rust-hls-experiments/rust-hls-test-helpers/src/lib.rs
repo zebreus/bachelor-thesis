@@ -1,4 +1,3 @@
-use std::collections::HashMap;
 use std::fmt::Display;
 use std::fs::{remove_file, OpenOptions};
 
@@ -113,7 +112,7 @@ macro_rules! wait_until_function_complete {
 #[allow(unused)]
 #[macro_export]
 macro_rules! hls_sim {
-    ($module_type: ident, $module: ident $(, $memory: ident $( = $initial_value: expr)?, $memory_size:ident)? , { $($preparation:stmt ;)* }, { $($verification:stmt ;)* } $(, $cycles: ident)? $(,)?) => {
+    ($module_type: ty, $module: ident $(, $memory: ident $( = $initial_value: expr)?, $memory_size:ident)? , { $($preparation:stmt ;)* }, { $($verification:stmt ;)* } $(, $cycles: ident)? $(,)?) => {
         {
             simple_sim!($module_type, clk, 1000000000, sim, {
             let mut $module = sim.init()?;
@@ -135,12 +134,12 @@ macro_rules! hls_sim {
 #[allow(unused)]
 #[macro_export]
 macro_rules! hls_test {
-    ($module_type: ident, $module: ident $(, $memory: ident $( = $initial_value: expr)?, $memory_size:ident)? , { $($preparation:stmt ;)* }, { $($verification:stmt ;)* } $(, $cycles: ident)? $(,)?) => {
+    ($module_type: ty, $module: ident $(, $memory: ident $( = $initial_value: expr)?, $memory_size:ident)? , { $($preparation:stmt ;)* }, { $($verification:stmt ;)* } $(, $cycles: ident)? $(, max_cycles = $max_cycles: expr)? $(,)?) => {
         let frequency = 1000000000;
         let mut simulation = hls_sim!($module_type, $module $(, $memory  $( = $initial_value)?, $memory_size)?, { $($preparation ;)* }, { $($verification ;)* } $(, $cycles)?);
 
-        let hls_module = $module_type::new();
-        let max_cycles = 1000;
+        let hls_module = <$module_type>::new();
+        let max_cycles = $(if true {$max_cycles} else )? {1000};
         simulation
             .run(
                 Box::new(hls_module),
@@ -148,12 +147,12 @@ macro_rules! hls_test {
             )
             .unwrap();
     };
-    ($module_type: ident, $module: ident $(, $memory: ident $( = $initial_value: expr)?, $memory_size:ident)? , { $($preparation:stmt ;)* }, { $($verification:stmt ;)* } $(, $cycles: ident)? , $vcd_file: expr $(,)?) => {
+    ($module_type: ty, $module: ident $(, $memory: ident $( = $initial_value: expr)?, $memory_size:ident)? , { $($preparation:stmt ;)* }, { $($verification:stmt ;)* } $(, $cycles: ident)? $(, max_cycles = $max_cycles: expr)? , vcd_file = $vcd_file: expr $(,)?  ) => {
         let frequency = 1000000000;
         let mut simulation = hls_sim!($module_type, $module $(, $memory $( = $initial_value)?, $memory_size)?, { $($preparation ;)* }, { $($verification ;)* } $(, $cycles)?);
 
         let hls_module = $module_type::new();
-        let max_cycles = 1000;
+        let max_cycles = $(if true {$max_cycles} else )? {1000};
         simulation
             .run_to_file(
                 Box::new(hls_module),
@@ -206,6 +205,6 @@ pub fn clear_reports() {
 }
 
 pub fn write_title_lines() {
-    write_test_result("subject", "test_name", &"duration");
-    write_subject_result("subject", &"duration", &"constant_duration");
+    // write_test_result("subject", "test_name", &"duration");
+    // write_subject_result("subject", &"duration", &"constant_duration");
 }

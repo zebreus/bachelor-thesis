@@ -1,19 +1,37 @@
 use rust_hdl::prelude::*;
-use rust_hls_keccak::keccak::keccak_hls::keccak;
-use rust_hls_keccak::keccak::Keccak;
-use rust_hls_minmax::minmax::MinMax;
-use seq_macro::seq;
-use std::fs::{self};
-use std::sync::{Arc, Mutex};
+use rust_hls_test_helpers::*;
+use rust_hls_test_helpers::{hls_test, write_subject_result, write_test_result};
+use std::{
+    fs,
+    sync::{Arc, Mutex},
+};
 
-use crate::test_macros::{write_subject_result, write_test_result};
-use crate::*;
+const TEST_NAME: &str = "minmax_rust_size";
 
-pub fn run_experiments() {
+#[rust_hls_macro::hls]
+pub mod min_max_hls {
+    #[hls(
+        bambu_flag = "--channels-type=MEM_ACC_11 --channels-number=1 -Os",
+        rust_flag = "-C opt-level=z"
+    )]
+    #[allow(unused)]
+    pub unsafe extern "C" fn min_max(
+        elements: *mut i32,
+        num_elements: i32,
+        out_max: &mut i32,
+        out_min: &mut i32,
+    ) {
+        rust_minmax::minmax(elements, num_elements, out_max, out_min);
+    }
+}
+
+fn main() {
+    clear_reports();
+    write_title_lines();
     let mut device = MinMax::default();
     device.connect_all();
     let data = generate_verilog(&device);
-    fs::write("./minmax.v", data).expect("Unable to write file");
+    fs::write(format!("./{}.v", TEST_NAME), data).expect("Unable to write file");
 
     let fifty_random_numbers: [i32; 50] = [
         -26, 354, 489, 165, -386, -498, -141, 285, 293, -151, -337, 464, 439, -426, 116, -435, 90,
@@ -47,7 +65,7 @@ pub fn run_experiments() {
     let average_cycles = (results.iter().sum::<usize>() as f64) / (results.len() as f64);
     let same_cycles_for_every_test: bool = results.iter().all(|&x| x == results[0]);
 
-    write_subject_result("minmax", &average_cycles, &same_cycles_for_every_test);
+    write_subject_result(TEST_NAME, &average_cycles, &same_cycles_for_every_test);
 }
 
 fn run_test(test_name: &str, input: &[i32], expected_min: i32, expected_max: i32) -> usize {
@@ -89,6 +107,6 @@ fn run_test(test_name: &str, input: &[i32], expected_min: i32, expected_max: i32
     }
     let thing = cycles.lock().unwrap();
     let cycles = thing.clone();
-    write_test_result("minmax", test_name, &(cycles as f64));
+    write_test_result(TEST_NAME, test_name, &(cycles as f64));
     cycles
 }

@@ -1,17 +1,34 @@
 use rust_hdl::prelude::*;
-use rust_hls_md5::md5::encode_result::ToHashString;
-use rust_hls_md5::md5::{encode_input::first_md5_block, Md5};
-use std::fs::{self};
-use std::sync::{Arc, Mutex};
+use rust_hls_test_helpers::*;
+use rust_hls_test_helpers::{hls_test, write_subject_result, write_test_result};
+use rust_md5::encode_input::first_md5_block;
+use rust_md5::encode_result::ToHashString;
+use std::{
+    fs,
+    sync::{Arc, Mutex},
+};
 
-use crate::test_macros::{write_subject_result, write_test_result};
-use crate::*;
+const TEST_NAME: &str = "md5_rust_speed";
 
-pub fn run_experiments() {
+#[rust_hls_macro::hls]
+pub mod md5_hls {
+    #[hls(
+        bambu_flag = "--channels-type=MEM_ACC_11 --channels-number=1 -O5",
+        rust_flag = "-C opt-level=3"
+    )]
+    #[allow(unused)]
+    pub unsafe extern "C" fn md5(message_pointer: *const u32, result_pointer: *mut u32) {
+        rust_md5::md5(message_pointer, result_pointer)
+    }
+}
+
+fn main() {
+    clear_reports();
+    write_title_lines();
     let mut device = Md5::default();
     device.connect_all();
     let data = generate_verilog(&device);
-    fs::write("./md5.v", data).expect("Unable to write file");
+    fs::write(format!("./{}.v", TEST_NAME), data).expect("Unable to write file");
 
     let results = [
         run_test("abc", "900150983cd24fb0d6963f7d28e17f72"),
@@ -25,7 +42,7 @@ pub fn run_experiments() {
     let average_cycles = (results.iter().sum::<usize>() as f64) / (results.len() as f64);
     let same_cycles_for_every_test = results.iter().all(|&x| x == results[0]);
 
-    write_subject_result("md5", &average_cycles, &same_cycles_for_every_test);
+    write_subject_result(TEST_NAME, &average_cycles, &same_cycles_for_every_test);
 }
 
 fn run_test(input: &str, expected_hash: &str) -> usize {
@@ -67,7 +84,7 @@ fn run_test(input: &str, expected_hash: &str) -> usize {
     let thing = cycles.lock().unwrap();
     let cycles = thing.clone();
     write_test_result(
-        "md5",
+        TEST_NAME,
         &format!("test_with_input_{}", input),
         &(cycles as f64),
     );
