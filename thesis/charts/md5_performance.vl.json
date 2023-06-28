@@ -1,0 +1,75 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": "Performance",
+  "data": {
+    "url": "../data/md5_overview.csv"
+  },
+  "transform": [
+    {
+      "calculate": "round(datum['Average clock cycles'] / (datum['Maximum frequency (MHz)'] * 1000000) * 1000000000)",
+      "as": "Execution duration (ns)"
+    }
+  ],
+  "config": { "font": "Spectral, sans-serif" },
+  "autosize": "none",
+  "padding": { "left": 100, "top": 20, "right": 100, "bottom": 40 },
+  "width": 300,
+  "height": 165,
+  "mark": {
+    "type": "bar",
+    "tooltip": true,
+    "stroke": "black"
+  },
+  "encoding": {
+    "y": {
+      "field": "Setup",
+      "title": null,
+      "sort": "x"
+    },
+    "x": {
+      "field": "Execution duration (ns)",
+      "type": "quantitative"
+    },
+    "color": {
+      "legend": null,
+      "field": "color",
+      "type": "nominal",
+      "scale": {
+        "range": {
+          "field": "color"
+        }
+      }
+    },
+    "tooltip": [
+      {
+        "field": "Execution duration (ns)",
+        "type": "quantitative"
+      },
+      {
+        "field": "Compiler"
+      },
+      {
+        "field": "Optimized for"
+      }
+    ],
+    "strokeWidth": {
+      "condition": [
+        {
+          "param": "hover",
+          "empty": false,
+          "value": 0.5
+        }
+      ],
+      "value": 0
+    }
+  },
+  "params": [
+    {
+      "name": "hover",
+      "select": {
+        "type": "point",
+        "on": "mouseover"
+      }
+    }
+  ]
+}

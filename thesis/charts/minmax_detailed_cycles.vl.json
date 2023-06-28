@@ -1,0 +1,169 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": "Detailed clock cycles for each design",
+  "data": {
+    "url": "../data/minmax_detailed_cycles.csv"
+  },
+  "transform": [
+    {
+      "lookup": "id",
+      "from": {
+        "key": "id",
+        "data": {
+          "url": "../data/minmax_overview.csv"
+        },
+        "fields": [
+          "Scenario",
+          "Optimized for",
+          "Setup",
+          "color"
+        ]
+      }
+    }, {
+      "filter": {
+        "field": "num_inputs",
+        "lte": 30
+      }
+    }
+  ],
+  "config": { "font": "Spectral, sans-serif" },
+  "autosize": "none",
+  "padding": { "left": 100, "top": 20, "right": 100, "bottom": 40 },
+  "width": 600,
+  "height": 300,
+  "encoding": {
+    "x": {
+      "field": "num_inputs",
+      "title": "Input length",
+      "type": "quantitative"
+    }
+  },
+  "layer": [
+    {
+      "encoding": {
+        "y": {
+          "field": "cycles",
+          "title": "Clock cycles",
+          "type": "quantitative",
+          "scale": { "domain": [ 0, 60 ] }
+        },
+        "color": {
+          "field": "Setup",
+          "type": "nominal",
+          "scale": {
+            "range": {
+              "field": "color"
+            }
+          }
+        }
+      },
+      "layer": [
+        {
+          "mark": { "type": "line", "clip": true },
+          "params": [
+            {
+              "name": "selectedSetup",
+              "select": {
+                "type": "point",
+                "fields": [
+                  "Setup"
+                ],
+                "on": "click"
+              },
+              "bind": "legend"
+            }
+          ],
+          "encoding": {
+            "opacity": {
+              "condition": {
+                "param": "selectedSetup",
+                "value": 1
+              },
+              "value": 0.2
+            }
+          }
+        },
+        {
+          "transform": [
+            {
+              "filter": {
+                "param": "hover",
+                "empty": false
+              }
+            }
+          ],
+          "mark": "circle",
+          "encoding": {
+            "size": {
+              "value": 75
+            }
+          }
+        }
+      ]
+    },
+    {
+      "transform": [
+        {
+          "pivot": "Setup",
+          "value": "cycles",
+          "groupby": [
+            "num_inputs"
+          ]
+        }
+      ],
+      "mark": "rule",
+      "encoding": {
+        "opacity": {
+          "condition": {
+            "value": 0.3,
+            "param": "hover",
+            "empty": false
+          },
+          "value": 0
+        },
+        "tooltip": [
+          {
+            "field": "C++ clang -Os",
+            "title": "C++ clang",
+            "type": "quantitative"
+          },
+          {
+            "field": "C++ gcc -Os",
+            "title": "C++ gcc",
+            "type": "quantitative"
+          },
+          {
+            "field": "Rust -Os",
+            "type": "quantitative"
+          },
+          {
+            "field": "Rust -O3",
+            "type": "quantitative"
+          },
+          {
+            "field": "Idiomatic Rust -Os",
+            "type": "quantitative"
+          },
+          {
+            "field": "Idiomatic Rust -O3",
+            "type": "quantitative"
+          }
+        ]
+      },
+      "params": [
+        {
+          "name": "hover",
+          "select": {
+            "type": "point",
+            "fields": [
+              "num_inputs"
+            ],
+            "nearest": true,
+            "on": "mouseover",
+            "clear": "mouseout"
+          }
+        }
+      ]
+    }
+  ]
+}

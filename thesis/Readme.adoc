@@ -15,6 +15,8 @@
 :stylesheet: Readme.css
 :toclevels: 3
 :kroki-server-url: http://localhost:8000
+:listing-caption: Listing
+:kroki-fetch-diagram: true
 
 image::logo_hda.svg[role=logo]
 
@@ -481,27 +483,7 @@ This toolchain can be used to synthesize Rust functions. The following section w
 .Example Minmax function
 [source,rust]
 ----
-/// Minmax function that is as similar as possible as the equivalent cpp function
-#[no_mangle]
-pub unsafe extern "C" fn minmax(
-    input: *mut i32,
-    num_elements: i32,
-    out_max: &mut i32,
-    out_min: &mut i32,
-) {
-    let mut local_max = *input.offset(0);
-    let mut local_min = *input.offset(0);
-    for i in 0..num_elements {
-        if *input.offset(i as isize) > local_max {
-            local_max = *input.offset(i as isize);
-        }
-        if *input.offset(i as isize) < local_min {
-            local_min = *input.offset(i as isize);
-        }
-    }
-    *out_max = local_max;
-    *out_min = local_min;
-}
+include::../rust-minmax/src/minmax.rs[tag=function]
 ----
 
 The minmax function shown in listing XXX finds the minimum and maximum in an array of integers. The function takes a pointer to an array of integers (`numbers`), the number of elements in the array (`numbers_length`) , and two pointers to integers (`out_max` and `out_min`). The function finds the smallest and largest value of the array and writes them to the memory locations pointed to by `out_max` and `out_min`. The implementation of the function is kept in a C-like style, so that it can be compared to an equivalend C implementation later.
@@ -754,6 +736,8 @@ Each {cpp} implemetation was tested in four configuration. Either compiled with 
 // TODO:  === Generated modules
 // not here
 
+<<<
+
 === Testing the minmax functions
 
 Three implementations will be tested for the minmax function. 
@@ -761,14 +745,98 @@ Three implementations will be tested for the minmax function.
 The {cpp} reference implementation is based on a 
 
 .Area of the different minmax designs
-:vega-lite-filename: processed-charts/chart_estimated_area.vl.json
+:vega-lite-filename: processed-charts/minmax_overview_area.vl.json
 include::vega-chart.adoc[]
 
-.Maximum frequency of the different minmax designs
-
-.Average clock cycles per test of the different minmax designs
+.Average execution time per test
+:vega-lite-filename: processed-charts/minmax_performance.vl.json
+include::vega-chart.adoc[]
 
 .Clock cycles in relation to the input length
+:vega-lite-filename: processed-charts/minmax_detailed_cycles.vl.json
+include::vega-chart.adoc[]
+
+<<<
+
+.Minmax Area to performance
+:vega-lite-filename: processed-charts/minmax_area_performance.vl.json
+include::vega-chart.adoc[]
+
+.Minmax Space efficiency
+:vega-lite-filename: processed-charts/minmax_space_efficiency.vl.json
+include::vega-chart.adoc[]
+
+
+
+
+<<<
+
+=== Testing the md5 functions
+
+Three implementations will be tested for the md5 function. 
+
+The {cpp} reference implementation is based on a 
+
+.Area of the different md5 designs
+:vega-lite-filename: processed-charts/md5_overview_area.vl.json
+include::vega-chart.adoc[]
+
+.Execution time per design
+:vega-lite-filename: processed-charts/md5_performance.vl.json
+include::vega-chart.adoc[]
+
+
+<<<
+
+.Maximum frequency of the different md5 designs
+:vega-lite-filename: processed-charts/md5_max_frequency.vl.json
+include::vega-chart.adoc[]
+
+.Average clock cycles per test of the different md5 designs
+:vega-lite-filename: processed-charts/md5_average_cycles.vl.json
+include::vega-chart.adoc[]
+
+<<<
+
+.MD5 Area to performance
+:vega-lite-filename: processed-charts/md5_area_performance.vl.json
+include::vega-chart.adoc[]
+
+.MD5 Space efficiency
+:vega-lite-filename: processed-charts/md5_space_efficiency.vl.json
+include::vega-chart.adoc[]
+
+<<<
+
+=== Testing the keccak functions
+
+Three implementations will be tested for the keccak function. 
+
+The {cpp} reference implementation is based on a 
+
+.Area of the different keccak designs
+:vega-lite-filename: processed-charts/keccak_overview_area.vl.json
+include::vega-chart.adoc[]
+
+.Execution time per design
+:vega-lite-filename: processed-charts/keccak_performance.vl.json
+include::vega-chart.adoc[]
+
+.Average clock cycles per test of the different keccak designs
+:vega-lite-filename: processed-charts/keccak_average_cycles.vl.json
+include::vega-chart.adoc[]
+
+.Maximum frequency of the different keccak designs
+:vega-lite-filename: processed-charts/keccak_max_frequency.vl.json
+include::vega-chart.adoc[]
+
+.Keccak Area to performance
+:vega-lite-filename: processed-charts/keccak_area_performance.vl.json
+include::vega-chart.adoc[]
+
+.Keccak Space efficiency
+:vega-lite-filename: processed-charts/keccak_space_efficiency.vl.json
+include::vega-chart.adoc[]
 
 === Performance compared to HLS from {cpp}
 
@@ -1508,3 +1576,16 @@ include::styles/trailing-scripts.adoc[]
 // * archive.org all links
 // * Check for duplication of information
 // * oxford comma
+
+
+<<<
+
+== Appendix
+
+.Average clock cycles for each minmax design
+:vega-lite-filename: processed-charts/minmax_average_cycles.vl.json
+include::vega-chart.adoc[]
+
+.Maximum frequency for each minmax design
+:vega-lite-filename: processed-charts/minmax_max_frequency.vl.json
+include::vega-chart.adoc[]

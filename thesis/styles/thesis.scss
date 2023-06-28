@@ -1,13 +1,28 @@
-@import 'https://fonts.googleapis.com/css2?family=Concert+One&family=Spectral:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap';
+@import 'https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Spectral:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,200;1,300;1,400;1,500;1,600;1,700;1,800';
 
 @import './default.scss';
 @import './print.scss';
 
 @import './variables.scss';
 
+$page-margin-top: 3.05cm;
+$page-margin-right: (
+    3.86cm - 0.39687cm
+);
+$page-margin-bottom: 3.81cm;
+$page-margin-left: (
+    4.26cm - 0.39687cm
+);
+
 @page {
     size: A4;
-    margin: 3.05cm (3.86cm - 0.39687cm) 3.81cm (4.26cm - 0.39687cm);
+    margin: $page-margin-top $page-margin-right $page-margin-bottom $page-margin-left ;
+}
+
+.imageblock>.content {
+    margin-right: -($page-margin-right - 1cm);
+    margin-left: -($page-margin-left - 1cm);
+    text-align: center;
 }
 
 @page {

@@ -1,0 +1,94 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": "Comparison of area and performance",
+  "data": {
+    "name": "main",
+    "url": "../data/minmax_overview.csv"
+  },
+  "transform": [
+    {
+      "calculate": "round(datum['Average clock cycles'] / (datum['Maximum frequency (MHz)'] * 1000000) * 1000000000)",
+      "as": "Execution duration (ns)"
+    }
+  ],
+  "mark": {
+    "type": "point",
+    "tooltip": true,
+    "size": 85
+  },
+  "config": { "font": "Spectral, sans-serif" },
+  "autosize": "none",
+  "padding": { "left": 120, "top": 30, "right": 120, "bottom": 40 },
+  "width": 300,
+  "height": 165,
+  "encoding": {
+    "x": {
+      "field": "Area",
+      "type": "quantitative"
+    },
+    "y": {
+      "field": "Execution duration (ns)",
+      "type": "quantitative"
+    },
+    "color": {
+      "field": "Setup",
+      "type": "nominal",
+      "scale": {
+        "range": {
+          "field": "color"
+        }
+      },
+      "legend": {
+        "symbolType": {
+          "expr": "indexof(datum.value, '-Os') >= 0 ? 'triangle-down' : 'circle'"
+        }
+      }
+    },
+    "shape": {
+      "field": "Optimized for",
+      "type": "nominal",
+      "scale": {
+        "range": [
+          "triangle-down",
+          "circle"
+        ]
+      }
+    },
+    "opacity": {
+      "condition": {
+        "param": "selection",
+        "value": 1
+      },
+      "value": 0.2
+    },
+    "strokeWidth": {
+      "condition": {
+        "param": "hover",
+        "empty": false,
+        "value": 3
+      },
+      "value": 2
+    }
+  },
+  "params": [
+    {
+      "name": "selection",
+      "select": {
+        "type": "point",
+        "fields": [
+          "Setup"
+        ],
+        "on": "click"
+      },
+      "bind": "legend"
+    },
+    {
+      "name": "hover",
+      "select": {
+        "type": "point",
+        "on": "mouseover",
+        "toggle": false
+      }
+    }
+  ]
+}
