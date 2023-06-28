@@ -221,6 +221,9 @@ const walkTree = (element, glossaryEntries) => {
                 if(node.tagName === "DT"){
                     return
                 }
+                if(node.tagName === "svg"){
+                    return
+                }
                 if(node.tagName === "DIV" && node.classList.contains("bibliography")){
                     return
                 }

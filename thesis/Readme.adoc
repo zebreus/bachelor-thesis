@@ -17,6 +17,7 @@
 :kroki-server-url: http://localhost:8000
 :listing-caption: Listing
 :kroki-fetch-diagram: true
+:kroki-default-options: inline
 
 image::logo_hda.svg[role=logo]
 
@@ -646,10 +647,26 @@ Cargo provides a way to hook into the build process using buildscripts. These ar
 
 The Rust library provides a `#[hls]` macro that can be used to mark Rust modules for HLS. The macro is evaluated two times. Before compilation a buildscript finds all `#[hls]` macros. It then extracts every marked module into a seperate temporary crate. This crate is then synthesized to Verilog using the toolchain mentioned above. A Rust module containing a rust-hdl struct that wraps the synthesized Verilog is then generated. That Rust module is then placed alongside the original source code. During compilation the `#[hls]` macro is evaluated by the Rust compiler. The macro then emits import directives for the module that were synthesized during the buildscript. It also evaluates if the macro is used in a valid context and emits useful error messages if it is not. Diagram XXX shows the macro evaluation process.
 
+table {
+    background: #fff;
+    margin-bottom: $paragraph-margin;
+    border: 1px solid #dedede;
+    word-wrap: normal;
+}
+
 .Block diagram of the macro evaluation before and during compilation
-[nomnoml]
+[nomnoml.completly-oversized-content,opts=inline,width=20cm]
 ....
+#gutter: 10
+#fontSize: 18
+#leading: 1.25
+#lineWidth: 2
+#padding: 14
+#spacing: 40
+#stroke: #000000
+#font: Spectral
 #direction: right
+#fill: #f7f8f7; #ffffff; #f7f8f7; #ffffff; #f7f8f7; #ffffff
 #.downwards: direction=down
 [cargo build|
 [<downwards> Buildscript|
@@ -736,8 +753,6 @@ Each {cpp} implemetation was tested in four configuration. Either compiled with 
 // TODO:  === Generated modules
 // not here
 
-<<<
-
 === Testing the minmax functions
 
 Three implementations will be tested for the minmax function. 
@@ -756,8 +771,6 @@ include::vega-chart.adoc[]
 :vega-lite-filename: processed-charts/minmax_detailed_cycles.vl.json
 include::vega-chart.adoc[]
 
-<<<
-
 .Minmax Area to performance
 :vega-lite-filename: processed-charts/minmax_area_performance.vl.json
 include::vega-chart.adoc[]
@@ -765,11 +778,6 @@ include::vega-chart.adoc[]
 .Minmax Space efficiency
 :vega-lite-filename: processed-charts/minmax_space_efficiency.vl.json
 include::vega-chart.adoc[]
-
-
-
-
-<<<
 
 === Testing the md5 functions
 
@@ -785,9 +793,6 @@ include::vega-chart.adoc[]
 :vega-lite-filename: processed-charts/md5_performance.vl.json
 include::vega-chart.adoc[]
 
-
-<<<
-
 .Maximum frequency of the different md5 designs
 :vega-lite-filename: processed-charts/md5_max_frequency.vl.json
 include::vega-chart.adoc[]
@@ -796,8 +801,6 @@ include::vega-chart.adoc[]
 :vega-lite-filename: processed-charts/md5_average_cycles.vl.json
 include::vega-chart.adoc[]
 
-<<<
-
 .MD5 Area to performance
 :vega-lite-filename: processed-charts/md5_area_performance.vl.json
 include::vega-chart.adoc[]
@@ -805,8 +808,6 @@ include::vega-chart.adoc[]
 .MD5 Space efficiency
 :vega-lite-filename: processed-charts/md5_space_efficiency.vl.json
 include::vega-chart.adoc[]
-
-<<<
 
 === Testing the keccak functions
 

@@ -19,10 +19,45 @@ $page-margin-left: (
     margin: $page-margin-top $page-margin-right $page-margin-bottom $page-margin-left ;
 }
 
-.imageblock>.content {
+.oversized-content>.content {
     margin-right: -($page-margin-right - 1cm);
     margin-left: -($page-margin-left - 1cm);
     text-align: center;
+}
+
+.completly-oversized-content>.content {
+    margin-right: -($page-margin-right);
+    margin-left: -($page-margin-left);
+    text-align: center;
+}
+
+
+// Fix symbolator fonts
+.kroki svg {
+    .fnt2 {
+        font-family: 'IBM Plex Mono';
+        font-weight: 400;
+        font-size: 0.85rem;
+    }
+
+    .fnt1 {
+        font-family: 'Spectral';
+        font-weight: normal;
+        font-size: 1.1rem;
+        font-style: italic;
+    }
+}
+
+.imageblock {
+    .content {
+        break-after: avoid;
+        page-break-after: avoid;
+    }
+
+    .title {
+        break-before: avoid;
+        page-break-before: avoid;
+    }
 }
 
 @page {
