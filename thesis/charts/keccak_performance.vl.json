@@ -72,7 +72,7 @@
         "dx": 3
       },
       "encoding": {
-        "text": { "field": "Average clock cycles", "type": "quantitative" }
+        "text": { "field": "Execution duration (ns)", "type": "quantitative" }
       }
     } ],
   "encoding": {

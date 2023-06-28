@@ -1,3 +1,4 @@
+// tag::function[]
 #[repr(C)]
 pub struct MinMaxResult {
     pub max: i32,
@@ -26,6 +27,7 @@ pub unsafe extern "C" fn minmax_idiomatic(
         },
     )
 }
+// end::function[]
 
 #[cfg(test)]
 mod tests {
