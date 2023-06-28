@@ -18,6 +18,10 @@
 :listing-caption: Listing
 :kroki-fetch-diagram: true
 :kroki-default-options: inline
+:xrefstyle: short
+ifdef::env-web-pdf[]
+:docinfo: shared-footer
+endif::env-web-pdf[]
 
 image::logo_hda.svg[role=logo]
 
@@ -1558,6 +1562,38 @@ Submission to NIST (Round 2) 3, no. 30 (2009): 320-337,
 2009
 link:pass:[https://keccak.team/files/Keccak-submission-3.pdf][📁^]
 
+
+
+<<<
+
+== Appendix
+
+.Average clock cycles for each minmax design
+:vega-lite-filename: processed-charts/minmax_average_cycles.vl.json
+include::vega-chart.adoc[]
+
+.Maximum frequency for each minmax design
+:vega-lite-filename: processed-charts/minmax_max_frequency.vl.json
+include::vega-chart.adoc[]
+
+.`minmax` function in {cpp}
+[source#minmax-cpp-listing,cpp]
+----
+include::experiments/cpp-hls-experiments/minmax.cpp[tag=function]
+----
+
+.`md5` function in {cpp}
+[source#md5-cpp-listing,cpp]
+----
+include::experiments/cpp-hls-experiments/md5.cpp[tag=function]
+----
+
+.`keccak` function in {cpp}
+[source#keccak-cpp-listing,cpp]
+----
+include::experiments/cpp-hls-experiments/keccak.cpp[tag=function]
+----
+
 // Reference thesis:
 // * https://webthesis.biblio.polito.it/7573/1/tesi.pdf
 // * https://scholarworks.gvsu.edu/cgi/viewcontent.cgi?article=1754&context=theses
@@ -1577,16 +1613,4 @@ include::styles/trailing-scripts.adoc[]
 // * archive.org all links
 // * Check for duplication of information
 // * oxford comma
-
-
-<<<
-
-== Appendix
-
-.Average clock cycles for each minmax design
-:vega-lite-filename: processed-charts/minmax_average_cycles.vl.json
-include::vega-chart.adoc[]
-
-.Maximum frequency for each minmax design
-:vega-lite-filename: processed-charts/minmax_max_frequency.vl.json
-include::vega-chart.adoc[]
+// * style code blocks

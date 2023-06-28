@@ -1,6 +1,4 @@
-// Source:
-// https://github.com/ferrandi/PandA-bambu/tree/main/examples/crypto_designs
-
+// tag::function[]
 /*
  * The Keccak sponge function, designed by Guido Bertoni, Joan Daemen,
  * Michaël Peeters and Gilles Van Assche. For more information, feedback or
@@ -100,3 +98,4 @@ void keccak(UINT64 A[25]) {
     iota(A, i);
   }
 }
+// end::function[]

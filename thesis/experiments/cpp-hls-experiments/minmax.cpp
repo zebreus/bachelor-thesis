@@ -1,3 +1,4 @@
+// tag::function[]
 #include <limits.h>
 
 void min_max(int *numbers, int numbers_length, int *out_max, int *out_min) {
@@ -15,3 +16,4 @@ void min_max(int *numbers, int numbers_length, int *out_max, int *out_min) {
   *out_max = local_max;
   *out_min = local_min;
 }
+// end::function[]

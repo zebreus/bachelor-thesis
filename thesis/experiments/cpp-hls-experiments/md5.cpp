@@ -1,4 +1,4 @@
-// tag::md5-implementation[]
+// tag::function[]
 #include <cstdint>
 
 constexpr uint32_t SHIFT_PER_ROUND[64] = {
@@ -74,6 +74,7 @@ void md5(uint32_t *message_pointer, uint32_t *result_pointer) {
   result_pointer[2] = c;
   result_pointer[3] = d;
 }
+// end::function[]
 
 // #include <cassert>
 // int main() {

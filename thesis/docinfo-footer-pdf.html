@@ -1,0 +1,88 @@
+<script>
+    // Hacky script for fixing pre elements in pagedjs
+    // 
+    // Add this script as `docinfo-footer-pdf.html` to your
+    // project and add the following to the top of your asciidoc file:
+    // ```
+    // ifdef::env-web-pdf[]
+    // :docinfo: shared-footer
+    // endif::env-web-pdf[]
+    // ```
+    //
+    // This script will replace all newlines in pre elements with 
+    // <br> elements and spaces with &nbsp;
+    //
+    // That works mostly, at least pagedjs does not crash anymore.
+    // The start of pages is a bit bugged and if a listing will span
+    // multiple pages it will always start on its own page.
+    //
+    // I think pagedjs has problems if there is only whitespace and
+    // newlines between spans in a `white-space: pre` element.
+    // IDK what the exact bug is, but I currently dont have the time
+    // to find and fix it upstream.
+
+    Array.prototype.intersperse = function (s) {
+        return this.reduce((p, c, i) => (p[2 * i] = c, p), new Array(2 * this.length - 1).fill(0).map(() => s()));
+    }
+
+
+    const replaceNewlinesWithBr = (textNode, glossaryEntries) => {
+
+        // console.log("textNode", textNode)
+
+        // let zeroWidthSpace = "​"
+        // return [zeroWidthSpace + textNode]
+        let content = textNode.replace(/ /g, "\xa0").split(/(?:\r\n|\r|\n)/g)
+        let result = content.intersperse(() => document.createElement("br"))
+        // let newSpan = document.createElement("span")
+        // newSpan.appendChild(document.createTextNode("a" + textNode))
+        // let result = [newSpan]
+        // console.log("result", result)
+
+        return result
+    }
+
+
+    const fixPres = (mainthing) => {
+        let elements = [...mainthing.querySelectorAll("pre code")];
+        elements.forEach(element => walkPreTree(element))
+    }
+
+    const walkPreTree = (element, glossaryEntries) => {
+        let children = [...element.childNodes];
+        children.forEach((node) => {
+            switch (node.nodeType) {
+                case Node.TEXT_NODE: {
+                    let reworked = replaceNewlinesWithBr(node.textContent, glossaryEntries)
+                    node.replaceWith(...reworked)
+                    return
+                }
+                case Node.ELEMENT_NODE: {
+                    walkPreTree(node, glossaryEntries)
+                    return
+                }
+                default: {
+                    return
+                }
+            }
+        })
+
+        return
+
+    }
+
+    class MyHandler extends Paged.Handler {
+        constructor(chunker, polisher, caller) {
+            super(chunker, polisher, caller);
+        }
+
+        beforeParsed(pageFragment) {
+            // console.log("Before parsed", pageFragment);
+            fixPres(pageFragment);
+            // console.log("After processed parsed", pageFragment);
+
+        }
+    }
+    Paged.registerHandlers(MyHandler);
+
+</script>

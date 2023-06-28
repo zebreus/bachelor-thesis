@@ -31,6 +31,12 @@ $page-margin-left: (
     text-align: center;
 }
 
+@media print {
+    .listingblock .content {
+        margin-left: -1.5cm;
+        margin-right: -1.5cm;
+    }
+}
 
 // Fix symbolator fonts
 .kroki svg {

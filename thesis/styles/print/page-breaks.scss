@@ -27,14 +27,12 @@ h6 {
     page-break-after: avoid
 }
 
-.listingblock,
 table,
 tr,
 div.unbreakable,
 blockquote,
 img,
 object,
-pre,
 svg {
     page-break-inside: avoid;
     break-inside: avoid;
