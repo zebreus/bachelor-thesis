@@ -1,12 +1,13 @@
-/// Minmax function that is as similar as possible as the equivalent cpp function
+// tag::function[]
+/// Minmax function that is as similar as possible to the equivalent cpp function
 pub unsafe extern "C" fn minmax(
     numbers: *mut i32,
     numbers_length: i32,
     out_max: &mut i32,
     out_min: &mut i32,
 ) {
-    let mut local_max = *numbers.offset(0);
-    let mut local_min = *numbers.offset(0);
+    let mut local_max = i32::MIN;
+    let mut local_min = i32::MAX;
     for i in 0..numbers_length {
         if *numbers.offset(i as isize) > local_max {
             local_max = *numbers.offset(i as isize);
@@ -18,6 +19,7 @@ pub unsafe extern "C" fn minmax(
     *out_max = local_max;
     *out_min = local_min;
 }
+// end::function[]
 
 #[cfg(test)]
 mod tests {

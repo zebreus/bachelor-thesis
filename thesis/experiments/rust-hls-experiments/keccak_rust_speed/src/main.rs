@@ -11,7 +11,7 @@ const TEST_NAME: &str = "keccak_rust_speed";
 #[rust_hls_macro::hls]
 pub mod keccak_hls {
     #[hls(
-        bambu_flag = "--channels-type=MEM_ACC_11 --channels-number=1 -O5",
+        bambu_flag = "--channels-type=MEM_ACC_11 --channels-number=1 -O5 --target=/home/lennart/Documents/bachelor-thesis/thesis/experiments/device.xml",
         rust_flag = "-C opt-level=3"
     )]
     #[allow(unused)]

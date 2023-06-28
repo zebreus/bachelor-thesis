@@ -11,17 +11,17 @@ const TEST_NAME: &str = "minmax_rust_size";
 #[rust_hls_macro::hls]
 pub mod min_max_hls {
     #[hls(
-        bambu_flag = "--channels-type=MEM_ACC_11 --channels-number=1 -Os",
+        bambu_flag = "--channels-type=MEM_ACC_11 --channels-number=1 -Os --target=/home/lennart/Documents/bachelor-thesis/thesis/experiments/device.xml",
         rust_flag = "-C opt-level=z"
     )]
     #[allow(unused)]
     pub unsafe extern "C" fn min_max(
         elements: *mut i32,
-        num_elements: i32,
+        elements_length: i32,
         out_max: &mut i32,
         out_min: &mut i32,
     ) {
-        rust_minmax::minmax(elements, num_elements, out_max, out_min);
+        rust_minmax::minmax(elements, elements_length, out_max, out_min);
     }
 }
 
@@ -44,19 +44,21 @@ fn main() {
         run_test("twentyfive twentyfives", &[25i32; 25], 25, 25),
     ];
 
-    let tests = (1..50).map(|number_elements| {
+    let tests = (0..=50).map(|number_elements| {
         run_test(
             format!("length_{}", number_elements).as_str(),
             &fifty_random_numbers[0..number_elements],
             fifty_random_numbers[0..number_elements]
                 .iter()
                 .min()
-                .unwrap()
+                .cloned()
+                .unwrap_or(i32::MAX)
                 .clone(),
             fifty_random_numbers[0..number_elements]
                 .iter()
                 .max()
-                .unwrap()
+                .cloned()
+                .unwrap_or(i32::MIN)
                 .clone(),
         )
     });
@@ -92,7 +94,7 @@ fn run_test(test_name: &str, input: &[i32], expected_min: i32, expected_max: i32
                 minmax.elements.next = 0u32.to_bits();
                 minmax.out_min.next = (input_length * 4).to_bits();
                 minmax.out_max.next = ((input_length + 1) * 4).to_bits();
-                minmax.num_elements.next = input_length.to_bits();
+                minmax.elements_length.next = input_length.to_bits();
             },
             {
                 // Verification

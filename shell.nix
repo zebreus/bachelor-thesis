@@ -46,6 +46,7 @@ mkShell {
     nil
     bambu
     jq # Required for rust-hls-lib
+    pastel
 
     # For rust
     (fenix.complete.withComponents [

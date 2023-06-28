@@ -11,7 +11,7 @@ const TEST_NAME: &str = "minmax_idiom_speed";
 #[rust_hls_macro::hls]
 pub mod min_max_hls {
     #[hls(
-        bambu_flag = "--channels-type=MEM_ACC_11 --channels-number=1 -O5",
+        bambu_flag = "--channels-type=MEM_ACC_11 --channels-number=1 -O5 --target=/home/lennart/Documents/bachelor-thesis/thesis/experiments/device.xml",
         rust_flag = "-C opt-level=3"
     )]
     #[allow(unused)]
@@ -42,19 +42,21 @@ fn main() {
         run_test("twentyfive twentyfives", &[25i32; 25], 25, 25),
     ];
 
-    let tests = (1..50).map(|number_elements| {
+    let tests = (0..=50).map(|number_elements| {
         run_test(
             format!("length_{}", number_elements).as_str(),
             &fifty_random_numbers[0..number_elements],
             fifty_random_numbers[0..number_elements]
                 .iter()
                 .min()
-                .unwrap()
+                .cloned()
+                .unwrap_or(i32::MAX)
                 .clone(),
             fifty_random_numbers[0..number_elements]
                 .iter()
                 .max()
-                .unwrap()
+                .cloned()
+                .unwrap_or(i32::MIN)
                 .clone(),
         )
     });

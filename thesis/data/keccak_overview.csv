@@ -1,0 +1,7 @@
+"Logic blocks","Flip-flops","RAM blocks","trueDualPortBlockRam","Multipliers","otherBlocks","Area","Maximum frequency (MHz)","Average clock cycles","id","Setup","Scenario","compilerSetup","Implementation","Function","Compiler","Optimized for","Optimization flag","Language","Idiomatic","color"
+27169,6522,0,0,8,0,33699,56.2239990234375,39793,"keccak_rust_size","Rust -Os","Rust","rust -Os","Rust","keccak","Rust","size","-Os","Rust","false","#C1292E"
+9322,4024,0,0,0,0,13346,106.73497009277344,99,"keccak_rust_speed","Rust -O3","Rust","rust -O3","Rust","keccak","Rust","speed","-O3","Rust","false","#E2787C"
+11406,3856,0,0,0,0,15262,77.76654052734375,76,"keccak_clang_speed","C++ clang -O3","C++ clang","clang -O3","C++","keccak","Clang","speed","-O3","C++","false","#7A8FE1"
+28549,10931,0,0,0,0,39480,73.76807403564453,5450,"keccak_gcc_speed","C++ gcc -O3","C++ gcc","gcc -O3","C++","keccak","GCC","speed","-O3","C++","false","#7AE1D5"
+5359,2321,80,0,2,0,7762,89.07099151611328,19994,"keccak_clang_size","C++ clang -Os","C++ clang","clang -Os","C++","keccak","Clang","size","-Os","C++","false","#3454D1"
+8592,3328,80,0,10,0,12010,84.58805847167969,21890,"keccak_gcc_size","C++ gcc -Os","C++ gcc","gcc -Os","C++","keccak","GCC","size","-Os","C++","false","#34D1BF"

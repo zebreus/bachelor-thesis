@@ -83,6 +83,7 @@ pub fn buildscript_hls(root: &PathBuf) -> Result<(), HlsBuildscriptError> {
                 .with_trace(true)
                 .no_warn("width")
                 .no_warn("pinmissing")
+                .no_warn("timescalemod")
                 .with_performance_optimizations(true)
                 .file_with_standard(
                     &root.join(result.verilog_file_path()),

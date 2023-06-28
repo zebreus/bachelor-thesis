@@ -20,14 +20,19 @@ TESTRESULT_FILES = $(RUST_TESTRESULT_FILES) $(CPP_TESTRESULT_FILES)
 YOSYS_JSON_FILES = $(addprefix $(BUILD_DIR),$(addsuffix -build.json,$(ALL_DESIGNS)))
 NEXTPNR_REPORT_FILES = $(addprefix $(BUILD_DIR),$(addsuffix -report.json,$(ALL_DESIGNS)))
 
-CLEAN_FILES += $(BUILD_DIR)
+ALL_REPORTS = $(BUILD_DIR)all_reports.json
+ALL_TESTRESULTS = $(BUILD_DIR)all_testresults.json
+ADDITIONAL_INFORMATION = $(BUILD_DIR)additional_information.json
+ALL_DATA = all_data.json
 
-all: reports
+CLEAN_FILES += $(BUILD_DIR) $(ALL_DATA)
+
+all: data
 
 verilog: $(VERILOG_FILES)
 testresults: $(TESTRESULT_FILES)
-
 reports: $(NEXTPNR_REPORT_FILES)
+data: $(ALL_DATA)
 
 # Copy verilog files to build directory
 $(RUST_VERILOG_FILES) : $(BUILD_DIR)%.v: $(RUST_DIR)%.v
@@ -53,7 +58,20 @@ $(YOSYS_JSON_FILES) : $(BUILD_DIR)%-build.json : $(BUILD_DIR)%.v
 # Place and route with nextpnr
 $(NEXTPNR_REPORT_FILES) : $(BUILD_DIR)%-report.json : $(BUILD_DIR)%-build.json
 	nextpnr-ecp5 --45k --speed 6 --json $< --report $@.tmp
-	cat $@.tmp | jq > $@ 
+	cat $@.tmp | jq > $@
+
+$(ALL_REPORTS) : $(NEXTPNR_REPORT_FILES) scripts/combine_reports.sh
+	bash scripts/combine_reports.sh $(NEXTPNR_REPORT_FILES) > $@
+
+$(ALL_TESTRESULTS) : $(TESTRESULT_FILES) scripts/combine_testresults.sh
+	bash scripts/combine_testresults.sh $(TESTRESULT_FILES) > $@
+
+$(ADDITIONAL_INFORMATION) : scripts/generate_additional_information.sh Makefile
+	bash scripts/generate_additional_information.sh $(ALL_DESIGNS) > $@
+	grep _marker_ $@ && rm -f $@ && exit 1 || true
+
+$(ALL_DATA) : $(ALL_REPORTS) $(ALL_TESTRESULTS) $(ADDITIONAL_INFORMATION)
+	bash scripts/merge_json_files.sh $^ > $@
 
 clean:
 	rm -rf $(CLEAN_FILES)

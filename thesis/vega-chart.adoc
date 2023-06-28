@@ -31,7 +31,7 @@ ifdef::vega-as-script[]
 // Embed the script as js if we are running in a browser
 [subs="attributes"]
 ++++
-    <div class="diagram" style="display: flex; justify-content: center;"></div>
+    <div class="diagram imageblock" style="display: flex; justify-content: center; break-inside: avoid;"></div>
     <script>
       if(
         !document.vegaLoaded &&
@@ -154,7 +154,7 @@ include::{vega-lite-filename}[]
 endif::vega-as-script[]
 ifndef::vega-as-script[]
 // Embed the script with asciidoctor-kroki if we are running in vscode
-[vegalite.text-center]
+[vegalite,opts=inline]
 ....
 include::{vega-lite-filename}[]
 ....

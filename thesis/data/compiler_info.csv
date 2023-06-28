@@ -1,9 +1,0 @@
-id,Compiler,Optimized for,Setup,color
-min_max_cpp_clang_size,C++ clang,size,C++ clang -Os,#3454D1
-min_max_cpp_clang_speed,C++ clang,speed,C++ clang -O3,#7A8FE1
-min_max_cpp_gcc_size,C++ gcc,size,C++ gcc -Os,#34D1BF
-min_max_cpp_gcc_speed,C++ gcc,speed,C++ gcc -O3,#7AE1D5
-min_max_rust_size,Rust,size,Rust -Os,#C1292E
-min_max_rust_speed,Rust,speed,Rust -O3,#E2787C
-min_max_rust_idiomatic_size,Idiomatic Rust,size,Idiomatic Rust -Os,#F65D00
-min_max_rust_idiomatic_speed,Idiomatic Rust,speed,Idiomatic Rust -O3,#FF9A5C

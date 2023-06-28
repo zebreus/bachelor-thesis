@@ -13,7 +13,7 @@ const TEST_NAME: &str = "md5_rust_size";
 #[rust_hls_macro::hls]
 pub mod md5_hls {
     #[hls(
-        bambu_flag = "--channels-type=MEM_ACC_11 --channels-number=1 -Os",
+        bambu_flag = "--channels-type=MEM_ACC_11 --channels-number=1 -Os --target=/home/lennart/Documents/bachelor-thesis/thesis/experiments/device.xml",
         rust_flag = "-C opt-level=z"
     )]
     #[allow(unused)]

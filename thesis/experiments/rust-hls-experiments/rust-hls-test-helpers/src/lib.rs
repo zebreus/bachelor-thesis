@@ -87,10 +87,14 @@ macro_rules! wait_clock_cycle_with_memory {
         wait_clock_cycle!($sim, $clock, $module);
         // let mout_oe_ram = $module.mout_oe_ram.val();
         // TODO: Divide in rising and falling edge
-        let address = memory_address!($memory_size, mout_addr_ram, $memory.len());
-        $module.m_rdata_ram.next = $memory[address].to_bits();
-        if mout_we_ram == true {
-            $memory[address] = mout_wdata_ram;
+        if $memory.len() != 0 {
+            let address = memory_address!($memory_size, mout_addr_ram, $memory.len());
+            $module.m_rdata_ram.next = $memory[address].to_bits();
+            if mout_we_ram == true {
+                $memory[address] = mout_wdata_ram;
+            }
+        } else {
+            $module.m_rdata_ram.next = (0 as $memory_size).to_bits();
         }
     };
     ($sim: ident, $clock: ident, $module: ident) => {

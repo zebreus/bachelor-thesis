@@ -1,6 +1,8 @@
-void minmax(int *numbers, int numbers_length, int *out_max, int *out_min) {
-  int local_max = numbers[0];
-  int local_min = numbers[0];
+#include <limits.h>
+
+void min_max(int *numbers, int numbers_length, int *out_max, int *out_min) {
+  int local_max = INT_MIN;
+  int local_min = INT_MAX;
   int i = 0;
   for (i = 0; i < numbers_length; i++) {
     if (numbers[i] > local_max) {

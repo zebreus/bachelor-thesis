@@ -8,11 +8,11 @@ pub struct GenerateHlsOptions {
 }
 
 /// These flags will be used when compiling the extracted crate to LLVM IR.
-pub const DEFAULT_RUST_FLAGS: &str = r#"-C overflow-checks=off -C no-vectorize-loops -C target-cpu=generic -C panic=abort -C opt-level=s -C llvm-args=--opaque-pointers=false"#;
+pub const DEFAULT_RUST_FLAGS: &str = r#"-C overflow-checks=off -C no-vectorize-loops -C target-cpu=generic -C panic=abort -C llvm-args=--opaque-pointers=false"#;
 // LTO seems broken without opaque pointers  -C linker-plugin-lto=on -C embed-bitcode=on -C lto=fat. Provides no benefit anyway as we are linking manually.
 
 /// These flags will be used when performing HLS from the generated LLVM IR.
-pub const DEFAULT_HLS_FLAGS: &str = r#"--compiler=I386_CLANG16 -Os"#;
+pub const DEFAULT_HLS_FLAGS: &str = r#"--compiler=I386_CLANG16"#;
 
 /// Generate the contents of the HLS script.
 ///
