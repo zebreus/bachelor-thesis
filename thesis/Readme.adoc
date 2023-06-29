@@ -768,7 +768,7 @@ Three implementations of a minmax function will be compared. The Rust implementa
 include::../rust-minmax/src/minmax_idiomatic.rs[tag=function]
 ----
 
-The Rust compiler should be able to compile the idiomatic Rust implementation to the same code as the equivalent Rust implementation. The biggest difference is that the idiomatic function returns a struct instead of writing its result to memory.
+The Rust compiler should be able to compile the idiomatic Rust implementation to mostly the same code as the equivalent Rust implementation. The biggest difference is that the idiomatic function returns a struct instead of writing its result to memory. The expecation is that the idiomatic Rust design always performs a bit better than the equivalent Rust design, as it does not have to access memory for writing the result. It has a specific `return_port` that contains the result.
 
 
 // TODO: Replace this with the text from the blogpost as that is better.
@@ -813,8 +813,7 @@ The slowest class takes stem:[3] cycles for every additional input. The second f
 
 Interestingly the fastest designs require 3 extra cycles per input for three additional inputs, but every fourth input they actually require 3 less cycles. This averages out to stem:[1.5] cycles for every additional input. It should be noted again that these are also the biggest designs.
 
-// TODO: This is Speculation
-It could be that the big designs have two different implementations for actual logic of the minmax function. One that compares one element at a time to the current minimum and maximum value and one that compares 4 elements at once. That would explain why the big designs are also the fastest ones, as the additional size contains the 4x operation. The small designs save area by only having the 1x operation.
+The LLVM designs optimized for speed have unrolled the loop by a factor of four. This can be seen in the control-flow graph (CFG) of the LLVM IR shown in <<minmax-speed-cfg>>. The function processes a batch of 4 elements until there are less than 4 elements left. Then it processes the remaining elements one by one. Bambu seems preserve this structure in the generated designs. This explains why the big designs are also the fastest ones, as the additional size contains the 4x operation. The small designs save area by only having the 1x operation.
 
 The idiomatic Rust design is consistently that fastest design taking one cycle less than the next fastest design. This constant advantage is probably because it does not need to write its results to memory after it has processed all elements. The C-like Rust designs are 2 cycles faster then the equivalent {cpp} designs compiled with Clang. 
 
@@ -838,16 +837,84 @@ While the small designs can run at much higher frequencies they also require mor
 :vega-lite-filename: processed-charts/minmax_performance.vl.json
 include::vega-chart.adoc[]
 
+The LLVM designs optimized for speed perform between 25-30% better than the designs optimized for size. So they still seem to split into two groups, although the divide is not as big as with the other measurements.
 
+As expected the significantly slower frequency of the big designs is more than enough to negate the advantage they gained by requireing less cycles. 
+
+As the GCC designs both clocked at nearly the same frequency the lower cycle-count of the design optimized for speed makes it perform better than the one optimized for size. It performs comparable to the LLVM-based designs optimized for size, while the one optimized for size performs comparable to the LLVM-based designs optimized for speed. 
+
+// TODO: Look into specifing how big things are getting parrallelized
 
 
 
 .Minmax Area to performance
+:chart-id: id=minmax-area-performance
 :vega-lite-filename: processed-charts/minmax_area_performance.vl.json
 include::vega-chart.adoc[]
 
+The big designs perform worse and take up more area than the small designs. The idiomatic Rust design (size) is better in terms of size and performance than nearly every other design. The only exception is the GCC design optimized for size which is slightly smaller but performs significantly worse. These results can be seen in <<minmax-area-performance>>.
+
+The task of computing the minimum and maximum can be easily parrallelized. The input can be split over multiple instances of the function and the results of each can be processed by another minmax function afterwards. In <<minmax-space-efficieny>> the designs are compared by their performance per area.
+
 .Minmax Space efficiency
+:chart-id: id=minmax-space-efficieny
 :vega-lite-filename: processed-charts/minmax_space_efficiency.vl.json
+include::vega-chart.adoc[]
+
+The idiomatic Rust design (size) is the most space efficient design. The two GCC designs are second and third. The GCC design optimized for speed is a bit faster but also a bit bigger than the one optimized for size. This trade-off equalize again in this metric, as their performance per area is nearly identical.
+
+The big designs perform really poorly in this metric, because they perform worse and take up more area than the small designs.
+
+// TODO: Change idiomatic Rust design to use return via memory
+
+// Experiment fazit
+
+// TODO: Convert bullet points to text
+
+The designs generated by LLVM based toolchains with the same optimization goal perform quite similar.
+
+The Rust designs perform slightly better, but the difference is not significant.
+
+The idiomatic Rust design performs a bit better than the equivalent Rust design but that could be because it has a slightly different interface, so the results may not be directly comparable.
+
+The small designs performed better on all metrics except for cycle count.
+
+For GCC the optimization goal seems to align with the actual benefits of the design. The design optimized for Code size also resulted in a smaller design, while the design optimized for speed resulted in a faster design.
+
+For LLVM that is only partially true, while the design optimized for size resulted in a smaller design it was also faster than the design optimized for speed.
+
+LLVM seems to perform more aggressive loop unrolling than GCC.
+
+Bambu seems to preserve unrolled loops in LLVM IR.
+
+=== Testing the keccak functions
+
+Three implementations will be tested for the keccak function. 
+
+The {cpp} reference implementation is based on a 
+
+.Area of the different keccak designs
+:vega-lite-filename: processed-charts/keccak_overview_area.vl.json
+include::vega-chart.adoc[]
+
+.Execution time per design
+:vega-lite-filename: processed-charts/keccak_performance.vl.json
+include::vega-chart.adoc[]
+
+.Average clock cycles per test of the different keccak designs
+:vega-lite-filename: processed-charts/keccak_average_cycles.vl.json
+include::vega-chart.adoc[]
+
+.Maximum frequency of the different keccak designs
+:vega-lite-filename: processed-charts/keccak_max_frequency.vl.json
+include::vega-chart.adoc[]
+
+.Keccak Area to performance
+:vega-lite-filename: processed-charts/keccak_area_performance.vl.json
+include::vega-chart.adoc[]
+
+.Keccak Space efficiency
+:vega-lite-filename: processed-charts/keccak_space_efficiency.vl.json
 include::vega-chart.adoc[]
 
 === Testing the md5 functions
@@ -880,35 +947,7 @@ include::vega-chart.adoc[]
 :vega-lite-filename: processed-charts/md5_space_efficiency.vl.json
 include::vega-chart.adoc[]
 
-=== Testing the keccak functions
 
-Three implementations will be tested for the keccak function. 
-
-The {cpp} reference implementation is based on a 
-
-.Area of the different keccak designs
-:vega-lite-filename: processed-charts/keccak_overview_area.vl.json
-include::vega-chart.adoc[]
-
-.Execution time per design
-:vega-lite-filename: processed-charts/keccak_performance.vl.json
-include::vega-chart.adoc[]
-
-.Average clock cycles per test of the different keccak designs
-:vega-lite-filename: processed-charts/keccak_average_cycles.vl.json
-include::vega-chart.adoc[]
-
-.Maximum frequency of the different keccak designs
-:vega-lite-filename: processed-charts/keccak_max_frequency.vl.json
-include::vega-chart.adoc[]
-
-.Keccak Area to performance
-:vega-lite-filename: processed-charts/keccak_area_performance.vl.json
-include::vega-chart.adoc[]
-
-.Keccak Space efficiency
-:vega-lite-filename: processed-charts/keccak_space_efficiency.vl.json
-include::vega-chart.adoc[]
 
 === Performance compared to HLS from {cpp}
 
@@ -969,6 +1008,7 @@ The toolchain is also quite easy to use. The only thing that needs to be done is
 [[THIR]]THIR:: Typed HIR link:pass:[https://rustc-dev-guide.rust-lang.org/thir.html][🔗^]
 [[MIR]]MIR:: Mid-level Intermediate Representation link:pass:[https://rustc-dev-guide.rust-lang.org/mir/index.html][🔗^]
 [[PAL]]PAL:: Programmable array logic
+[[CFG]]CFG:: Control-flow graph link:pass:[https://en.wikipedia.org/wiki/Control-flow_graph][🔗^]
 
 
 [bibliography]
@@ -1651,6 +1691,12 @@ include::experiments/cpp-hls-experiments/md5.cpp[tag=function]
 [source#keccak-cpp-listing,cpp]
 ----
 include::experiments/cpp-hls-experiments/keccak.cpp[tag=function]
+----
+
+.Simplified CFG for the LLVM IR generated by the Rust compiler from the minmax function with optimizations for performance
+[graphviz#minmax-speed-cfg.slightly-oversized-content,opts=none]
+----
+include::samples/minmax_speed_control_flow.dot[]
 ----
 
 // Reference thesis:

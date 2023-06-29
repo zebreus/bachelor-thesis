@@ -19,6 +19,12 @@ $page-margin-left: (
     margin: $page-margin-top $page-margin-right $page-margin-bottom $page-margin-left ;
 }
 
+.slightly-oversized-content>.content {
+    margin-right: -($page-margin-right - 2cm);
+    margin-left: -($page-margin-left - 2cm);
+    text-align: center;
+}
+
 .oversized-content>.content {
     margin-right: -($page-margin-right - 1cm);
     margin-left: -($page-margin-left - 1cm);
