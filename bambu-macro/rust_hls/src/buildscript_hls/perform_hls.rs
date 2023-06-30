@@ -3,9 +3,8 @@ use std::path::PathBuf;
 use crate::{
     buildscript_hls::process_module::process_module,
     generated_file::{
-        generate_file, generate_output_filename, generate_verilog_file,
-        generate_verilog_output_filename, ExtractHashError, ExtractModulePathError,
-        GenerateRustHdlStructError,
+        generate_file, generate_output_filename, generate_output_module_path, ExtractHashError,
+        ExtractModulePathError, GenerateRustHdlStructError,
     },
     rust_hls::CrateFile,
     RustHlsError,
@@ -35,6 +34,8 @@ pub enum PerformHlsResult {
     Cached {
         synthesized_file: PathBuf,
         verilog_file: PathBuf,
+        llvm_file: Option<PathBuf>,
+        log_file: Option<PathBuf>,
         function_name: String,
         #[cfg(feature = "verilator")]
         verilated_cpp_file: PathBuf,
@@ -43,6 +44,8 @@ pub enum PerformHlsResult {
         /// The generated verilog module
         synthesized_file: CrateFile,
         verilog_file: CrateFile,
+        llvm_file: Option<CrateFile>,
+        log_file: Option<CrateFile>,
         function_name: String,
         #[cfg(feature = "verilator")]
         verilated_cpp_file: CrateFile,
@@ -69,6 +72,20 @@ impl PerformHlsResult {
         }
     }
     #[allow(unused, dead_code)]
+    pub fn llvm_file_path(&self) -> Option<&PathBuf> {
+        match self {
+            Self::Cached { llvm_file, .. } => llvm_file.as_ref(),
+            Self::New { llvm_file, .. } => llvm_file.as_ref().map(|f| &f.path),
+        }
+    }
+    #[allow(unused, dead_code)]
+    pub fn log_file_path(&self) -> Option<&PathBuf> {
+        match self {
+            Self::Cached { log_file, .. } => log_file.as_ref(),
+            Self::New { log_file, .. } => log_file.as_ref().map(|f| &f.path),
+        }
+    }
+    #[allow(unused, dead_code)]
     pub fn function_name(&self) -> &String {
         match self {
             Self::Cached { function_name, .. } => function_name,
@@ -88,6 +105,42 @@ impl PerformHlsResult {
     }
 }
 
+pub fn generate_verilator_output_path(source_module_path: &Vec<String>) -> PathBuf {
+    let synthesized_module_path = generate_output_module_path(source_module_path);
+    let file_path = format!("rust_hls/{}", synthesized_module_path.join("/"));
+    return PathBuf::from(file_path);
+}
+
+pub fn generate_verilated_cpp_file_path(
+    source_module_path: &Vec<String>,
+    function_name: &str,
+) -> PathBuf {
+    let base_path = generate_verilator_output_path(source_module_path);
+    let file_path = base_path.join(format!("{}.cpp", function_name));
+    return PathBuf::from(file_path);
+}
+
+pub fn generate_llvm_file_path(source_module_path: &Vec<String>, function_name: &str) -> PathBuf {
+    let base_path = generate_verilator_output_path(source_module_path);
+    let file_path = base_path.join(format!("{}.ll", function_name));
+    return PathBuf::from(file_path);
+}
+
+pub fn generate_log_file_path(source_module_path: &Vec<String>, function_name: &str) -> PathBuf {
+    let base_path = generate_verilator_output_path(source_module_path);
+    let file_path = base_path.join(format!("{}.log", function_name));
+    return PathBuf::from(file_path);
+}
+
+pub fn generate_verilog_file_path(
+    source_module_path: &Vec<String>,
+    function_name: &str,
+) -> PathBuf {
+    let base_path = generate_verilator_output_path(source_module_path);
+    let file_path = base_path.join(format!("{}.v", function_name));
+    return PathBuf::from(file_path);
+}
+
 pub fn perform_hls(module: &MacroModule) -> Result<PerformHlsResult, PerformHlsError> {
     let processed_module = process_module(&module)?;
     let new_hash = processed_module.calculate_hash();
@@ -99,10 +152,33 @@ pub fn perform_hls(module: &MacroModule) -> Result<PerformHlsResult, PerformHlsE
         if previous_hash == &new_hash {
             return Ok(PerformHlsResult::Cached {
                 synthesized_file: generate_output_filename(input_module_path),
-                verilog_file: generate_verilog_output_filename(input_module_path),
+                verilog_file: generate_verilog_file_path(
+                    input_module_path,
+                    &processed_module.function_name,
+                ),
+                llvm_file: if processed_module
+                    .rust_hls_args
+                    .include_llvm_ir
+                    .unwrap_or(false)
+                {
+                    Some(generate_llvm_file_path(
+                        input_module_path,
+                        &processed_module.function_name,
+                    ))
+                } else {
+                    None
+                },
+                log_file: if processed_module.rust_hls_args.include_logs.unwrap_or(false) {
+                    Some(generate_log_file_path(
+                        input_module_path,
+                        &processed_module.function_name,
+                    ))
+                } else {
+                    None
+                },
                 function_name: processed_module.function_name.clone(),
                 #[cfg(feature = "verilator")]
-                verilated_cpp_file: super::generate_verilated_cpp_file_path(
+                verilated_cpp_file: generate_verilated_cpp_file_path(
                     input_module_path,
                     &processed_module.function_name,
                 ),
@@ -129,7 +205,30 @@ pub fn perform_hls(module: &MacroModule) -> Result<PerformHlsResult, PerformHlsE
             .collect_vec(),
     )?;
 
-    let verilog_file = generate_verilog_file(&input_module_path, result.verilog);
+    let verilog_file = CrateFile {
+        path: generate_verilog_file_path(input_module_path, &processed_module.function_name),
+        content: result.verilog,
+    };
+    let log_file = if processed_module.rust_hls_args.include_logs.unwrap_or(false) {
+        Some(CrateFile {
+            path: generate_log_file_path(input_module_path, &processed_module.function_name),
+            content: result.log,
+        })
+    } else {
+        None
+    };
+    let llvm_file = if processed_module
+        .rust_hls_args
+        .include_llvm_ir
+        .unwrap_or(false)
+    {
+        Some(CrateFile {
+            path: generate_llvm_file_path(input_module_path, &processed_module.function_name),
+            content: result.llvm,
+        })
+    } else {
+        None
+    };
 
     #[cfg(feature = "verilator")]
     {
@@ -139,6 +238,8 @@ pub fn perform_hls(module: &MacroModule) -> Result<PerformHlsResult, PerformHlsE
     return Ok(PerformHlsResult::New {
         synthesized_file: files.0,
         verilog_file: verilog_file,
+        llvm_file: llvm_file,
+        log_file: log_file,
         function_name: processed_module.function_name,
         #[cfg(feature = "verilator")]
         verilated_cpp_file: files.1,
@@ -168,6 +269,27 @@ mod tests {
         .0;
 
         perform_hls(&module).unwrap();
+    }
+
+    #[test]
+    fn hls_can_output_llvm_ir() {
+        let module = MacroModule::new_for_tests(
+            quote!(
+                #[hls]
+                mod toast {
+                    #[hls(include_llvm_ir)]
+                    #[no_mangle]
+                    pub extern "C" fn add(a: u32, b: u32) -> u32 {
+                        a + b
+                    }
+                }
+            ),
+            "src/lib.rs",
+        )
+        .0;
+
+        let result = perform_hls(&module).unwrap();
+        assert_eq!(result.llvm_file_path().is_some(), true);
     }
 
     #[test]

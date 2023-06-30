@@ -1,0 +1,115 @@
+++ grep -oP '(?<=name = ")[^"]*' Cargo.toml
++ CRATE_NAME=eebedabeeadabboSHnWda
+++ echo eebedabeeadabboSHnWda
+++ tr - _
++ CRATE_NAME_UNDERSCORED=eebedabeeadabboSHnWda
+++ pwd
++ echo 'Executing synthesis in /home/lennart/.cache/rust-hls/8e1e8893be493da95be0eada24416bb6-63oS7HnWda'
+Executing synthesis in /home/lennart/.cache/rust-hls/8e1e8893be493da95be0eada24416bb6-63oS7HnWda
++ export 'RUSTFLAGS=--emit=llvm-bc -C overflow-checks=off -C no-vectorize-loops -C target-cpu=generic -C panic=abort -C llvm-args=--opaque-pointers=false'
++ RUSTFLAGS='--emit=llvm-bc -C overflow-checks=off -C no-vectorize-loops -C target-cpu=generic -C panic=abort -C llvm-args=--opaque-pointers=false'
++ LLVM_BITCODE_FILES=($(cargo build --release -Z unstable-options --build-plan | jq '.invocations[].outputs[]' -r | grep -Po "^.*\.rlib$" | sed -E 's/lib([^\/]*)\.rlib/\1\.bc /' | tr -d '\n'))
+++ cargo build --release -Z unstable-options --build-plan
+++ jq '.invocations[].outputs[]' -r
+++ grep -Po '^.*\.rlib$'
+++ sed -E 's/lib([^\/]*)\.rlib/\1\.bc /'
+++ tr -d '\n'
++ cargo build --release -Z unstable-options
+   Compiling eebedabeeadabboSHnWda v1.0.0 (/home/lennart/.cache/rust-hls/8e1e8893be493da95be0eada24416bb6-63oS7HnWda)
+warning: crate `eebedabeeadabboSHnWda` should have a snake case name
+  |
+  = help: convert the identifier to snake case: `eebedabeeadabbo_shn_wda`
+  = note: `#[warn(non_snake_case)]` on by default
+
+warning: `eebedabeeadabboSHnWda` (lib) generated 1 warning
+    Finished release [optimized] target(s) in 0.05s
++ llvm-link --opaque-pointers=false /home/lennart/.cache/rust-hls/target/release/deps/eebedabeeadabboSHnWda-f10cc9c9bbd94c8c.bc
++ llvm-dis --opaque-pointers=false -o result.ll
++ llvm-extract --opaque-pointers=false --recursive --keep-const-init --func=your_function
++ cp result.ll your_function.ll
++ bambu --simulator=VERILATOR result.ll --top-fname=your_function --clock-name=clk --compiler=I386_CLANG16
+ ==  Bambu executed with: /nix/store/9c5lz0md936sjhs9hw1ya6kghvkfc4zg-bambu-wrapped/bin/bambu --simulator=VERILATOR --top-fname=your_function --clock-name=clk --compiler=I386_CLANG16 result.ll 
+
+
+********************************************************************************
+                    ____                  _
+                   | __ )  __ _ _ __ ___ | |_   _   _
+                   |  _ \ / _` | '_ ` _ \| '_ \| | | |
+                   | |_) | (_| | | | | | | |_) | |_| |
+                   |____/ \__,_|_| |_| |_|_.__/ \__,_|
+
+********************************************************************************
+                         High-Level Synthesis Tool
+
+                         Politecnico di Milano - DEIB
+                          System Architectures Group
+********************************************************************************
+                Copyright (C) 2004-2023 Politecnico di Milano
+    Version: PandA 2023.2 - Revision 891ec3caed502474cab0813cc4a9fc678deabaa5
+
+Target technology = FPGA
+
+  Functions to be synthesized:
+    your_function
+
+
+  Memory allocation information:
+    BRAM bitsize: 8
+    Spec may not exploit DATA bus width
+    All the data have a known address
+    Internal data is not externally accessible
+    DATA bus bitsize: 8
+    ADDRESS bus bitsize: 10
+    SIZE bus bitsize: 4
+    ALL pointers have been resolved
+    Internally allocated memory (no private memories): 0
+    Internally allocated memory: 0
+  Time to perform memory allocation: 0.00 seconds
+
+
+  Module allocation information for function your_function:
+    Number of complex operations: 1
+    Number of complex operations: 1
+  Time to perform module allocation: 0.00 seconds
+
+
+  Scheduling Information of function your_function:
+    Number of control steps: 3
+    Minimum slack: 1.006399999000001
+    Estimated max frequency (MHz): 111.19017967096713
+  Time to perform scheduling: 0.00 seconds
+
+
+  State Transition Graph Information of function your_function:
+    Number of states: 1
+    Minimum number of cycles: 1
+    Maximum number of cycles 1
+  Time to perform creation of STG: 0.00 seconds
+
+
+  Easy binding information for function your_function:
+    Bound operations:4/4
+  Time to perform easy binding: 0.00 seconds
+
+
+  Storage Value Information of function your_function:
+    Number of storage values inserted: 0
+  Time to compute storage value information: 0.00 seconds
+
+
+  Module binding information for function your_function:
+    Number of modules instantiated: 4
+    Number of performance conflicts: 0
+    Estimated resources area (no Muxes and address logic): 17
+    Estimated area of MUX21: 0
+    Total estimated area: 17
+    Estimated number of DSPs: 3
+  Time to perform module binding: 0.00 seconds
+
+
+  Register binding information for function your_function:
+    Register allocation algorithm obtains an optimal result: 0 registers
+  Time to perform register binding: 0.00 seconds
+
+  Total number of flip-flops in function your_function: 0
++ mv your_function.v result.v

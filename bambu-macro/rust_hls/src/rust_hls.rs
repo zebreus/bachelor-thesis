@@ -85,16 +85,22 @@ pub struct RustHls {
 pub struct RustHlsResult {
     /// Content of the verilog file
     pub verilog: String,
-    /// Relevant generated files
-    pub files: Vec<CrateFile>,
+    /// Content of the LLVM IR file
+    pub llvm: String,
+    /// Log output of bambu
+    pub log: String,
+    // /// Relevant generated files
+    // pub files: Vec<CrateFile>,
+    /// Path to the result dir
+    ///
+    /// Only for debugging purposes, this may not exist if the result is used as a dependency
+    pub cache_dir: PathBuf,
 }
 
 impl RustHls {
     /// Creates a new instance of RustHls.
     ///
     /// The new instance will synthesize from a temporary crate containing the given files.
-    ///
-    /// A hls.sh script will be generated and added to the crate.
     pub fn new(files: Vec<CrateFile>) -> Self {
         Self { files }
     }
@@ -199,13 +205,13 @@ impl RustHls {
         }?;
         let verilog_path = final_path.join("result.v");
         let verilog = read_to_string(&verilog_path)?;
-        let verilog_file = CrateFile {
-            path: verilog_path,
-            content: verilog.clone(),
-        };
+        let llvm = read_to_string(&final_path.join("result.ll"))?;
+        let log = read_to_string(&final_path.join("stderr.log"))?;
         return Ok(RustHlsResult {
             verilog: verilog,
-            files: vec![verilog_file],
+            log: log,
+            llvm: llvm,
+            cache_dir: final_path.clone(),
         });
     }
 }

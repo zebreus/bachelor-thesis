@@ -37,22 +37,37 @@ pub fn generate_hls_script(options: &GenerateHlsOptions) -> String {
     }
     .add(&hls_arguments.bambu_flags());
 
+    let llvm_opt_flags = hls_arguments.llvm_opt_flags();
+
+    let llvm_extract_command = format!(
+        "llvm-extract --opaque-pointers=false --recursive --keep-const-init --func={function_name}"
+    );
+
+    let llvm_opt_command_with_pipe = match llvm_opt_flags {
+        Some(flags) => {
+            format!(" opt --opaque-pointers=false {flags} | {llvm_extract_command} | ")
+        }
+        None => String::new(),
+    };
+
     let create_llvm_command = format!(
         r#"
 CRATE_NAME=$(grep -oP '(?<=name = ")[^"]*' Cargo.toml)
 CRATE_NAME_UNDERSCORED=$(echo $CRATE_NAME | tr '-' '_')
+echo "Executing synthesis in $(pwd)" 1>&2
 # WORKSPACE_LOCATION="$(dirname $(cargo locate-project --message-format plain --workspace))"
 export RUSTFLAGS='--emit=llvm-bc {rust_flags}'
 LLVM_BITCODE_FILES=($(cargo build --release -Z unstable-options --build-plan | jq '.invocations[].outputs[]' -r | grep -Po "^.*\.rlib$" | sed -E 's/lib([^\/]*)\.rlib/\1\.bc /' | tr -d '\n'))
 cargo build --release -Z unstable-options
-llvm-link --opaque-pointers=false "${{LLVM_BITCODE_FILES[@]}}"  | llvm-extract --opaque-pointers=false --recursive --keep-const-init --func={function_name} | llvm-dis --opaque-pointers=false -o {function_name}.ll
+llvm-link --opaque-pointers=false "${{LLVM_BITCODE_FILES[@]}}"  | {llvm_extract_command} | {llvm_opt_command_with_pipe} llvm-dis --opaque-pointers=false -o result.ll
+cp result.ll {function_name}.ll
 # cp $WORKSPACE_LOCATION/target/release/deps/${{CRATE_NAME_UNDERSCORED}}-*.ll {function_name}.ll
 "#
     );
 
     let perform_hls_command = format!(
         r#"
-bambu --simulator=VERILATOR {function_name}.ll --top-fname={function_name} --clock-name=clk {hls_flags}
+bambu --simulator=VERILATOR result.ll --top-fname={function_name} --clock-name=clk {hls_flags}
 mv {function_name}.v result.v
 "#
     );

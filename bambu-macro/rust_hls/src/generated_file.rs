@@ -4,13 +4,11 @@ use std::path::PathBuf;
 
 use regex::Regex;
 use thiserror::Error;
-mod generate_verilog_file;
 
 mod filename_to_module_path;
 mod generate_rust_hdl_struct;
 pub use filename_to_module_path::*;
 pub use generate_rust_hdl_struct::*;
-pub use generate_verilog_file::*;
 // mod generate_verilator_rust_hdl_struct;
 
 /// Generate the name of the generated file from the rust module path of the input file.

@@ -1,7 +1,7 @@
-use std::{io, path::PathBuf};
+use std::io;
 
 use crate::generated_file::generate_output_filename;
-use crate::{generated_file::generate_output_module_path, rust_hls::CrateFile};
+use crate::rust_hls::CrateFile;
 
 use extract_rust_hdl_interface::Direction;
 use extract_rust_hdl_interface::{RustHdlModule, SignalType};
@@ -24,22 +24,9 @@ pub enum GenerateVerilatorShimError {
     FailedToParseGeneratedError(#[from] syn::Error),
 }
 
-pub fn generate_verilator_output_path(source_module_path: &Vec<String>) -> PathBuf {
-    let synthesized_module_path = generate_output_module_path(source_module_path);
-    let file_path = format!("rust_hls/verilator/{}", synthesized_module_path.join("/"));
-    return PathBuf::from(file_path);
-}
-
-pub fn generate_verilated_cpp_file_path(
-    source_module_path: &Vec<String>,
-    function_name: &str,
-) -> PathBuf {
-    let base_path = generate_verilator_output_path(source_module_path);
-    let file_path = base_path.join(format!("{}.cpp", function_name));
-    return PathBuf::from(file_path);
-}
-
 use syn::visit_mut::VisitMut;
+
+use super::perform_hls::generate_verilator_output_path;
 
 struct TraceFunctionRemover {}
 
@@ -256,6 +243,8 @@ pub fn generate_verilator_shims(
 
 #[cfg(test)]
 mod tests {
+    use std::path::PathBuf;
+
     use extract_rust_hdl_interface::extract_rust_hdl_interface;
     use quote::ToTokens;
 

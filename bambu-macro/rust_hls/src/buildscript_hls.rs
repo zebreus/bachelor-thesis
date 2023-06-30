@@ -46,6 +46,8 @@ pub fn buildscript_hls(root: &PathBuf) -> Result<(), HlsBuildscriptError> {
         if let PerformHlsResult::New {
             synthesized_file,
             verilog_file,
+            llvm_file,
+            log_file,
             #[cfg(feature = "verilator")]
             verilated_cpp_file,
             ..
@@ -55,6 +57,14 @@ pub fn buildscript_hls(root: &PathBuf) -> Result<(), HlsBuildscriptError> {
             synthesized_file.write()?;
             verilog_file.path = root.join(&verilog_file.path);
             verilog_file.write()?;
+            if let Some(llvm_file) = llvm_file {
+                llvm_file.path = root.join(&llvm_file.path);
+                llvm_file.write()?;
+            }
+            if let Some(log_file) = log_file {
+                log_file.path = root.join(&log_file.path);
+                log_file.write()?;
+            }
             #[cfg(feature = "verilator")]
             {
                 verilated_cpp_file.path = root.join(&verilated_cpp_file.path);

@@ -2,7 +2,7 @@ use rust_hdl::prelude::*;
 
 #[rust_hls_macro::hls]
 pub mod your_module {
-    #[hls]
+    #[hls(include_logs, include_llvm_ir)]
     pub extern "C" fn your_function(a: u32, b: u32) -> u32 {
         a * b
     }
