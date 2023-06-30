@@ -1,3 +1,0 @@
-= Minmax test crate
-
-This crate provides a simple md5 function for testing HLS.
