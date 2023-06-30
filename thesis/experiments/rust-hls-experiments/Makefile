@@ -6,6 +6,8 @@ RUST_DESIGNS += minmax_idiom_size
 RUST_DESIGNS += minmax_idiom_speed
 RUST_DESIGNS += keccak_rust_size
 RUST_DESIGNS += keccak_rust_speed
+RUST_DESIGNS += keccak_idiom_size
+RUST_DESIGNS += keccak_idiom_speed
 RUST_DESIGNS += md5_rust_size
 RUST_DESIGNS += md5_rust_speed
 

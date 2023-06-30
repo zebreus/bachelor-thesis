@@ -12,15 +12,7 @@
  * Based on:
  * https://github.com/ferrandi/PandA-bambu/blob/main/examples/crypto_designs/Keccak.c
  */
-const NR_ROUNDS: usize = 24;
-
-macro_rules! get_krc_val {
-    ($index:expr) => {
-        KECCAK_ROUND_CONSTANTS[$index]
-    };
-}
-
-const KECCAK_ROUND_CONSTANTS: [u64; NR_ROUNDS] = [
+const KECCAK_ROUND_CONSTANTS: [u64; 24] = [
     0x0000000000000001u64,
     0x0000000000008082u64,
     0x800000000000808au64,
@@ -47,9 +39,7 @@ const KECCAK_ROUND_CONSTANTS: [u64; NR_ROUNDS] = [
     0x8000000080008008u64,
 ];
 
-const NR_LANES: usize = 25;
-
-const KECCAK_RHO_OFFSETS: [u8; NR_LANES] = [
+const KECCAK_RHO_OFFSETS: [u8; 25] = [
     0, 1, 62, 28, 27, 36, 44, 6, 55, 20, 3, 10, 43, 25, 39, 41, 45, 15, 21, 8, 18, 2, 61, 56, 14,
 ];
 
@@ -59,17 +49,15 @@ macro_rules! index {
     };
 }
 
-macro_rules! rol64 {
-    ($a:expr, $offset:expr) => {
-        (if ($offset != 0) {
-            ((($a) << $offset) ^ (($a) >> (64 - $offset)))
-        } else {
-            $a
-        })
-    };
+fn rol64(a: u64, offset: u8) -> u64 {
+    if offset != 0 {
+        (a << offset) ^ (a >> (64 - offset))
+    } else {
+        a
+    }
 }
 
-unsafe fn theta(a: &mut [u64; 25]) -> () {
+fn theta(a: &mut [u64; 25]) -> () {
     let mut c: [u64; 5] = [0; 5];
     let mut d: [u64; 5] = [0; 5];
 
@@ -80,7 +68,7 @@ unsafe fn theta(a: &mut [u64; 25]) -> () {
         }
     }
     for x in 0..5 {
-        d[x] = rol64!(c[(x + 1) % 5], 1) ^ c[(x + 4) % 5];
+        d[x] = rol64(c[(x + 1) % 5], 1) ^ c[(x + 4) % 5];
     }
     for x in 0..5 {
         for y in 0..5 {
@@ -89,15 +77,15 @@ unsafe fn theta(a: &mut [u64; 25]) -> () {
     }
 }
 
-unsafe fn rho(a: &mut [u64; 25]) -> () {
+fn rho(a: &mut [u64; 25]) -> () {
     for x in 0..5 {
         for y in 0..5 {
-            a[index!(x, y)] = rol64!(a[index!(x, y)], KECCAK_RHO_OFFSETS[index!(x, y)]);
+            a[index!(x, y)] = rol64(a[index!(x, y)], KECCAK_RHO_OFFSETS[index!(x, y)]);
         }
     }
 }
 
-unsafe fn pi(a: &mut [u64; 25]) -> () {
+fn pi(a: &mut [u64; 25]) -> () {
     let mut temp_a: [u64; 25] = [0; 25];
 
     for x in 0..5 {
@@ -113,10 +101,9 @@ unsafe fn pi(a: &mut [u64; 25]) -> () {
     }
 }
 
-unsafe fn chi(a: &mut [u64; 25]) -> () {
-    let mut c: [u64; 5] = [0; 5];
-
+fn chi(a: &mut [u64; 25]) -> () {
     for y in 0..5 {
+        let mut c: [u64; 5] = [0; 5];
         for x in 0..5 {
             c[x] = a[index!(x, y)] ^ ((!a[index!(x + 1, y)]) & a[index!(x + 2, y)]);
         }
@@ -126,13 +113,13 @@ unsafe fn chi(a: &mut [u64; 25]) -> () {
     }
 }
 
-unsafe fn iota(a: &mut [u64; 25], index_round: usize) -> () {
-    a[0] ^= get_krc_val!(index_round);
+fn iota(a: &mut [u64; 25], index_round: usize) -> () {
+    a[0] ^= KECCAK_ROUND_CONSTANTS[index_round];
 }
 
 pub unsafe extern "C" fn keccak(a: *mut u64) -> () {
     let a: &mut [u64; 25] = std::mem::transmute(a);
-    for i in 0..NR_ROUNDS {
+    for i in 0..24 {
         theta(a);
         rho(a);
         pi(a);

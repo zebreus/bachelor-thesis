@@ -5,3 +5,4 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+keccak_crates_io = { version = "0.1.4", package = "keccak" }

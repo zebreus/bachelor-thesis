@@ -722,6 +722,54 @@ dependencies = [
 ]
 
 [[package]]
+name = "keccak_crates_size"
+version = "0.1.0"
+dependencies = [
+ "rust-hdl 0.45.1",
+ "rust-hls-test-helpers",
+ "rust-keccak",
+ "rust_hls",
+ "rust_hls_macro",
+ "verilated 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "keccak_crates_speed"
+version = "0.1.0"
+dependencies = [
+ "rust-hdl 0.45.1",
+ "rust-hls-test-helpers",
+ "rust-keccak",
+ "rust_hls",
+ "rust_hls_macro",
+ "verilated 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "keccak_idiom_size"
+version = "0.1.0"
+dependencies = [
+ "rust-hdl 0.45.1",
+ "rust-hls-test-helpers",
+ "rust-keccak",
+ "rust_hls",
+ "rust_hls_macro",
+ "verilated 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "keccak_idiom_speed"
+version = "0.1.0"
+dependencies = [
+ "rust-hdl 0.45.1",
+ "rust-hls-test-helpers",
+ "rust-keccak",
+ "rust_hls",
+ "rust_hls_macro",
+ "verilated 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
 name = "keccak_rust_size"
 version = "0.1.0"
 dependencies = [
@@ -1390,44 +1438,15 @@ dependencies = [
 ]
 
 [[package]]
-name = "rust-hls-keccak"
-version = "0.1.0"
-dependencies = [
- "keccak",
- "rust-hdl 0.45.1",
- "rust_hls",
- "rust_hls_macro",
- "verilated 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
-]
-
-[[package]]
-name = "rust-hls-md5"
-version = "0.1.0"
-dependencies = [
- "keccak",
- "rust-hdl 0.45.1",
- "rust_hls",
- "rust_hls_macro",
- "verilated 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
-]
-
-[[package]]
-name = "rust-hls-minmax"
-version = "0.1.0"
-dependencies = [
- "rust-hdl 0.45.1",
- "rust_hls",
- "rust_hls_macro",
- "verilated 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
-]
-
-[[package]]
 name = "rust-hls-test-helpers"
 version = "0.1.0"
 
 [[package]]
 name = "rust-keccak"
 version = "0.1.0"
+dependencies = [
+ "keccak",
+]
 
 [[package]]
 name = "rust-keccak-wrapper"

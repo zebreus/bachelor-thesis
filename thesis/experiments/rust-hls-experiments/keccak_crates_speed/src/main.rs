@@ -6,19 +6,17 @@ use std::{
     sync::{Arc, Mutex},
 };
 
-const TEST_NAME: &str = "keccak_rust_size";
+const TEST_NAME: &str = "keccak_crates_speed";
 
 #[rust_hls_macro::hls]
 pub mod keccak_hls {
     #[hls(
-        bambu_flag = "--channels-type=MEM_ACC_11 --channels-number=1 -Os --target=/home/lennart/Documents/bachelor-thesis/thesis/experiments/device.xml",
-        rust_flag = "-C opt-level=z",
-        include_llvm_ir,
-        include_logs
+        bambu_flag = "--channels-type=MEM_ACC_11 --channels-number=1 -O5 --target=/home/lennart/Documents/bachelor-thesis/thesis/experiments/device.xml",
+        rust_flag = "-C opt-level=3"
     )]
     #[allow(unused)]
     pub unsafe extern "C" fn keccak(input_pointer: *mut u64) {
-        rust_keccak::keccak(input_pointer)
+        rust_keccak::keccak_crate(input_pointer)
     }
 }
 

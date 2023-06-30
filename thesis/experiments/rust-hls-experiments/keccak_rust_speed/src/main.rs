@@ -12,7 +12,9 @@ const TEST_NAME: &str = "keccak_rust_speed";
 pub mod keccak_hls {
     #[hls(
         bambu_flag = "--channels-type=MEM_ACC_11 --channels-number=1 -O5 --target=/home/lennart/Documents/bachelor-thesis/thesis/experiments/device.xml",
-        rust_flag = "-C opt-level=3"
+        rust_flag = "-C opt-level=3",
+        include_llvm_ir,
+        include_logs
     )]
     #[allow(unused)]
     pub unsafe extern "C" fn keccak(input_pointer: *mut u64) {

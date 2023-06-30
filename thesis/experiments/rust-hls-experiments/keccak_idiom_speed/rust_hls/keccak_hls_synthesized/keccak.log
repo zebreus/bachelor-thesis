@@ -1,0 +1,131 @@
+++ grep -oP '(?<=name = ")[^"]*' Cargo.toml
++ CRATE_NAME=abddaeeadcacceedujNphRPJN
+++ echo abddaeeadcacceedujNphRPJN
+++ tr - _
++ CRATE_NAME_UNDERSCORED=abddaeeadcacceedujNphRPJN
+++ pwd
++ echo 'Executing synthesis in /home/lennart/.cache/rust-hls/a5b8d10d28aee175adc2a95c801ceed0-ujNphR8PJN'
+Executing synthesis in /home/lennart/.cache/rust-hls/a5b8d10d28aee175adc2a95c801ceed0-ujNphR8PJN
++ export 'RUSTFLAGS=--emit=llvm-bc -C overflow-checks=off -C no-vectorize-loops -C target-cpu=generic -C panic=abort -C llvm-args=--opaque-pointers=false -C opt-level=3'
++ RUSTFLAGS='--emit=llvm-bc -C overflow-checks=off -C no-vectorize-loops -C target-cpu=generic -C panic=abort -C llvm-args=--opaque-pointers=false -C opt-level=3'
++ LLVM_BITCODE_FILES=($(cargo build --release -Z unstable-options --build-plan | jq '.invocations[].outputs[]' -r | grep -Po "^.*\.rlib$" | sed -E 's/lib([^\/]*)\.rlib/\1\.bc /' | tr -d '\n'))
+++ cargo build --release -Z unstable-options --build-plan
+++ jq '.invocations[].outputs[]' -r
+++ grep -Po '^.*\.rlib$'
+++ sed -E 's/lib([^\/]*)\.rlib/\1\.bc /'
+++ tr -d '\n'
++ cargo build --release -Z unstable-options
+   Compiling keccak v0.1.4
+   Compiling rust-keccak v0.1.0 (/home/lennart/Documents/bachelor-thesis/rust-keccak)
+   Compiling abddaeeadcacceedujNphRPJN v1.0.0 (/home/lennart/.cache/rust-hls/a5b8d10d28aee175adc2a95c801ceed0-ujNphR8PJN)
+warning: crate `abddaeeadcacceedujNphRPJN` should have a snake case name
+  |
+  = help: convert the identifier to snake case: `abddaeeadcacceeduj_nph_rpjn`
+  = note: `#[warn(non_snake_case)]` on by default
+
+warning: `abddaeeadcacceedujNphRPJN` (lib) generated 1 warning
+    Finished release [optimized] target(s) in 0.22s
++ llvm-link --opaque-pointers=false /home/lennart/.cache/rust-hls/target/release/deps/keccak-2ec801f7ea8c87f9.bc /home/lennart/.cache/rust-hls/target/release/deps/rust_keccak-c32aa696bee07e58.bc /home/lennart/.cache/rust-hls/target/release/deps/abddaeeadcacceedujNphRPJN-6edf891f8f58d4ef.bc
++ llvm-dis --opaque-pointers=false -o result.ll
++ llvm-extract --opaque-pointers=false --recursive --keep-const-init --func=keccak
++ cp result.ll keccak.ll
++ bambu --simulator=VERILATOR result.ll --top-fname=keccak --clock-name=clk --compiler=I386_CLANG16 --channels-type=MEM_ACC_11 --channels-number=1 -O5 --target=/home/lennart/Documents/bachelor-thesis/thesis/experiments/device.xml
+ ==  Bambu executed with: /nix/store/9c5lz0md936sjhs9hw1ya6kghvkfc4zg-bambu-wrapped/bin/bambu --simulator=VERILATOR --top-fname=keccak --clock-name=clk --compiler=I386_CLANG16 --channels-type=MEM_ACC_11 --channels-number=1 -O5 --target=/home/lennart/Documents/bachelor-thesis/thesis/experiments/device.xml result.ll 
+
+
+********************************************************************************
+                    ____                  _
+                   | __ )  __ _ _ __ ___ | |_   _   _
+                   |  _ \ / _` | '_ ` _ \| '_ \| | | |
+                   | |_) | (_| | | | | | | |_) | |_| |
+                   |____/ \__,_|_| |_| |_|_.__/ \__,_|
+
+********************************************************************************
+                         High-Level Synthesis Tool
+
+                         Politecnico di Milano - DEIB
+                          System Architectures Group
+********************************************************************************
+                Copyright (C) 2004-2023 Politecnico di Milano
+    Version: PandA 2023.2 - Revision 891ec3caed502474cab0813cc4a9fc678deabaa5
+
+Target technology = FPGA
+Imported user data from file /home/lennart/Documents/bachelor-thesis/thesis/experiments/device.xml
+
+  Functions to be synthesized:
+    keccak
+
+
+  Memory allocation information:
+Warning: This function uses unknown addresses: keccak
+    BRAM bitsize: 64
+    Spec may not exploit DATA bus width
+    Spec accesses data having an address unknown at compile time
+    Internal data is not externally accessible
+    DATA bus bitsize: 64
+    ADDRESS bus bitsize: 32
+    SIZE bus bitsize: 7
+    Internally allocated memory (no private memories): 0
+    Internally allocated memory: 192
+  Time to perform memory allocation: 0.00 seconds
+
+
+  Module allocation information for function keccak:
+    Number of complex operations: 51
+    Number of complex operations: 51
+  Time to perform module allocation: 0.04 seconds
+
+
+  Scheduling Information of function keccak:
+    Number of control steps: 55
+    Minimum slack: 2.9383999999999801
+    Estimated max frequency (MHz): 141.61096635323401
+  Time to perform scheduling: 0.02 seconds
+
+
+  State Transition Graph Information of function keccak:
+    Number of states: 54
+    Done port is registered
+  Time to perform creation of STG: 0.00 seconds
+
+
+  Easy binding information for function keccak:
+    Bound operations:85/267
+  Time to perform easy binding: 0.00 seconds
+
+
+  Storage Value Information of function keccak:
+    Number of storage values inserted: 104
+  Time to compute storage value information: 0.00 seconds
+
+  Slack computed in 0.00 seconds
+  Weight computation completed in 0.01 seconds
+  False-loop computation completed in 0.00 seconds
+
+  Register binding information for function keccak:
+    Register allocation algorithm obtains a sub-optimal result: 78 registers(LB:53)
+  Time to perform register binding: 0.00 seconds
+
+  Clique covering computation completed in 0.00 seconds
+
+  Module binding information for function keccak:
+    Number of modules instantiated: 218
+    Number of performance conflicts: 25
+    Estimated resources area (no Muxes and address logic): 7642
+    Estimated area of MUX21: 896
+    Total estimated area: 8538
+    Estimated number of DSPs: 0
+  Time to perform module binding: 0.02 seconds
+
+
+  Register binding information for function keccak:
+    Register allocation algorithm obtains a sub-optimal result: 78 registers(LB:53)
+  Time to perform register binding: 0.00 seconds
+
+
+  Connection Binding Information for function keccak:
+    Number of allocated multiplexers (2-to-1 equivalent): 74
+  Time to perform interconnection binding: 0.00 seconds
+
+  Total number of flip-flops in function keccak: 4129
++ mv keccak.v result.v

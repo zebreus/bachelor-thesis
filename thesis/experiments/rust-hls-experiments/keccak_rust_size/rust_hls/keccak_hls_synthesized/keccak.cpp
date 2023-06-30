@@ -46,8 +46,8 @@ extern "C" {
   }
 
   void
-  keccak_set_Pd297(Vkeccak* __ptr, vluint32_t __v) {
-    __ptr->Pd297 = __v;
+  keccak_set_Pd260(Vkeccak* __ptr, vluint32_t __v) {
+    __ptr->Pd260 = __v;
   }
 
   void

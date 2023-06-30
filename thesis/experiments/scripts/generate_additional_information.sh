@@ -64,6 +64,7 @@ function process_name() {
     LANGUAGE=Rust
     IDIOMATIC=false
     COLOR=$(get_color "$NAME")
+    CRATES=false
     # COLOR=${COLORS[$COLOR_ID]}
     # COLOR_ID=$((COLOR_ID + 1))
 
@@ -97,6 +98,9 @@ function process_name() {
         if test "$part" = "idiom"; then
             IDIOMATIC=true
         fi
+        if test "$part" = "crates"; then
+            CRATES=true
+        fi
         if test "$part" = "speed"; then
             OPTIMIZATION=speed
             OPTIMIZATION_FLAG=-O3
@@ -113,6 +117,9 @@ function process_name() {
     IDIOMATIC_STRING=""
     if $IDIOMATIC; then
         IDIOMATIC_STRING="Idiomatic "
+    fi
+    if $CRATES; then
+        IDIOMATIC_STRING="crates.io "
     fi
 
     # Identifies the source file
@@ -153,6 +160,7 @@ function process_name() {
     \"Optimization flag\": \"$OPTIMIZATION_FLAG\",
     \"Language\": \"$LANGUAGE\",
     \"Idiomatic\": \"$IDIOMATIC\",
+    \"From crates.io\": \"$CRATES\",
     \"color\": \"$COLOR\"
     }"
 }

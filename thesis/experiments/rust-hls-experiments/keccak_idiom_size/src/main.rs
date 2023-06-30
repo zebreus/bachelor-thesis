@@ -6,7 +6,7 @@ use std::{
     sync::{Arc, Mutex},
 };
 
-const TEST_NAME: &str = "keccak_rust_size";
+const TEST_NAME: &str = "keccak_idiom_size";
 
 #[rust_hls_macro::hls]
 pub mod keccak_hls {
@@ -18,7 +18,7 @@ pub mod keccak_hls {
     )]
     #[allow(unused)]
     pub unsafe extern "C" fn keccak(input_pointer: *mut u64) {
-        rust_keccak::keccak(input_pointer)
+        rust_keccak::keccak_idiomatic(input_pointer)
     }
 }
 

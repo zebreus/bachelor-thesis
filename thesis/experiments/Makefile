@@ -66,7 +66,7 @@ $(ALL_REPORTS) : $(NEXTPNR_REPORT_FILES) scripts/combine_reports.sh
 $(ALL_TESTRESULTS) : $(TESTRESULT_FILES) scripts/combine_testresults.sh
 	bash scripts/combine_testresults.sh $(TESTRESULT_FILES) > $@
 
-$(ADDITIONAL_INFORMATION) : scripts/generate_additional_information.sh Makefile
+$(ADDITIONAL_INFORMATION) : scripts/generate_additional_information.sh Makefile $(RUST_DIR)Makefile
 	bash scripts/generate_additional_information.sh $(ALL_DESIGNS) > $@
 	grep _marker_ $@ && rm -f $@ && exit 1 || true
 
