@@ -1,4 +1,4 @@
-@import 'https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Spectral:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,200;1,300;1,400;1,500;1,600;1,700;1,800';
+@import 'https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Nanum+Gothic+Coding&family=Spectral:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,200;1,300;1,400;1,500;1,600;1,700;1,800';
 
 @import './default.scss';
 @import './print.scss';
@@ -17,6 +17,12 @@ $page-margin-left: (
 @page {
     size: A4;
     margin: $page-margin-top $page-margin-right $page-margin-bottom $page-margin-left ;
+}
+
+.really-slightly-oversized-content>.content {
+    margin-right: -($page-margin-right - 3cm);
+    margin-left: -($page-margin-left - 3cm);
+    text-align: center;
 }
 
 .slightly-oversized-content>.content {
@@ -60,7 +66,31 @@ $page-margin-left: (
     }
 }
 
-.imageblock {
+// Fix wavedrom fonts
+@import './wavedrom_default.scss';
+
+.WaveDrom {
+    padding-right: 2cm !important;
+
+    g#waves_0 {
+
+        // Left labels
+        g>g>text>tspan {
+            font-size: 1.2rem !important;
+            font-family: 'Spectral' !important;
+            fill: black !important;
+        }
+
+        // Top labels and inside waves
+        g>g>g>text>tspan {
+            font-size: 1rem !important;
+
+            font-family: 'Spectral' !important;
+        }
+    }
+}
+
+.imageblock svg .imageblock {
     .content {
         break-after: avoid;
         page-break-after: avoid;

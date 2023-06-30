@@ -75,6 +75,7 @@
     "Optimization flag": "-Os",
     "Language": "Rust",
     "Idiomatic": "false",
+    "From crates.io": "false",
     "color": "#C1292E"
   },
   "minmax_rust_speed": {
@@ -153,6 +154,7 @@
     "Optimization flag": "-O3",
     "Language": "Rust",
     "Idiomatic": "false",
+    "From crates.io": "false",
     "color": "#E2787C"
   },
   "minmax_idiom_size": {
@@ -231,6 +233,7 @@
     "Optimization flag": "-Os",
     "Language": "Rust",
     "Idiomatic": "true",
+    "From crates.io": "false",
     "color": "#F65D00"
   },
   "minmax_idiom_speed": {
@@ -309,7 +312,66 @@
     "Optimization flag": "-O3",
     "Language": "Rust",
     "Idiomatic": "true",
+    "From crates.io": "false",
     "color": "#FF9A5C"
+  },
+  "keccak_crates_size": {
+    "Logic blocks": 29576,
+    "Flip-flops": 5678,
+    "RAM blocks": 0,
+    "trueDualPortBlockRam": 0,
+    "Multipliers": 0,
+    "otherBlocks": 0,
+    "Area": 35254,
+    "Maximum frequency (MHz)": 38.71317672729492,
+    "cyclesPerTest": {
+      "only zeroes": "99",
+      "only deadbeef": "99",
+      "result of only zeroes again": "99"
+    },
+    "Average clock cycles": 99,
+    "id": "keccak_crates_size",
+    "Setup": "crates.io Rust -Os",
+    "Scenario": "crates.io Rust",
+    "compilerSetup": "rust -Os",
+    "Implementation": "crates.io Rust",
+    "Function": "keccak",
+    "Compiler": "Rust",
+    "Optimized for": "size",
+    "Optimization flag": "-Os",
+    "Language": "Rust",
+    "Idiomatic": "false",
+    "From crates.io": "true",
+    "color": "#000000"
+  },
+  "keccak_crates_speed": {
+    "Logic blocks": 30505,
+    "Flip-flops": 5678,
+    "RAM blocks": 0,
+    "trueDualPortBlockRam": 0,
+    "Multipliers": 0,
+    "otherBlocks": 0,
+    "Area": 36183,
+    "Maximum frequency (MHz)": 38.69669723510742,
+    "cyclesPerTest": {
+      "only zeroes": "99",
+      "only deadbeef": "99",
+      "result of only zeroes again": "99"
+    },
+    "Average clock cycles": 99,
+    "id": "keccak_crates_speed",
+    "Setup": "crates.io Rust -O3",
+    "Scenario": "crates.io Rust",
+    "compilerSetup": "rust -O3",
+    "Implementation": "crates.io Rust",
+    "Function": "keccak",
+    "Compiler": "Rust",
+    "Optimized for": "speed",
+    "Optimization flag": "-O3",
+    "Language": "Rust",
+    "Idiomatic": "false",
+    "From crates.io": "true",
+    "color": "#000000"
   },
   "keccak_rust_size": {
     "Logic blocks": 27169,
@@ -337,6 +399,7 @@
     "Optimization flag": "-Os",
     "Language": "Rust",
     "Idiomatic": "false",
+    "From crates.io": "false",
     "color": "#C1292E"
   },
   "keccak_rust_speed": {
@@ -365,7 +428,66 @@
     "Optimization flag": "-O3",
     "Language": "Rust",
     "Idiomatic": "false",
+    "From crates.io": "false",
     "color": "#E2787C"
+  },
+  "keccak_idiom_size": {
+    "Logic blocks": 27422,
+    "Flip-flops": 6522,
+    "RAM blocks": 0,
+    "trueDualPortBlockRam": 0,
+    "Multipliers": 8,
+    "otherBlocks": 0,
+    "Area": 33952,
+    "Maximum frequency (MHz)": 55.533958435058594,
+    "cyclesPerTest": {
+      "only zeroes": "47473",
+      "only deadbeef": "47473",
+      "result of only zeroes again": "47473"
+    },
+    "Average clock cycles": 47473,
+    "id": "keccak_idiom_size",
+    "Setup": "Idiomatic Rust -Os",
+    "Scenario": "Idiomatic Rust",
+    "compilerSetup": "rust -Os",
+    "Implementation": "Idiomatic Rust",
+    "Function": "keccak",
+    "Compiler": "Rust",
+    "Optimized for": "size",
+    "Optimization flag": "-Os",
+    "Language": "Rust",
+    "Idiomatic": "true",
+    "From crates.io": "false",
+    "color": "#F65D00"
+  },
+  "keccak_idiom_speed": {
+    "Logic blocks": 9322,
+    "Flip-flops": 4024,
+    "RAM blocks": 0,
+    "trueDualPortBlockRam": 0,
+    "Multipliers": 0,
+    "otherBlocks": 0,
+    "Area": 13346,
+    "Maximum frequency (MHz)": 106.73497009277344,
+    "cyclesPerTest": {
+      "only zeroes": "99",
+      "only deadbeef": "99",
+      "result of only zeroes again": "99"
+    },
+    "Average clock cycles": 99,
+    "id": "keccak_idiom_speed",
+    "Setup": "Idiomatic Rust -O3",
+    "Scenario": "Idiomatic Rust",
+    "compilerSetup": "rust -O3",
+    "Implementation": "Idiomatic Rust",
+    "Function": "keccak",
+    "Compiler": "Rust",
+    "Optimized for": "speed",
+    "Optimization flag": "-O3",
+    "Language": "Rust",
+    "Idiomatic": "true",
+    "From crates.io": "false",
+    "color": "#FF9A5C"
   },
   "md5_rust_size": {
     "Logic blocks": 1945,
@@ -394,6 +516,7 @@
     "Optimization flag": "-Os",
     "Language": "Rust",
     "Idiomatic": "false",
+    "From crates.io": "false",
     "color": "#C1292E"
   },
   "md5_rust_speed": {
@@ -423,6 +546,7 @@
     "Optimization flag": "-O3",
     "Language": "Rust",
     "Idiomatic": "false",
+    "From crates.io": "false",
     "color": "#E2787C"
   },
   "minmax_clang_speed": {
@@ -501,6 +625,7 @@
     "Optimization flag": "-O3",
     "Language": "C++",
     "Idiomatic": "false",
+    "From crates.io": "false",
     "color": "#7A8FE1"
   },
   "keccak_clang_speed": {
@@ -529,6 +654,7 @@
     "Optimization flag": "-O3",
     "Language": "C++",
     "Idiomatic": "false",
+    "From crates.io": "false",
     "color": "#7A8FE1"
   },
   "md5_clang_speed": {
@@ -558,6 +684,7 @@
     "Optimization flag": "-O3",
     "Language": "C++",
     "Idiomatic": "false",
+    "From crates.io": "false",
     "color": "#7A8FE1"
   },
   "minmax_gcc_speed": {
@@ -636,6 +763,7 @@
     "Optimization flag": "-O3",
     "Language": "C++",
     "Idiomatic": "false",
+    "From crates.io": "false",
     "color": "#7AE1D5"
   },
   "keccak_gcc_speed": {
@@ -664,6 +792,7 @@
     "Optimization flag": "-O3",
     "Language": "C++",
     "Idiomatic": "false",
+    "From crates.io": "false",
     "color": "#7AE1D5"
   },
   "md5_gcc_speed": {
@@ -693,6 +822,7 @@
     "Optimization flag": "-O3",
     "Language": "C++",
     "Idiomatic": "false",
+    "From crates.io": "false",
     "color": "#7AE1D5"
   },
   "minmax_clang_size": {
@@ -771,6 +901,7 @@
     "Optimization flag": "-Os",
     "Language": "C++",
     "Idiomatic": "false",
+    "From crates.io": "false",
     "color": "#3454D1"
   },
   "keccak_clang_size": {
@@ -799,6 +930,7 @@
     "Optimization flag": "-Os",
     "Language": "C++",
     "Idiomatic": "false",
+    "From crates.io": "false",
     "color": "#3454D1"
   },
   "md5_clang_size": {
@@ -828,6 +960,7 @@
     "Optimization flag": "-Os",
     "Language": "C++",
     "Idiomatic": "false",
+    "From crates.io": "false",
     "color": "#3454D1"
   },
   "minmax_gcc_size": {
@@ -906,6 +1039,7 @@
     "Optimization flag": "-Os",
     "Language": "C++",
     "Idiomatic": "false",
+    "From crates.io": "false",
     "color": "#34D1BF"
   },
   "keccak_gcc_size": {
@@ -934,6 +1068,7 @@
     "Optimization flag": "-Os",
     "Language": "C++",
     "Idiomatic": "false",
+    "From crates.io": "false",
     "color": "#34D1BF"
   },
   "md5_gcc_size": {
@@ -963,6 +1098,7 @@
     "Optimization flag": "-Os",
     "Language": "C++",
     "Idiomatic": "false",
+    "From crates.io": "false",
     "color": "#34D1BF"
   }
 }

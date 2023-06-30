@@ -155,7 +155,7 @@ macro_rules! hls_test {
         let frequency = 1000000000;
         let mut simulation = hls_sim!($module_type, $module $(, $memory $( = $initial_value)?, $memory_size)?, { $($preparation ;)* }, { $($verification ;)* } $(, $cycles)?);
 
-        let hls_module = $module_type::new();
+        let hls_module = <$module_type>::new();
         let max_cycles = $(if true {$max_cycles} else )? {1000};
         simulation
             .run_to_file(

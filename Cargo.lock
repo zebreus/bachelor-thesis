@@ -1446,6 +1446,7 @@ name = "rust-keccak"
 version = "0.1.0"
 dependencies = [
  "keccak",
+ "seq-macro",
 ]
 
 [[package]]

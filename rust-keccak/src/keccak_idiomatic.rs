@@ -9,9 +9,8 @@
  * http://creativecommons.org/publicdomain/zero/1.0/
  *
  * This implementation is ported to more idiomatic rust compared to the other one.
- * Based on:
- * https://github.com/ferrandi/PandA-bambu/blob/main/examples/crypto_designs/Keccak.c
  */
+// tag::function[]
 const KECCAK_ROUND_CONSTANTS: [u64; 24] = [
     0x0000000000000001u64,
     0x0000000000008082u64,
@@ -49,12 +48,14 @@ macro_rules! index {
     };
 }
 
-fn rol64(a: u64, offset: u8) -> u64 {
-    if offset != 0 {
-        (a << offset) ^ (a >> (64 - offset))
-    } else {
-        a
-    }
+macro_rules! rol64 {
+    ($a:expr, $offset:expr) => {
+        (if ($offset != 0) {
+            (((u64::from($a)) << $offset) ^ ((u64::from($a)) >> (64 - $offset)))
+        } else {
+            $a
+        })
+    };
 }
 
 fn theta(a: &mut [u64; 25]) -> () {
@@ -62,13 +63,12 @@ fn theta(a: &mut [u64; 25]) -> () {
     let mut d: [u64; 5] = [0; 5];
 
     for x in 0..5 {
-        c[x] = 0;
         for y in 0..5 {
             c[x] ^= a[index!(x, y)];
         }
     }
     for x in 0..5 {
-        d[x] = rol64(c[(x + 1) % 5], 1) ^ c[(x + 4) % 5];
+        d[x] = rol64!(c[(x + 1) % 5], 1) ^ c[(x + 4) % 5];
     }
     for x in 0..5 {
         for y in 0..5 {
@@ -80,7 +80,7 @@ fn theta(a: &mut [u64; 25]) -> () {
 fn rho(a: &mut [u64; 25]) -> () {
     for x in 0..5 {
         for y in 0..5 {
-            a[index!(x, y)] = rol64(a[index!(x, y)], KECCAK_RHO_OFFSETS[index!(x, y)]);
+            a[index!(x, y)] = rol64!(a[index!(x, y)], KECCAK_RHO_OFFSETS[index!(x, y)]);
         }
     }
 }
@@ -102,8 +102,9 @@ fn pi(a: &mut [u64; 25]) -> () {
 }
 
 fn chi(a: &mut [u64; 25]) -> () {
+    let mut c: [u64; 5] = [0; 5];
+
     for y in 0..5 {
-        let mut c: [u64; 5] = [0; 5];
         for x in 0..5 {
             c[x] = a[index!(x, y)] ^ ((!a[index!(x + 1, y)]) & a[index!(x + 2, y)]);
         }
@@ -127,6 +128,7 @@ pub unsafe extern "C" fn keccak(a: *mut u64) -> () {
         iota(a, i);
     }
 }
+// end::function[]
 
 #[cfg(test)]
 mod tests {

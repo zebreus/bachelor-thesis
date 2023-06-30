@@ -14,7 +14,7 @@ CPP_DESIGNS = $(cpp_SPEED_DESIGNS) $(cpp_SIZE_DESIGNS)
 cpp_VERILOG_FILES = $(addprefix $(CPP_DIR),$(addsuffix .v,$(CPP_DESIGNS)))
 cpp_TEST_RESULT_FILES = $(addprefix $(CPP_DIR),$(addsuffix .testresult,$(CPP_DESIGNS)))
 
-BAMBU_COMMON_FLAGS = --simulator=VERILATOR --clock-name=clk --channels-type=MEM_ACC_11 --channels-number=1 --target=/home/lennart/Documents/bachelor-thesis/thesis/experiments/device.xml --no-clean
+BAMBU_COMMON_FLAGS = --simulator=VERILATOR --clock-name=clk --channels-type=MEM_ACC_11 --channels-number=1 --target=/home/lennart/Documents/bachelor-thesis/thesis/experiments/device.xml --no-clean --generate-vcd
 # --device-name=LFE5U85F8BG756C --lattice-root=/nix/store/xyg72n8f2wzh07b7z7079wlzf7l27ipm-diamond-3.10/diamond
 # Results dont seem to be different with device, but simulation requires proprietary IDE. --device-name=LFE5U85F8BG756C
 

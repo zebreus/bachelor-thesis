@@ -1,3 +1,4 @@
+// tag::function[]
 /*
  * The Keccak sponge function, designed by Guido Bertoni, Joan Daemen,
  * Michaël Peeters and Gilles Van Assche. For more information, feedback or
@@ -7,11 +8,7 @@
  * To the extent possible under law, the implementer has waived all copyright
  * and related or neighboring rights to the source code in this file.
  * http://creativecommons.org/publicdomain/zero/1.0/
- *
- * This implementation is faithfully ported from the C implementation from bambu.
- * https://github.com/ferrandi/PandA-bambu/blob/main/examples/crypto_designs/Keccak.c
  */
-// tag::implementation[]
 const NR_ROUNDS: usize = 24;
 
 macro_rules! get_krc_val {
@@ -74,7 +71,6 @@ unsafe fn theta(a: *mut u64) -> () {
     let mut d: [u64; 5] = [0; 5];
 
     for x in 0..5 {
-        c[x] = 0;
         for y in 0..5 {
             c[x] ^= *a.add(index!(x, y));
         }
@@ -141,7 +137,7 @@ pub unsafe extern "C" fn keccak(a: *mut u64) -> () {
     }
 }
 // end::main-function[]
-// end::implementation[]
+// end::function[]
 
 // tag::tests[]
 #[cfg(test)]

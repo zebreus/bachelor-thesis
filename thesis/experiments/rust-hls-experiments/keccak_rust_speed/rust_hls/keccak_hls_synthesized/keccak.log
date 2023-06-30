@@ -1,11 +1,11 @@
 ++ grep -oP '(?<=name = ")[^"]*' Cargo.toml
-+ CRATE_NAME=acffadcadedecdcbbWpcKwIb
-++ echo acffadcadedecdcbbWpcKwIb
++ CRATE_NAME=acffadcadedecdcbbiPtpzOgb
+++ echo acffadcadedecdcbbiPtpzOgb
 ++ tr - _
-+ CRATE_NAME_UNDERSCORED=acffadcadedecdcbbWpcKwIb
++ CRATE_NAME_UNDERSCORED=acffadcadedecdcbbiPtpzOgb
 ++ pwd
-+ echo 'Executing synthesis in /home/lennart/.cache/rust-hls/92a6cffad861cade6973d5ec5dcb213b-WpcK0w5I9b'
-Executing synthesis in /home/lennart/.cache/rust-hls/92a6cffad861cade6973d5ec5dcb213b-WpcK0w5I9b
++ echo 'Executing synthesis in /home/lennart/.cache/rust-hls/92a6cffad861cade6973d5ec5dcb213b-iPt3p2zOgb'
+Executing synthesis in /home/lennart/.cache/rust-hls/92a6cffad861cade6973d5ec5dcb213b-iPt3p2zOgb
 + export 'RUSTFLAGS=--emit=llvm-bc -C overflow-checks=off -C no-vectorize-loops -C target-cpu=generic -C panic=abort -C llvm-args=--opaque-pointers=false -C opt-level=3'
 + RUSTFLAGS='--emit=llvm-bc -C overflow-checks=off -C no-vectorize-loops -C target-cpu=generic -C panic=abort -C llvm-args=--opaque-pointers=false -C opt-level=3'
 + LLVM_BITCODE_FILES=($(cargo build --release -Z unstable-options --build-plan | jq '.invocations[].outputs[]' -r | grep -Po "^.*\.rlib$" | sed -E 's/lib([^\/]*)\.rlib/\1\.bc /' | tr -d '\n'))
@@ -17,17 +17,17 @@ Executing synthesis in /home/lennart/.cache/rust-hls/92a6cffad861cade6973d5ec5dc
 + cargo build --release -Z unstable-options
    Compiling keccak v0.1.4
    Compiling rust-keccak v0.1.0 (/home/lennart/Documents/bachelor-thesis/rust-keccak)
-   Compiling acffadcadedecdcbbWpcKwIb v1.0.0 (/home/lennart/.cache/rust-hls/92a6cffad861cade6973d5ec5dcb213b-WpcK0w5I9b)
-warning: crate `acffadcadedecdcbbWpcKwIb` should have a snake case name
+   Compiling acffadcadedecdcbbiPtpzOgb v1.0.0 (/home/lennart/.cache/rust-hls/92a6cffad861cade6973d5ec5dcb213b-iPt3p2zOgb)
+warning: crate `acffadcadedecdcbbiPtpzOgb` should have a snake case name
   |
-  = help: convert the identifier to snake case: `acffadcadedecdcbb_wpc_kw_ib`
+  = help: convert the identifier to snake case: `acffadcadedecdcbbi_ptpz_ogb`
   = note: `#[warn(non_snake_case)]` on by default
 
-warning: `acffadcadedecdcbbWpcKwIb` (lib) generated 1 warning
-    Finished release [optimized] target(s) in 0.22s
-+ llvm-link --opaque-pointers=false /home/lennart/.cache/rust-hls/target/release/deps/keccak-2ec801f7ea8c87f9.bc /home/lennart/.cache/rust-hls/target/release/deps/rust_keccak-c32aa696bee07e58.bc /home/lennart/.cache/rust-hls/target/release/deps/acffadcadedecdcbbWpcKwIb-2921618ca490b95d.bc
-+ llvm-dis --opaque-pointers=false -o result.ll
+warning: `acffadcadedecdcbbiPtpzOgb` (lib) generated 1 warning
+    Finished release [optimized] target(s) in 0.20s
++ llvm-link --opaque-pointers=false /home/lennart/.cache/rust-hls/target/release/deps/keccak-2ec801f7ea8c87f9.bc /home/lennart/.cache/rust-hls/target/release/deps/rust_keccak-fb0b27771bbf3a03.bc /home/lennart/.cache/rust-hls/target/release/deps/acffadcadedecdcbbiPtpzOgb-a2f86248605aacca.bc
 + llvm-extract --opaque-pointers=false --recursive --keep-const-init --func=keccak
++ llvm-dis --opaque-pointers=false -o result.ll
 + cp result.ll keccak.ll
 + bambu --simulator=VERILATOR result.ll --top-fname=keccak --clock-name=clk --compiler=I386_CLANG16 --channels-type=MEM_ACC_11 --channels-number=1 -O5 --target=/home/lennart/Documents/bachelor-thesis/thesis/experiments/device.xml
  ==  Bambu executed with: /nix/store/9c5lz0md936sjhs9hw1ya6kghvkfc4zg-bambu-wrapped/bin/bambu --simulator=VERILATOR --top-fname=keccak --clock-name=clk --compiler=I386_CLANG16 --channels-type=MEM_ACC_11 --channels-number=1 -O5 --target=/home/lennart/Documents/bachelor-thesis/thesis/experiments/device.xml result.ll 
@@ -99,14 +99,14 @@ Warning: This function uses unknown addresses: keccak
   Time to compute storage value information: 0.00 seconds
 
   Slack computed in 0.00 seconds
-  Weight computation completed in 0.01 seconds
+  Weight computation completed in 0.00 seconds
   False-loop computation completed in 0.00 seconds
 
   Register binding information for function keccak:
     Register allocation algorithm obtains a sub-optimal result: 78 registers(LB:53)
   Time to perform register binding: 0.00 seconds
 
-  Clique covering computation completed in 0.00 seconds
+  Clique covering computation completed in 0.01 seconds
 
   Module binding information for function keccak:
     Number of modules instantiated: 218
@@ -115,12 +115,12 @@ Warning: This function uses unknown addresses: keccak
     Estimated area of MUX21: 896
     Total estimated area: 8538
     Estimated number of DSPs: 0
-  Time to perform module binding: 0.01 seconds
+  Time to perform module binding: 0.02 seconds
 
 
   Register binding information for function keccak:
     Register allocation algorithm obtains a sub-optimal result: 78 registers(LB:53)
-  Time to perform register binding: 0.01 seconds
+  Time to perform register binding: 0.00 seconds
 
 
   Connection Binding Information for function keccak:

@@ -11,8 +11,11 @@ target triple = "x86_64-unknown-linux-gnu"
 @alloc395 = hidden unnamed_addr constant <{ i8*, [16 x i8] }> <{ i8* getelementptr inbounds (<{ [85 x i8] }>, <{ [85 x i8] }>* @alloc407, i32 0, i32 0, i32 0), [16 x i8] c"U\00\00\00\00\00\00\00\EB\00\00\00\09\00\00\00" }>, align 8
 @alloc331 = hidden unnamed_addr constant <{ [192 x i8] }> <{ [192 x i8] c"\01\00\00\00\00\00\00\00\82\80\00\00\00\00\00\00\8A\80\00\00\00\00\00\80\00\80\00\80\00\00\00\80\8B\80\00\00\00\00\00\00\01\00\00\80\00\00\00\00\81\80\00\80\00\00\00\80\09\80\00\00\00\00\00\80\8A\00\00\00\00\00\00\00\88\00\00\00\00\00\00\00\09\80\00\80\00\00\00\00\0A\00\00\80\00\00\00\00\8B\80\00\80\00\00\00\00\8B\00\00\00\00\00\00\80\89\80\00\00\00\00\00\80\03\80\00\00\00\00\00\80\02\80\00\00\00\00\00\80\80\00\00\00\00\00\00\80\0A\80\00\00\00\00\00\00\0A\00\00\80\00\00\00\80\81\80\00\80\00\00\00\80\80\80\00\00\00\00\00\80\01\00\00\80\00\00\00\00\08\80\00\80\00\00\00\80" }>, align 8
 @alloc397 = hidden unnamed_addr constant <{ i8*, [16 x i8] }> <{ i8* getelementptr inbounds (<{ [85 x i8] }>, <{ [85 x i8] }>* @alloc407, i32 0, i32 0, i32 0), [16 x i8] c"U\00\00\00\00\00\00\00\F0\00\00\00\19\00\00\00" }>, align 8
-@anon.ae87fea7d3f4a48b2c4e407fb0e59ffa.0 = hidden unnamed_addr constant <{ [25 x i8] }> <{ [25 x i8] c"\00\01>\1C\1B$,\067\14\03\0A+\19')-\0F\15\08\12\02=8\0E" }>, align 1
-@anon.ae87fea7d3f4a48b2c4e407fb0e59ffa.1 = hidden unnamed_addr constant <{ [192 x i8] }> <{ [192 x i8] c"\01\00\00\00\00\00\00\00\82\80\00\00\00\00\00\00\8A\80\00\00\00\00\00\80\00\80\00\80\00\00\00\80\8B\80\00\00\00\00\00\00\01\00\00\80\00\00\00\00\81\80\00\80\00\00\00\80\09\80\00\00\00\00\00\80\8A\00\00\00\00\00\00\00\88\00\00\00\00\00\00\00\09\80\00\80\00\00\00\00\0A\00\00\80\00\00\00\00\8B\80\00\80\00\00\00\00\8B\00\00\00\00\00\00\80\89\80\00\00\00\00\00\80\03\80\00\00\00\00\00\80\02\80\00\00\00\00\00\80\80\00\00\00\00\00\00\80\0A\80\00\00\00\00\00\00\0A\00\00\80\00\00\00\80\81\80\00\80\00\00\00\80\80\80\00\00\00\00\00\80\01\00\00\80\00\00\00\00\08\80\00\80\00\00\00\80" }>, align 8
+@anon.81d2408192f774ffc0f511fc69066f5d.0 = hidden unnamed_addr constant <{ [25 x i8] }> <{ [25 x i8] c"\00\01>\1C\1B$,\067\14\03\0A+\19')-\0F\15\08\12\02=8\0E" }>, align 1
+@anon.81d2408192f774ffc0f511fc69066f5d.1 = hidden unnamed_addr constant <{ [192 x i8] }> <{ [192 x i8] c"\01\00\00\00\00\00\00\00\82\80\00\00\00\00\00\00\8A\80\00\00\00\00\00\80\00\80\00\80\00\00\00\80\8B\80\00\00\00\00\00\00\01\00\00\80\00\00\00\00\81\80\00\80\00\00\00\80\09\80\00\00\00\00\00\80\8A\00\00\00\00\00\00\00\88\00\00\00\00\00\00\00\09\80\00\80\00\00\00\00\0A\00\00\80\00\00\00\00\8B\80\00\80\00\00\00\00\8B\00\00\00\00\00\00\80\89\80\00\00\00\00\00\80\03\80\00\00\00\00\00\80\02\80\00\00\00\00\00\80\80\00\00\00\00\00\00\80\0A\80\00\00\00\00\00\00\0A\00\00\80\00\00\00\80\81\80\00\80\00\00\00\80\80\80\00\00\00\00\00\80\01\00\00\80\00\00\00\00\08\80\00\80\00\00\00\80" }>, align 8
+
+
+
 
 ; Function Attrs: nocallback nofree nosync nounwind willreturn memory(argmem: readwrite)
 declare void @llvm.lifetime.start.p0i8(i64 immarg, i8* nocapture) #0
@@ -27,7 +30,7 @@ declare void @llvm.lifetime.end.p0i8(i64 immarg, i8* nocapture) #0
 declare i32 @rust_eh_personality(...) unnamed_addr #2
 
 ; Function Attrs: minsize nounwind nonlazybind optsize
-define void @_ZN11rust_keccak6keccak6keccak17h5798c7dfdadb5aa6E(i64* nocapture noundef %a) unnamed_addr #3 personality i32 (i32, i32, i64, %"unwind::libunwind::_Unwind_Exception"*, %"unwind::libunwind::_Unwind_Context"*)* bitcast (i32 (...)* @rust_eh_personality to i32 (i32, i32, i64, %"unwind::libunwind::_Unwind_Exception"*, %"unwind::libunwind::_Unwind_Context"*)*) {
+define void @_ZN11rust_keccak6keccak6keccak17h2679fb9ef1213577E(i64* nocapture noundef %a) unnamed_addr #3 personality i32 (i32, i32, i64, %"unwind::libunwind::_Unwind_Exception"*, %"unwind::libunwind::_Unwind_Context"*)* bitcast (i32 (...)* @rust_eh_personality to i32 (i32, i32, i64, %"unwind::libunwind::_Unwind_Exception"*, %"unwind::libunwind::_Unwind_Context"*)*) {
 start:
   %c.i32 = alloca [5 x i64], align 8
   %temp_a.i = alloca [25 x i64], align 8
@@ -39,8 +42,8 @@ start:
   %3 = bitcast [5 x i64]* %c.i32 to i8*
   br label %bb2
 
-bb2:                                              ; preds = %_ZN11rust_keccak6keccak4iota17hb795299ece32111cE.exit, %start
-  %iter.sroa.0.0 = phi i64 [ 0, %start ], [ %50, %_ZN11rust_keccak6keccak4iota17hb795299ece32111cE.exit ]
+bb2:                                              ; preds = %_ZN11rust_keccak6keccak4iota17h5c260f57d9577ed6E.exit, %start
+  %iter.sroa.0.0 = phi i64 [ 0, %start ], [ %50, %_ZN11rust_keccak6keccak4iota17h5c260f57d9577ed6E.exit ]
   %exitcond.not = icmp eq i64 %iter.sroa.0.0, 24
   br i1 %exitcond.not, label %bb6, label %bb4
 
@@ -118,7 +121,7 @@ bb29.loopexit.i:                                  ; preds = %bb35.i
 bb29.i:                                           ; preds = %bb29.loopexit.i, %bb17.i
   %iter3.sroa.0.0.i = phi i64 [ %15, %bb29.loopexit.i ], [ 0, %bb17.i ]
   %exitcond124.not.i = icmp eq i64 %iter3.sroa.0.0.i, 5
-  br i1 %exitcond124.not.i, label %_ZN11rust_keccak6keccak5theta17h520646cfd6f2034dE.exit, label %bb31.i
+  br i1 %exitcond124.not.i, label %_ZN11rust_keccak6keccak5theta17h45602c6d645df8e6E.exit, label %bb31.i
 
 bb31.i:                                           ; preds = %bb29.i
   %16 = getelementptr inbounds [5 x i64], [5 x i64]* %d.i, i64 0, i64 %iter3.sroa.0.0.i
@@ -145,7 +148,7 @@ bb40.i:                                           ; preds = %bb35.i
   store i64 %20, i64* %18, align 8
   br label %bb35.i
 
-_ZN11rust_keccak6keccak5theta17h520646cfd6f2034dE.exit: ; preds = %bb29.i
+_ZN11rust_keccak6keccak5theta17h45602c6d645df8e6E.exit: ; preds = %bb29.i
   call void @llvm.lifetime.end.p0i8(i64 40, i8* nonnull %1)
   call void @llvm.lifetime.end.p0i8(i64 40, i8* nonnull %0)
   br label %bb2.i9
@@ -154,10 +157,10 @@ bb2.loopexit.i7:                                  ; preds = %bb8.i
   %21 = add nuw nsw i64 %iter.sroa.0.0.i8, 1
   br label %bb2.i9
 
-bb2.i9:                                           ; preds = %bb2.loopexit.i7, %_ZN11rust_keccak6keccak5theta17h520646cfd6f2034dE.exit
-  %iter.sroa.0.0.i8 = phi i64 [ 0, %_ZN11rust_keccak6keccak5theta17h520646cfd6f2034dE.exit ], [ %21, %bb2.loopexit.i7 ]
+bb2.i9:                                           ; preds = %bb2.loopexit.i7, %_ZN11rust_keccak6keccak5theta17h45602c6d645df8e6E.exit
+  %iter.sroa.0.0.i8 = phi i64 [ 0, %_ZN11rust_keccak6keccak5theta17h45602c6d645df8e6E.exit ], [ %21, %bb2.loopexit.i7 ]
   %exitcond39.not.i = icmp eq i64 %iter.sroa.0.0.i8, 5
-  br i1 %exitcond39.not.i, label %_ZN11rust_keccak6keccak3rho17hb35202bb60adf437E.exit, label %bb4.i
+  br i1 %exitcond39.not.i, label %_ZN11rust_keccak6keccak3rho17h8a75f9f4ad274235E.exit, label %bb4.i
 
 bb4.i:                                            ; preds = %bb2.i9
   %_20.i10 = urem i64 %iter.sroa.0.0.i8, 5
@@ -175,7 +178,7 @@ bb10.i:                                           ; preds = %bb8.i
   %narrow.i13 = mul nuw nsw i8 %_2238.i, 5
   %_21.i = zext i8 %narrow.i13 to i64
   %_19.i = add nuw nsw i64 %_20.i10, %_21.i
-  %23 = getelementptr inbounds <{ [25 x i8] }>, <{ [25 x i8] }>* @anon.ae87fea7d3f4a48b2c4e407fb0e59ffa.0, i64 0, i32 0, i64 %_19.i
+  %23 = getelementptr inbounds <{ [25 x i8] }>, <{ [25 x i8] }>* @anon.81d2408192f774ffc0f511fc69066f5d.0, i64 0, i32 0, i64 %_19.i
   %_17.i = load i8, i8* %23, align 1, !noundef !2
   %24 = icmp eq i8 %_17.i, 0
   %25 = getelementptr inbounds i64, i64* %a, i64 %_19.i
@@ -198,7 +201,7 @@ bb23.i:                                           ; preds = %bb14.i, %bb10.i
   store i64 %_16.0.i, i64* %25, align 8
   br label %bb8.i
 
-_ZN11rust_keccak6keccak3rho17hb35202bb60adf437E.exit: ; preds = %bb2.i9
+_ZN11rust_keccak6keccak3rho17h8a75f9f4ad274235E.exit: ; preds = %bb2.i9
   call void @llvm.lifetime.start.p0i8(i64 200, i8* nonnull %2)
   call void @llvm.memset.p0i8.i64(i8* noundef nonnull align 8 dereferenceable(200) %2, i8 0, i64 200, i1 false)
   br label %bb2.i16
@@ -207,8 +210,8 @@ bb2.loopexit.i14:                                 ; preds = %bb8.i21
   %32 = add nuw nsw i64 %iter.sroa.0.0.i15, 1
   br label %bb2.i16
 
-bb2.i16:                                          ; preds = %bb2.loopexit.i14, %_ZN11rust_keccak6keccak3rho17hb35202bb60adf437E.exit
-  %iter.sroa.0.0.i15 = phi i64 [ 0, %_ZN11rust_keccak6keccak3rho17hb35202bb60adf437E.exit ], [ %32, %bb2.loopexit.i14 ]
+bb2.i16:                                          ; preds = %bb2.loopexit.i14, %_ZN11rust_keccak6keccak3rho17h8a75f9f4ad274235E.exit
+  %iter.sroa.0.0.i15 = phi i64 [ 0, %_ZN11rust_keccak6keccak3rho17h8a75f9f4ad274235E.exit ], [ %32, %bb2.loopexit.i14 ]
   %exitcond86.not.i = icmp eq i64 %iter.sroa.0.0.i15, 5
   br i1 %exitcond86.not.i, label %bb16.i, label %bb4.i18
 
@@ -241,7 +244,7 @@ bb16.loopexit.i:                                  ; preds = %bb22.i
 bb16.i:                                           ; preds = %bb16.loopexit.i, %bb2.i16
   %iter2.sroa.0.0.i28 = phi i64 [ %36, %bb16.loopexit.i ], [ 0, %bb2.i16 ]
   %exitcond88.not.i = icmp eq i64 %iter2.sroa.0.0.i28, 5
-  br i1 %exitcond88.not.i, label %_ZN11rust_keccak6keccak2pi17h326a9f2506ae08c7E.exit, label %bb18.i
+  br i1 %exitcond88.not.i, label %_ZN11rust_keccak6keccak2pi17h1b51896275110770E.exit, label %bb18.i
 
 bb18.i:                                           ; preds = %bb16.i
   %_45.i = urem i64 %iter2.sroa.0.0.i28, 5
@@ -271,7 +274,7 @@ bb27.i31:                                         ; preds = %bb22.i
   store i64 %_43.i, i64* %39, align 8
   br label %bb22.i
 
-_ZN11rust_keccak6keccak2pi17h326a9f2506ae08c7E.exit: ; preds = %bb16.i
+_ZN11rust_keccak6keccak2pi17h1b51896275110770E.exit: ; preds = %bb16.i
   call void @llvm.lifetime.end.p0i8(i64 200, i8* nonnull %2)
   call void @llvm.lifetime.start.p0i8(i64 40, i8* nonnull %3)
   call void @llvm.memset.p0i8.i64(i8* noundef nonnull align 8 dereferenceable(40) %3, i8 0, i64 40, i1 false)
@@ -281,10 +284,10 @@ bb2.loopexit.i33:                                 ; preds = %bb18.i49
   %40 = add nuw nsw i64 %iter.sroa.0.0.i34, 1
   br label %bb2.i35
 
-bb2.i35:                                          ; preds = %bb2.loopexit.i33, %_ZN11rust_keccak6keccak2pi17h326a9f2506ae08c7E.exit
-  %iter.sroa.0.0.i34 = phi i64 [ 0, %_ZN11rust_keccak6keccak2pi17h326a9f2506ae08c7E.exit ], [ %40, %bb2.loopexit.i33 ]
+bb2.i35:                                          ; preds = %bb2.loopexit.i33, %_ZN11rust_keccak6keccak2pi17h1b51896275110770E.exit
+  %iter.sroa.0.0.i34 = phi i64 [ 0, %_ZN11rust_keccak6keccak2pi17h1b51896275110770E.exit ], [ %40, %bb2.loopexit.i33 ]
   %exitcond65.not.i = icmp eq i64 %iter.sroa.0.0.i34, 5
-  br i1 %exitcond65.not.i, label %_ZN11rust_keccak6keccak4iota17hb795299ece32111cE.exit, label %bb4.i38
+  br i1 %exitcond65.not.i, label %_ZN11rust_keccak6keccak4iota17h5c260f57d9577ed6E.exit, label %bb4.i38
 
 bb4.i38:                                          ; preds = %bb2.i35
   %_22.i36 = urem i64 %iter.sroa.0.0.i34, 5
@@ -340,10 +343,10 @@ bb23.i50:                                         ; preds = %bb18.i49
   store i64 %_48.i, i64* %49, align 8
   br label %bb18.i49
 
-_ZN11rust_keccak6keccak4iota17hb795299ece32111cE.exit: ; preds = %bb2.i35
+_ZN11rust_keccak6keccak4iota17h5c260f57d9577ed6E.exit: ; preds = %bb2.i35
   call void @llvm.lifetime.end.p0i8(i64 40, i8* nonnull %3)
   %50 = add nuw nsw i64 %iter.sroa.0.0, 1
-  %51 = getelementptr inbounds [24 x i64], [24 x i64]* bitcast (<{ [192 x i8] }>* @anon.ae87fea7d3f4a48b2c4e407fb0e59ffa.1 to [24 x i64]*), i64 0, i64 %iter.sroa.0.0
+  %51 = getelementptr inbounds [24 x i64], [24 x i64]* bitcast (<{ [192 x i8] }>* @anon.81d2408192f774ffc0f511fc69066f5d.1 to [24 x i64]*), i64 0, i64 %iter.sroa.0.0
   %_3.i = load i64, i64* %51, align 8, !noundef !2
   %52 = load i64, i64* %a, align 8, !noundef !2
   %53 = xor i64 %52, %_3.i
@@ -357,7 +360,7 @@ declare void @llvm.memset.p0i8.i64(i8* nocapture writeonly, i8, i64, i1 immarg) 
 ; Function Attrs: minsize nounwind nonlazybind optsize
 define void @keccak(i64* noundef %input_pointer) unnamed_addr #3 {
 start:
-  tail call void @_ZN11rust_keccak6keccak6keccak17h5798c7dfdadb5aa6E(i64* noundef %input_pointer) #5
+  tail call void @_ZN11rust_keccak6keccak6keccak17h2679fb9ef1213577E(i64* noundef %input_pointer) #5
   ret void
 }
 

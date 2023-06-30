@@ -93,7 +93,8 @@ It is possible that Rust also provides benefits in domains other than systems pr
 
 This paper will explore how Rust can be used in the domain of FPGA firmware development. Usually, FPGA firmware is developed in a Hardware Description Language (HDL) such as Verilog or VHDL. In these languages, the programmer has to describe the hardware in detail. This is a low-level approach that can lead to efficient designs, but it is quite time-consuming <<Mil20>>. The rust-hdl project enables us to express hardware descriptions in Rust similar to traditional HDLs <<rusthdl>>. In addition to manually writing hardware descriptions in an HDL, it is also possible to use High-level synthesis (HLS) to generate hardware descriptions in HDLs from an algorithmic description written in high-level programming languages. This provides increased productivity at the cost of slightly less optimized designs <<Mil20>>. This process is currently mostly used with C or {cpp} because they are the most common system programming languages. There are multiple HLS tools available that can synthesize HDL code from {cpp} code. Multiple of these tools are based around the LLVM compiler infrastructure <<Nan16>>. There is one reported use of Rust as an HLS language but that is of no use to us as their tools are not available <<Har22>>. As Rust is also based on LLVM, it is possible that it can be used with these tools too. 
 
-To figure out whether Rust can be used as a source language for HLS, we searched for HLS tools that can be used for Rust. We developed a modular process for integrating HLS tools with rust-hdl <<rusthdl>>. We used this process to implement a proof-of-concept integration with the PandA Bambu HLS framework and showed that it is possible to use Rust as a source language for HLS. We also evaluated the resulting solution by synthesizing a simple example. We found that the solution is not yet suitable for production use, but that it is a promising starting point for further development.
+// TODO: Look in git history, I think I had a better intro at least parts of it
+To figure out whether Rust can be used as a source language for HLS, we searched for HLS tools that can be used for Rust. We developed a modular process for integrating HLS tools with rust-hdl <<rusthdl>>. We used this process to implement a proof-of-concept integration with the PandA Bambu HLS framework and showed that it is possible to use Rust as a source language for HLS. We evaluated the performance by comparing the resulting designs for different algorithms with designs generated from equivalent C code. We found that in most cases the solution produced slightly better performing designs than {cpp} based workflows.
 
 // What exactly is the problem
 // Why is this a problem
@@ -729,6 +730,8 @@ The {cpp} implementations will be synthesized using bambu with both the GCC (Ver
 
 Different designs will be evaluated for the area of a FPGA they take up, their clock maximum frequency and the amount of clock cycles they take for a single operation. In case a design has a varying amount of clock cycles the average of all testcases will be used. The area and maximum frequency of a design will be taken from the placement report of nextpnr. nextpnr will be configured to target a Lattice ECP5 FPGA with 44k LUT and a speed grade of 6 (LFE5U-45F-6BG381C) for all tests. The area of a design is in this case measured as the sum of the number of LUTs (`TRELLIS_COMB`) and the number of flip-flops (`TRELLIS_FF`) from the nextpnr report. The amount of clock cycles will be measured using the rust_hdl simulator for Rust designs and the Verilator simulator for C++ designs. 
 
+The focus of this evaluation is only to compare the behaviour and not on the exact implementation of the generated hardware designs. Because of this the synthesized Verilog files will be mostly treated as black-boxes.
+
 === Tested algorithms
 //TODO: Stop using algorithm and function interchangably
 
@@ -889,25 +892,95 @@ Bambu seems to preserve unrolled loops in LLVM IR.
 
 === Testing the keccak functions
 
-Three implementations will be tested for the keccak function. 
+==== Tested implementations
 
-The {cpp} reference implementation is based on a 
+// TODO: Provide source to the keccak implementation
+The reference {cpp} implementation is shown in <<keccak-cpp-listing>>. It is based on a reference implementation provided by the Keccak team. It takes a pointer to 25 64-bit elements and mutates them in 24 rounds. Each round consists of 5 functions that transform the elements in some way. The values after 24 rounds are the result of the function.
+
+.Interface of the keccak function
+[source#keccak-rust-interface,rust]
+----
+include::../rust-keccak/src/keccak.rs[tag=main-function]
+----
+
+The Rust implementation is shown in <<keccak-rust-listing>>. It is kept as close to the reference implementation as possible. As the reference uses pointers all functions of this direct port need to be marked as unsafe, as it is not possible to safely handle access mutable pointers.
+
+The idiomatic Rust implementation is nearly identical except that it casts the pointer to an array of size 25. This allows the compiler to verify that the array is never accessed out of bounds. It also could allow the compiler to optimize the code better, as it can assume that the array is never accessed out of bounds. The idiomatic Rust implementation can be seen in <<keccak-idiom-listing>>.
+
+To verify whether it is practical to use functions from the Rust ecosystem, the fourth implementation uses the keccak crate from crates.io <<keccak-crate>>. It provides optimized implementations of the keccak sponge functions in different sizes. The tested function, shown in <<keccak-crate-listing>>, just calls the correct implementation from the crate.
+
+==== Results
+
+<<keccak-overview-area>> show the results of the area measurements. The Rust and idiomatic Rust designs seem to be nearly the same size on both optimizations.
 
 .Area of the different keccak designs
+:chart-id: id=keccak-overview-area
 :vega-lite-filename: processed-charts/keccak_overview_area.vl.json
 include::vega-chart.adoc[]
 
-.Execution time per design
-:vega-lite-filename: processed-charts/keccak_performance.vl.json
-include::vega-chart.adoc[]
+The three LLVM designs that are based on the reference implementation and optimized for speed are also similar in size. This could suggest that LLVM was able to optimize the code in a similar fashion. When optimized for size however the Rust based designs are significantly bigger.
+
+The Rust design from <<keccak-crate>> generates two nearly identically sized designs. They have roughly the same size as the other Rust designs optimized for size.
+
+The GCC design optimized for speed is the biggest design and the one optimized for size is the second smallest. This is what we would expect from the optimization goals.
+
+// Performance
+Performance of each design was measured for three testcases. Every testcase is a 25 element array of 64-bit integers. The input in the first testcase was all zeros and for the second all 25s.T The third testcase received the result of the first testcase as its input. The amount of cycles was consistent among the testcases for all designs. <<keccak-cycles>> shows the results of the cycle count measurements.
+
+The 25 inputs need to be read at least once and written at least once as they double as outputs. Accessing memory takes one cycle and has a latency of two cycles, so the theoretical minimum for the number of cycles is 51, if it is not performed inplace. If the algorithm is performed directly in memory the number of memory accesses will be significantly larger.
 
 .Average clock cycles per test of the different keccak designs
+:chart-id: id=keccak-cycles
 :vega-lite-filename: processed-charts/keccak_average_cycles.vl.json
 include::vega-chart.adoc[]
 
+The LLVM designs optimized for speed all perform quite well with the Clang design being the fastest. Interestingly the keccak-crate design optimized for size also performs quite well. Looking at the traces for these five designs reveals that they all perform only the minmum required amount of 50 memory accesses. The trace for the Clang design is shown in <<keccak-clang-speed-trace>>. The traces for the fast Rust designs are similar but they take 48 cycles to do the calculation inbetween the memory accesses. It seems like they require two cycles per round (24 * 2 = 48) while the Clang design only needs one cycle per round but has an additional cycle of overhead (24 + 1).
+
+//TODO: Mention that the crate designs also perform random nonsensical memory accesses.
+
+
+
+.Trace of the Clang design optimized for speed
+[wavedrom.really-slightly-oversized-content,id="keccak_clang_speed_trace"]
+....
+include::samples/keccak_clang_speed.wavejson.json[]
+....
+
+
+The generated with the function from crates.io also performs memory reads during the calculation. These memory access are not part of the algorithm and seem to be random. The addresses they try to reach are out of bounds and random values are return during the tests. This does not seem to influence the correctness of the result nor the performance of the calculation. The random reads can be clearly seen in <<keccak-crates-speed-trace>>.
+
+.Trace of the crates.io design optimized for size
+[wavedrom.oversized-content,id="keccak-crates-speed-trace"]
+....
+include::samples/keccak_crates_speed.wavejson.json[]
+....
+
+// TODO: Attach snippet from the traces
+The other designs all need significantly more cycles. They will be called slow designs. The difference between the fastest slow design and the slowest slow design is roughly factor 10. But even the fastest slow design is 50x slower than the fast designs. The main reason for their high cyclecount is that they do work directly on the memory. The trace for the GCC design optimized for speed (<<keccak-gcc-speed-trace>>) shows that it constantly performs memory accesses. The traces for the other slow designs are similar. The exact cycle count seems to depend on how much of the calculations is performed in external memory.
+
+.Excerpt from the trace of the GCC design optimized for speed
+[wavedrom.slightly-oversized-content,id="keccak-gcc-speed-trace"]
+....
+include::samples/keccak_gcc_speed.wavejson.json[]
+....
+
+// Speculation
+It could be that the designs optimized for size split up the work in multiple small functions that each load the values from memory and store them again.
+
 .Maximum frequency of the different keccak designs
+:chart-id: id=keccak-frequency
 :vega-lite-filename: processed-charts/keccak_max_frequency.vl.json
 include::vega-chart.adoc[]
+
+While the 
+
+.Execution time per design
+:chart-id: id=keccak-performance
+:vega-lite-filename: processed-charts/keccak_performance.vl.json
+include::vega-chart.adoc[]
+
+
+
 
 .Keccak Area to performance
 :vega-lite-filename: processed-charts/keccak_area_performance.vl.json
@@ -1669,7 +1742,11 @@ Submission to NIST (Round 2) 3, no. 30 (2009): 320-337,
 2009
 link:pass:[https://keccak.team/files/Keccak-submission-3.pdf][📁^]
 
-
+* [[[keccak-crate]]]
+_keccak - crates.io_,
+Pure Rust implementation of the Keccak sponge function including the keccak-f and keccak-p variants,
+2023
+link:pass:[https://crates.io/crates/keccak][🔗^]
 
 <<<
 
@@ -1693,6 +1770,22 @@ include::experiments/cpp-hls-experiments/md5.cpp[tag=function]
 include::experiments/cpp-hls-experiments/keccak.cpp[tag=function]
 ----
 
+.`keccak` function in Rust
+[source#keccak-rust-listing,rust]
+----
+include::../rust-keccak/src/keccak.rs[tag=function]
+----
+
+.idiomatic `keccak` function in Rust
+[source#keccak-idiom-listing,rust]
+----
+include::../rust-keccak/src/keccak_idiomatic.rs[tag=function]
+----
+
+
+<<<
+
+// TODO: Make sure this graph is displayed correctly,
 .Simplified CFG for the LLVM IR generated by the Rust compiler from the minmax function with optimizations for performance
 [graphviz#minmax-speed-cfg.slightly-oversized-content,opts=none]
 ----

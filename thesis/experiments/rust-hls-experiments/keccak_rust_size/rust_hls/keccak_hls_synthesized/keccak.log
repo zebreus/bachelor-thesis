@@ -1,31 +1,31 @@
 ++ grep -oP '(?<=name = ")[^"]*' Cargo.toml
-+ CRATE_NAME=feeebdbbbffceJhiBfKLj
-++ echo feeebdbbbffceJhiBfKLj
++ CRATE_NAME=feeebdbbbffceEgRxVTLjp
 ++ tr - _
-+ CRATE_NAME_UNDERSCORED=feeebdbbbffceJhiBfKLj
+++ echo feeebdbbbffceEgRxVTLjp
++ CRATE_NAME_UNDERSCORED=feeebdbbbffceEgRxVTLjp
 ++ pwd
-+ echo 'Executing synthesis in /home/lennart/.cache/rust-hls/1fe346812eebd18bb818626bff809ce-JhiB13fKLj'
-Executing synthesis in /home/lennart/.cache/rust-hls/1fe346812eebd18bb818626bff809ce-JhiB13fKLj
++ echo 'Executing synthesis in /home/lennart/.cache/rust-hls/1fe346812eebd18bb818626bff809ce-EgRxVT8Ljp'
+Executing synthesis in /home/lennart/.cache/rust-hls/1fe346812eebd18bb818626bff809ce-EgRxVT8Ljp
 + export 'RUSTFLAGS=--emit=llvm-bc -C overflow-checks=off -C no-vectorize-loops -C target-cpu=generic -C panic=abort -C llvm-args=--opaque-pointers=false -C opt-level=z'
 + RUSTFLAGS='--emit=llvm-bc -C overflow-checks=off -C no-vectorize-loops -C target-cpu=generic -C panic=abort -C llvm-args=--opaque-pointers=false -C opt-level=z'
 + LLVM_BITCODE_FILES=($(cargo build --release -Z unstable-options --build-plan | jq '.invocations[].outputs[]' -r | grep -Po "^.*\.rlib$" | sed -E 's/lib([^\/]*)\.rlib/\1\.bc /' | tr -d '\n'))
 ++ cargo build --release -Z unstable-options --build-plan
-++ grep -Po '^.*\.rlib$'
 ++ jq '.invocations[].outputs[]' -r
+++ grep -Po '^.*\.rlib$'
 ++ sed -E 's/lib([^\/]*)\.rlib/\1\.bc /'
 ++ tr -d '\n'
 + cargo build --release -Z unstable-options
    Compiling keccak v0.1.4
    Compiling rust-keccak v0.1.0 (/home/lennart/Documents/bachelor-thesis/rust-keccak)
-   Compiling feeebdbbbffceJhiBfKLj v1.0.0 (/home/lennart/.cache/rust-hls/1fe346812eebd18bb818626bff809ce-JhiB13fKLj)
-warning: crate `feeebdbbbffceJhiBfKLj` should have a snake case name
+   Compiling feeebdbbbffceEgRxVTLjp v1.0.0 (/home/lennart/.cache/rust-hls/1fe346812eebd18bb818626bff809ce-EgRxVT8Ljp)
+warning: crate `feeebdbbbffceEgRxVTLjp` should have a snake case name
   |
-  = help: convert the identifier to snake case: `feeebdbbbffce_jhi_bf_klj`
+  = help: convert the identifier to snake case: `feeebdbbbffce_eg_rx_vtljp`
   = note: `#[warn(non_snake_case)]` on by default
 
-warning: `feeebdbbbffceJhiBfKLj` (lib) generated 1 warning
-    Finished release [optimized] target(s) in 0.17s
-+ llvm-link --opaque-pointers=false /home/lennart/.cache/rust-hls/target/release/deps/keccak-2ec801f7ea8c87f9.bc /home/lennart/.cache/rust-hls/target/release/deps/rust_keccak-c32aa696bee07e58.bc /home/lennart/.cache/rust-hls/target/release/deps/feeebdbbbffceJhiBfKLj-1bc0e246fda90827.bc
+warning: `feeebdbbbffceEgRxVTLjp` (lib) generated 1 warning
+    Finished release [optimized] target(s) in 0.15s
++ llvm-link --opaque-pointers=false /home/lennart/.cache/rust-hls/target/release/deps/keccak-2ec801f7ea8c87f9.bc /home/lennart/.cache/rust-hls/target/release/deps/rust_keccak-fb0b27771bbf3a03.bc /home/lennart/.cache/rust-hls/target/release/deps/feeebdbbbffceEgRxVTLjp-6b15eb889e94f5a4.bc
 + llvm-extract --opaque-pointers=false --recursive --keep-const-init --func=keccak
 + llvm-dis --opaque-pointers=false -o result.ll
 + cp result.ll keccak.ll
@@ -98,8 +98,8 @@ Warning: This function uses unknown addresses: keccak
     Number of storage values inserted: 184
   Time to compute storage value information: 0.00 seconds
 
-  Slack computed in 0.01 seconds
-  Weight computation completed in 0.06 seconds
+  Slack computed in 0.00 seconds
+  Weight computation completed in 0.05 seconds
   False-loop computation completed in 0.00 seconds
 
   Register binding information for function keccak:
@@ -115,7 +115,7 @@ Warning: This function uses unknown addresses: keccak
     Estimated area of MUX21: 352
     Total estimated area: 11231
     Estimated number of DSPs: 0
-  Time to perform module binding: 0.09 seconds
+  Time to perform module binding: 0.08 seconds
 
 
   Register binding information for function keccak:

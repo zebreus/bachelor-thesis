@@ -1,11 +1,11 @@
 ++ grep -oP '(?<=name = ")[^"]*' Cargo.toml
-+ CRATE_NAME=abddaeeadcacceedxjrtAKrq
-++ echo abddaeeadcacceedxjrtAKrq
++ CRATE_NAME=dfecfdadbccaacacdqtQGVQqx
+++ echo dfecfdadbccaacacdqtQGVQqx
 ++ tr - _
-+ CRATE_NAME_UNDERSCORED=abddaeeadcacceedxjrtAKrq
++ CRATE_NAME_UNDERSCORED=dfecfdadbccaacacdqtQGVQqx
 ++ pwd
-+ echo 'Executing synthesis in /home/lennart/.cache/rust-hls/a5b8d10d28aee175adc2a95c801ceed0-xj0rt2AKrq'
-Executing synthesis in /home/lennart/.cache/rust-hls/a5b8d10d28aee175adc2a95c801ceed0-xj0rt2AKrq
++ echo 'Executing synthesis in /home/lennart/.cache/rust-hls/275d48fe30cfd5a66d37bcc2a3acac45-dqtQG7VQqx'
+Executing synthesis in /home/lennart/.cache/rust-hls/275d48fe30cfd5a66d37bcc2a3acac45-dqtQG7VQqx
 + export 'RUSTFLAGS=--emit=llvm-bc -C overflow-checks=off -C no-vectorize-loops -C target-cpu=generic -C panic=abort -C llvm-args=--opaque-pointers=false -C opt-level=3'
 + RUSTFLAGS='--emit=llvm-bc -C overflow-checks=off -C no-vectorize-loops -C target-cpu=generic -C panic=abort -C llvm-args=--opaque-pointers=false -C opt-level=3'
 + LLVM_BITCODE_FILES=($(cargo build --release -Z unstable-options --build-plan | jq '.invocations[].outputs[]' -r | grep -Po "^.*\.rlib$" | sed -E 's/lib([^\/]*)\.rlib/\1\.bc /' | tr -d '\n'))
@@ -18,15 +18,15 @@ Executing synthesis in /home/lennart/.cache/rust-hls/a5b8d10d28aee175adc2a95c801
    Compiling seq-macro v0.3.3
    Compiling keccak v0.1.4
    Compiling rust-keccak v0.1.0 (/home/lennart/Documents/bachelor-thesis/rust-keccak)
-   Compiling abddaeeadcacceedxjrtAKrq v1.0.0 (/home/lennart/.cache/rust-hls/a5b8d10d28aee175adc2a95c801ceed0-xj0rt2AKrq)
-warning: crate `abddaeeadcacceedxjrtAKrq` should have a snake case name
+   Compiling dfecfdadbccaacacdqtQGVQqx v1.0.0 (/home/lennart/.cache/rust-hls/275d48fe30cfd5a66d37bcc2a3acac45-dqtQG7VQqx)
+warning: crate `dfecfdadbccaacacdqtQGVQqx` should have a snake case name
   |
-  = help: convert the identifier to snake case: `abddaeeadcacceedxjrt_akrq`
+  = help: convert the identifier to snake case: `dfecfdadbccaacacdqt_qgvqqx`
   = note: `#[warn(non_snake_case)]` on by default
 
-warning: `abddaeeadcacceedxjrtAKrq` (lib) generated 1 warning
-    Finished release [optimized] target(s) in 1.29s
-+ llvm-link --opaque-pointers=false /home/lennart/.cache/rust-hls/target/release/deps/keccak-2ec801f7ea8c87f9.bc /home/lennart/.cache/rust-hls/target/release/deps/rust_keccak-fb0b27771bbf3a03.bc /home/lennart/.cache/rust-hls/target/release/deps/abddaeeadcacceedxjrtAKrq-9552366098988b59.bc
+warning: `dfecfdadbccaacacdqtQGVQqx` (lib) generated 1 warning
+    Finished release [optimized] target(s) in 1.65s
++ llvm-link --opaque-pointers=false /home/lennart/.cache/rust-hls/target/release/deps/keccak-2ec801f7ea8c87f9.bc /home/lennart/.cache/rust-hls/target/release/deps/rust_keccak-fb0b27771bbf3a03.bc /home/lennart/.cache/rust-hls/target/release/deps/dfecfdadbccaacacdqtQGVQqx-43298a1b9d20ca69.bc
 + llvm-extract --opaque-pointers=false --recursive --keep-const-init --func=keccak
 + llvm-dis --opaque-pointers=false -o result.ll
 + cp result.ll keccak.ll
@@ -66,21 +66,21 @@ Warning: This function uses unknown addresses: keccak
     DATA bus bitsize: 64
     ADDRESS bus bitsize: 32
     SIZE bus bitsize: 7
-    Internally allocated memory (no private memories): 0
-    Internally allocated memory: 192
+    Internally allocated memory (no private memories): 256
+    Internally allocated memory: 256
   Time to perform memory allocation: 0.00 seconds
 
 
   Module allocation information for function keccak:
     Number of complex operations: 51
     Number of complex operations: 51
-  Time to perform module allocation: 0.05 seconds
+  Time to perform module allocation: 0.07 seconds
 
 
   Scheduling Information of function keccak:
     Number of control steps: 55
-    Minimum slack: 2.9383999999999801
-    Estimated max frequency (MHz): 141.61096635323401
+    Minimum slack: 3.0819999999999723
+    Estimated max frequency (MHz): 144.55044810638856
   Time to perform scheduling: 0.02 seconds
 
 
@@ -91,42 +91,42 @@ Warning: This function uses unknown addresses: keccak
 
 
   Easy binding information for function keccak:
-    Bound operations:85/267
+    Bound operations:80/269
   Time to perform easy binding: 0.00 seconds
 
 
   Storage Value Information of function keccak:
-    Number of storage values inserted: 104
+    Number of storage values inserted: 105
   Time to compute storage value information: 0.00 seconds
 
-  Slack computed in 0.00 seconds
+  Slack computed in 0.01 seconds
   Weight computation completed in 0.00 seconds
   False-loop computation completed in 0.00 seconds
 
   Register binding information for function keccak:
-    Register allocation algorithm obtains a sub-optimal result: 78 registers(LB:53)
-  Time to perform register binding: 0.01 seconds
+    Register allocation algorithm obtains a sub-optimal result: 79 registers(LB:53)
+  Time to perform register binding: 0.00 seconds
 
   Clique covering computation completed in 0.01 seconds
 
   Module binding information for function keccak:
-    Number of modules instantiated: 218
-    Number of performance conflicts: 25
-    Estimated resources area (no Muxes and address logic): 7642
+    Number of modules instantiated: 219
+    Number of performance conflicts: 45
+    Estimated resources area (no Muxes and address logic): 7374
     Estimated area of MUX21: 896
-    Total estimated area: 8538
+    Total estimated area: 8270
     Estimated number of DSPs: 0
-  Time to perform module binding: 0.01 seconds
+  Time to perform module binding: 0.02 seconds
 
 
   Register binding information for function keccak:
-    Register allocation algorithm obtains a sub-optimal result: 78 registers(LB:53)
+    Register allocation algorithm obtains a sub-optimal result: 79 registers(LB:53)
   Time to perform register binding: 0.00 seconds
 
 
   Connection Binding Information for function keccak:
-    Number of allocated multiplexers (2-to-1 equivalent): 74
+    Number of allocated multiplexers (2-to-1 equivalent): 75
   Time to perform interconnection binding: 0.01 seconds
 
-  Total number of flip-flops in function keccak: 4129
+  Total number of flip-flops in function keccak: 4126
 + mv keccak.v result.v

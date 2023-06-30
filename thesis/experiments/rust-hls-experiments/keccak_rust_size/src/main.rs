@@ -99,7 +99,8 @@ fn run_test(test_name: &str, input: [u64; 25]) -> usize {
                 *thing = measured_cycles;
             },
             measured_cycles, // , "trace_abc.vcd"
-            max_cycles = 1000000
+            max_cycles = 1000000,
+            vcd_file = &format!("{}.vcd", TEST_NAME)
         );
     }
     let thing = cycles.lock().unwrap();

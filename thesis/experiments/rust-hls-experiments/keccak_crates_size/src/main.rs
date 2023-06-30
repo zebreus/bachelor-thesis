@@ -12,7 +12,9 @@ const TEST_NAME: &str = "keccak_crates_size";
 pub mod keccak_hls {
     #[hls(
         bambu_flag = "--channels-type=MEM_ACC_11 --channels-number=1 -Os --target=/home/lennart/Documents/bachelor-thesis/thesis/experiments/device.xml",
-        rust_flag = "-C opt-level=z"
+        rust_flag = "-C opt-level=z",
+        include_llvm_ir,
+        include_logs
     )]
     #[allow(unused)]
     pub unsafe extern "C" fn keccak(input_pointer: *mut u64) {
@@ -97,7 +99,8 @@ fn run_test(test_name: &str, input: [u64; 25]) -> usize {
                 *thing = measured_cycles;
             },
             measured_cycles, // , "trace_abc.vcd"
-            max_cycles = 1000000
+            max_cycles = 1000000,
+            vcd_file = &format!("{}.vcd", TEST_NAME)
         );
     }
     let thing = cycles.lock().unwrap();

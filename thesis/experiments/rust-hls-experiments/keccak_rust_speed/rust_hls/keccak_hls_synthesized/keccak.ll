@@ -10,7 +10,7 @@ target triple = "x86_64-unknown-linux-gnu"
 @alloc407 = hidden unnamed_addr constant <{ [85 x i8] }> <{ [85 x i8] c"/home/lennart/.cargo/registry/src/github.com-1ecc6299db9ec823/keccak-0.1.4/src/lib.rs" }>, align 1
 @alloc395 = hidden unnamed_addr constant <{ i8*, [16 x i8] }> <{ i8* getelementptr inbounds (<{ [85 x i8] }>, <{ [85 x i8] }>* @alloc407, i32 0, i32 0, i32 0), [16 x i8] c"U\00\00\00\00\00\00\00\EB\00\00\00\09\00\00\00" }>, align 8
 @alloc331 = hidden unnamed_addr constant <{ [192 x i8] }> <{ [192 x i8] c"\01\00\00\00\00\00\00\00\82\80\00\00\00\00\00\00\8A\80\00\00\00\00\00\80\00\80\00\80\00\00\00\80\8B\80\00\00\00\00\00\00\01\00\00\80\00\00\00\00\81\80\00\80\00\00\00\80\09\80\00\00\00\00\00\80\8A\00\00\00\00\00\00\00\88\00\00\00\00\00\00\00\09\80\00\80\00\00\00\00\0A\00\00\80\00\00\00\00\8B\80\00\80\00\00\00\00\8B\00\00\00\00\00\00\80\89\80\00\00\00\00\00\80\03\80\00\00\00\00\00\80\02\80\00\00\00\00\00\80\80\00\00\00\00\00\00\80\0A\80\00\00\00\00\00\00\0A\00\00\80\00\00\00\80\81\80\00\80\00\00\00\80\80\80\00\00\00\00\00\80\01\00\00\80\00\00\00\00\08\80\00\80\00\00\00\80" }>, align 8
-@anon.ae87fea7d3f4a48b2c4e407fb0e59ffa.0 = hidden unnamed_addr constant <{ [192 x i8] }> <{ [192 x i8] c"\01\00\00\00\00\00\00\00\82\80\00\00\00\00\00\00\8A\80\00\00\00\00\00\80\00\80\00\80\00\00\00\80\8B\80\00\00\00\00\00\00\01\00\00\80\00\00\00\00\81\80\00\80\00\00\00\80\09\80\00\00\00\00\00\80\8A\00\00\00\00\00\00\00\88\00\00\00\00\00\00\00\09\80\00\80\00\00\00\00\0A\00\00\80\00\00\00\00\8B\80\00\80\00\00\00\00\8B\00\00\00\00\00\00\80\89\80\00\00\00\00\00\80\03\80\00\00\00\00\00\80\02\80\00\00\00\00\00\80\80\00\00\00\00\00\00\80\0A\80\00\00\00\00\00\00\0A\00\00\80\00\00\00\80\81\80\00\80\00\00\00\80\80\80\00\00\00\00\00\80\01\00\00\80\00\00\00\00\08\80\00\80\00\00\00\80" }>, align 8
+@anon.81d2408192f774ffc0f511fc69066f5d.0 = hidden unnamed_addr constant <{ [192 x i8] }> <{ [192 x i8] c"\01\00\00\00\00\00\00\00\82\80\00\00\00\00\00\00\8A\80\00\00\00\00\00\80\00\80\00\80\00\00\00\80\8B\80\00\00\00\00\00\00\01\00\00\80\00\00\00\00\81\80\00\80\00\00\00\80\09\80\00\00\00\00\00\80\8A\00\00\00\00\00\00\00\88\00\00\00\00\00\00\00\09\80\00\80\00\00\00\00\0A\00\00\80\00\00\00\00\8B\80\00\80\00\00\00\00\8B\00\00\00\00\00\00\80\89\80\00\00\00\00\00\80\03\80\00\00\00\00\00\80\02\80\00\00\00\00\00\80\80\00\00\00\00\00\00\80\0A\80\00\00\00\00\00\00\0A\00\00\80\00\00\00\80\81\80\00\80\00\00\00\80\80\80\00\00\00\00\00\80\01\00\00\80\00\00\00\00\08\80\00\80\00\00\00\80" }>, align 8
 
 ; Function Attrs: nonlazybind
 declare i32 @rust_eh_personality(...) unnamed_addr #0
@@ -19,7 +19,7 @@ declare i32 @rust_eh_personality(...) unnamed_addr #0
 declare i64 @llvm.fshl.i64(i64, i64, i64) #1
 
 ; Function Attrs: nounwind nonlazybind
-define void @_ZN11rust_keccak6keccak6keccak17h5798c7dfdadb5aa6E(i64* noundef %a) unnamed_addr #2 personality i32 (i32, i32, i64, %"unwind::libunwind::_Unwind_Exception"*, %"unwind::libunwind::_Unwind_Context"*)* bitcast (i32 (...)* @rust_eh_personality to i32 (i32, i32, i64, %"unwind::libunwind::_Unwind_Exception"*, %"unwind::libunwind::_Unwind_Context"*)*) {
+define void @_ZN11rust_keccak6keccak6keccak17h2679fb9ef1213577E(i64* noundef %a) unnamed_addr #2 personality i32 (i32, i32, i64, %"unwind::libunwind::_Unwind_Exception"*, %"unwind::libunwind::_Unwind_Context"*)* bitcast (i32 (...)* @rust_eh_personality to i32 (i32, i32, i64, %"unwind::libunwind::_Unwind_Exception"*, %"unwind::libunwind::_Unwind_Context"*)*) {
 start:
   %0 = getelementptr inbounds i64, i64* %a, i64 5
   %1 = getelementptr inbounds i64, i64* %a, i64 10
@@ -70,9 +70,9 @@ start:
   %_18.2.4.i.pre = load i64, i64* %21, align 8
   %_18.3.4.i.pre = load i64, i64* %22, align 8
   %_18.4.4.i.pre = load i64, i64* %23, align 8
-  br label %_ZN11rust_keccak6keccak4iota17hb795299ece32111cE.exit
+  br label %_ZN11rust_keccak6keccak4iota17h5c260f57d9577ed6E.exit
 
-bb4:                                              ; preds = %_ZN11rust_keccak6keccak4iota17hb795299ece32111cE.exit
+bb4:                                              ; preds = %_ZN11rust_keccak6keccak4iota17h5c260f57d9577ed6E.exit
   store i64 %99, i64* %4, align 8
   store i64 %100, i64* %9, align 8
   store i64 %101, i64* %14, align 8
@@ -100,33 +100,33 @@ bb4:                                              ; preds = %_ZN11rust_keccak6ke
   store i64 %125, i64* %a, align 8
   ret void
 
-_ZN11rust_keccak6keccak4iota17hb795299ece32111cE.exit: ; preds = %_ZN11rust_keccak6keccak4iota17hb795299ece32111cE.exit, %start
-  %_18.4.4.i = phi i64 [ %_18.4.4.i.pre, %start ], [ %122, %_ZN11rust_keccak6keccak4iota17hb795299ece32111cE.exit ]
-  %_18.3.4.i = phi i64 [ %_18.3.4.i.pre, %start ], [ %117, %_ZN11rust_keccak6keccak4iota17hb795299ece32111cE.exit ]
-  %_18.2.4.i = phi i64 [ %_18.2.4.i.pre, %start ], [ %112, %_ZN11rust_keccak6keccak4iota17hb795299ece32111cE.exit ]
-  %_18.1.4.i = phi i64 [ %_18.1.4.i.pre, %start ], [ %107, %_ZN11rust_keccak6keccak4iota17hb795299ece32111cE.exit ]
-  %_18.4125.i = phi i64 [ %_18.4125.i.pre, %start ], [ %102, %_ZN11rust_keccak6keccak4iota17hb795299ece32111cE.exit ]
-  %_18.4.3.i = phi i64 [ %_18.4.3.i.pre, %start ], [ %121, %_ZN11rust_keccak6keccak4iota17hb795299ece32111cE.exit ]
-  %_18.3.3.i = phi i64 [ %_18.3.3.i.pre, %start ], [ %116, %_ZN11rust_keccak6keccak4iota17hb795299ece32111cE.exit ]
-  %_18.2.3.i = phi i64 [ %_18.2.3.i.pre, %start ], [ %111, %_ZN11rust_keccak6keccak4iota17hb795299ece32111cE.exit ]
-  %_18.1.3.i = phi i64 [ %_18.1.3.i.pre, %start ], [ %106, %_ZN11rust_keccak6keccak4iota17hb795299ece32111cE.exit ]
-  %_18.3124.i = phi i64 [ %_18.3124.i.pre, %start ], [ %101, %_ZN11rust_keccak6keccak4iota17hb795299ece32111cE.exit ]
-  %_18.4.2.i = phi i64 [ %_18.4.2.i.pre, %start ], [ %120, %_ZN11rust_keccak6keccak4iota17hb795299ece32111cE.exit ]
-  %_18.3.2.i = phi i64 [ %_18.3.2.i.pre, %start ], [ %115, %_ZN11rust_keccak6keccak4iota17hb795299ece32111cE.exit ]
-  %_18.2.2.i = phi i64 [ %_18.2.2.i.pre, %start ], [ %110, %_ZN11rust_keccak6keccak4iota17hb795299ece32111cE.exit ]
-  %_18.1.2.i = phi i64 [ %_18.1.2.i.pre, %start ], [ %105, %_ZN11rust_keccak6keccak4iota17hb795299ece32111cE.exit ]
-  %_18.2123.i = phi i64 [ %_18.2123.i.pre, %start ], [ %100, %_ZN11rust_keccak6keccak4iota17hb795299ece32111cE.exit ]
-  %_18.4.1.i = phi i64 [ %_18.4.1.i.pre, %start ], [ %119, %_ZN11rust_keccak6keccak4iota17hb795299ece32111cE.exit ]
-  %_18.3.1.i = phi i64 [ %_18.3.1.i.pre, %start ], [ %114, %_ZN11rust_keccak6keccak4iota17hb795299ece32111cE.exit ]
-  %_18.2.1.i = phi i64 [ %_18.2.1.i.pre, %start ], [ %109, %_ZN11rust_keccak6keccak4iota17hb795299ece32111cE.exit ]
-  %_18.1.1.i = phi i64 [ %_18.1.1.i.pre, %start ], [ %104, %_ZN11rust_keccak6keccak4iota17hb795299ece32111cE.exit ]
-  %_18.1122.i = phi i64 [ %_18.1122.i.pre, %start ], [ %99, %_ZN11rust_keccak6keccak4iota17hb795299ece32111cE.exit ]
-  %_18.4.i = phi i64 [ %_18.4.i.pre, %start ], [ %118, %_ZN11rust_keccak6keccak4iota17hb795299ece32111cE.exit ]
-  %_18.3.i = phi i64 [ %_18.3.i.pre, %start ], [ %113, %_ZN11rust_keccak6keccak4iota17hb795299ece32111cE.exit ]
-  %_18.2.i = phi i64 [ %_18.2.i.pre, %start ], [ %108, %_ZN11rust_keccak6keccak4iota17hb795299ece32111cE.exit ]
-  %_18.1.i = phi i64 [ %_18.1.i.pre, %start ], [ %103, %_ZN11rust_keccak6keccak4iota17hb795299ece32111cE.exit ]
-  %_18.i = phi i64 [ %_18.i.pre, %start ], [ %125, %_ZN11rust_keccak6keccak4iota17hb795299ece32111cE.exit ]
-  %iter.sroa.0.019 = phi i64 [ 0, %start ], [ %123, %_ZN11rust_keccak6keccak4iota17hb795299ece32111cE.exit ]
+_ZN11rust_keccak6keccak4iota17h5c260f57d9577ed6E.exit: ; preds = %_ZN11rust_keccak6keccak4iota17h5c260f57d9577ed6E.exit, %start
+  %_18.4.4.i = phi i64 [ %_18.4.4.i.pre, %start ], [ %122, %_ZN11rust_keccak6keccak4iota17h5c260f57d9577ed6E.exit ]
+  %_18.3.4.i = phi i64 [ %_18.3.4.i.pre, %start ], [ %117, %_ZN11rust_keccak6keccak4iota17h5c260f57d9577ed6E.exit ]
+  %_18.2.4.i = phi i64 [ %_18.2.4.i.pre, %start ], [ %112, %_ZN11rust_keccak6keccak4iota17h5c260f57d9577ed6E.exit ]
+  %_18.1.4.i = phi i64 [ %_18.1.4.i.pre, %start ], [ %107, %_ZN11rust_keccak6keccak4iota17h5c260f57d9577ed6E.exit ]
+  %_18.4125.i = phi i64 [ %_18.4125.i.pre, %start ], [ %102, %_ZN11rust_keccak6keccak4iota17h5c260f57d9577ed6E.exit ]
+  %_18.4.3.i = phi i64 [ %_18.4.3.i.pre, %start ], [ %121, %_ZN11rust_keccak6keccak4iota17h5c260f57d9577ed6E.exit ]
+  %_18.3.3.i = phi i64 [ %_18.3.3.i.pre, %start ], [ %116, %_ZN11rust_keccak6keccak4iota17h5c260f57d9577ed6E.exit ]
+  %_18.2.3.i = phi i64 [ %_18.2.3.i.pre, %start ], [ %111, %_ZN11rust_keccak6keccak4iota17h5c260f57d9577ed6E.exit ]
+  %_18.1.3.i = phi i64 [ %_18.1.3.i.pre, %start ], [ %106, %_ZN11rust_keccak6keccak4iota17h5c260f57d9577ed6E.exit ]
+  %_18.3124.i = phi i64 [ %_18.3124.i.pre, %start ], [ %101, %_ZN11rust_keccak6keccak4iota17h5c260f57d9577ed6E.exit ]
+  %_18.4.2.i = phi i64 [ %_18.4.2.i.pre, %start ], [ %120, %_ZN11rust_keccak6keccak4iota17h5c260f57d9577ed6E.exit ]
+  %_18.3.2.i = phi i64 [ %_18.3.2.i.pre, %start ], [ %115, %_ZN11rust_keccak6keccak4iota17h5c260f57d9577ed6E.exit ]
+  %_18.2.2.i = phi i64 [ %_18.2.2.i.pre, %start ], [ %110, %_ZN11rust_keccak6keccak4iota17h5c260f57d9577ed6E.exit ]
+  %_18.1.2.i = phi i64 [ %_18.1.2.i.pre, %start ], [ %105, %_ZN11rust_keccak6keccak4iota17h5c260f57d9577ed6E.exit ]
+  %_18.2123.i = phi i64 [ %_18.2123.i.pre, %start ], [ %100, %_ZN11rust_keccak6keccak4iota17h5c260f57d9577ed6E.exit ]
+  %_18.4.1.i = phi i64 [ %_18.4.1.i.pre, %start ], [ %119, %_ZN11rust_keccak6keccak4iota17h5c260f57d9577ed6E.exit ]
+  %_18.3.1.i = phi i64 [ %_18.3.1.i.pre, %start ], [ %114, %_ZN11rust_keccak6keccak4iota17h5c260f57d9577ed6E.exit ]
+  %_18.2.1.i = phi i64 [ %_18.2.1.i.pre, %start ], [ %109, %_ZN11rust_keccak6keccak4iota17h5c260f57d9577ed6E.exit ]
+  %_18.1.1.i = phi i64 [ %_18.1.1.i.pre, %start ], [ %104, %_ZN11rust_keccak6keccak4iota17h5c260f57d9577ed6E.exit ]
+  %_18.1122.i = phi i64 [ %_18.1122.i.pre, %start ], [ %99, %_ZN11rust_keccak6keccak4iota17h5c260f57d9577ed6E.exit ]
+  %_18.4.i = phi i64 [ %_18.4.i.pre, %start ], [ %118, %_ZN11rust_keccak6keccak4iota17h5c260f57d9577ed6E.exit ]
+  %_18.3.i = phi i64 [ %_18.3.i.pre, %start ], [ %113, %_ZN11rust_keccak6keccak4iota17h5c260f57d9577ed6E.exit ]
+  %_18.2.i = phi i64 [ %_18.2.i.pre, %start ], [ %108, %_ZN11rust_keccak6keccak4iota17h5c260f57d9577ed6E.exit ]
+  %_18.1.i = phi i64 [ %_18.1.i.pre, %start ], [ %103, %_ZN11rust_keccak6keccak4iota17h5c260f57d9577ed6E.exit ]
+  %_18.i = phi i64 [ %_18.i.pre, %start ], [ %125, %_ZN11rust_keccak6keccak4iota17h5c260f57d9577ed6E.exit ]
+  %iter.sroa.0.019 = phi i64 [ 0, %start ], [ %123, %_ZN11rust_keccak6keccak4iota17h5c260f57d9577ed6E.exit ]
   %24 = xor i64 %_18.1.i, %_18.i
   %25 = xor i64 %24, %_18.2.i
   %26 = xor i64 %25, %_18.3.i
@@ -282,17 +282,17 @@ _ZN11rust_keccak6keccak4iota17hb795299ece32111cE.exit: ; preds = %_ZN11rust_kecc
   %_21.4.4.i = and i64 %89, %_22.4.4.i
   %122 = xor i64 %_21.4.4.i, %82
   %123 = add nuw nsw i64 %iter.sroa.0.019, 1
-  %124 = getelementptr inbounds [24 x i64], [24 x i64]* bitcast (<{ [192 x i8] }>* @anon.ae87fea7d3f4a48b2c4e407fb0e59ffa.0 to [24 x i64]*), i64 0, i64 %iter.sroa.0.019
+  %124 = getelementptr inbounds [24 x i64], [24 x i64]* bitcast (<{ [192 x i8] }>* @anon.81d2408192f774ffc0f511fc69066f5d.0 to [24 x i64]*), i64 0, i64 %iter.sroa.0.019
   %_3.i12 = load i64, i64* %124, align 8, !noundef !2
   %125 = xor i64 %_3.i12, %98
   %exitcond.not = icmp eq i64 %123, 24
-  br i1 %exitcond.not, label %bb4, label %_ZN11rust_keccak6keccak4iota17hb795299ece32111cE.exit
+  br i1 %exitcond.not, label %bb4, label %_ZN11rust_keccak6keccak4iota17h5c260f57d9577ed6E.exit
 }
 
 ; Function Attrs: nounwind nonlazybind
 define void @keccak(i64* noundef %input_pointer) unnamed_addr #2 {
 start:
-  tail call void @_ZN11rust_keccak6keccak6keccak17h5798c7dfdadb5aa6E(i64* noundef %input_pointer) #3
+  tail call void @_ZN11rust_keccak6keccak6keccak17h2679fb9ef1213577E(i64* noundef %input_pointer) #3
   ret void
 }
 

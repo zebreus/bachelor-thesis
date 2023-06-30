@@ -1,11 +1,11 @@
 ++ grep -oP '(?<=name = ")[^"]*' Cargo.toml
-+ CRATE_NAME=feeafffdaddaTYxIrfDypn
-++ echo feeafffdaddaTYxIrfDypn
++ CRATE_NAME=fdefababafavRoXHcg
+++ echo fdefababafavRoXHcg
 ++ tr - _
-+ CRATE_NAME_UNDERSCORED=feeafffdaddaTYxIrfDypn
++ CRATE_NAME_UNDERSCORED=fdefababafavRoXHcg
 ++ pwd
-+ echo 'Executing synthesis in /home/lennart/.cache/rust-hls/62fee3aff2fd47a2855d666836d31a12-TYxIrfDypn'
-Executing synthesis in /home/lennart/.cache/rust-hls/62fee3aff2fd47a2855d666836d31a12-TYxIrfDypn
++ echo 'Executing synthesis in /home/lennart/.cache/rust-hls/f55d4e2995391f46a14ba3ba0fa19953-v3Ro7XH4cg'
+Executing synthesis in /home/lennart/.cache/rust-hls/f55d4e2995391f46a14ba3ba0fa19953-v3Ro7XH4cg
 + export 'RUSTFLAGS=--emit=llvm-bc -C overflow-checks=off -C no-vectorize-loops -C target-cpu=generic -C panic=abort -C llvm-args=--opaque-pointers=false -C opt-level=z'
 + RUSTFLAGS='--emit=llvm-bc -C overflow-checks=off -C no-vectorize-loops -C target-cpu=generic -C panic=abort -C llvm-args=--opaque-pointers=false -C opt-level=z'
 + LLVM_BITCODE_FILES=($(cargo build --release -Z unstable-options --build-plan | jq '.invocations[].outputs[]' -r | grep -Po "^.*\.rlib$" | sed -E 's/lib([^\/]*)\.rlib/\1\.bc /' | tr -d '\n'))
@@ -16,18 +16,17 @@ Executing synthesis in /home/lennart/.cache/rust-hls/62fee3aff2fd47a2855d666836d
 ++ tr -d '\n'
 + cargo build --release -Z unstable-options
    Compiling keccak v0.1.4
-   Compiling seq-macro v0.3.3
    Compiling rust-keccak v0.1.0 (/home/lennart/Documents/bachelor-thesis/rust-keccak)
-   Compiling feeafffdaddaTYxIrfDypn v1.0.0 (/home/lennart/.cache/rust-hls/62fee3aff2fd47a2855d666836d31a12-TYxIrfDypn)
-warning: crate `feeafffdaddaTYxIrfDypn` should have a snake case name
+   Compiling fdefababafavRoXHcg v1.0.0 (/home/lennart/.cache/rust-hls/f55d4e2995391f46a14ba3ba0fa19953-v3Ro7XH4cg)
+warning: crate `fdefababafavRoXHcg` should have a snake case name
   |
-  = help: convert the identifier to snake case: `feeafffdadda_tyx_irf_dypn`
+  = help: convert the identifier to snake case: `fdefababafav_ro_xhcg`
   = note: `#[warn(non_snake_case)]` on by default
 
-warning: `feeafffdaddaTYxIrfDypn` (lib) generated 1 warning
-    Finished release [optimized] target(s) in 1.04s
+warning: `fdefababafavRoXHcg` (lib) generated 1 warning
+    Finished release [optimized] target(s) in 0.21s
++ llvm-link --opaque-pointers=false /home/lennart/.cache/rust-hls/target/release/deps/keccak-2ec801f7ea8c87f9.bc /home/lennart/.cache/rust-hls/target/release/deps/rust_keccak-fb0b27771bbf3a03.bc /home/lennart/.cache/rust-hls/target/release/deps/fdefababafavRoXHcg-4f2caec7e2d202b5.bc
 + llvm-extract --opaque-pointers=false --recursive --keep-const-init --func=keccak
-+ llvm-link --opaque-pointers=false /home/lennart/.cache/rust-hls/target/release/deps/keccak-2ec801f7ea8c87f9.bc /home/lennart/.cache/rust-hls/target/release/deps/rust_keccak-fb0b27771bbf3a03.bc /home/lennart/.cache/rust-hls/target/release/deps/feeafffdaddaTYxIrfDypn-9ab9bdfa1fa900cd.bc
 + llvm-dis --opaque-pointers=false -o result.ll
 + cp result.ll keccak.ll
 + bambu --simulator=VERILATOR result.ll --top-fname=keccak --clock-name=clk --compiler=I386_CLANG16 --channels-type=MEM_ACC_11 --channels-number=1 -Os --target=/home/lennart/Documents/bachelor-thesis/thesis/experiments/device.xml
@@ -66,67 +65,67 @@ Warning: This function uses unknown addresses: keccak
     DATA bus bitsize: 64
     ADDRESS bus bitsize: 32
     SIZE bus bitsize: 7
-    Internally allocated memory (no private memories): 0
-    Internally allocated memory: 537
+    Internally allocated memory (no private memories): 256
+    Internally allocated memory: 256
   Time to perform memory allocation: 0.00 seconds
 
 
   Module allocation information for function keccak:
-    Number of complex operations: 34
-    Number of complex operations: 34
-  Time to perform module allocation: 0.22 seconds
+    Number of complex operations: 51
+    Number of complex operations: 51
+  Time to perform module allocation: 0.05 seconds
 
 
   Scheduling Information of function keccak:
-    Number of control steps: 70
-    Minimum slack: 0.086200000000026478
-    Estimated max frequency (MHz): 100.86949504730806
-  Time to perform scheduling: 0.11 seconds
+    Number of control steps: 55
+    Minimum slack: 3.0819999999999723
+    Estimated max frequency (MHz): 144.55044810638856
+  Time to perform scheduling: 0.02 seconds
 
 
   State Transition Graph Information of function keccak:
-    Number of states: 69
+    Number of states: 54
     Done port is registered
-  Time to perform creation of STG: 0.01 seconds
+  Time to perform creation of STG: 0.00 seconds
 
 
   Easy binding information for function keccak:
-    Bound operations:344/1383
+    Bound operations:80/269
   Time to perform easy binding: 0.00 seconds
 
 
   Storage Value Information of function keccak:
-    Number of storage values inserted: 184
+    Number of storage values inserted: 105
   Time to compute storage value information: 0.00 seconds
 
-  Slack computed in 0.01 seconds
-  Weight computation completed in 0.06 seconds
+  Slack computed in 0.00 seconds
+  Weight computation completed in 0.01 seconds
   False-loop computation completed in 0.00 seconds
 
   Register binding information for function keccak:
-    Register allocation algorithm obtains a sub-optimal result: 165 registers(LB:32)
-  Time to perform register binding: 0.01 seconds
+    Register allocation algorithm obtains a sub-optimal result: 79 registers(LB:53)
+  Time to perform register binding: 0.00 seconds
 
   Clique covering computation completed in 0.01 seconds
 
   Module binding information for function keccak:
-    Number of modules instantiated: 1367
-    Number of performance conflicts: 28872
-    Estimated resources area (no Muxes and address logic): 10879
-    Estimated area of MUX21: 352
-    Total estimated area: 11231
+    Number of modules instantiated: 219
+    Number of performance conflicts: 45
+    Estimated resources area (no Muxes and address logic): 7374
+    Estimated area of MUX21: 896
+    Total estimated area: 8270
     Estimated number of DSPs: 0
-  Time to perform module binding: 0.09 seconds
+  Time to perform module binding: 0.02 seconds
 
 
   Register binding information for function keccak:
-    Register allocation algorithm obtains a sub-optimal result: 165 registers(LB:32)
-  Time to perform register binding: 0.01 seconds
+    Register allocation algorithm obtains a sub-optimal result: 79 registers(LB:53)
+  Time to perform register binding: 0.00 seconds
 
 
   Connection Binding Information for function keccak:
-    Number of allocated multiplexers (2-to-1 equivalent): 54
-  Time to perform interconnection binding: 0.01 seconds
+    Number of allocated multiplexers (2-to-1 equivalent): 75
+  Time to perform interconnection binding: 0.00 seconds
 
-  Total number of flip-flops in function keccak: 4508
+  Total number of flip-flops in function keccak: 4126
 + mv keccak.v result.v

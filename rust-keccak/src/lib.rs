@@ -1,5 +1,7 @@
 mod keccak;
 mod keccak_crate;
+// mod keccak_fully_expanded;
+// pub use keccak_fully_expanded::keccak_fully_expanded;
 mod keccak_idiomatic;
 
 pub use keccak::keccak;
