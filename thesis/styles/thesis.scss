@@ -1,5 +1,13 @@
 @import 'https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Nanum+Gothic+Coding&family=Spectral:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,200;1,300;1,400;1,500;1,600;1,700;1,800';
 
+@font-face {
+    font-family: 'Spectral Mono';
+    font-weight: 400;
+    font-style: normal;
+    src: url("styles/Spectral-Mono.woff2") format('woff2');
+}
+
+
 @import './default.scss';
 @import './print.scss';
 
@@ -53,7 +61,7 @@ $page-margin-left: (
 // Fix symbolator fonts
 .kroki svg {
     .fnt2 {
-        font-family: 'IBM Plex Mono';
+        font-family: 'Spectral Mono';
         font-weight: 400;
         font-size: 0.85rem;
     }
@@ -99,6 +107,41 @@ $page-margin-left: (
     .title {
         break-before: avoid;
         page-break-before: avoid;
+    }
+}
+
+.listingblock {
+    .content {
+        break-before: avoid;
+        page-break-before: avoid;
+        break-inside: auto !important;
+    }
+
+    .title {
+        break-after: avoid;
+        page-break-after: avoid;
+    }
+}
+
+@media print {
+    .listingblock .pseudo-pre.highlightjs>code.hljs[data-split-to] {
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+        border-bottom-style: none;
+    }
+
+    .listingblock .pseudo-pre.highlightjs>code.hljs[data-split-from] {
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+        border-top-style: none;
+    }
+
+    .listingblock.linenums .line-number {
+        opacity: 0.35;
+        user-select: none;
+        pointer-events: none;
+        cursor: not-allowed;
+        -webkit-touch-callout: none;
     }
 }
 
@@ -371,6 +414,7 @@ ul.bibliography {
 
     &>li {
         a:first-child {
+            margin-left: -2rem;
             position: absolute;
             left: 0;
             color: inherit;

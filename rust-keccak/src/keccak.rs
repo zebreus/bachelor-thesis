@@ -47,7 +47,8 @@ const KECCAK_ROUND_CONSTANTS: [u64; NR_ROUNDS] = [
 const NR_LANES: usize = 25;
 
 const KECCAK_RHO_OFFSETS: [u8; NR_LANES] = [
-    0, 1, 62, 28, 27, 36, 44, 6, 55, 20, 3, 10, 43, 25, 39, 41, 45, 15, 21, 8, 18, 2, 61, 56, 14,
+    0, 1, 62, 28, 27, 36, 44, 6, 55, 20, 3, 10, 43, 25, 39, 41, 45, 15, 21, 8,
+    18, 2, 61, 56, 14,
 ];
 
 macro_rules! index {
@@ -88,7 +89,8 @@ unsafe fn theta(a: *mut u64) -> () {
 unsafe fn rho(a: *mut u64) -> () {
     for x in 0..5 {
         for y in 0..5 {
-            *a.add(index!(x, y)) = rol64!(*a.add(index!(x, y)), KECCAK_RHO_OFFSETS[index!(x, y)]);
+            *a.add(index!(x, y)) =
+                rol64!(*a.add(index!(x, y)), KECCAK_RHO_OFFSETS[index!(x, y)]);
         }
     }
 }
@@ -114,7 +116,8 @@ unsafe fn chi(a: *mut u64) -> () {
 
     for y in 0..5 {
         for x in 0..5 {
-            c[x] = *a.add(index!(x, y)) ^ ((!*a.add(index!(x + 1, y))) & *a.add(index!(x + 2, y)));
+            c[x] = *a.add(index!(x, y))
+                ^ ((!*a.add(index!(x + 1, y))) & *a.add(index!(x + 2, y)));
         }
         for x in 0..5 {
             *a.add(index!(x, y)) = c[x];

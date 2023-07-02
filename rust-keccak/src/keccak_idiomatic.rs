@@ -39,7 +39,8 @@ const KECCAK_ROUND_CONSTANTS: [u64; 24] = [
 ];
 
 const KECCAK_RHO_OFFSETS: [u8; 25] = [
-    0, 1, 62, 28, 27, 36, 44, 6, 55, 20, 3, 10, 43, 25, 39, 41, 45, 15, 21, 8, 18, 2, 61, 56, 14,
+    0, 1, 62, 28, 27, 36, 44, 6, 55, 20, 3, 10, 43, 25, 39, 41, 45, 15, 21, 8,
+    18, 2, 61, 56, 14,
 ];
 
 macro_rules! index {
@@ -80,7 +81,8 @@ fn theta(a: &mut [u64; 25]) -> () {
 fn rho(a: &mut [u64; 25]) -> () {
     for x in 0..5 {
         for y in 0..5 {
-            a[index!(x, y)] = rol64!(a[index!(x, y)], KECCAK_RHO_OFFSETS[index!(x, y)]);
+            a[index!(x, y)] =
+                rol64!(a[index!(x, y)], KECCAK_RHO_OFFSETS[index!(x, y)]);
         }
     }
 }
@@ -106,7 +108,8 @@ fn chi(a: &mut [u64; 25]) -> () {
 
     for y in 0..5 {
         for x in 0..5 {
-            c[x] = a[index!(x, y)] ^ ((!a[index!(x + 1, y)]) & a[index!(x + 2, y)]);
+            c[x] = a[index!(x, y)]
+                ^ ((!a[index!(x + 1, y)]) & a[index!(x + 2, y)]);
         }
         for x in 0..5 {
             a[index!(x, y)] = c[x];

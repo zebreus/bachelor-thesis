@@ -5,7 +5,7 @@ $serif-font-family: $text-font-family;
 // Used for captions and stuff
 $sans-serif-font-family: "IBM Plex", monospace;
 // Used for code
-$mono-font-family: "IBM Plex Mono", monospace;
+$mono-font-family: "Spectral Mono", monospace;
 
 
 
@@ -17,7 +17,6 @@ $large: $base-font-size * (14 / 11);
 $very-large: $base-font-size * (17 / 11);
 // Latex huge
 $huge: $base-font-size * (20 / 11);
-
 
 // Used for headings
 // Default: 2.125em
@@ -35,6 +34,9 @@ $h6-font-size: $base-font-size;
 // Used for paragraphs and other things
 // Default: 1em
 $p-font-size: $base-font-size;
+// Used for listings
+$code-font-size: 0.9 * $base-font-size;
+$code-line-height: 1.25;
 
 // Font size used for small text
 // Default: 60%

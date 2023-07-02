@@ -3,9 +3,10 @@
 :imagesdir: images
 :source-highlighter: highlight.js
 :rouge-style: github
-:highlightjs-languages: rust, verilog
 // Available themes: https://highlightjs.org/static/demo/
-:highlightjs-theme: ../../11.8.0/styles/gradient-light
+// :highlightjs-theme: ../../11.8.0/styles/dark
+:highlightjs-theme: thesis
+:highlightjsdir: highlightjs
 :toclevels: 2
 :stem:
 :toc: macro
@@ -234,7 +235,7 @@ The use of HDLs is mostly limited to hardware engineers
 In SystemVerilog units of logic can be encapsulated into modules. Modules can have inputs, outputs and internal state. The following listing shows a simple module that implements a blinker. The blinker has a clock input and a blinker output. At every rising edge of the clock a internal counter is incremented by one. Once the counter reaches a certain value, the blinker output is toggled. The counter is reset to zero when the blinker output is toggled.
 
 .Simple blinker module in SystemVerilog
-[source,verilog]
+[source.linenums,verilog]
 ----
 include::systemverilog-blinker/blinker.sv[]
 ----
@@ -242,7 +243,7 @@ include::systemverilog-blinker/blinker.sv[]
 Verification in SystemVerilog can be achieved by using testbenches that instantiate the module under test and exercise its inputs. Listing XXX shows a testbench for the blinker module. The testbench instantiates the blinker module and connects it to a clock signal. It also asserts that the blinker output toggles every 10 clock cycles.
 
 .Testbench for the blinker module in SystemVerilog
-[source,verilog]
+[source.linenums,verilog]
 ----
 include::systemverilog-blinker/blinker_tb.sv[]
 ----
@@ -264,7 +265,7 @@ There are multiple modern HDLs that try to improve on the shortcomings of Verilo
 rust-hdl is a Rust crate that allows describing RTL logic in Rust. The logic can then be transpiled to Verilog. rust-hdl also includes tools for simulation and verification. Because a rust-hdl based design is just a Rust program, it can use most of the Rust ecosystem features. This includes the Rust testing framework for verification and simulation. It also makes it possible to reuse and share designs using the Rust packagemanager cargo. <<rusthdl>>
 
 .rust-hdl struct for a simple blinker module.
-[source,rust]
+[source.linenums,rust]
 ----
 include::rusthdl-blinker/src/blinker.rs[tag=rust-hdl-struct]
 ----
@@ -282,7 +283,7 @@ The combinational logic that connects these signals is described in the update f
 <<rusthdl>> 
 
 .rust-hdl update function for the blinker.
-[source,rust]
+[source.linenums,rust]
 ----
 include::rusthdl-blinker/src/blinker.rs[tag=rust-hdl-logic]
 ----
@@ -290,7 +291,7 @@ include::rusthdl-blinker/src/blinker.rs[tag=rust-hdl-logic]
 rust-hdl also enforces an additional set of semantic rules about what the update function can contain. For example it does not allow undriven nets, so there must be at least one assignment to the `.next` value of every field. If there are multiple assignment to the next value of a signal, the last one is valid, like in normal Rust. rust-hdl also forbids to use the `.next` value on the right side of an expression. rust-hdl enforces these rules at compiletime and generates somewhat helpful error messages. <<rusthdl>> An example for a update function is shown above in listing XXX.
 
 .Simulating and verifying the blinker
-[source,rust]
+[source.linenums,rust]
 ----
 include::rusthdl-blinker/src/blinker.rs[tag=rust-hdl-test]
 ----
@@ -298,7 +299,7 @@ include::rusthdl-blinker/src/blinker.rs[tag=rust-hdl-test]
 The Rust unit testing framework can be used to simulate and verify rust-hdl modules. Listing XXX shows a testcase that simulates and verifies that the blinker module toggles its output with the specified frequency (10 cycles in that case). The test case can be run with `cargo test` like any other Rust unit test.
 
 .Generating verilog from the rusthdl blinker
-[source,rust]
+[source.linenums,rust]
 ----
 include::rusthdl-blinker/src/main.rs[tag=generate-verilog]
 ----
@@ -487,7 +488,7 @@ The basic toolchain is relativly straightforward. In a first step the Rust compi
 This toolchain can be used to synthesize Rust functions. The following section will show how a example Rust function can be synthesized. 
 
 .`minmax` function in Rust
-[source#minmax-rust-listing,rust]
+[source#minmax-rust-listing.linenums,rust]
 ----
 include::../rust-minmax/src/minmax.rs[tag=function]
 ----
@@ -501,7 +502,7 @@ The function takes a pointer to an array and its size instead of a rust slice, b
 Inside the function the pointer and size are converted to a slice (`input`). Local variables are defined for the minimum and maximum values (`local_max` and `local_min`). The function then iterates over the slice and updates the local minimum and maximum values if a smaller or larger value is found. Finally the local minimum and maximum values are written to the memory locations pointed to by `out_max` and `out_min`. 
 
 .Compile Rust to LLVM IR
-[source,console]
+[source,shell]
 ----
 rustc \
   src/minmax.rs -o minmax.ll --crate-type=lib \
@@ -513,7 +514,7 @@ rustc \
   -C opt-level=3 \
   -C linker-plugin-lto=on \
   -C embed-bitcode=on \
-  -C lto=fat \
+  -C lto=fat
 ----
 
 The first step is to compile the function to LLVM IR using the rust compiler. The command shown in Listing XXX contains most of the options that are required or recommended to generate LLVM IR that can be used by panda bambu. `src/keccak.rs -o keccak.ll --crate-type=lib` specifies the filenames and that a library and not an executable will be build. The most important options is `--emit=llvm-ir` which tells the compiler to emit LLVM IR instead of machine code.
@@ -533,7 +534,7 @@ Disabling overflow checks for arithmetic operations significantly reduces the nu
 The final set of parameters enables various Rust compiler optimizations. These serve three purposes. For once the Rust compiler can perform more optimizations than bambu, because it has more information about the code. The second purpose is to reduce the amount of code that bambu has to synthesize. The third and probably most important purpose is to eliminate dead code that could potentially panic, as that is not supported by bambu. For this reason it is basically always required to set the optimization level to any level higher than `1`.
 
 .Compile LLVM IR to Verilog
-[source,console]
+[source,shell]
 ----
 bambu minmax.ll \
   --compiler=I386_CLANG16 \
@@ -766,7 +767,7 @@ Each {cpp} implemetation was tested in four configuration. Either compiled with 
 Three implementations of a minmax function will be compared. The Rust implementation was already shown above in <<minmax-rust-listing>>. It is based on the {cpp} implementation shown in <<minmax-cpp-listing>>. The third implementation is another Rust implementation that is using iterators and a return value. It will be refered to as the idiomatic Rust implementation. It is shown in <<minmax-idiom-listing>>.
 
 .Idiomatic `minmax` implementation in Rust
-[source#minmax-idiom-listing,rust]
+[source#minmax-idiom-listing.linenums,rust]
 ----
 include::../rust-minmax/src/minmax_idiomatic.rs[tag=function]
 ----
@@ -898,7 +899,7 @@ Bambu seems to preserve unrolled loops in LLVM IR.
 The reference {cpp} implementation is shown in <<keccak-cpp-listing>>. It is based on a reference implementation provided by the Keccak team. It takes a pointer to 25 64-bit elements and mutates them in 24 rounds. Each round consists of 5 functions that transform the elements in some way. The values after 24 rounds are the result of the function.
 
 .Interface of the keccak function
-[source#keccak-rust-interface,rust]
+[source#keccak-rust-interface.linenums,rust]
 ----
 include::../rust-keccak/src/keccak.rs[tag=main-function]
 ----
@@ -941,7 +942,7 @@ The LLVM designs optimized for speed all perform quite well with the Clang desig
 
 
 .Trace of the Clang design optimized for speed
-[wavedrom.really-slightly-oversized-content,id="keccak_clang_speed_trace"]
+[wavedrom.really-slightly-oversized-content,id="keccak-clang-speed-trace"]
 ....
 include::samples/keccak_clang_speed.wavejson.json[]
 ....
@@ -967,28 +968,36 @@ include::samples/keccak_gcc_speed.wavejson.json[]
 // Speculation
 It could be that the designs optimized for size split up the work in multiple small functions that each load the values from memory and store them again.
 
+The maximum frequency for each keccak design is shown in <<keccak-frequency>>. The fastest designs are tthe Rust designs optimized for speed, except for the crates.io design. It seems like the tradeoff of performing each round of keccak in two cycles instead of one is worth it, as they are able to run at a higher frequency compared to the LLVM design. Notably both crates designs are running at the slowest frequency of all designs. This has probably something to do with the unneccessary memory accesses they perform.
+// TODO: Future: Investigate why the crates designs are so slow
+
+
+
 .Maximum frequency of the different keccak designs
 :chart-id: id=keccak-frequency
 :vega-lite-filename: processed-charts/keccak_max_frequency.vl.json
 include::vega-chart.adoc[]
 
-While the 
+The other Rust designs optimized for size run at a lower frequency than the other designs optimized for size. The size-optimized {cpp} designs run at the third and fourth highest frequency.
 
 .Execution time per design
 :chart-id: id=keccak-performance
 :vega-lite-filename: processed-charts/keccak_performance.vl.json
 include::vega-chart.adoc[]
 
+The execution time of the designs optimized for speed is roughly the same. Of them the Rust designs are a bit faster than the LLVM designs. Even though these designs take more cycles their higher clockspeed is able to compensate for that. The crates.io design is the slowest of the fast designs.
 
+The designs optimized for size are all significantly slower. The GCC design optimized for speed is the fastest of the designs that access memory. It is still more than 20 times slower than the next fastest design.
 
-
-.Keccak Area to performance
+.Keccak area to performance
 :vega-lite-filename: processed-charts/keccak_area_performance.vl.json
 include::vega-chart.adoc[]
 
-.Keccak Space efficiency
+.Keccak space efficiency
 :vega-lite-filename: processed-charts/keccak_space_efficiency.vl.json
 include::vega-chart.adoc[]
+
+
 
 === Testing the md5 functions
 
@@ -1753,31 +1762,31 @@ link:pass:[https://crates.io/crates/keccak][🔗^]
 == Appendix
 
 .`minmax` function in {cpp}
-[source#minmax-cpp-listing,cpp]
+[source#minmax-cpp-listing.linenums,cpp]
 ----
 include::experiments/cpp-hls-experiments/minmax.cpp[tag=function]
 ----
 
 .`md5` function in {cpp}
-[source#md5-cpp-listing,cpp]
+[source#md5-cpp-listing.linenums,cpp]
 ----
 include::experiments/cpp-hls-experiments/md5.cpp[tag=function]
 ----
 
 .`keccak` function in {cpp}
-[source#keccak-cpp-listing,cpp]
+[source#keccak-cpp-listing.linenums,cpp]
 ----
 include::experiments/cpp-hls-experiments/keccak.cpp[tag=function]
 ----
 
 .`keccak` function in Rust
-[source#keccak-rust-listing,rust]
+[source#keccak-rust-listing.linenums,rust]
 ----
 include::../rust-keccak/src/keccak.rs[tag=function]
 ----
 
 .idiomatic `keccak` function in Rust
-[source#keccak-idiom-listing,rust]
+[source#keccak-idiom-listing.linenums,rust]
 ----
 include::../rust-keccak/src/keccak_idiomatic.rs[tag=function]
 ----
@@ -1787,7 +1796,7 @@ include::../rust-keccak/src/keccak_idiomatic.rs[tag=function]
 
 // TODO: Make sure this graph is displayed correctly,
 .Simplified CFG for the LLVM IR generated by the Rust compiler from the minmax function with optimizations for performance
-[graphviz#minmax-speed-cfg.slightly-oversized-content,opts=none]
+[graphviz#minmax-speed-cfg.slightly-oversized-content,opts=inline,width=15cm]
 ----
 include::samples/minmax_speed_control_flow.dot[]
 ----

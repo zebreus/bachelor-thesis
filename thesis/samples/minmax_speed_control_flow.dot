@@ -1,5 +1,5 @@
 digraph "LLVM CFG for minmax function optimized for speed" {
-    node [fontname = "IBM Plex Mono, monospace";];
+    node [fontname = "Spectral Mono, monospace";];
     Node0x4ec4d0 [shape = record;color = "#3d50c3ff";style = filled;fillcolor = "#ead5c970";label = "{start:\l  …\l|{<s0>LENGTH IS NOT 0|<s1>LENGTH IS 0}}";];
     Node0x4ec4d0:s0 -> Node0x4ecbb0;
     Node0x4ec4d0:s1 -> Node0x4ecc30;

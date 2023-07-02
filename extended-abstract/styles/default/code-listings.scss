@@ -4,6 +4,7 @@
 code,
 kbd,
 pre,
+.pseudo-pre,
 samp {
     font-family: $mono-font-family;
     font-size: 1em;
@@ -20,7 +21,9 @@ pre {
 }
 
 .literalblock pre,
-.listingblock>.content>pre {
+.literalblock .pseudo-pre,
+.listingblock>.content>pre,
+.literalblock .pseudo-pre {
     border-radius: 4px;
     overflow-x: auto;
     padding: 1em;
@@ -31,7 +34,7 @@ p a>code:hover {
     color: rgba(0, 0, 0, 0.9);
 }
 
-:not(pre):not([class^=L])>code {
+:not(pre):not(.pseudo-pre):not([class^=L])>code {
     font-size: 0.9375em;
     font-style: normal !important;
     letter-spacing: 0;
@@ -43,7 +46,8 @@ p a>code:hover {
     text-rendering: optimizeSpeed;
 }
 
-pre {
+pre,
+.pseudo-pre {
     color: rgba(0, 0, 0, 0.9);
     font-family: $mono-font-family;
     line-height: 1.45;
@@ -51,13 +55,15 @@ pre {
 }
 
 pre code,
+.pseudo-pre code,
 pre pre {
     color: inherit;
     font-size: inherit;
     line-height: inherit;
 }
 
-pre>code {
+pre>code,
+.pseudo-pre>code {
     display: block;
 }
 
@@ -68,13 +74,18 @@ pre.nowrap pre {
 }
 
 .literalblock pre,
+.literalblock .pseudo-pre,
 .listingblock>.content>pre:not(.highlight),
+.listingblock>.content>.pseudo-pre:not(.highlight),
 .listingblock>.content>pre[class=highlight],
-.listingblock>.content>pre[class^="highlight "] {
+.listingblock>.content>.pseudo-pre[class=highlight],
+.listingblock>.content>pre[class^="highlight "],
+.listingblock>.content>.pseudo-pre[class^="highlight "] {
     background: #f7f7f8;
 }
 
-.literalblock.output pre {
+.literalblock.output pre,
+.literalblock.output .pseudo-pre {
     color: #f7f7f8;
     background: rgba(0, 0, 0, 0.9);
 }
@@ -111,16 +122,19 @@ pre.nowrap pre {
     content: "$";
 }
 
-.listingblock pre.highlightjs {
+.listingblock pre.highlightjs,
+.listingblock .pseudo-pre.highlightjs {
     padding: 0;
 }
 
-.listingblock pre.highlightjs>code {
+.listingblock pre.highlightjs>code,
+.listingblock .pseudo-pre.highlightjs>code {
     padding: 1em;
     border-radius: 4px;
 }
 
-.listingblock pre.prettyprint {
+.listingblock pre.prettyprint,
+.listingblock .pseudo-pre.prettyprint {
     border-width: 0;
 }
 
@@ -128,22 +142,26 @@ pre.nowrap pre {
     background: #f7f7f8;
 }
 
-pre.prettyprint .linenums {
+pre.prettyprint .linenums,
+.pseudo-pre.prettyprint .linenums {
     line-height: 1.45;
     margin-left: 2em;
 }
 
-pre.prettyprint li {
+pre.prettyprint li,
+.pseudo-pre.prettyprint li {
     background: none;
     list-style-type: inherit;
     padding-left: 0;
 }
 
-pre.prettyprint li code[data-lang]::before {
+pre.prettyprint li code[data-lang]::before,
+.pseudo-pre.prettyprint li code[data-lang]::before {
     opacity: 1;
 }
 
-pre.prettyprint li:not(:first-child) code[data-lang]::before {
+pre.prettyprint li:not(:first-child) code[data-lang]::before,
+.pseudo-pre.prettyprint li:not(:first-child) code[data-lang]::before {
     display: none;
 }
 
@@ -208,7 +226,8 @@ pre.pygments span.linenos {
     content: attr(data-value);
 }
 
-pre .conum[data-value] {
+pre .conum[data-value],
+.pseudo-pre .conum[data-value] {
     position: relative;
     top: -0.125em;
 }
