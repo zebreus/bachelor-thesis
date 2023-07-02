@@ -997,37 +997,44 @@ include::vega-chart.adoc[]
 :vega-lite-filename: processed-charts/keccak_space_efficiency.vl.json
 include::vega-chart.adoc[]
 
+The fast designs offer way more performance per area than the slow designs. While the size-optimized designs generated from {cpp} are the smallest designs overall their abysmal performance makes them not very space efficient. The Rust designs optimized for size are the worst, as they are both slow and large. The Rust designs optimized for speed are the most space efficient designs. The crates.io design is in the middle, as their performance is slightly slower than the other fast designs, and they are as big as the large designs.
+
+// Notes on crates.io design
+
+In case of the crates.io design it did not make any difference whether it was optimized for speed or for size. This 
 
 
-=== Testing the md5 functions
+// TODO: Add md5 back in if there is time left
 
-Three implementations will be tested for the md5 function. 
+// === Testing the md5 functions
 
-The {cpp} reference implementation is based on a 
+// Three implementations will be tested for the md5 function. 
 
-.Area of the different md5 designs
-:vega-lite-filename: processed-charts/md5_overview_area.vl.json
-include::vega-chart.adoc[]
+// The {cpp} reference implementation is based on a 
 
-.Execution time per design
-:vega-lite-filename: processed-charts/md5_performance.vl.json
-include::vega-chart.adoc[]
+// .Area of the different md5 designs
+// :vega-lite-filename: processed-charts/md5_overview_area.vl.json
+// include::vega-chart.adoc[]
 
-.Maximum frequency of the different md5 designs
-:vega-lite-filename: processed-charts/md5_max_frequency.vl.json
-include::vega-chart.adoc[]
+// .Execution time per design
+// :vega-lite-filename: processed-charts/md5_performance.vl.json
+// include::vega-chart.adoc[]
 
-.Average clock cycles per test of the different md5 designs
-:vega-lite-filename: processed-charts/md5_average_cycles.vl.json
-include::vega-chart.adoc[]
+// .Maximum frequency of the different md5 designs
+// :vega-lite-filename: processed-charts/md5_max_frequency.vl.json
+// include::vega-chart.adoc[]
 
-.MD5 Area to performance
-:vega-lite-filename: processed-charts/md5_area_performance.vl.json
-include::vega-chart.adoc[]
+// .Average clock cycles per test of the different md5 designs
+// :vega-lite-filename: processed-charts/md5_average_cycles.vl.json
+// include::vega-chart.adoc[]
 
-.MD5 Space efficiency
-:vega-lite-filename: processed-charts/md5_space_efficiency.vl.json
-include::vega-chart.adoc[]
+// .MD5 Area to performance
+// :vega-lite-filename: processed-charts/md5_area_performance.vl.json
+// include::vega-chart.adoc[]
+
+// .MD5 Space efficiency
+// :vega-lite-filename: processed-charts/md5_space_efficiency.vl.json
+// include::vega-chart.adoc[]
 
 
 
@@ -1791,6 +1798,12 @@ include::../rust-keccak/src/keccak.rs[tag=function]
 include::../rust-keccak/src/keccak_idiomatic.rs[tag=function]
 ----
 
+.`keccak_p` function from <<keccak-crate>>
+[source#keccak-crates-source-listing.linenums.hundred_max,rust]
+----
+include::samples/keccak_crates_implementation.rs[tag=function]
+----
+
 
 <<<
 
@@ -1821,3 +1834,4 @@ include::styles/trailing-scripts.adoc[]
 // * Check for duplication of information
 // * oxford comma
 // * style code blocks
+https://github.com/RustCrypto/sponges/blob/master/keccak/src/lib.rs
