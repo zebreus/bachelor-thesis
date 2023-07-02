@@ -52,9 +52,25 @@ $page-margin-left: (
 }
 
 @media print {
-    .listingblock .content {
-        margin-left: -1.5cm;
-        margin-right: -1.5cm;
+    .listingblock {
+        // TODO: The spacing is different between print and web in woff2
+        letter-spacing: 0.03em;
+
+        code {
+            orphans: 6 !important;
+            widows: 6 !important;
+        }
+
+        .content {
+            margin-left: calc(-1.5cm - 1ch);
+            margin-right: calc(-1.5cm - 1ch);
+        }
+
+        // Extra class for codeblocks that can get up to 100 chars wide
+        &.hundred_max .content {
+            margin-right: calc(-3cm - 1ch);
+            margin-left: calc(-3cm - 1ch);
+        }
     }
 }
 
