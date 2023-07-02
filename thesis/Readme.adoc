@@ -138,7 +138,7 @@ Es wird gezeigt, dass es möglich ist Rust als Quellsprache für High-Level-Synt
 // Mini-Diskussion / zukünftige Arbeiten
 Es gibt Potenzial für Verbesserungen, da der Rust Compiler nicht für die Generierung von LLVM IR für HLS optimiert ist und bambu größtenteils auf LLVM IR optimiert ist, das von Clang generiert wurde. Die Bibliothek ist relativ modular und könnte verwendet werden um andere High-Level-Synthese-Tools die LLVM unterstützen zu erforschen.
 
-<<<
+
 
 toc::[]
 
@@ -1931,4 +1931,3 @@ include::styles/trailing-scripts.adoc[]
 // * Check for duplication of information
 // * oxford comma
 // * style code blocks
-https://github.com/RustCrypto/sponges/blob/master/keccak/src/lib.rs
