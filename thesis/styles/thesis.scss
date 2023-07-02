@@ -53,8 +53,12 @@ $page-margin-left: (
 
 @media print {
     .listingblock {
-        // TODO: The spacing is different between print and web in woff2
-        letter-spacing: 0.03em;
+        // TODO: Increase the spacing in the font
+        letter-spacing: 0.03em !important;
+
+        code {
+            letter-spacing: 0.03em !important;
+        }
 
         code {
             orphans: 6 !important;
@@ -175,6 +179,11 @@ $page-margin-left: (
     margin-top: 2.4cm;
 }
 
+#main-title {
+    text-transform: none;
+    letter-spacing: 0.02rem;
+}
+
 h1,
 h2,
 h3,
@@ -182,6 +191,7 @@ h3,
 .sidebarblock>.content>.titled {
     text-transform: uppercase;
     letter-spacing: 0.08rem;
+    word-spacing: 0.2rem;
 }
 
 #_thesis {
