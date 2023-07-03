@@ -1,11 +1,9 @@
 use keccak_crates_io as keccak;
 
 // tag::function[]
-#[no_mangle]
 pub unsafe extern "C" fn keccak_crate(input: *mut u64) -> () {
-    let thing: &mut [u64; 25] = std::mem::transmute(input);
-
-    keccak::f1600(thing);
+    let input: &mut [u64; 25] = std::mem::transmute(input);
+    keccak::f1600(input);
 }
 // end::function[]
 

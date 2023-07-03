@@ -9,15 +9,13 @@
  * and related or neighboring rights to the source code in this file.
  * http://creativecommons.org/publicdomain/zero/1.0/
  */
-const NR_ROUNDS: usize = 24;
-
 macro_rules! get_krc_val {
     ($index:expr) => {
         KECCAK_ROUND_CONSTANTS[$index]
     };
 }
 
-const KECCAK_ROUND_CONSTANTS: [u64; NR_ROUNDS] = [
+const KECCAK_ROUND_CONSTANTS: [u64; 24] = [
     0x0000000000000001u64,
     0x0000000000008082u64,
     0x800000000000808au64,
@@ -131,7 +129,7 @@ unsafe fn iota(a: *mut u64, index_round: usize) -> () {
 
 // tag::main-function[]
 pub unsafe extern "C" fn keccak(a: *mut u64) -> () {
-    for i in 0..NR_ROUNDS {
+    for i in 0..24 {
         theta(a);
         rho(a);
         pi(a);
