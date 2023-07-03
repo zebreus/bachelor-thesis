@@ -33,7 +33,7 @@ Darmstadt University of Applied Sciences
 Faculty of Computer Science
 
 [discrete#main-title]
-= Is High-level synthesis from Rust possible using existing tools?
+= Is high-level synthesis from Rust possible using existing tools?
 
 [.description.text-center]
 Submitted in partial fulfilment of the requirements for the degree of +
@@ -156,7 +156,7 @@ toc::[]
 The popularity of the Rust programming language is rising and it is one of the most loved new programming languages. It integrates modern tooling like standardized dependency management, testing, documentation generation, formatting and building. In the future, the adoption will probably increase further and it could replace {cpp} as the most common system programming language <<Bug22>>.
 It is possible that Rust also provides benefits in domains other than systems programming. It has been shown that Rust can be used for other domains such as GPU programming, web development or logic programming <<Sah22>> <<Byc22>> <<Kyr22>>. This enables us to use some of the benefits of Rust <<Bug22>> <<Cos19>>.
 
-This paper will explore how Rust can be used in the domain of FPGA firmware development. Usually, FPGA firmware is developed in a Hardware Description Language (HDL) such as Verilog or VHDL. In these languages, the programmer has to describe the hardware in detail. This is a low-level approach that can lead to efficient designs, but it is quite time-consuming <<Mil20>>. The rust-hdl project enables us to express hardware descriptions in Rust similar to traditional HDLs <<rusthdl>>. In addition to manually writing hardware descriptions in an HDL, it is also possible to use High-level synthesis (HLS) to generate hardware descriptions in HDLs from an algorithmic description written in high-level programming languages. This provides increased productivity at the cost of slightly less optimized designs <<Mil20>>. This process is currently mostly used with C or {cpp} because they are the most common system programming languages. There are multiple HLS tools available that can synthesize HDL code from {cpp} code. Multiple of these tools are based around the LLVM compiler infrastructure <<Nan16>>. There is one reported use of Rust as an HLS language but that is of no use to us as their tools are not available <<Har22>>. As Rust is also based on LLVM, it is possible that it can be used with these tools too. 
+This paper will explore how Rust can be used in the domain of FPGA firmware development. Usually, FPGA firmware is developed in a Hardware Description Language (HDL) such as Verilog or VHDL. In these languages, the programmer has to describe the hardware in detail. This is a low-level approach that can lead to efficient designs, but it is quite time-consuming <<Mil20>>. The rust-hdl project enables us to express hardware descriptions in Rust similar to traditional HDLs <<rusthdl>>. In addition to manually writing hardware descriptions in an HDL, it is also possible to use high-level synthesis (HLS) to generate hardware descriptions in HDLs from an algorithmic description written in high-level programming languages. This provides increased productivity at the cost of slightly less optimized designs <<Mil20>>. This process is currently mostly used with C or {cpp} because they are the most common system programming languages. There are multiple HLS tools available that can synthesize HDL code from {cpp} code. Multiple of these tools are based around the LLVM compiler infrastructure <<Nan16>>. There is one reported use of Rust as an HLS language but that is of no use to us as their tools are not available <<Har22>>. As Rust is also based on LLVM, it is possible that it can be used with these tools too. 
 
 // TODO: Look in git history, I think I had a better intro at least parts of it
 To figure out whether Rust can be used as a source language for HLS, we searched for HLS tools that can be used for Rust. We developed a modular process for integrating HLS tools with rust-hdl <<rusthdl>>. We used this process to implement a proof-of-concept integration with the PandA Bambu HLS framework and show that it is possible to use Rust as a source language for HLS. We evaluated the performance by comparing the resulting designs for different algorithms with designs generated from equivalent C code. We found that in most cases the solution produced designs comparable to those based on {cpp} based workflows.
@@ -375,7 +375,7 @@ rust-hdl can then be used to generate a Verilog description of the design as sho
 rust-hdl code is a more verbose than Verilog code. This is mostly because of the additional type annotations and the need to explicitly assign the .next value of every signal. 
 
 
-=== Design using High-level synthesis
+=== Design using high-level synthesis
 // What is HLS
 High-level synthesis (HLS) is a process that can generate a RTL specification of a circuit from a description in a high-level programming language. This is a more productive approach than writing RTL code directly, but the resulting designs are usually less efficient. The generated RTL code can then be used in the same way as manually written RTL code. <<Mil20>> <<Nan16>> <<Lah19>> <<Cou09>>
 
@@ -1170,31 +1170,31 @@ It would also be interesting to see if the LLVM IR generated by Rust can be impr
 
 // Abbreviations in a random order and links to read more about them
 [glossary]
-[[FPGA]]FPGA:: Field-programmable gate array link:pass:[https://en.wikipedia.org/wiki/Field-programmable_gate_array][🔗^]
-[[HLS]]HLS:: High-level synthesis link:pass:[https://en.wikipedia.org/wiki/High-level_synthesis][🔗^]
-[[HDL]]HDL:: Hardware description language link:pass:[https://en.wikipedia.org/wiki/Hardware_description_language][🔗^]
-[[ADL]]ADL:: Accelerator design language link:pass:[https://www.sigarch.org/hdl-to-adl/][🔗^]
-[[GPU]]GPU:: Graphics processing unit link:pass:[https://en.wikipedia.org/wiki/Graphics_processing_unit][🔗^]
-[[LLVM_IR]]LLVM IR:: LLVM intermediate representation link:pass:[https://en.wikipedia.org/wiki/LLVM#Intermediate_representation][🔗^]
-[[RTL]]RTL:: Register-transfer level link:pass:[https://en.wikipedia.org/wiki/Register-transfer_level][🔗^]
-[[DUT]]DUT:: Design/Device under test link:pass:[https://en.wikipedia.org/wiki/Test_bench][🔗^]
-[[ASIC]]ASIC:: Application specific integrated circuit
-[[QoR]]QoR:: Quality of results
-[[CPU]]CPU:: Central processing unit
-[[LUT]]LUT:: Look-up table
-[[FF]]FF:: Flip-Flop
-[[DFF]]DFF:: D Flip-Flop
-[[BRAM]]BRAM:: Block RAM
-[[DSP]]DSP:: Digital signal processor 
-[[CLB]]CLB:: Configurable logic block
-[[LB]]LB:: Logic block
-[[LE]]LE:: Logic element
-[[RAII]]RAII:: Resource Acquisition is Initialization / Scope-Bound Resource Management
-[[HIR]]HIR:: High-Level Intermediate Representation link:pass:[https://rustc-dev-guide.rust-lang.org/hir.html][🔗^]
+[[FPGA]]FPGA:: Field-Programmable Gate Array link:pass:[https://en.wikipedia.org/wiki/Field-programmable_gate_array][🔗^]
+[[HLS]]HLS:: High-Level Synthesis link:pass:[https://en.wikipedia.org/wiki/High-level_synthesis][🔗^]
+[[HDL]]HDL:: Hardware Description Language link:pass:[https://en.wikipedia.org/wiki/Hardware_description_language][🔗^]
+[[ADL]]ADL:: Accelerator Design Language link:pass:[https://www.sigarch.org/hdl-to-adl/][🔗^]
+[[GPU]]GPU:: Graphics Processing Unit link:pass:[https://en.wikipedia.org/wiki/Graphics_processing_unit][🔗^]
+[[LLVM_IR]]LLVM IR:: LLVM Intermediate Representation link:pass:[https://en.wikipedia.org/wiki/LLVM#Intermediate_representation][🔗^]
+[[RTL]]RTL:: Register-Transfer Level link:pass:[https://en.wikipedia.org/wiki/Register-transfer_level][🔗^]
+[[DUT]]DUT:: Design/Device Under Test link:pass:[https://en.wikipedia.org/wiki/Test_bench][🔗^]
+[[ASIC]]ASIC:: Application Specific Integrated Circuit link:pass:[https://en.wikipedia.org/wiki/Application-specific_integrated_circuit][🔗^]
+[[QoR]]QoR:: Quality of Results link:pass:[https://en.wikipedia.org/wiki/Quality_of_results][🔗^]
+[[CPU]]CPU:: Central Processing Unit link:pass:[https://en.wikipedia.org/wiki/Central_processing_unit#Structure_and_implementation][🔗^]
+[[LUT]]LUT:: Look-Up Table link:pass:[https://en.wikipedia.org/wiki/Lookup_table][🔗^]
+[[FF]]FF:: Flip-Flop link:pass:[https://en.wikipedia.org/wiki/Flip-flop_(electronics)][🔗^]
+[[DFF]]DFF:: D Flip-Flop link:pass:[https://en.wikipedia.org/wiki/Flip-flop_(electronics)#D_flip-flop][🔗^]
+[[BRAM]]BRAM:: Block RAM link:pass:[https://nandland.com/lesson-15-what-is-a-block-ram-bram/][🔗^]
+[[DSP]]DSP:: Digital Signal Processor link:pass:[https://www.fpgakey.com/tutorial/section613][🔗^]
+[[CLB]]CLB:: Configurable Logic Block link:pass:[https://www.fpgakey.com/wiki/details/51][🔗^]
+[[LB]]LB:: Logic Block link:pass:[https://www.fpgakey.com/wiki/details/51][🔗^]
+[[LE]]LE:: Logic Element link:pass:[https://www.fpgakey.com/wiki/details/342][🔗^]
+[[RAII]]RAII:: Resource Acquisition Is Initialization / Scope-Bound Resource Management link:pass:[https://en.wikipedia.org/wiki/Resource_acquisition_is_initialization][🔗^]
+[[HIR]]HIR:: High-level Intermediate Representation link:pass:[https://rustc-dev-guide.rust-lang.org/hir.html][🔗^]
 [[THIR]]THIR:: Typed HIR link:pass:[https://rustc-dev-guide.rust-lang.org/thir.html][🔗^]
 [[MIR]]MIR:: Mid-level Intermediate Representation link:pass:[https://rustc-dev-guide.rust-lang.org/mir/index.html][🔗^]
-[[PAL]]PAL:: Programmable array logic
-[[CFG]]CFG:: Control-flow graph link:pass:[https://en.wikipedia.org/wiki/Control-flow_graph][🔗^]
+[[PAL]]PAL:: Programmable Array Logic link:pass:[https://en.wikipedia.org/wiki/Programmable_Array_Logic][🔗^]
+[[CFG]]CFG:: Control-Flow Graph link:pass:[https://en.wikipedia.org/wiki/Control-flow_graph][🔗^]
 
 
 [bibliography]
