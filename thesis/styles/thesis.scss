@@ -85,10 +85,13 @@ $page-margin-left: (
 
 // Fix symbolator fonts
 .kroki svg {
-    .fnt2 {
+
+    .fnt2,
+    .fnt2 tspan {
         font-family: 'Spectral Mono';
         font-weight: 400;
         font-size: 0.85rem;
+        fill: black;
     }
 
     .fnt1 {
@@ -96,6 +99,21 @@ $page-margin-left: (
         font-weight: normal;
         font-size: 1.1rem;
         font-style: italic;
+        fill: black;
+
+    }
+
+    // Remove background colors
+    rect[fill="#C5DBFB"] {
+        fill: #f7f8f7;
+    }
+
+    rect[fill="#E7FDBA"] {
+        fill: #f7f8f7;
+    }
+
+    rect[fill="#FFAFFD"] {
+        fill: #f7f8f7;
     }
 }
 
