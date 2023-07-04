@@ -1,5 +1,6 @@
 // tag::function[]
 /// Minmax function that is as similar as possible to the equivalent cpp function
+#[no_mangle]
 pub unsafe extern "C" fn minmax(
     numbers: *mut i32,
     numbers_length: i32,
