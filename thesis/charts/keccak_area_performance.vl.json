@@ -17,7 +17,7 @@
   },
   "config": { "font": "Spectral, sans-serif" },
   "autosize": "none",
-  "padding": { "left": 140, "top": 30, "right": 140, "bottom": 40 },
+  "padding": { "left": 140, "top": 30, "right": 140, "bottom": 60 },
   "width": 300,
   "height": 165,
   "encoding": {
