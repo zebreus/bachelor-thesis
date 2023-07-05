@@ -235,6 +235,8 @@ pub mod simd {
 
 #[allow(unused_assignments)]
 // tag::function[]
+/// Source: https://github.com/RustCrypto/sponges/tree/master/keccak
+/// 
 /// Generic Keccak-p sponge function
 pub fn keccak_p<L: LaneSize>(state: &mut [L; PLEN], round_count: usize) {
     if round_count > L::KECCAK_F_ROUND_COUNT {
@@ -243,7 +245,7 @@ pub fn keccak_p<L: LaneSize>(state: &mut [L; PLEN], round_count: usize) {
 
     // https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.202.pdf#page=25
     // "the rounds of KECCAK-p[b, nr] match the last rounds of KECCAK-f[b]"
-    let round_consts = &RC[(L::KECCAK_F_ROUND_COUNT - round_count)..L::KECCAK_F_ROUND_COUNT];      d
+    let round_consts = &RC[(L::KECCAK_F_ROUND_COUNT - round_count)..L::KECCAK_F_ROUND_COUNT];
 
     // not unrolling this loop results in a much smaller function, plus
     // it positively influences performance due to the smaller load on I-cache

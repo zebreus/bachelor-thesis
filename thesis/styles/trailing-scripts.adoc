@@ -288,8 +288,6 @@ const getSectionTitle = (id) => {
     [
         ...document.querySelectorAll("a")
     ].forEach(node => {
-        console.log(node.textContent)
-        debugger
         if (node.textContent.match(/{figure-caption} [0-9.]+/)) {
             node.classList.add("figure-reference")
             node.classList.add("reference")
@@ -326,3 +324,54 @@ const getSectionTitle = (id) => {
 </script>
 ++++
 
+++++
+<script>
+
+let listingInfos = [...document.querySelectorAll(".listingblock")].map(listing => {
+    let id = listing.id;
+    let fullTitle = listing.querySelector(".title")?.textContent;
+    let title = fullTitle?.replace(/^Listing [0-9.]+ */,"")
+    let number = fullTitle?.replace(/\. +.*$/,"") + "."
+    return {id, title, number}
+}).filter(({id, title}) => id && title)
+
+let figureInfos = [...document.querySelectorAll(".imageblock")].map(listing => {
+    let id = listing.id;
+    let fullTitle = listing.querySelector(".title")?.textContent;
+    let title = fullTitle?.replace(/^Figure [0-9.]+ */,"")
+    let number = fullTitle?.replace(/\. +.*$/,"") + "."
+    return {id, title, number}
+}).filter(({id, title}) => id && title)
+
+let tableInfos = [...document.querySelectorAll(".tableblock")].map(listing => {
+    let id = listing.id;
+    let fullTitle = listing.querySelector(".title")?.textContent;
+    let title = fullTitle?.replace(/^Table [0-9.]+ */,"")
+    let number = fullTitle?.replace(/\. +.*$/,"") + "."
+    return {id, title, number}
+}).filter(({id, title}) => id && title)
+
+const insertListing = ({id,title,number} , type) => {
+    let target = document.querySelector(`#ul-of-${type}s`);
+    let newLi = document.createElement("li")
+    let newA = document.createElement("a")
+    newA.href = "#" + id
+    let newSpan = document.createElement("span")
+    newSpan.classList.add("section-number")
+    newSpan.style="text-transform: none;display: inline-block;width: 5rem;"
+    newSpan.appendChild(document.createTextNode(number))
+    newA.appendChild(newSpan)
+    newA.appendChild(document.createTextNode(title))
+    newLi.appendChild(newA)
+    target.appendChild(newLi)
+}
+
+
+console.log(listingInfos)
+
+listingInfos.forEach(listing => insertListing(listing, "listing"))
+tableInfos.forEach(table => insertListing(table, "table"))
+figureInfos.forEach(figure => insertListing(figure, "figure"))
+
+</script>
+++++

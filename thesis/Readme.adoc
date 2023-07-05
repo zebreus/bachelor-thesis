@@ -184,6 +184,40 @@ Um die Verwendung von HLS in Rust zu ermöglichen, wurde eine Softwarebibliothek
 
 toc::[]
 
+++++
+<div class="toc " id="toc">
+<div id="toctitle" class="title .like-toctitle">List of Figures</div>
+<ul class="sectlevel0">
+<li>
+<ul id="ul-of-figures">
+</ul>
+</li>
+</ul>
+</div>
+
+<div class="toc " id="toc">
+<div id="toctitle" class="title .like-toctitle">List of Tables</div>
+<ul class="sectlevel0">
+<li>
+<ul id="ul-of-tables">
+</ul>
+</li>
+</ul>
+</div>
+
+<div class="toc " id="toc">
+<div id="toctitle" class="title .like-toctitle">List of Listings</div>
+<ul class="sectlevel0">
+<li>
+<ul id="ul-of-listings">
+</ul>
+</li>
+</ul>
+</div>
+
+
+++++
+
 <<<
 
 // Start with section and part numbering
@@ -194,8 +228,6 @@ toc::[]
 = Thesis
 
 == Introduction
-
-
 
 The popularity of the Rust programming language is rising, and it is one of the most admired programming languages <<Sta16>> <<Sta20>> <<Sta23>> <<Bug22>>. It integrates modern tooling like standardized dependency management, testing, documentation generation, formatting, and building. In the future, adoption will probably increase further, and it could replace {cpp} as the most common systems programming language <<Bug22>>.
 Rust also provides benefits in domains other than systems programming. It has been shown that Rust can be used for other fields such as GPU programming, web development, or logic programming <<Sah22>> <<Byc22>> <<Kyr22>>. These fields profit from some of the benefits of Rust, like guaranteed memory safety and improved productivity  <<Bug22>> <<Cos19>>.
@@ -211,7 +243,7 @@ An investigation to identify HLS tools compatible with Rust was conducted. A mod
 
 == State of the art
 
-It is assumed that you have some knowledge of the Rust programming language and systems programming. This section provides an overview of the topics that are relevant to this paper.
+It is assumed that the reader has some knowledge of systems programming and the Rust programming language. This section provides an overview of the topics that are relevant to this paper.
 
 // // TODO: Write a section on that.
 // // It also provides an overview of the related work that has been done for HLS from Rust.
@@ -254,7 +286,7 @@ A typical HDL workflow comprises four phases, design, verification, synthesis, a
 // What are the possible solutions
 
 
-==== What is an FPGA
+=== What is a field-programmable gate arrays
 
 There are two main target platforms for logic design: field-programmable gate arrays (FPGA) and application-specific integrated circuits (ASIC). FPGAs are off-the-shelf components capable of implementing any digital circuit <<Bot21>>. As the name field programmable gate array implies, they consist of programmable logic gates with programmable connections between them. ASICs are custom integrated circuits designed for a specific purpose. Design costs and time when targeting FPGAs are much lower than for custom circuits. Another benefit of using FPGAs is that the circuit can be upgraded after deployment. The downsides of using FPGAs are lower performance and higher power consumption compared to custom circuits. They are considered compelling options for small to medium-sized projects, as they do not have the high upfront cost of application-specific integrated circuits (ASIC) <<Bot21>><<Nan16>>.
 
@@ -345,12 +377,12 @@ NOTE: Different FPGA vendors use different names for the same things <<Lah19>>. 
 // This step is basically manufacturing a design. The focus of this paper is only on design and not on manufacturing; it is not going to go into detail about this step. It is just important to know that a netlist is something that can be manufactured/deployed to an FPGA.
 
 
-==== SystemVerilog
+=== SystemVerilog
 
 In SystemVerilog, units of logic can be encapsulated into modules. Modules can have inputs, outputs, and internal states. <<verilog-blinker-listing>> shows a simple module that implements a blinker. The blinker has a clock input and a blinker output. At every rising edge of the clock, an internal counter is incremented by one. Once the counter reaches 10, the blinker output is toggled, and the counter is reset to zero.
 
 .Simple blinker module in SystemVerilog
-[source.linenums#verilog-blinker-listing,verilog]
+[source.linenums#verilog-blinker-listing.small_code,verilog]
 ----
 include::systemverilog-blinker/blinker.sv[]
 ----
@@ -358,7 +390,7 @@ include::systemverilog-blinker/blinker.sv[]
 Verification in SystemVerilog can be achieved by using test benches that instantiate the design under test (DUT) and exercise its inputs. <<blinker-testbench-listing>> shows a testbench for the blinker module. The testbench instantiates the blinker module and connects it to a clock signal. It also asserts that the blinker output toggles every ten clock cycles.
 
 .Testbench for the blinker module in SystemVerilog
-[source.linenums#blinker-testbench-listing,verilog]
+[source.linenums#blinker-testbench-listing.small_code,verilog]
 ----
 include::systemverilog-blinker/blinker_tb.sv[]
 ----
@@ -384,8 +416,8 @@ In RustHDL, modules are defined as structs that implement the `LogicBlock` trait
 
 <<rusthdl-blinker-struct-listing>> shows the struct for a module that has the same functionality as the SystemVerilog blinker module in <<verilog-blinker-listing>>. 
 
-.RustHDL struct for a simple blinker module.
-[source.linenums#rusthdl-blinker-struct-listing,rust]
+.Simple blinker module in RustHDL
+[source.linenums#rusthdl-blinker-struct-listing.small_code,rust]
 ----
 include::rusthdl-blinker/src/blinker.rs[tag=rust-hdl-struct]
 ----
@@ -396,7 +428,7 @@ Rust can express much more than just combinational logic, so RustHDL only allows
 
 RustHDL also enforces an additional set of semantic rules about what the update function has to do. For example, the update function must always assign a value to the `.next` field of signals declared as outputs. It also must always assign a value to the `.next` fields of the inputs of its submodules. This ensures that every signal always has a well-defined value. RustHDL also forbids to use of the `.next` value on the right side of an expression, so the result of the update function can only depend on the state from the previous cycle. RustHDL enforces these rules at run-time and generates somewhat helpful error messages. SystemVerilog does not apply these restrictions, which can be a source of bugs <<Smi21>>. The RustHDL update function for the blinker module is shown in <<rusthdl-blinker-update-listing>>.
 
-.RustHDL update function for the blinker.
+.Testbench for the blinker module in RustHDL
 [source.linenums#rusthdl-blinker-update-listing,rust]
 ----
 include::rusthdl-blinker/src/blinker.rs[tag=rust-hdl-logic]
@@ -413,7 +445,7 @@ include::rusthdl-blinker/src/blinker.rs[tag=rust-hdl-test]
 The `generate_verilog` function can generate a Verilog description of the module, as shown in <<rusthdl-blinker-generate-listing>>. The generated Verilog code can then be used with any Verilog toolchain to deploy the design to an FPGA <<Smi21>>.
 
 .Generating verilog from the RustHDL blinker
-[source.linenums#rusthdl-blinker-generate-listing,rust]
+[source.linenums#rusthdl-blinker-generate-listing.small_code,rust]
 ----
 include::rusthdl-blinker/src/main.rs[tag=generate-verilog]
 ----
@@ -430,7 +462,7 @@ High-level synthesis (HLS) is a process that can generate an RTL specification o
 
 // Performance of HLS compared to RTL
 // TODO: Weirdly written (which experiments?)
-The main advantages of HLS are reduced design time and lower development cost. On average, the development time of HLS designs is only a third of that of equivalent RTL designs. The lower development time comes with the tradeoff that HLS designs, on average, take up around 40% more basic FPGA resources than RTL designs. The performance of HLS designs is around two-thirds of that of an RTL design. These metrics generalize over many different HLS tools and input languages. In addition, there is a lot of variance between different studies. In about 40% of designs, the HLS design was actually more performant than the RTL design. In about 30%, it was more resource efficient. However, in terms of development time, there is little variance; in 90% of the experiments, the HLS design required less development time than the RTL design <<Lah19>>.
+The main advantages of HLS are reduced design time and lower development cost. On average, the development time of HLS designs is only a third of that of equivalent RTL designs. The lower development time comes with the tradeoff that HLS designs, on average, take up around 40% more basic FPGA resources than RTL designs. The performance of HLS designs is around two-thirds of that of an RTL design. These metrics generalize over many different HLS tools and input languages. In addition, there is a lot of variance between different studies. In about 40% of designs, the HLS design was actually more performant than the RTL design. In about 30%, it was more resource efficient. However, for development time, the results are conclusive; in 90% of the experiments, the HLS design required less development time than the RTL design <<Lah19>>.
 
 ==== How high-level synthesis works
 // Intro
@@ -539,7 +571,7 @@ An important part of what makes the people using the Rust ecosystem so productiv
 // The tooling alone makes Rust a much better development experience than most systems languages.
 // exact quote from Bug22
 
-=== Bambu HLS
+=== PandA Bambu
 // Bambu intro
 Bambu is an open-source academic HLS tool <<Fer21>> <<Nan16>>. Its architecture is designed to make it easy to experiment with new ideas across high-level synthesis and related topics. It supports input specifications in standard C/{cpp} or the intermediate representations of GCC or Clang/LLVM <<Fer21>>.
 
@@ -588,7 +620,7 @@ Three HLS tools are based on LLVM IR, namely PandA Bambu, SmartHLS (formerly kno
 
 In the first step, the Rust compiler is used to convert a Rust function to an LLVM IR function. The second step passes the generated LLVM IR function to Bambu, which converts it to Verilog. <<basic-toolchain>> depicts that toolchain. 
 
-.The toolchain
+.A toolchain for high-level synthesis from Rust
 [pikchr,id=basic-toolchain]
 ....
    arrow right 150% "Rust" "function"
@@ -607,7 +639,7 @@ This section will demonstrate how the toolchain can be used to synthesize Rust f
 
 The `minmax` function shown in <<minmax-rust-listing>> finds the minimum and maximum in an array of integers. The implementation is kept in a C-like style so that it can be compared to an algorithmically identical {cpp} implementation later on. The function takes a pointer to an array of integers (`numbers`), the number of elements in the array (`numbers_length`), and two pointers to integers (`out_max` and `out_min`). It finds the smallest and largest value of the array and writes them to the memory locations pointed to by `out_max` and `out_min`.
 
-.`minmax` function in Rust
+.`minmax` implementation     in Rust
 [source#minmax-rust-listing.linenums,rust]
 ----
 include::../rust-minmax/src/minmax.rs[tag=function]
@@ -625,7 +657,7 @@ The function needs to be annotated with `#[no_mangle]` to instruct the Rust comp
 // Is trivial; I explain it anyway
 The algorithm performed by the function is simple. The local variables `local_min` and `local_max` store the current minimum and maximum values. They are initialized to the smallest and largest 32-bit integer, respectively. The function then iterates over the memory area containing the input numbers. For each input number, the local minimum or maximum values is updated if the current number is smaller or larger. Finally, the local minimum and maximum values are written to the output memory locations `out_max` and `out_min`. 
 
-.Compile Rust to LLVM IR
+.Compiling Rust to LLVM IR with the flags for HLS
 [source#rust-to-llvmir-listing,shell]
 ----
 rustc \
@@ -678,7 +710,7 @@ The `--compiler=I386_CLANG16` flag instructs Bambu to its Clang 16 front end for
 
 The interface of the generated `minmax` module is shown in <<minmax-generated-interface>>. It can be split into three categories. The first section contains clocking and control signals, including `clock`, `reset`, `start_port`, and `done_port`. It will also contain a `return_port` if the function has a return type. <<control-signals-table>> describes what each of these signals does.
 
-.Interface of the generated module
+.Interface of the synthesized module
 [symbolator#minmax-generated-interface]
 ....
 module minmax(
@@ -705,7 +737,7 @@ module minmax(
 endmodule
 ....
 
-.Descriptions of the control signals
+.The control signals of modules generated by Bambu
 [#control-signals-table,cols="1,4"]
 |===
 |Port |Description
@@ -733,7 +765,7 @@ The second section contains the function parameters. When LLVM IR is used as inp
 The original function takes a pointer to memory as input, so the generated module needs to be able to access that memory. Bambu generates a memory interface for the module, which needs to be connected to memory. During function execution, the module will use this memory interface to retrieve and modify the input values. Because Bambu generates a two-channel memory interface by default, the memory signals are twice the size expected. For all generated modules in the remainder of this paper, Bambu will be configured to generate only a single channel. The address size is 32-bit without additional configuration, and the data width gets automatically selected based on the design. In this case, the data width is 32-bit. Because the module has two channels, all memory signals are double the size. Their first half corresponds to the first channel, and their second half to the second channel. <<memory-interface-table>> describes the signals of the memory interface in more detail.
 
 // TODO: Make tables wider than text if necessary
-.Descriptions of the memory interface
+.The memory interface of modules generated by Bambu
 [#memory-interface-table,cols="1,1,3"]
 |===
 |Port |Size per channel in bits |Description
@@ -780,8 +812,8 @@ Cargo provides a way to hook into the build process using build scripts. These a
 
 RustHLS provides a `+#[hls]+` macro that can be used to mark Rust modules for HLS. The macro is evaluated two times. Before compilation, a build script finds all modules marked with `+#[hls]+`. It extracts every marked module into a separate temporary crate. These crates are synthesized to Verilog using an automated version of the toolchain described in <<_basic_toolchain_for_synthesizing_rust>>. A Rust module containing a RustHDL struct that wraps the synthesized Verilog is generated for each Verilog file. That Rust module is then placed alongside the original source code. During compilation, the `+#[hls]+` macro is evaluated by the Rust compiler. The macro then emits import directives for the module that were synthesized during the build script. It also evaluates if the macro is used in a valid context and emits helpful error messages if it is not. <<macro-evaluation-overview>> shows all steps performed by RustHLS.
 
-.Block diagram of the steps performed by the RustHLS crate
-[nomnoml.completly-oversized-content#macro-evaluation-overview,opts=inline,width=20cm]
+.The steps performed by the RustHLS
+[nomnoml.completly-oversized-content#macro-evaluation-overview,opts=inline,width=18cm]
 ....
 #gutter: 10
 #fontSize: 18
@@ -829,11 +861,9 @@ Using RustHLS makes it possible to use the toolchain in a RustHDL project. The m
 
 === Using RustHLS to synthesize and test a module
 
-As part of this thesis, an integration of the toolchain with RustHDL was developed. It enables the use of the toolchain in a RustHDL project. The integration is implemented as a rust library, RustHLS. It provides a `+#[hls]+` macro that can be used to mark Rust modules for HLS. The library was used for testing the toolchain. <<rust-hls-example-listing>> shows how the library can be used to annotate a module for HLS.
+As part of this thesis, an integration of the toolchain with RustHDL was developed. It enables the use of the toolchain in a RustHDL project. The integration is implemented as a rust library, RustHLS. It provides a `+#[hls]+` macro that can be used to mark Rust modules for HLS. <<rust-hls-example-listing>> shows how it can be used to annotate a module for HLS.
 
-==== Generating a module with RustHLS
-
-.Example of annotating a Rust module with the `+#[hls]+` macro
+.Using RustHLS for synthesis of a Rust function
 [source#rust-hls-example-listing.linenums,rust]
 ----
 use rust_hdl::prelude::*;
@@ -884,7 +914,7 @@ Lines 8 and 9 show how the `+#[hls]+` how the macro can be used to configure rus
 
 Rust's integrated testing framework can be used to test both the specification and the synthesized design. <<rust-hls-test-listing>> shows how to do that. The tests can be run with `cargo test` like any other Rust tests.
 
-.Example of verifying a Rust module with the `+#[hls]+` macro
+.Verifying the synthesized module with RustHDL
 [source#rust-hls-test-listing.linenums.hundred_max,rust]
 ----
 #[cfg(test)]
@@ -949,7 +979,7 @@ In this example, the design is verified against predefined constants. It is also
 
 RustHLS was used to synthesize and run all tests in <<_experiments_and_results>>.
 
-== Experiments and results
+== Experiments and Results
 
 // This section will compare the hardware designs resulting
 
@@ -1006,7 +1036,7 @@ The MD5 hash function was selected as an additional algorithm for evaluation. It
 // TODO:  === Generated modules
 // not here
 
-=== Testing the minmax designs
+=== Results for the minmax designs
 
 Three implementations of a minmax function were tested. The Rust implementation was already shown above in <<minmax-rust-listing>>. It is based on the {cpp} implementation shown in <<minmax-cpp-listing>>. The idiomatic Rust implementation is shown in <<minmax-idiom-listing>>. 
 
@@ -1024,14 +1054,14 @@ The Rust compiler should be able to compile the idiomatic Rust implementation to
 
 LLVM may incorporate optimizations that result in a notable increase in the required area when prioritizing speed. In contrast, GCC does not seem to employ such optimizations.
 
-.Area of the different minmax designs
+.Area of the minmax designs
 :chart-id: id=minmax-area
 :vega-lite-filename: processed-charts/minmax_overview_area.vl.json
 include::vega-chart.adoc[]
 
 Each design underwent testing using test cases ranging from 0 to 50 elements. <<minmax-average-cycles>> illustrates each design's average number of cycles.
 
-.Average clock cycles for each minmax design
+.Average clock cycles of the minmax designs
 :chart-id: id=minmax-average-cycles
 :vega-lite-filename: processed-charts/minmax_average_cycles.vl.json
 include::vega-chart.adoc[]
@@ -1044,9 +1074,9 @@ Notably, the fastest class exclusively consists of the big designs, whereas the 
 
 The GCC designs are both significantly slower. Each of them needs approximately 30% more cycles than the LLVM designs with the same optimization goal.
 
-<<minmax-detailed-cycles>> provides precise cycle counts for each test case, illustrating the three distinct performance classes.
+<<minmax-detailed-cycles>> provides precise cycle counts for each test case, illustrating the three distinct performance classes. The line for `C++ gcc -O3` overlaps with the line for `C++ clang -Os`
 
-.Clock cycles in relation to the input length. The line for `C++ gcc -O3` overlaps with the line for `C++ clang -Os` 
+.Clock cycles vs input length of the minmax designs
 :chart-id: id=minmax-detailed-cycles
 :vega-lite-filename: processed-charts/minmax_detailed_cycles.vl.json
 include::vega-chart.adoc[]
@@ -1063,7 +1093,7 @@ The GCC designs are all slower than the LLVM designs, potentially representing a
 
 Another factor for design performance is the maximum frequency at which it can operate. <<minmax-max-frequency>>  provides an overview of the maximum frequency for each design.
 
-.Maximum frequency for each minmax design
+.Maximum frequency of the minmax designs
 :chart-id: id=minmax-max-frequency
 :vega-lite-filename: processed-charts/minmax_max_frequency.vl.json
 include::vega-chart.adoc[]
@@ -1074,7 +1104,7 @@ The five smaller designs all clock around 2x faster than the big designs. Their 
 
 The small designs can run at much higher frequencies but require more clock cycles. The relevant metric for comparing the performance is the execution time. It is calculated by multiplying the number of cycles with the inverse of the maximum frequency. <<minmax-execution-time>> shows the average execution time for each design.
 
-.Average execution time per test
+.Average execution of the minmax designs
 :chart-id: id=minmax-execution-time
 :vega-lite-filename: processed-charts/minmax_performance.vl.json
 include::vega-chart.adoc[]
@@ -1089,7 +1119,7 @@ The GCC designs clocked at nearly the same frequency. The lower cycle count of t
 
 
 
-.Minmax Area to performance
+.Area to performance of the minmax designs
 :chart-id: id=minmax-area-performance
 :vega-lite-filename: processed-charts/minmax_area_performance.vl.json
 include::vega-chart.adoc[]
@@ -1099,7 +1129,7 @@ The big designs perform worse and take up more area than the small designs. The 
 // The task of computing the minimum and maximum can be easily parallelized. The input can be split over multiple instances of the function, and the results of each can be processed by another minmax function afterward. 
 
 
-.Minmax Space efficiency
+.Space efficiency of the minmax designs
 :chart-id: id=minmax-space-efficiency
 :vega-lite-filename: processed-charts/minmax_space_efficiency.vl.json
 include::vega-chart.adoc[]
@@ -1119,44 +1149,44 @@ These measurements reveal several observations and trends:
 * LLVM seems to employ more aggressive loop unrolling compared to GCC.
 * Bambu appears to preserve unrolled loops in LLVM IR.
 
-=== Testing the MD5 functions
+=== Results for the MD5 functions
 
 Two implementations will be tested for the MD5 function. The {cpp} reference implementation is shown in <<md5-cpp-listing>>. The equivalent Rust implementation can be seen in <<md5-rust-listing>>.
 
-.Area of the different MD5 designs
+.Area of the MD5 designs
 :chart-id: id=md5-area
 :vega-lite-filename: processed-charts/md5_overview_area.vl.json
 include::vega-chart.adoc[]
 
 As depicted in <<md5-area>>, the area for all designs except the GCC design optimized for speed is roughly the same. The GCC design optimized for speed is 20% larger than the others. This seems to indicate that the designs generated by Bambu are all quite similar.
 
-.Average clock cycles per test of the different MD5 designs
+.Clock cycles of the MD5 designs
 :chart-id: id=md5-average-cycles
 :vega-lite-filename: processed-charts/md5_average_cycles.vl.json
 include::vega-chart.adoc[]
 
 <<md5-average-cycles>> shows that the LLVM-based designs all require the same number of cycles. The GCC design optimized for speed needs around 10% more cycles, and the GCC design optimized for size 20% more.
 
-.The maximum frequency of the different MD5 designs
+.Maximum frequency of the MD5 designs
 :chart-id: id=keccak-max-frequency
 :vega-lite-filename: processed-charts/md5_max_frequency.vl.json
 include::vega-chart.adoc[]
 
 The maximum frequency of the Clang-based designs is about 10% higher than the Rust-based designs, as seen in <<keccak-max-frequency>>. The GCC design optimized for speed has the highest frequency, while the GCC design optimized for size is comparable to the Clang designs. 
 
-.Execution time per design
+.Execution time of the MD5 designs
 :chart-id: id=md5-execution-time
 :vega-lite-filename: processed-charts/md5_performance.vl.json
 include::vega-chart.adoc[]
 
 <<md5-execution-time>> shows the execution time for each design. The execution time of the Clang-based designs is about 10% lower than the Rust-based designs. As their number of cycles is equal, this represents their slightly higher frequency. The GCC designs are the slowest, although they are only around 15% slower than the Clang designs. The GCC design optimized for speed is the slowest design overall.
 
-.MD5 Space efficiency
+.Space efficiency of the MD5 designs
 :chart-id: id=md5-space-efficiency
 :vega-lite-filename: processed-charts/md5_space_efficiency.vl.json
 include::vega-chart.adoc[]
 
-.MD5 Area to performance
+.Area to performance of the MD5 designs
 :chart-id: id=md5-area-performance
 :vega-lite-filename: processed-charts/md5_area_performance.vl.json
 include::vega-chart.adoc[]
@@ -1169,11 +1199,11 @@ These measurements reveal several observations and trends:
 * Rust designs have slightly worse performance than Clang.
 * The optimization goal does not make a difference.
 
-=== Testing the latexmath:[\keccakf] designs
+=== Results for the latexmath:[\keccakf] designs
 
 <<keccak-cpp-listing>> presents the reference {cpp} implementation. It is based on a reference implementation provided by the Keccak team. It operates on a pointer to an array of 25 64-bit elements and performs 24 rounds of mutation on these elements. Each round consists of 5 functions that transform the elements in various ways. The resulting values after 24 rounds represent the output of the function. <<keccak-rust-interface>> depicts the latexmath:[\keccakf] function.
 
-.The latexmath:[\keccakf] function
+.Shortened `keccak` function
 [source#keccak-rust-interface.linenums,rust]
 ----
 include::../rust-keccak/src/keccak.rs[tag=main-function]
@@ -1195,7 +1225,7 @@ include::../rust-keccak/src/keccak_crate.rs[tag=function]
 
 <<keccak-overview-area>> illustrates the results of the area measurements. Both the Rust and idiomatic Rust designs exhibit similar sizes in both optimizations.
 
-.Area of the different latexmath:[\keccakf] designs
+.Area of the latexmath:[\keccakf] designs
 :chart-id: id=keccak-overview-area
 :vega-lite-filename: processed-charts/keccak_overview_area.vl.json
 include::vega-chart.adoc[]
@@ -1213,7 +1243,7 @@ The performance of each design was evaluated using three test cases. Every test 
 
 Each of the 25 memory locations in the array needs to be both read and written at least once because they are used for input and output. Accessing memory takes one cycle and has a latency of two cycles, so the theoretical minimum for the number of cycles is 51. This only applies if the module loads all values into some kind of internal storage in the beginning, then takes one cycle to perform all rounds of keccak on that internal storage, and then writes the resulting values back to external memory. If the calculations are performed directly on external memory, the number of memory accesses will be significantly larger.
 
-.Average clock cycles per test of the different latexmath:[\keccakf] designs
+.Clock cycles of the latexmath:[\keccakf] designs
 :chart-id: id=keccak-cycles
 :vega-lite-filename: processed-charts/keccak_average_cycles.vl.json
 include::vega-chart.adoc[]
@@ -1237,7 +1267,7 @@ include::samples/keccak_crates_speed.wavejson.json[]
 // TODO: Attach snippet from the traces
 The remaining designs require significantly more cycles, earning them the classification of _slow_ designs. The disparity between the fastest and slowest slow designs is approximately a factor of 10. The fastest slow design is 50 times slower than the slowest fast design. While the fast designs load all values in the beginning and store them when they are done, the slow designs constantly read and write the values in memory. The trace for the GCC design optimized for speed (<<keccak-gcc-speed-trace>>) shows that it constantly performs memory accesses. This behavior is representative of the other slow designs. How much of the calculations are performed on external memory seems to dictate the exact cycle count.
 
-.Excerpt from the trace of the GCC design optimized for speed
+.Clipped trace of the GCC design optimized for speed
 [wavedrom.slightly-oversized-content,id="keccak-gcc-speed-trace"]
 ....
 include::samples/keccak_gcc_speed.wavejson.json[]
@@ -1248,7 +1278,7 @@ It is likely that the designs optimized for size keep the split into the five fu
 
 <<keccak-frequency>> displays the maximum frequency for each latexmath:[\keccakf] design. The Rust designs optimized for speed, excluding the crates.io design, stand out as the fastest. The tradeoff to perform each round of latexmath:[\keccakf] in two cycles rather than one proves advantageous, allowing them to run at higher frequencies compared to the LLVM design. Notably, both crate designs operate at the slowest frequency among all designs.
 
-.Maximum frequency of the different latexmath:[\keccakf] designs
+.Maximum frequency of the latexmath:[\keccakf] designs
 :chart-id: id=keccak-frequency
 :vega-lite-filename: processed-charts/keccak_max_frequency.vl.json
 include::vega-chart.adoc[]
@@ -1257,7 +1287,7 @@ The other Rust designs optimized for size run at a lower frequency than the othe
 
 In <<keccak-performance>> the designs optimized for speed showcase similar performance to each other. 
 
-.Execution time per design
+.Execution time of the latexmath:[\keccakf] designs
 :chart-id: id=keccak-performance
 :vega-lite-filename: processed-charts/keccak_performance.vl.json
 include::vega-chart.adoc[]
@@ -1266,12 +1296,12 @@ The execution time of the designs optimized for speed is roughly the same. Among
 
 The designs optimized for size are all significantly slower. Among memory-accessing designs, the GCC design optimized for speed stands out as the fastest. It is still more than 20 times slower than the next fastest design.
 
-.latexmath:[\keccakf] area to performance
+.Area to performance of the latexmath:[\keccakf] designs
 :chart-id: id=keccak-area-performance
 :vega-lite-filename: processed-charts/keccak_area_performance.vl.json
 include::vega-chart.adoc[]
 
-.latexmath:[\keccakf] space efficiency
+.Space efficiency of the latexmath:[\keccakf] designs
 :chart-id: id=keccak-space-efficiency
 :vega-lite-filename: processed-charts/keccak_space_efficiency.vl.json
 include::vega-chart.adoc[]
@@ -1279,7 +1309,7 @@ include::vega-chart.adoc[]
 <<keccak-area-performance>> and <<keccak-space-efficiency>> demonstrate that the fast designs provide greater performance per area than the slow designs. While the size-optimized {cpp} designs are the smallest overall, their abysmal performance renders them less space efficient. The Rust designs optimized for size rank the worst, being both slow and large. On the other hand, the Rust designs optimized for speed are the most space-efficient. The crates.io designs are between them, with slightly slower performance than the other fast designs and similar size to the larger designs.
 
 // Notes on crates.io design
-==== Investigating the weird behavior of the crates.io design
+==== Unexpected behavior of the crates.io design
 
 In the case of the crates.io design, it did not make any difference whether it was optimized for speed or for size. <<keccak-crates-implementation-listing>> shows that their implementation explicitly inlines and unrolls the steps of a round. Apart from this explicit unrolling, the significant distinction lies in the variable number of rounds supported by the crates.io implementation. The Rust compiler seems to respect these optimizations. It generates basically the same LLVM IR for both optimizations. The biggest difference is that the version optimized for speed inlines the control of the main loop into the loop body.
 
@@ -1289,7 +1319,7 @@ In the case of the crates.io design, it did not make any difference whether it w
 
 
 // TODO:
-When optimized for speed, the LLVM IR generated from other Rust implementations closely resembles the LLVM IR generated from the crates.io design. It is noteworthy that the crates.io designs are larger and slower, despite being based on such similar LLVM IR. The most notable differentiation between them is the way they access the `KECCAK_ROUND_CONSTANTS` array. In each of the 24 rounds, a different constant from that array is needed. The array accesses use the same instructions in both cases, albeit in slightly different places. The crates.io implementation fetches the round constant in the middle of the round and the other rust implementations at the end. This difference should have no impact, as they have the same data dependencies and can be reordered. The crates.io design employs a pointer to an integer `i64*` to reference the array, while the other implementation utilizes a pointer to an array of known size `[24 x i64]*`.
+When optimized for speed, the LLVM IR generated from other Rust implementations closely resembles the LLVM IR generated from the crates.io design. Notably, the crates.io designs are larger and slower, despite being based on similar LLVM IR. The most significant differentiation between them is the way they access the `KECCAK_ROUND_CONSTANTS` array. In each of the 24 rounds, a different constant from that array is needed. The array accesses use the same instructions in both cases, albeit in slightly different places. The crates.io implementation fetches the round constant in the middle of the round and the other rust implementations at the end. This difference should have no impact, as they have the same data dependencies and can be reordered. The crates.io design employs a pointer to an integer `i64*` to reference the array, while the other implementation utilizes a pointer to an array of known size `[24 x i64]*`.
 
 It can be assumed that this causes Bambu to perform poorly for some reason. It is possible that the generated design attempts to access the array at an external memory location. This would also explain the 24 out-of-bounds memory accesses during calculations. These values from external memory are apparently not used during calculation. The generated design tries to access external memory when the actual values are in internal memory. It can be assumed that Bambu cannot prove that the instruction only accesses the internal memory. The design should, however, not try to access external memory in addition to internal memory. This is most likely a bug in Bambu.
 // It may be that Clang, usually used with Bambu, does not generate instructions that access memory in this way, so the bug did not occur until now.
@@ -1331,7 +1361,7 @@ As mentioned previously, current HLS tools focus on the common systems-programmi
 It was shown that Bambu can be used to perform HLS from Rust. The Rust compiler can output LLVM IR, which can be used as an input for Bambu. When the Rust compiler is optimizing for speed, the generated designs are similar in terms of performance and size to the designs generated from {cpp}/Clang. When optimizing for size, the results were mixed; some designs were smaller and faster, some were larger and bigger, and some were similar. They showed that the Rust-based designs usually perform similarly to the {cpp}/Clang-based designs. It was also demonstrated that whether the Rust specifications are C-like or more Rust-like does not make a difference. A specification using an implementation from crates.io was able to be synthesized with promising results. In that specific case, the resulting design was larger than necessary, probably caused by a bug in Bambu. As expected, the support for Rust in Bambu is not as mature as for {cpp}. 
 
 // Gotchas when using Rust
-There are multiple challenges when using the Rust compiler to generate LLVM IR that is compatible with Bambu. Bambu does not support all instructions, so the Rust compiler needs to be configured only to generate compatible IR. Bambu's LLVM support is focused on LLVM IR generated by Clang. As a result, Bambu is not well-tested on LLVM IR generated by other tools. While Bambu is able to process and compile them, the resulting designs might not be as optimized as they are with Clang. This can lead to bugs like the one described in <<_investigating_the_weird_behavior_of_the_crates_io_design>>. Rust also performs bounds checks on all memory accesses that could overflow. If these bound-checks cannot be removed during optimization, the resulting LLVM IR contains calls to panic which cannot be synthesized by Bambu. By default, Rust also performs overflow checks on all integer arithmetics, which also can result in panics that can be disabled. Another limitation is that only Rust functions with a C-compatible interface can be synthesized.
+There are multiple challenges when using the Rust compiler to generate LLVM IR that is compatible with Bambu. Bambu does not support all instructions, so the Rust compiler needs to be configured only to generate compatible IR. Bambu's LLVM support is focused on LLVM IR generated by Clang. As a result, Bambu is not well-tested on LLVM IR generated by other tools. While Bambu is able to process and compile them, the resulting designs might not be as optimized as they are with Clang. This can lead to bugs like the one described in <<_unexpected_behavior_of_the_crates_io_design>>. Rust also performs bounds checks on all memory accesses that could overflow. If these bound-checks cannot be removed during optimization, the resulting LLVM IR contains calls to panic which cannot be synthesized by Bambu. By default, Rust also performs overflow checks on all integer arithmetics, which also can result in panics that can be disabled. Another limitation is that only Rust functions with a C-compatible interface can be synthesized.
 
 // Toolchain
 // TODO: The second sentence is shit.
@@ -1493,19 +1523,19 @@ _Invited: Bambu: an Open-Source Research Framework for the High-Level Synthesis 
 link:pass:[https://ieeexplore.ieee.org/abstract/document/9586110][🔗^]
 link:pass:[https://re.public.polimi.it/retrieve/668507/dac21_bambu.pdf][📁^]
 
-* [[[Rot10]]]
-+Nadav Rotem,+
-_C-to-Verilog. com: High-Level Synthesis Using LLVM_,
-University of Haifa,
-2010.
-link:pass:[https://llvm.org/devmtg/2010-11/Rotem-CToVerilog.pdf][🔗^]
+// * [[[Rot10]]]
+// +Nadav Rotem,+
+// _C-to-Verilog. com: High-Level Synthesis Using LLVM_,
+// University of Haifa,
+// 2010.
+// link:pass:[https://llvm.org/devmtg/2010-11/Rotem-CToVerilog.pdf][🔗^]
 
-* [[[Sch20]]]
-+Fabian Schuiki, Andreas Kurth, Tobias Grosser, and Luca Benini+,
-_LLHD: a multi-level intermediate representation for hardware description languages_,
-In Proceedings of the 41st ACM SIGPLAN Conference on Programming Language Design and Implementation (PLDI 2020), 258-271,
-2020.
-link:pass:[https://doi.org/10.1145/3385412.3386024][🔗^]
+// * [[[Sch20]]]
+// +Fabian Schuiki, Andreas Kurth, Tobias Grosser, and Luca Benini+,
+// _LLHD: a multi-level intermediate representation for hardware description languages_,
+// In Proceedings of the 41st ACM SIGPLAN Conference on Programming Language Design and Implementation (PLDI 2020), 258-271,
+// 2020.
+// link:pass:[https://doi.org/10.1145/3385412.3386024][🔗^]
 
 // Multiple HLS tools use LLVM
 // C/Cpp are the most popular languages for HLS
@@ -1563,9 +1593,9 @@ link:pass:[https://doi.org/10.1145/3532989][🔗^]
 
 
 
-* [[[Zen12]]]
-_Identifying Barriers to Adoption for Rust through Online Discourse_
-link:pass:[https://arxiv.org/pdf/1901.01001.pdf][🔗^]
+// * [[[Zen12]]]
+// _Identifying Barriers to Adoption for Rust through Online Discourse_
+// link:pass:[https://arxiv.org/pdf/1901.01001.pdf][🔗^]
 
 // Rust has an ecosystem that greatly simplifies any software project
 // Rust is great
@@ -2011,12 +2041,12 @@ IEEE Design & Test of Computers, Volume 26, Issue 4, Pages 8-17,
 link:pass:[https://doi.org/10.1109/MDT.2009.69][🔗^]
 link:pass:[https://sci-hub.st/10.1109/MDT.2009.69][📁^]
 
-* [[[Ber09]]]
-+Guido Bertoni, Joan Daemen, Michaël Peeters, Gilles Van Assche+,
-_Keccak sponge function family main document._,
-Submission to NIST (Round 2) 3, no. 30 (2009): 320-337,
-2009
-link:pass:[https://keccak.team/files/Keccak-submission-3.pdf][📁^]
+// * [[[Ber09]]]
+// +Guido Bertoni, Joan Daemen, Michaël Peeters, Gilles Van Assche+,
+// _Keccak sponge function family main document._,
+// Submission to NIST (Round 2) 3, no. 30 (2009): 320-337,
+// 2009
+// link:pass:[https://keccak.team/files/Keccak-submission-3.pdf][📁^]
 
 // Rust compiler has multiple intermediate representations (IRs)
 // * MIR (Mid-level IR)
@@ -2135,31 +2165,31 @@ include::experiments/cpp-hls-experiments/minmax.cpp[tag=function]
 include::experiments/cpp-hls-experiments/md5.cpp[tag=function]
 ----
 
-.`md5` function in Rust
+.`md5` implementation in Rust
 [source#md5-rust-listing.linenums,cpp]
 ----
 include::../rust-md5/src/md5.rs[tag=function]
 ----
 
-.`keccak` function in {cpp}
+.`keccak` implementation in {cpp}
 [source#keccak-cpp-listing.linenums,cpp]
 ----
 include::experiments/cpp-hls-experiments/keccak.cpp[tag=function]
 ----
 
-.`keccak` function in Rust
+.`keccak` implementation in Rust
 [source#keccak-rust-listing.linenums,rust]
 ----
 include::../rust-keccak/src/keccak.rs[tag=function]
 ----
 
-.idiomatic `keccak` function in Rust
+.Idiomatic `keccak` implementation in Rust
 [source#keccak-idiom-listing.linenums,rust]
 ----
 include::../rust-keccak/src/keccak_idiomatic.rs[tag=function]
 ----
 
-.`keccak_p` function from crates.io <<Rus23>>
+.`keccak_p` implementation from the keccak crate <<Rus23>>
 [source#keccak-crates-implementation-listing.linenums.hundred_max,rust]
 ----
 include::samples/keccak_crates_implementation.rs[tag=function]
@@ -2262,7 +2292,7 @@ impl Logic for Minmax {
 <<<
 
 // TODO: Make sure this graph is displayed correctly,
-.Simplified CFG for the LLVM IR generated by the Rust compiler from the minmax function with optimizations for performance
+.Simplified CFG of the LLVM IR of minmax Rust speed
 [graphviz.slightly-oversized-content,id=minmax-speed-cfg,opts=inline,width=15cm]
 ----
 include::samples/minmax_speed_control_flow.dot[]

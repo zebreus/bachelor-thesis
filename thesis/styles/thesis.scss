@@ -71,6 +71,12 @@ $page-margin-left: (
         }
 
         // Extra class for codeblocks that can get up to 100 chars wide
+        &.small_code .content {
+            margin-right: 0;
+            margin-left: 0;
+        }
+
+        // Extra class for codeblocks that can get up to 100 chars wide
         &.hundred_max .content {
             margin-right: calc(-3cm - 1ch);
             margin-left: calc(-3cm - 1ch);
@@ -252,6 +258,36 @@ $page-margin-left: (
     }
 }
 
+@page :nth(6) {
+    @bottom-center {
+        content: "";
+        font-size: unset;
+        padding: unset;
+        margin: unset;
+        border-top: none;
+    }
+}
+
+@page :nth(7) {
+    @bottom-center {
+        content: "";
+        font-size: unset;
+        padding: unset;
+        margin: unset;
+        border-top: none;
+    }
+}
+
+@page :nth(8) {
+    @bottom-center {
+        content: "";
+        font-size: unset;
+        padding: unset;
+        margin: unset;
+        border-top: none;
+    }
+}
+
 @page :first {
     margin-top: 2.4cm;
 }
@@ -265,6 +301,7 @@ h1,
 h2,
 h3,
 #toctitle,
+.like-toctitle,
 .sidebarblock>.content>.titled {
     text-transform: uppercase;
     letter-spacing: 0.08rem;
@@ -275,6 +312,7 @@ h3,
     counter-reset: page 1;
 }
 
+.like-toc,
 #toc {
     &>ul {
         margin-left: 0.25rem;
@@ -315,6 +353,7 @@ span.section-number {
 
 // Add lines to h2
 #toctitle,
+.like-toctitle,
 h2 {
     break-before: always;
     font-size: $h2-font-size;
