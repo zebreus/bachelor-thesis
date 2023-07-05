@@ -479,6 +479,24 @@ a.reference:hover {
     border-bottom: none;
 }
 
+@media print {
+
+    a.hide-in-print,
+    a.hide-in-print:hover,
+    a.hide-in-print:focus {
+        color: inherit;
+        cursor: pointer;
+        -webkit-user-select: text;
+        user-select: text;
+        -webkit-user-drag: none;
+        -webkit-app-region: no-drag;
+
+        text-decoration-style: none;
+        text-decoration-line: none;
+        border-bottom: none;
+    }
+}
+
 ul.bibliography {
     list-style: none;
     margin-left: 3rem;
