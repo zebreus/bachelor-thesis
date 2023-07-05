@@ -23,7 +23,8 @@ impl<A: Iterator<Item = u8>> Iterator for Md5PaddingIterator<A> {
                     }
                     None => {
                         let data_bytes_and_stop_byte = self.data_bytes + 1;
-                        let padding_size = ((64 + 56) - (data_bytes_and_stop_byte % 64)) % 64;
+                        let padding_size =
+                            ((64 + 56) - (data_bytes_and_stop_byte % 64)) % 64;
                         self.state = match padding_size {
                             0 => PaddingState::PrintingDataLength(8),
                             _ => PaddingState::Filling(padding_size as u8),
@@ -44,7 +45,8 @@ impl<A: Iterator<Item = u8>> Iterator for Md5PaddingIterator<A> {
                     1 => PaddingState::Done,
                     _ => PaddingState::PrintingDataLength(current_byte - 1),
                 };
-                let length_as_bytes: [u8; 8] = (self.data_bytes * 8).to_le_bytes();
+                let length_as_bytes: [u8; 8] =
+                    (self.data_bytes * 8).to_le_bytes();
                 Some(length_as_bytes[8 - current_byte as usize])
             }
             PaddingState::Done => None,
@@ -103,7 +105,8 @@ mod tests {
         let mut correct = [0u8; 64];
         correct[0] = 0x80;
 
-        let generated_bytes = [].into_iter().pad_md5_blocks().next().expect("No block");
+        let generated_bytes =
+            [].into_iter().pad_md5_blocks().next().expect("No block");
 
         assert_eq!(generated_bytes, correct)
     }
@@ -138,13 +141,15 @@ mod tests {
 
     #[test]
     fn padding_returns_length_64_for_max_input_for_one_block() {
-        let result = [0x97; 55].into_iter().pad_md5_bytes().collect::<Vec<u8>>();
+        let result =
+            [0x97; 55].into_iter().pad_md5_bytes().collect::<Vec<u8>>();
         assert_eq!(result.len(), 64);
     }
 
     #[test]
     fn padding_returns_length_128_for_min_input_for_two_blocks() {
-        let result = [0x97; 56].into_iter().pad_md5_bytes().collect::<Vec<u8>>();
+        let result =
+            [0x97; 56].into_iter().pad_md5_bytes().collect::<Vec<u8>>();
         assert_eq!(result.len(), 128);
     }
 }

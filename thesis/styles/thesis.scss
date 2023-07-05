@@ -200,6 +200,58 @@ $page-margin-left: (
     }
 }
 
+// This can probably be done better
+
+@page :nth(1) {
+    @bottom-center {
+        content: "";
+        font-size: unset;
+        padding: unset;
+        margin: unset;
+        border-top: none;
+    }
+}
+
+@page :nth(2) {
+    @bottom-center {
+        content: "";
+        font-size: unset;
+        padding: unset;
+        margin: unset;
+        border-top: none;
+    }
+}
+
+@page :nth(3) {
+    @bottom-center {
+        content: "";
+        font-size: unset;
+        padding: unset;
+        margin: unset;
+        border-top: none;
+    }
+}
+
+@page :nth(4) {
+    @bottom-center {
+        content: "";
+        font-size: unset;
+        padding: unset;
+        margin: unset;
+        border-top: none;
+    }
+}
+
+@page :nth(5) {
+    @bottom-center {
+        content: "";
+        font-size: unset;
+        padding: unset;
+        margin: unset;
+        border-top: none;
+    }
+}
+
 @page :first {
     margin-top: 2.4cm;
 }

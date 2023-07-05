@@ -56,7 +56,8 @@ mod tests {
         let mut correct = [0u32; 16];
         correct[0] = u32::from_le_bytes([0x80, 0, 0, 0]);
 
-        let generated_bytes = [].into_iter().pad_md5_blocks().next().expect("No block");
+        let generated_bytes =
+            [].into_iter().pad_md5_blocks().next().expect("No block");
 
         let generated = generated_bytes.into_md5_numbers();
 
