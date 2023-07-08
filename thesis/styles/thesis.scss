@@ -593,6 +593,8 @@ ul.bibliography {
     margin-left: 3rem;
 
     &>li {
+        break-inside: avoid;
+
         a:first-child {
             margin-left: -2rem;
             position: absolute;
