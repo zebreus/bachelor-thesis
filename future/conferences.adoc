@@ -1,6 +1,32 @@
 = List of conferences where I could present this or an adjacant topic
 
+== International Conference on Field-Programmable Logic and Applications
 
+https://fpl.org/
+
+The Chalmers University of Technology will organize the 33rd edition of FPL (FPL 2023) at Gothenburg, Sweden, from 4th to 8th September 2023. 
+
+2024 not announced
+
+Acceptance rate 25%
+
+.Related papers
+[%collapsible]
+====
+
+* [Hun15]
++E. Hung+ +
+_Mind The (Synthesis) Gap: Examining Where Academic FPGA Tools Lag Behind Industry_ +
+Int. Conf. on Field Programmable Logic and Appl.
+** From <<Bar23>>
+
+* [Min15]
++M. Minutoli et al.+ +
+_Inter-procedural resource sharing in high level synthesis through function proxies_ +
+International Conference on Field Programmable Logic and Applications
+** From <<Fer21>>
+
+====
 
 == IEEE/ACM Design Automation Conference
 
@@ -9,6 +35,8 @@ https://www.dac.com/
 DAC 2024 | June 23-27 | Moscone West, San Francisco
 
 Deadline for abstracts: November 13, 2023 5:00 PM (PST)
+
+Acceptance rate 25%
 
 .Related papers
 [%collapsible]
@@ -77,6 +105,7 @@ Industry
 
 Valencia, Spain
 
+
 .Related papers
 [%collapsible]
 ====
@@ -99,6 +128,8 @@ https://iccad.com/
 October 29 - November 2, 2023
 
 Abstract deadline: 23:59 AOE Monday, May 15, 2023.
+
+Acceptance rate ~25%
 
 San Francisco
 
@@ -173,33 +204,6 @@ link:pass:[https://llvm.org/pubs/2004-01-30-CGO-LLVM.pdf][📁^]
 ====
 
 
-== International Conference on Field-Programmable Logic and Applications
-
-https://fpl.org/
-
-The Chalmers University of Technology will organize the 33rd edition of FPL (FPL 2023) at Gothenburg, Sweden, from 4th to 8th September 2023. 
-
-2024 not announced
-
-.Related papers
-[%collapsible]
-====
-
-* [Hun15]
-+E. Hung+ +
-_Mind The (Synthesis) Gap: Examining Where Academic FPGA Tools Lag Behind Industry_ +
-Int. Conf. on Field Programmable Logic and Appl.
-** From <<Bar23>>
-
-* [Min15]
-+M. Minutoli et al.+ +
-_Inter-procedural resource sharing in high level synthesis through function proxies_ +
-International Conference on Field Programmable Logic and Applications
-** From <<Fer21>>
-
-====
-
-
 ==  Int. Symposium on Field Programmable Gate Arrays
 
 https://www.isfpga.org/
@@ -209,6 +213,8 @@ March 3 – March 5, 2024
 Monterey, CA
 
 Abstracts Due (All Papers)	October 6, 2023
+
+Acceptance rate ~20%
 
 .Related papers
 [%collapsible]
