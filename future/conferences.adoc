@@ -1,0 +1,291 @@
+= List of conferences where I could present this or an adjacant topic
+
+
+
+== IEEE/ACM Design Automation Conference
+
+https://www.dac.com/
+
+DAC 2024 | June 23-27 | Moscone West, San Francisco
+
+Deadline for abstracts: November 13, 2023 5:00 PM (PST)
+
+.Related papers
+[%collapsible]
+====
+
+// Research topics for Bambu: "They range from parallelized hardware accelerator design, dynamic scheduling, verification, and debugging, design exploration of the compilation flow, machine learning accelerator design, IR development, and integration with logic synthesis tools", MLIR
+// MLIR dialects that can be translated to LLVM IR
+* [Fer21]
++Fabrizio Ferrandi, Vito Giovanni Castellana, Serena Curzel, Pietro Fezzardi, Michele Fiorito, Marco Lattuada, Marco Minutoli, Christian Pilato, Antonino Tumeo+ +
+_Invited: Bambu: an Open-Source Research Framework for the High-Level Synthesis of Complex Applications_ +
+link:pass:[https://doi.org/10.1109/DAC18074.2021.9586110][10.1109/DAC18074.2021.9586110^]
+link:pass:[https://re.public.polimi.it/retrieve/668507/dac21_bambu.pdf][📁^]
+** Highly related
+
+* [Aja19]
++T. Ajayi et al.+ +
+_Toward an open-source digital flow: First learnings from the OpenROAD project_ +
+IEEE/ACM Design Automation Conference
+** From <<Fer21>>
+
+// Describing the traditional HDL design flow (in 1996)
+* [Smi96]
++Douglas J. Smith+ +
+_VHDL & Verilog compared & contrasted—plus modeled example written in VHDL, Verilog and C._ +
+link:pass:[https://doi.org/10.1145/240518.240664][10.1145/240518.240664^]
+link:pass:[https://dl.acm.org/doi/pdf/10.1145/240518.240664][📁^]
+** Not really related
+** Quite old
+
+// Harry Foster has newer studies but no publications assoc with them, only blog posts
+// They say basically the same things
+// System verilog is the most common HDL
+* [Fos15]
++Harry D. Foster+ +
+_Trends in Functional Verification: A 2014 Industry Study_ +
+Annual Design Automation Conference +
+link:pass:[https://doi.org/10.1145/2744769.2744921][10.1145/2744769.2744921^]
+link:pass:[http://www.eecs.umich.edu/courses/eecs578/eecs578.f15/papers/fos15.pdf][📁^]
+** Not really related
+
+* [Yu18]
++C. Yu, H. Xiao, and G. De Micheli+ +
+_Developing Synthesis Flows without Human Knowledge_ +
+** From <<Bar23>>
+
+* [Zha21]
++H.-T. Zhang, J.-H. R. Jiang, L. Amaru, A. Mishchenko, and R. Brayton+ +
+_Deep Integration of Circuit Simulator and SAT Solver_ +
+** From <<Bar23>>
+
+* [Tim21]
++X. Timoneda and L. Cavigelli+ +
+_Late Breaking Results: Reinforcement Learning for Scalable Logic Optimization with Graph Neural Networks_ +
+ACM/IEEE Design Automation Conf.
+** From <<Bar23>>
+
+====
+
+== Design, Automation & Test in Europe Conference and Exhibition
+
+https://www.date-conference.com/
+
+Deadline for something: Sunday, 31 December 2023
+
+Industry
+
+Valencia, Spain
+
+.Related papers
+[%collapsible]
+====
+// Opensource tools catch up with the vendor tooling
+* [Bar23]
++Benjamin L.C. Barzen, Arya Reais-Parsi, Eddie Hung, Minwoo Kang, Alan Mishchenko, Jonathan W. Greene, John Wawrzynek+ +
+_Narrowing the Synthesis Gap: Academic FPGA Synthesis is Catching Up With the Industry_ +
+link:pass:[https://doi.org/10.23919/DATE56975.2023.10137310][10.23919/DATE56975.2023.10137310^]
+link:pass:[http://people.eecs.berkeley.edu/~alanmi/publications/2023/date23_gap.pdf][📁^]+
+** Highly related
+====
+
+
+== IEEE/ACM International Conference on Computer Aided Design
+
+https://iccad.com/
+
+2024 not announced
+
+October 29 - November 2, 2023
+
+Abstract deadline: 23:59 AOE Monday, May 15, 2023.
+
+San Francisco
+
+.Related papers
+[%collapsible]
+====
+
+* [Lef95]
++E. Lehman, Y. Watanabe, J. Grodstein, and H. Harkness+ +
+_Logic Decomposition during Technology Mapping_ + 
+** From <<Bar23>>
+
+* [Cha05] 
++S. Chatterjee, A. Mishchenko, R. Brayton, X. Wang, and T. Kam+ +
+_Reducing Structural Bias in Technology Mapping_+
+** From <<Bar23>>
+
+* [Mis07] A. Mishchenko, S. Cho, S. Chatterjee, and R. Brayton+ +
+_Combinational and sequential mapping with priority cuts_ +
+** From <<Bar23>>
+
+* [Lat15] 
++M. Lattuada and F. Ferrandi+ +
+_Code transformations based on speculative SDC scheduling_ +
+** From <<Fer21>>
+
+* [Net19]
++W. L. Neto et al.+ +
+_LSOracle: a logic synthesis framework driven by artificial intelligence: Invited paper_ +
+** From <<Fer21>>
+
+====
+
+== IEEE International Parallel and Distributed Processing Symposium
+
+https://www.ipdps.org/
+
+May 27-31, 2024
+
+San Francisco
+
+.Related papers
+[%collapsible]
+====
+
+* [Cas21]
++V. G. Castellana et al.+ +
+_High-level synthesis of parallel specifications coupling static and dynamic controllers_ +
+** From <<Fer21>>
+
+====
+
+== International Symposium on Code Generation and Optimization
+
+https://conf.researchr.org/home/cgo-2023
+
+Sat 25 February - Wed 1 March 2023
+
+Montreal, Canada
+
+.Related papers
+[%collapsible]
+====
+
+* [Lat04]
++Chris Lattner, Vikram Adve+ +
+_LLVM: a compilation framework for lifelong program analysis & transformation_ +
+link:pass:[https://doi.org/10.1109/CGO.2004.1281665][10.1109/CGO.2004.1281665^]
+link:pass:[https://llvm.org/pubs/2004-01-30-CGO-LLVM.pdf][📁^]
+** Not really related
+
+====
+
+
+== International Conference on Field-Programmable Logic and Applications
+
+https://fpl.org/
+
+The Chalmers University of Technology will organize the 33rd edition of FPL (FPL 2023) at Gothenburg, Sweden, from 4th to 8th September 2023. 
+
+2024 not announced
+
+.Related papers
+[%collapsible]
+====
+
+* [Hun15]
++E. Hung+ +
+_Mind The (Synthesis) Gap: Examining Where Academic FPGA Tools Lag Behind Industry_ +
+Int. Conf. on Field Programmable Logic and Appl.
+** From <<Bar23>>
+
+* [Min15]
++M. Minutoli et al.+ +
+_Inter-procedural resource sharing in high level synthesis through function proxies_ +
+International Conference on Field Programmable Logic and Applications
+** From <<Fer21>>
+
+====
+
+
+==  Int. Symposium on Field Programmable Gate Arrays
+
+https://www.isfpga.org/
+
+March 3 – March 5, 2024
+
+Monterey, CA
+
+Abstracts Due (All Papers)	October 6, 2023
+
+.Related papers
+[%collapsible]
+====
+
+* [Pan98]
++P. Pan and C.-C. Lin+ +
+_A New Retiming-Based Technology Mapping Algorithm for LUT-Based FPGAs_ +
+** From <<Bar23>>
+
+====
+
+
+== Asia and South Pacific Design Automation Conf.
+
+.Related papers
+[%collapsible]
+====
+
+* [Hos20]
++A. Hosny, S. Hashemi, M. Shalan, and S. Reda+ +
+_Drills: Deep Reinforcement Learning for Logic Synthesis_ +
+** From <<Bar23>>
+
+====
+
+== ACM SIGPLAN International Conference on Compiler Construction
+
+.Related papers
+[%collapsible]
+====
+
+* [Sah22]
++Arash Sahebolamri, Thomas Gilray, Kristopher Micinski+ +
+_Seamless Deductive Inference via Macros_ +
+link:pass:[https://doi.org/10.1145/3497776.3517779][10.1145/3497776.3517779^]
+link:pass:[https://thomas.gilray.org/pdf/seamless-deductive.pdf][📁^]
+** Not related
+====
+
+
+== USENIX Symposium on Operating Systems Design and Implementation
+
+.Related papers
+[%collapsible]
+====
+
+* [Che18]
++T. Chen et al.+ +
+_TVM: An automated end-to-end optimizing compiler for deep learning_ +
+** From <<Fer21>>
+
+====
+
+== Russian Supercomputing Days
+
+Is in russia
+
+.Related papers
+[%collapsible]
+====
+// Rust can be used for GPU programming
+* [Byc22]
++Andrey Bychkov, Vsevolod Nikolskiy+ +
+_Rust Language for GPU Programming_ +
+link:pass:[https://doi.org/10.1007/978-3-031-22941-1_38][10.1007/978-3-031-22941-1_38^]
+link:pass:[https://link.springer.com/content/pdf/10.1007/978-3-031-22941-1_38.pdf][📁^]
+** Not really related
+
+====
+
+.Methodology
+[%collapsible]
+====
+The list is created by first collecting all conference papers that I used in my bachelors thesis. I will add those conferences. Then I look into all of the papers that are talking about HLS or modern HDLs and add the conference papers from their sources.
+
+After that I rank all the conferences by relevance. Then I add their website, relevance, location, deadlines and cost.
+====
+
+
