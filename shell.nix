@@ -38,6 +38,7 @@ mkShell {
     sass
 
     asciidoctor-web-pdf
+    asciidoctor-revealjs
     asciidoctor-js
 
     # Utils

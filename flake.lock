@@ -66,6 +66,22 @@
         "type": "github"
       }
     },
+    "mylocalpackages": {
+      "locked": {
+        "lastModified": 1717699866,
+        "narHash": "sha256-bpI4GI7IDkIHogNYJqfxsmfM0K9CrZ7f8Hw3VzN0PsM=",
+        "owner": "zebreus",
+        "repo": "nixpkgs",
+        "rev": "845c55531fdd0cb15d87ff923679b757fe17cfe0",
+        "type": "github"
+      },
+      "original": {
+        "owner": "zebreus",
+        "ref": "bambu",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1673800717,
@@ -146,6 +162,7 @@
       "inputs": {
         "fenix": "fenix",
         "flake-utils": "flake-utils",
+        "mylocalpackages": "mylocalpackages",
         "nixpkgs": "nixpkgs",
         "nixpkgs-with-asciidoctorjs": "nixpkgs-with-asciidoctorjs",
         "old-nixpkgs": "old-nixpkgs",

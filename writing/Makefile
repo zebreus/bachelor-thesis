@@ -3,7 +3,7 @@ OUT_DIR = results
 SOURCE_DIR = src
 
 RUSTC ?= rustc
-BAMBU ?= nix run github:zebreus/bachelor-thesis\#bambu --
+BAMBU ?= nix run github:zebreus/nixpkgs/bambu-init\#bambu --
 
 RUST_FLAGS = --emit=llvm-ir --crate-type=lib -C overflow-checks=off -C no-vectorize-loops -C target-cpu=generic -C panic=abort -C llvm-args="--opaque-pointers=false"
 
