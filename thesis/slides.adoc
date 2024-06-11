@@ -1,0 +1,680 @@
+= Is high-level synthesis from Rust possible using existing tools?
+:revealjsdir: slides/reveal.js
+:revealjs_slideNumber: true
+:source-highlighter: highlight.js
+:kroki-server-url: http://localhost:8000
+:revealjs_theme: white
+
+[.notes]
+--
+* in meiner BA habe ich mich damit befasst, ob
+* Meine ergebnisse möchte ich heute vorstellen
+* Zuerst möchte ich euch die drei grundlagen vorstellen auf denen mein thema aufbaut
+--
+
+
+== Background
+
+[.notes]
+--
+* three topics
+* rust, hardware design and high level synthesis
+* Die erste grundlage ist die prog sprache rust
+--
+
+
+[%auto-animate]
+=== Rust
+
+[]
+* Systems programming language
+* Focus on (memory) safety
+* LLVM based
+* Powerful macros system that allows arbitrary code transformations
+
+[.notes]
+--
+* Modern systems programming language
+* Fokus auf Gewissheit das ein programm sicher ist, besonders (memory) safety
+** Borrow checker
+** Bounds checking
+** Makes it impossible to access invalid memory in safe Rust
+** Unsafe allows mor
+* LLVM based
+* Nutzt LLVM compiler infra als backend
+* Rust comp erzeugt LLVM IR und benutzt LLVM tools für optimierungen 
+* LLVM hat backends um LLVM IR in machine code für praktisch alle prozessor architekturen zu übersetzen
+* Powerful macros system that allows arbitrary code transformations
+
+die erste erfolgreiche systemprogrammiersprache die den tradeoff zwischen memory safety und performance löst
+
+* saftey normalerweise nur in GC sprachen
+* performance manual memory managment sprachen
+
+Explain LLVM! and LLVM IR
+
+Explain procedural macros
+--
+
+[%auto-animate]
+=== Rust
+
+
+[]
+* Standardized build system, Cargo
+* Rust projects are usually structured as crates
+* Build scripts allow arbitrary code before build
+* Cargo is also the package manager (and more)
+* More than 120.000 crates on crates.io
+
+[.notes]
+--
+* Standardized build system, Cargo
+
+
+.Cargo features
+* build tool
+* package manager
+* dependency manager
+* project manager
+* code formatter
+* documentation generator
+* test runner
+* benchmark runner
+* and more
+
+* Rust projects are usually structured as crates
+* Build scripts allow arbitrary code before build
+
+.Explain build scripts
+* Quellcode modifizieren
+* Code generieren
+* Cargo anweisen externe depedencies (z.B. C++ libs) zu bauen und zu linken
+
+* Cargo is also the package manager (and more)
+* More than 120.000 crates on crates.io
+--
+
+[%auto-animate]
+=== Rust
+
+Most admired programming language for the sixth year in a row
+
+
+[.notes]
+--
+ meistgeschätzten prog sprache auf stackoverflow gewählt.
+
+Rust könnte in Zukunft CPP als standard für systemprogrammierung ablösen
+
+Ausserdem hat Rust ein lustiges maskottchen, nämlich die krabbe ferris
+--
+
+[%auto-animate]
+=== Rust
+
+.Rust mascot Ferris
+image::slides/ferris.svg[]
+
+
+
+[.notes]
+--
+Das zweite Hauptthema meiner Arbeit ist Hardware design
+--
+
+
+=== Hardware design
+
+[]
+* Hardware description languages (HDL)
+* Describes registers and the combinational logic between them
+* SystemVerilog is the most common HDL
+* HDL can be deployed to real hardware (FPGA, ASIC)
+
+[.notes]
+--
+* Hardware description languages (HDL)
+* Describes registers and the combinational logic between them
+** Register können bits speichern
+** damit kann man beliebige schaltkreise definieren
+* SystemVerilog is the most common HDL
+* HDL can be deployed to real hardware (FPGA, ASIC)
+
+* logic design traditionally in hardware description languages (HDL)
+* Most commonly SystemVerilog
+* In their most basic form HDLs describe combinational logic and registers
+* Features for more arithmetics and stuff
+* RustHDL enables writing HDL in a limited subset of Rust
+
+HDLs sind sehr lowlevel.
+
+HLS ist eine ergänzung zu HDLs die es ermöglicht schaltungen in high-level sprachen zu designen
+--
+
+[%auto-animate]
+=== High-level synthesis
+
+[]
+* Converts a high-level behavioral description into equivalent RTL
+* Converts a C++ function into a state-machine in SystemVerilog
+* HLS-generated designs are usually a bit larger and slower than hand-written HDL
+* HLS development time is significantly shorter than RTL development time
+
+[.notes]
+--
+* Converts a high-level behavioral description into equivalent RTL
+* Converts a C++ function into a state-machine in SystemVerilog
+* HLS-generated designs are usually a bit larger and slower than hand-written HDL
+* HLS development time is significantly shorter than RTL development time
+* HLS tools are included in hardware vendor IDEs
+
+* high level behavioural description
+* we will focus on HLS from functions, there are other forms of HLS
+
+HLS macht es einfacher komplexe hardware zu designen.
+
+Meine arbeit beschäftigt sich damit Rust funktionen statt Cpp funktionen als HLS input zu nutzen
+
+
+--
+
+== Motivation
+
+Can the benefits of Rust be used for hardware design?
+
+[.notes]
+--
+Können die Vorteile von Rust für hardware design genutzt werden?
+
+Ich habe das problem in 3 fragen aufgeteilt
+--
+
+=== Research questions
+
+[]
+* How can Rust be used for HLS?
+* How do the results compare to C++?
+* Which parts of Rust can be used?
+
+[.notes]
+--
+* Wie kann aus Rust Verilog synthetisiert werden?
+* Wie ist die Qualität der Designs im Vergleich zu aus Cpp synthetisierten Designs?
+* Welche Featured von Rust können genutzt werden?
+** Welche language features (borrow checker, generics, macros...)
+** Welche Aspekte des Rust Ökosystems können genutzt werden (build system, crates.io, rustHDL)
+
+Zuerst will ich im implementierungsteil die erste frage beantworten
+
+Dann im Ergebnisteil die zweite frage
+--
+
+== Implementation
+
+
+=== Searching for paths from Rust to Verilog
+
+[]
+* No tools that perform HLS directly from Rust
+* No tools that perform HLS from machine code
+* Three actively maintained HLS tools are using LLVM
+* Bambu is the only one that publicly mentions LLVM IR support
+
+[.notes]
+--
+* No tools that perform HLS directly from Rust
+* No tools that perform HLS from machine code
+* Three actively maintained HLS tools are using LLVM
+
+* SmartHLS (previously LegUp, Microchip) und Vivado HLS (AMD/Xilinx)
+* Both do not mention LLVM IR support but should be able to use it somehow
+* Bambu supports it through clang
+* Bambu is designed to use existing C++ compilers as frontends
+* Clang also supports LLVM IR.
+* LLVM support in Bambu is not their main focus, but they acknowledge it
+
+* Bambu is the only one that publicly mentions LLVM IR support
+
+Deshalb nutzt diese arbeit bambu
+--
+
+=== Creating a Toolchain
+
+[]
+.Our toolchain for high-level synthesis from Rust
+[pikchr,id=basic-toolchain]
+....
+   arrow right 150% "Rust" " "
+   box rad 10px "Rust Compiler" fit
+   arrow right 190% "LLVM IR" " "
+   box rad 10px "Bambu" fit
+   arrow right 130% "Verilog" " "
+....
+
+[.notes]
+--
+* Toolchain provides a way to synthesize Rust behavioral specifications
+* Toolchain is quite simple
+* Works only for a single Rust file
+* Needs to be invoked manually
+* Does not work with the Rust ecosystem
+--
+
+=== Integration with the Rust ecosystem
+
+[]
+* Toolchain alone is not very usable
+* I developed RustHLS to integrate it with Rust
+* Generates RustHDL modules from Rust functions using the toolchain
+
+[.r-stack.stretch]
+=== !
+
+[nomnoml.r-stretch]
+....
+#gutter: 10
+#fontSize: 18
+#leading: 1.25
+#lineWidth: 2
+#padding: 14
+#spacing: 40
+#stroke: #000000
+#direction: right
+#fill: #f7f8f7; #ffffff; #f7f8f7; #ffffff; #f7f8f7; #ffffff
+#.downwards: direction=down
+[cargo build|
+[<downwards> Build Script|
+  [parse rust crate]->[find marked modules]
+  [find marked modules]->[extract crate]
+  [extract crate]->[compile to LLVM IR]
+  [compile to LLVM IR]->[synthesize with Bambu]
+  [synthesize with Bambu]->[parse result]
+  [parse result]->[fix parameter names]
+  [fix parameter names]->[generate RustHDL interface]
+  [generate RustHDL interface]->[create RustHDL module]
+  [parse result]->[create C++ library]
+  [create C++ library]->[create RustHDL module]
+  [create RustHDL module]->[place new rust file in original crate]
+  [place new rust file in original crate]->[instruct cargo to link C++ library]
+]
+
+[<downwards>Rust compiler|
+[<downwards> HLS macro evaluation|
+  [parse rust macro]->[check for errors]
+  [check for errors]->[emit import directives for synthesized module]
+]
+[<downwards> Compilation]
+[HLS macro evaluation]->[Compilation]
+]
+
+[Build Script]->[Rust compiler]
+]
+....
+
+[.notes]
+--
+* Divided into two steps.
+* During buildscript the synthesis is performed
+* Every synthesized function has a new file placed in the original crate
+* During compilation, the procedural macro inserts import directives for the synthesized modules
+
+* Verilator is used to generate a C++ library that simulates the synthesized modules
+--
+
+[.r-stack.stretch%auto-animate]
+=== !
+
+[source%linenums#myexample.r-stretch,rust,data-id=example]
+----
+#[rust_hls::hls]
+pub mod max_hls {
+
+    #[hls]
+    pub unsafe extern "C" fn max(
+        elements: *const i32,
+        num_elements: i32,
+    ) -> rust_minmax::MinmaxResult {
+      let slice = std::slice::from_raw_parts(
+        numbers, numbers_length);
+
+      slice.iter().fold(
+          i32::MIN,
+          |mut acc, &x| {
+              if x > acc.max {
+                  return x;
+              }
+              return acc;
+          },
+      )
+    }
+}
+----
+
+== Evaluation
+
+[]
+* The result was compared against an equivalent C++ implementation for three example functions
+* Area, maximum frequency, and amount of cycles were measured for each synthesized design
+* Bambu supports 2 C++ frontends
+
+[.notes]
+--
+* The result was compared against an equivalent C++ implementation for three functions
+* Area, maximum frequency, and amount of cycles were measured for each synthesized design
+* Bambu supports 2 C++ frontends
+
+* Each C++ implementation was synthesized and tested under four
+configurations: compiled with either Bambu’s GCC (Version 8) or Clang
+(Version 16) frontend and optimized for either speed ( -O5 ) or size ( -Os ).
+* A Rust implementation close to the C++ implementation for every design was created.
+* A idiomatic Rust implementation using slices and iterators was also created for two examples.
+* A implementation using a crate from crates.io was created for keccak.
+* Area is the sum of all LUTs, FFs, BRAMs, and DSP blocks.
+* Maximum frequency is determined by the slowest path in the design.
+* Frequency and area are determined by synthesizing with Yosys and placing and routing with next-pnr
+* Target a Lattice ECP5 FPGA with 44k LUT and a speed grade of
+6 (LFE5U-45F-6BG381C)
+* The amount of cycles is determined by simulating the design against multiple test cases with Verilator
+--
+
+[%auto-animate]
+=== `minmax`
+
+The `minmax` function finds the minimum and maximum values in an array of integers.
+
+[source%linenums,rust,data-id=example]
+----
+unsafe extern "C" fn minmax(
+    numbers: *mut i32,
+    numbers_length: i32,
+    out_max: &mut i32,
+    out_min: &mut i32,
+) {
+    /* ... */
+}
+----
+
+
+[.notes]
+--
+* Compared the C++ 
+--
+
+[.r-stack%auto-animate]
+=== `minmax`
+
+[vegalite,opts=inline]
+....
+include::slides/charts/minmax_detailed_cycles.vl.json[]
+....
+
+[.notes]
+--
+* Slowest class: 3 cycles per additional input
+* Second fastest class: 2 cycles per additional input
+* Fastest class: 1.5 cycles per additional input
+--
+
+[.r-stack.columns%auto-animate]
+=== `minmax`
+
+[.column]
+--
+[vegalite,opts=inline]
+....
+include::slides/charts/minmax_average_cycles.vl.json[]
+....
+
+[vegalite,opts=inline]
+....
+include::slides/charts/minmax_overview_area.vl.json[]
+....
+--
+
+[.column]
+--
+[vegalite,opts=inline]
+....
+include::slides/charts/minmax_max_frequency.vl.json[]
+....
+
+[vegalite,opts=inline]
+....
+include::slides/charts/minmax_performance.vl.json[]
+....
+--
+
+[.notes]
+--
+1. average cycles
+2. area
+3. maximum frequency
+4. performance
+--
+
+
+[.r-stack.columns%auto-animate]
+=== `minmax`
+
+[.column]
+--
+[vegalite,opts=inline]
+....
+include::slides/charts/minmax_area_performance.vl.json[]
+....
+--
+
+[.column]
+--
+[vegalite,opts=inline]
+....
+include::slides/charts/minmax_space_efficiency.vl.json[]
+....
+--
+
+[.notes]
+--
+1. area to performance
+2. space efficiency, performance per area
+--
+
+[.r-stack.columns%auto-animate]
+=== `md5`
+
+[.column]
+--
+[vegalite,opts=inline]
+....
+include::slides/charts/md5_average_cycles.vl.json[]
+....
+
+[vegalite,opts=inline]
+....
+include::slides/charts/md5_overview_area.vl.json[]
+....
+--
+
+[.column]
+--
+[vegalite,opts=inline]
+....
+include::slides/charts/md5_max_frequency.vl.json[]
+....
+
+[vegalite,opts=inline]
+....
+include::slides/charts/md5_performance.vl.json[]
+....
+--
+
+[.notes]
+--
+1. average cycles
+2. area
+3. maximum frequency
+4. performance
+--
+
+
+[.r-stack.columns%auto-animate]
+=== `md5`
+
+[.column]
+--
+[vegalite,opts=inline]
+....
+include::slides/charts/md5_area_performance.vl.json[]
+....
+--
+
+[.column]
+--
+[vegalite,opts=inline]
+....
+include::slides/charts/md5_space_efficiency.vl.json[]
+....
+--
+
+[.notes]
+--
+1. area to performance
+2. space efficiency, performance per area
+--
+
+[.r-stack.columns%auto-animate]
+=== `keccak`
+
+[.column]
+--
+[vegalite,opts=inline]
+....
+include::slides/charts/keccak_average_cycles.vl.json[]
+....
+
+[vegalite,opts=inline]
+....
+include::slides/charts/keccak_overview_area.vl.json[]
+....
+--
+
+[.column]
+--
+[vegalite,opts=inline]
+....
+include::slides/charts/keccak_max_frequency.vl.json[]
+....
+
+[vegalite,opts=inline]
+....
+include::slides/charts/keccak_performance.vl.json[]
+....
+--
+
+[.notes]
+--
+1. average cycles
+2. area
+3. maximum frequency
+4. performance
+--
+
+
+[.r-stack.columns%auto-animate]
+=== `keccak`
+
+[.column]
+--
+[vegalite,opts=inline]
+....
+include::slides/charts/keccak_area_performance.vl.json[]
+....
+--
+
+[.column]
+--
+[vegalite,opts=inline]
+....
+include::slides/charts/keccak_space_efficiency.vl.json[]
+....
+--
+
+[.notes]
+--
+1. area to performance
+2. space efficiency, performance per area
+--
+
+[.r-stack%auto-animate]
+=== Bug in crates.io implementation
+
+.Trace of the Clang design optimized for speed
+[wavedrom,id="keccak-clang-speed-trace"]
+....
+include::samples/keccak_clang_speed.wavejson.json[]
+....
+
+[.r-stack%auto-animate]
+=== Bug in crates.io implementation
+
+.Clipped trace of the GCC design optimized for speed
+[wavedrom,id="keccak-gcc-speed-trace"]
+....
+include::samples/keccak_gcc_speed.wavejson.json[]
+....
+
+[.r-stack%auto-animate]
+=== Bug in crates.io implementation
+
+.Trace of the crates.io design optimized for size
+[wavedrom,id="keccak-crates-speed-trace"]
+....
+include::samples/keccak_crates_speed.wavejson.json[]
+....
+
+== Conclusion
+
+[.notes]
+--
+* Answers to the Three questions from the beginning
+--
+
+=== How can Rust be used for behavioral specifications?
+
+By converting Rust to LLVM IR and using the Bambu HLS tool.
+
+=== How do the results compare to C++?
+
+The results are similar. In one case, the Rust toolchain had a bug that caused it to perform significantly worse.
+
+=== Which parts of Rust can be used?
+
+Most language features can be used, except those that do weird stuff like exiting, IO, other syscalls. The solution is compatible with the Rust ecosystem.
+
+== Thank you for your attention
+
+image::slides/ferris.svg[]
+
+== (Bonus) Discussion/Problems
+
+* Only one HLS tool
+* Maybe not the best testcases
+* Not deployed to real hardware
+* Measurement methodology not optimal
+* Rust compiler flags may not be optimized for HLS
+
+== (Bonus) Discussion/Problems
+
+* No effort to find better flags
+* Talk about LLHD
+* Bambu may miss some optimizations when using LLVM IR instead of Cpp as the clang frontend also does transformations on the Cpp
+* Mention Google XLS
+
+++++
+<script>
+setInterval(function () {
+const exampleElement = document.querySelector(".listingblock#myexample pre")
+exampleElement.classList.add("r-stretch")
+}, 1000)
+</script>
+++++

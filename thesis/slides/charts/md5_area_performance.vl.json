@@ -1,0 +1,240 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": "Comparison of area and performance",
+  "data": {
+    "name": "main",
+    "values":
+    [
+      {
+        "Logic blocks": 1945,
+        "Flip-flops": 626,
+        "RAM blocks": 0,
+        "trueDualPortBlockRam": 0,
+        "Multipliers": 0,
+        "otherBlocks": 0,
+        "Area": 2571,
+        "Maximum frequency (MHz)": 83.12551879882812,
+        "Average clock cycles": 325,
+        "id": "md5_rust_size",
+        "Setup": "Rust -Os",
+        "Scenario": "Rust",
+        "compilerSetup": "rust -Os",
+        "Implementation": "Rust",
+        "Function": "md5",
+        "Compiler": "Rust",
+        "Optimized for": "size",
+        "Optimization flag": "-Os",
+        "Language": "Rust",
+        "Idiomatic": "false",
+        "From crates.io": "false",
+        "color": "#C1292E"
+      },
+      {
+        "Logic blocks": 1997,
+        "Flip-flops": 626,
+        "RAM blocks": 0,
+        "trueDualPortBlockRam": 0,
+        "Multipliers": 0,
+        "otherBlocks": 0,
+        "Area": 2623,
+        "Maximum frequency (MHz)": 84.75294494628906,
+        "Average clock cycles": 325,
+        "id": "md5_rust_speed",
+        "Setup": "Rust -O3",
+        "Scenario": "Rust",
+        "compilerSetup": "rust -O3",
+        "Implementation": "Rust",
+        "Function": "md5",
+        "Compiler": "Rust",
+        "Optimized for": "speed",
+        "Optimization flag": "-O3",
+        "Language": "Rust",
+        "Idiomatic": "false",
+        "From crates.io": "false",
+        "color": "#E2787C"
+      },
+      {
+        "Logic blocks": 2043,
+        "Flip-flops": 556,
+        "RAM blocks": 0,
+        "trueDualPortBlockRam": 0,
+        "Multipliers": 0,
+        "otherBlocks": 0,
+        "Area": 2599,
+        "Maximum frequency (MHz)": 91.81050109863281,
+        "Average clock cycles": 326,
+        "id": "md5_clang_speed",
+        "Setup": "C++ clang -O3",
+        "Scenario": "C++ clang",
+        "compilerSetup": "clang -O3",
+        "Implementation": "C++",
+        "Function": "md5",
+        "Compiler": "Clang",
+        "Optimized for": "speed",
+        "Optimization flag": "-O3",
+        "Language": "C++",
+        "Idiomatic": "false",
+        "From crates.io": "false",
+        "color": "#7A8FE1"
+      },
+      {
+        "Logic blocks": 2613,
+        "Flip-flops": 765,
+        "RAM blocks": 0,
+        "trueDualPortBlockRam": 0,
+        "Multipliers": 0,
+        "otherBlocks": 0,
+        "Area": 3378,
+        "Maximum frequency (MHz)": 103.2844467163086,
+        "Average clock cycles": 437,
+        "id": "md5_gcc_speed",
+        "Setup": "C++ gcc -O3",
+        "Scenario": "C++ gcc",
+        "compilerSetup": "gcc -O3",
+        "Implementation": "C++",
+        "Function": "md5",
+        "Compiler": "GCC",
+        "Optimized for": "speed",
+        "Optimization flag": "-O3",
+        "Language": "C++",
+        "Idiomatic": "false",
+        "From crates.io": "false",
+        "color": "#7AE1D5"
+      },
+      {
+        "Logic blocks": 2043,
+        "Flip-flops": 556,
+        "RAM blocks": 0,
+        "trueDualPortBlockRam": 0,
+        "Multipliers": 0,
+        "otherBlocks": 0,
+        "Area": 2599,
+        "Maximum frequency (MHz)": 91.81050109863281,
+        "Average clock cycles": 326,
+        "id": "md5_clang_size",
+        "Setup": "C++ clang -Os",
+        "Scenario": "C++ clang",
+        "compilerSetup": "clang -Os",
+        "Implementation": "C++",
+        "Function": "md5",
+        "Compiler": "Clang",
+        "Optimized for": "size",
+        "Optimization flag": "-Os",
+        "Language": "C++",
+        "Idiomatic": "false",
+        "From crates.io": "false",
+        "color": "#3454D1"
+      },
+      {
+        "Logic blocks": 1961,
+        "Flip-flops": 599,
+        "RAM blocks": 0,
+        "trueDualPortBlockRam": 0,
+        "Multipliers": 0,
+        "otherBlocks": 0,
+        "Area": 2560,
+        "Maximum frequency (MHz)": 91.47457122802734,
+        "Average clock cycles": 374,
+        "id": "md5_gcc_size",
+        "Setup": "C++ gcc -Os",
+        "Scenario": "C++ gcc",
+        "compilerSetup": "gcc -Os",
+        "Implementation": "C++",
+        "Function": "md5",
+        "Compiler": "GCC",
+        "Optimized for": "size",
+        "Optimization flag": "-Os",
+        "Language": "C++",
+        "Idiomatic": "false",
+        "From crates.io": "false",
+        "color": "#34D1BF"
+      }
+    ]
+  },
+  "transform": [
+    {
+      "calculate": "round(datum['Average clock cycles'] / (datum['Maximum frequency (MHz)'] * 1000000) * 1000000000)",
+      "as": "Execution duration (ns)"
+    }
+  ],
+  "mark": {
+    "type": "point",
+    "tooltip": true,
+    "size": 85
+  },
+
+  "autosize": "none",
+  "padding": { "left": 140, "top": 30, "right": 140, "bottom": 40 },
+  "width": 300,
+  "height": 165,
+  "encoding": {
+    "x": {
+      "field": "Area",
+      "type": "quantitative"
+    },
+    "y": {
+      "field": "Execution duration (ns)",
+      "type": "quantitative"
+    },
+    "color": {
+      "field": "Setup",
+      "type": "nominal",
+      "scale": {
+        "range": {
+          "field": "color"
+        }
+      },
+      "legend": {
+        "symbolType": {
+          "expr": "indexof(datum.value, '-Os') >= 0 ? 'triangle-down' : 'circle'"
+        }
+      }
+    },
+    "shape": {
+      "field": "Optimized for",
+      "type": "nominal",
+      "scale": {
+        "range": [
+          "triangle-down",
+          "circle"
+        ]
+      }
+    },
+    "opacity": {
+      "condition": {
+        "param": "selection",
+        "value": 1
+      },
+      "value": 0.2
+    },
+    "strokeWidth": {
+      "condition": {
+        "param": "hover",
+        "empty": false,
+        "value": 3
+      },
+      "value": 2
+    }
+  },
+  "params": [
+    {
+      "name": "selection",
+      "select": {
+        "type": "point",
+        "fields": [
+          "Setup"
+        ],
+        "on": "click"
+      },
+      "bind": "legend"
+    },
+    {
+      "name": "hover",
+      "select": {
+        "type": "point",
+        "on": "mouseover",
+        "toggle": false
+      }
+    }
+  ]
+}

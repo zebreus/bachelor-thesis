@@ -1,0 +1,335 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": "Comparison of area and performance",
+  "data": {
+    "values":
+    [
+      {
+        "Logic blocks": 29576,
+        "Flip-flops": 5678,
+        "RAM blocks": 0,
+        "trueDualPortBlockRam": 0,
+        "Multipliers": 0,
+        "otherBlocks": 0,
+        "Area": 35254,
+        "Maximum frequency (MHz)": 38.71317672729492,
+        "Average clock cycles": 99,
+        "id": "keccak_crates_size",
+        "Setup": "crates.io Rust -Os",
+        "Scenario": "crates.io Rust",
+        "compilerSetup": "rust -Os",
+        "Implementation": "crates.io Rust",
+        "Function": "keccak",
+        "Compiler": "Rust",
+        "Optimized for": "size",
+        "Optimization flag": "-Os",
+        "Language": "Rust",
+        "Idiomatic": "false",
+        "From crates.io": "true",
+        "color": "#000000"
+      },
+      {
+        "Logic blocks": 30505,
+        "Flip-flops": 5678,
+        "RAM blocks": 0,
+        "trueDualPortBlockRam": 0,
+        "Multipliers": 0,
+        "otherBlocks": 0,
+        "Area": 36183,
+        "Maximum frequency (MHz)": 38.69669723510742,
+        "Average clock cycles": 99,
+        "id": "keccak_crates_speed",
+        "Setup": "crates.io Rust -O3",
+        "Scenario": "crates.io Rust",
+        "compilerSetup": "rust -O3",
+        "Implementation": "crates.io Rust",
+        "Function": "keccak",
+        "Compiler": "Rust",
+        "Optimized for": "speed",
+        "Optimization flag": "-O3",
+        "Language": "Rust",
+        "Idiomatic": "false",
+        "From crates.io": "true",
+        "color": "#404040"
+      },
+      {
+        "Logic blocks": 27169,
+        "Flip-flops": 6522,
+        "RAM blocks": 0,
+        "trueDualPortBlockRam": 0,
+        "Multipliers": 8,
+        "otherBlocks": 0,
+        "Area": 33699,
+        "Maximum frequency (MHz)": 56.2239990234375,
+        "Average clock cycles": 39793,
+        "id": "keccak_rust_size",
+        "Setup": "Rust -Os",
+        "Scenario": "Rust",
+        "compilerSetup": "rust -Os",
+        "Implementation": "Rust",
+        "Function": "keccak",
+        "Compiler": "Rust",
+        "Optimized for": "size",
+        "Optimization flag": "-Os",
+        "Language": "Rust",
+        "Idiomatic": "false",
+        "From crates.io": "false",
+        "color": "#C1292E"
+      },
+      {
+        "Logic blocks": 9322,
+        "Flip-flops": 4024,
+        "RAM blocks": 0,
+        "trueDualPortBlockRam": 0,
+        "Multipliers": 0,
+        "otherBlocks": 0,
+        "Area": 13346,
+        "Maximum frequency (MHz)": 106.73497009277344,
+        "Average clock cycles": 99,
+        "id": "keccak_rust_speed",
+        "Setup": "Rust -O3",
+        "Scenario": "Rust",
+        "compilerSetup": "rust -O3",
+        "Implementation": "Rust",
+        "Function": "keccak",
+        "Compiler": "Rust",
+        "Optimized for": "speed",
+        "Optimization flag": "-O3",
+        "Language": "Rust",
+        "Idiomatic": "false",
+        "From crates.io": "false",
+        "color": "#E2787C"
+      },
+      {
+        "Logic blocks": 27422,
+        "Flip-flops": 6522,
+        "RAM blocks": 0,
+        "trueDualPortBlockRam": 0,
+        "Multipliers": 8,
+        "otherBlocks": 0,
+        "Area": 33952,
+        "Maximum frequency (MHz)": 55.533958435058594,
+        "Average clock cycles": 47473,
+        "id": "keccak_idiom_size",
+        "Setup": "Idiomatic Rust -Os",
+        "Scenario": "Idiomatic Rust",
+        "compilerSetup": "rust -Os",
+        "Implementation": "Idiomatic Rust",
+        "Function": "keccak",
+        "Compiler": "Rust",
+        "Optimized for": "size",
+        "Optimization flag": "-Os",
+        "Language": "Rust",
+        "Idiomatic": "true",
+        "From crates.io": "false",
+        "color": "#F65D00"
+      },
+      {
+        "Logic blocks": 9322,
+        "Flip-flops": 4024,
+        "RAM blocks": 0,
+        "trueDualPortBlockRam": 0,
+        "Multipliers": 0,
+        "otherBlocks": 0,
+        "Area": 13346,
+        "Maximum frequency (MHz)": 106.73497009277344,
+        "Average clock cycles": 99,
+        "id": "keccak_idiom_speed",
+        "Setup": "Idiomatic Rust -O3",
+        "Scenario": "Idiomatic Rust",
+        "compilerSetup": "rust -O3",
+        "Implementation": "Idiomatic Rust",
+        "Function": "keccak",
+        "Compiler": "Rust",
+        "Optimized for": "speed",
+        "Optimization flag": "-O3",
+        "Language": "Rust",
+        "Idiomatic": "true",
+        "From crates.io": "false",
+        "color": "#FF9A5C"
+      },
+      {
+        "Logic blocks": 11406,
+        "Flip-flops": 3856,
+        "RAM blocks": 0,
+        "trueDualPortBlockRam": 0,
+        "Multipliers": 0,
+        "otherBlocks": 0,
+        "Area": 15262,
+        "Maximum frequency (MHz)": 77.76654052734375,
+        "Average clock cycles": 76,
+        "id": "keccak_clang_speed",
+        "Setup": "C++ clang -O3",
+        "Scenario": "C++ clang",
+        "compilerSetup": "clang -O3",
+        "Implementation": "C++",
+        "Function": "keccak",
+        "Compiler": "Clang",
+        "Optimized for": "speed",
+        "Optimization flag": "-O3",
+        "Language": "C++",
+        "Idiomatic": "false",
+        "From crates.io": "false",
+        "color": "#7A8FE1"
+      },
+      {
+        "Logic blocks": 28549,
+        "Flip-flops": 10931,
+        "RAM blocks": 0,
+        "trueDualPortBlockRam": 0,
+        "Multipliers": 0,
+        "otherBlocks": 0,
+        "Area": 39480,
+        "Maximum frequency (MHz)": 73.76807403564453,
+        "Average clock cycles": 5450,
+        "id": "keccak_gcc_speed",
+        "Setup": "C++ gcc -O3",
+        "Scenario": "C++ gcc",
+        "compilerSetup": "gcc -O3",
+        "Implementation": "C++",
+        "Function": "keccak",
+        "Compiler": "GCC",
+        "Optimized for": "speed",
+        "Optimization flag": "-O3",
+        "Language": "C++",
+        "Idiomatic": "false",
+        "From crates.io": "false",
+        "color": "#7AE1D5"
+      },
+      {
+        "Logic blocks": 5359,
+        "Flip-flops": 2321,
+        "RAM blocks": 80,
+        "trueDualPortBlockRam": 0,
+        "Multipliers": 2,
+        "otherBlocks": 0,
+        "Area": 7762,
+        "Maximum frequency (MHz)": 89.07099151611328,
+        "Average clock cycles": 19994,
+        "id": "keccak_clang_size",
+        "Setup": "C++ clang -Os",
+        "Scenario": "C++ clang",
+        "compilerSetup": "clang -Os",
+        "Implementation": "C++",
+        "Function": "keccak",
+        "Compiler": "Clang",
+        "Optimized for": "size",
+        "Optimization flag": "-Os",
+        "Language": "C++",
+        "Idiomatic": "false",
+        "From crates.io": "false",
+        "color": "#3454D1"
+      },
+      {
+        "Logic blocks": 8592,
+        "Flip-flops": 3328,
+        "RAM blocks": 80,
+        "trueDualPortBlockRam": 0,
+        "Multipliers": 10,
+        "otherBlocks": 0,
+        "Area": 12010,
+        "Maximum frequency (MHz)": 84.58805847167969,
+        "Average clock cycles": 21890,
+        "id": "keccak_gcc_size",
+        "Setup": "C++ gcc -Os",
+        "Scenario": "C++ gcc",
+        "compilerSetup": "gcc -Os",
+        "Implementation": "C++",
+        "Function": "keccak",
+        "Compiler": "GCC",
+        "Optimized for": "size",
+        "Optimization flag": "-Os",
+        "Language": "C++",
+        "Idiomatic": "false",
+        "From crates.io": "false",
+        "color": "#34D1BF"
+      }
+    ]
+  },
+  "transform": [
+    {
+      "calculate": "round(datum['Average clock cycles'] / (datum['Maximum frequency (MHz)'] * 1000000) * 1000000000)",
+      "as": "Execution duration (ns)"
+    }
+  ],
+  "mark": {
+    "type": "point",
+    "tooltip": true,
+    "size": 85
+  },
+
+  "autosize": "none",
+  "padding": { "left": 140, "top": 30, "right": 140, "bottom": 60 },
+  "width": 300,
+  "height": 165,
+  "encoding": {
+    "x": {
+      "field": "Area",
+      "type": "quantitative"
+    },
+    "y": {
+      "field": "Execution duration (ns)",
+      "type": "quantitative"
+    },
+    "color": {
+      "field": "Setup",
+      "type": "nominal",
+      "scale": {
+        "range": {
+          "field": "color"
+        }
+      },
+      "legend": {
+        "symbolType": {
+          "expr": "indexof(datum.value, '-Os') >= 0 ? 'triangle-down' : 'circle'"
+        }
+      }
+    },
+    "shape": {
+      "field": "Optimized for",
+      "type": "nominal",
+      "scale": {
+        "range": [
+          "triangle-down",
+          "circle"
+        ]
+      }
+    },
+    "opacity": {
+      "condition": {
+        "param": "selection",
+        "value": 1
+      },
+      "value": 0.2
+    },
+    "strokeWidth": {
+      "condition": {
+        "param": "hover",
+        "empty": false,
+        "value": 3
+      },
+      "value": 2
+    }
+  },
+  "params": [
+    {
+      "name": "selection",
+      "select": {
+        "type": "point",
+        "fields": [
+          "Setup"
+        ],
+        "on": "click"
+      },
+      "bind": "legend"
+    },
+    {
+      "name": "hover",
+      "select": {
+        "type": "point",
+        "on": "mouseover",
+        "toggle": false
+      }
+    }
+  ]
+}

@@ -1,0 +1,263 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": "Average clock cycles for each design",
+  "data": {
+    "values":
+    [
+      {
+        "Logic blocks": 735,
+        "Flip-flops": 292,
+        "RAM blocks": 0,
+        "trueDualPortBlockRam": 0,
+        "Multipliers": 0,
+        "otherBlocks": 0,
+        "Area": 1027,
+        "Maximum frequency (MHz)": 103.35916900634766,
+        "Average clock cycles": 53,
+        "id": "minmax_rust_size",
+        "Setup": "Rust -Os",
+        "Scenario": "Rust",
+        "compilerSetup": "rust -Os",
+        "Implementation": "Rust",
+        "Function": "minmax",
+        "Compiler": "Rust",
+        "Optimized for": "size",
+        "Optimization flag": "-Os",
+        "Language": "Rust",
+        "Idiomatic": "false",
+        "From crates.io": "false",
+        "color": "#C1292E"
+      },
+      {
+        "Logic blocks": 2555,
+        "Flip-flops": 862,
+        "RAM blocks": 0,
+        "trueDualPortBlockRam": 0,
+        "Multipliers": 0,
+        "otherBlocks": 0,
+        "Area": 3417,
+        "Maximum frequency (MHz)": 56.06324005126953,
+        "Average clock cycles": 37.77358490566038,
+        "id": "minmax_rust_speed",
+        "Setup": "Rust -O3",
+        "Scenario": "Rust",
+        "compilerSetup": "rust -O3",
+        "Implementation": "Rust",
+        "Function": "minmax",
+        "Compiler": "Rust",
+        "Optimized for": "speed",
+        "Optimization flag": "-O3",
+        "Language": "Rust",
+        "Idiomatic": "false",
+        "From crates.io": "false",
+        "color": "#E2787C"
+      },
+      {
+        "Logic blocks": 394,
+        "Flip-flops": 260,
+        "RAM blocks": 0,
+        "trueDualPortBlockRam": 0,
+        "Multipliers": 0,
+        "otherBlocks": 0,
+        "Area": 654,
+        "Maximum frequency (MHz)": 111.14816284179688,
+        "Average clock cycles": 51,
+        "id": "minmax_idiom_size",
+        "Setup": "Idiomatic Rust -Os",
+        "Scenario": "Idiomatic Rust",
+        "compilerSetup": "rust -Os",
+        "Implementation": "Idiomatic Rust",
+        "Function": "minmax",
+        "Compiler": "Rust",
+        "Optimized for": "size",
+        "Optimization flag": "-Os",
+        "Language": "Rust",
+        "Idiomatic": "true",
+        "From crates.io": "false",
+        "color": "#F65D00"
+      },
+      {
+        "Logic blocks": 2326,
+        "Flip-flops": 865,
+        "RAM blocks": 0,
+        "trueDualPortBlockRam": 0,
+        "Multipliers": 0,
+        "otherBlocks": 0,
+        "Area": 3191,
+        "Maximum frequency (MHz)": 56.217674255371094,
+        "Average clock cycles": 36.75471698113208,
+        "id": "minmax_idiom_speed",
+        "Setup": "Idiomatic Rust -O3",
+        "Scenario": "Idiomatic Rust",
+        "compilerSetup": "rust -O3",
+        "Implementation": "Idiomatic Rust",
+        "Function": "minmax",
+        "Compiler": "Rust",
+        "Optimized for": "speed",
+        "Optimization flag": "-O3",
+        "Language": "Rust",
+        "Idiomatic": "true",
+        "From crates.io": "false",
+        "color": "#FF9A5C"
+      },
+      {
+        "Logic blocks": 2183,
+        "Flip-flops": 827,
+        "RAM blocks": 0,
+        "trueDualPortBlockRam": 0,
+        "Multipliers": 0,
+        "otherBlocks": 0,
+        "Area": 3010,
+        "Maximum frequency (MHz)": 50.643165588378906,
+        "Average clock cycles": 39.75471698113208,
+        "id": "minmax_clang_speed",
+        "Setup": "C++ clang -O3",
+        "Scenario": "C++ clang",
+        "compilerSetup": "clang -O3",
+        "Implementation": "C++",
+        "Function": "minmax",
+        "Compiler": "Clang",
+        "Optimized for": "speed",
+        "Optimization flag": "-O3",
+        "Language": "C++",
+        "Idiomatic": "false",
+        "From crates.io": "false",
+        "color": "#7A8FE1"
+      },
+      {
+        "Logic blocks": 524,
+        "Flip-flops": 165,
+        "RAM blocks": 0,
+        "trueDualPortBlockRam": 0,
+        "Multipliers": 0,
+        "otherBlocks": 0,
+        "Area": 689,
+        "Maximum frequency (MHz)": 103.4768295288086,
+        "Average clock cycles": 54,
+        "id": "minmax_gcc_speed",
+        "Setup": "C++ gcc -O3",
+        "Scenario": "C++ gcc",
+        "compilerSetup": "gcc -O3",
+        "Implementation": "C++",
+        "Function": "minmax",
+        "Compiler": "GCC",
+        "Optimized for": "speed",
+        "Optimization flag": "-O3",
+        "Language": "C++",
+        "Idiomatic": "false",
+        "From crates.io": "false",
+        "color": "#7AE1D5"
+      },
+      {
+        "Logic blocks": 993,
+        "Flip-flops": 229,
+        "RAM blocks": 0,
+        "trueDualPortBlockRam": 0,
+        "Multipliers": 0,
+        "otherBlocks": 0,
+        "Area": 1222,
+        "Maximum frequency (MHz)": 99.20635223388672,
+        "Average clock cycles": 54,
+        "id": "minmax_clang_size",
+        "Setup": "C++ clang -Os",
+        "Scenario": "C++ clang",
+        "compilerSetup": "clang -Os",
+        "Implementation": "C++",
+        "Function": "minmax",
+        "Compiler": "Clang",
+        "Optimized for": "size",
+        "Optimization flag": "-Os",
+        "Language": "C++",
+        "Idiomatic": "false",
+        "From crates.io": "false",
+        "color": "#3454D1"
+      },
+      {
+        "Logic blocks": 439,
+        "Flip-flops": 132,
+        "RAM blocks": 0,
+        "trueDualPortBlockRam": 0,
+        "Multipliers": 0,
+        "otherBlocks": 0,
+        "Area": 571,
+        "Maximum frequency (MHz)": 110.57054901123047,
+        "Average clock cycles": 80,
+        "id": "minmax_gcc_size",
+        "Setup": "C++ gcc -Os",
+        "Scenario": "C++ gcc",
+        "compilerSetup": "gcc -Os",
+        "Implementation": "C++",
+        "Function": "minmax",
+        "Compiler": "GCC",
+        "Optimized for": "size",
+        "Optimization flag": "-Os",
+        "Language": "C++",
+        "Idiomatic": "false",
+        "From crates.io": "false",
+        "color": "#34D1BF"
+      }
+    ]
+  },
+
+  "autosize": "none",
+  "padding": { "left": 100, "top": 30, "right": 100, "bottom": 40 },
+  "width": 300,
+  "height": 165,
+  "mark": {
+    "type": "bar",
+    "tooltip": true,
+    "stroke": "black"
+  },
+  "encoding": {
+    "y": {
+      "field": "Setup",
+      "title": null,
+      "sort": "x"
+    },
+    "x": {
+      "field": "Average clock cycles",
+      "type": "quantitative"
+    },
+    "color": {
+      "legend": null,
+      "field": "color",
+      "type": "nominal",
+      "scale": {
+        "range": {
+          "field": "color"
+        }
+      }
+    },
+    "tooltip": [
+      {
+        "field": "Average clock cycles",
+        "type": "quantitative"
+      },
+      {
+        "field": "Compiler"
+      },
+      {
+        "field": "Optimized for"
+      }
+    ],
+    "strokeWidth": {
+      "condition": [
+        {
+          "param": "hover",
+          "empty": false,
+          "value": 0.5
+        }
+      ],
+      "value": 0
+    }
+  },
+  "params": [
+    {
+      "name": "hover",
+      "select": {
+        "type": "point",
+        "on": "mouseover"
+      }
+    }
+  ]
+}

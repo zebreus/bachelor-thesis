@@ -1,0 +1,2405 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": "Detailed clock cycles for each design",
+  "data": {
+    "values":
+    [
+      {
+        "num_inputs": 0,
+        "cycles": 3,
+        "id": "minmax_rust_size"
+      },
+      {
+        "num_inputs": 1,
+        "cycles": 5,
+        "id": "minmax_rust_size"
+      },
+      {
+        "num_inputs": 2,
+        "cycles": 7,
+        "id": "minmax_rust_size"
+      },
+      {
+        "num_inputs": 3,
+        "cycles": 9,
+        "id": "minmax_rust_size"
+      },
+      {
+        "num_inputs": 4,
+        "cycles": 11,
+        "id": "minmax_rust_size"
+      },
+      {
+        "num_inputs": 5,
+        "cycles": 13,
+        "id": "minmax_rust_size"
+      },
+      {
+        "num_inputs": 6,
+        "cycles": 15,
+        "id": "minmax_rust_size"
+      },
+      {
+        "num_inputs": 7,
+        "cycles": 17,
+        "id": "minmax_rust_size"
+      },
+      {
+        "num_inputs": 8,
+        "cycles": 19,
+        "id": "minmax_rust_size"
+      },
+      {
+        "num_inputs": 9,
+        "cycles": 21,
+        "id": "minmax_rust_size"
+      },
+      {
+        "num_inputs": 10,
+        "cycles": 23,
+        "id": "minmax_rust_size"
+      },
+      {
+        "num_inputs": 11,
+        "cycles": 25,
+        "id": "minmax_rust_size"
+      },
+      {
+        "num_inputs": 12,
+        "cycles": 27,
+        "id": "minmax_rust_size"
+      },
+      {
+        "num_inputs": 13,
+        "cycles": 29,
+        "id": "minmax_rust_size"
+      },
+      {
+        "num_inputs": 14,
+        "cycles": 31,
+        "id": "minmax_rust_size"
+      },
+      {
+        "num_inputs": 15,
+        "cycles": 33,
+        "id": "minmax_rust_size"
+      },
+      {
+        "num_inputs": 16,
+        "cycles": 35,
+        "id": "minmax_rust_size"
+      },
+      {
+        "num_inputs": 17,
+        "cycles": 37,
+        "id": "minmax_rust_size"
+      },
+      {
+        "num_inputs": 18,
+        "cycles": 39,
+        "id": "minmax_rust_size"
+      },
+      {
+        "num_inputs": 19,
+        "cycles": 41,
+        "id": "minmax_rust_size"
+      },
+      {
+        "num_inputs": 20,
+        "cycles": 43,
+        "id": "minmax_rust_size"
+      },
+      {
+        "num_inputs": 21,
+        "cycles": 45,
+        "id": "minmax_rust_size"
+      },
+      {
+        "num_inputs": 22,
+        "cycles": 47,
+        "id": "minmax_rust_size"
+      },
+      {
+        "num_inputs": 23,
+        "cycles": 49,
+        "id": "minmax_rust_size"
+      },
+      {
+        "num_inputs": 24,
+        "cycles": 51,
+        "id": "minmax_rust_size"
+      },
+      {
+        "num_inputs": 25,
+        "cycles": 53,
+        "id": "minmax_rust_size"
+      },
+      {
+        "num_inputs": 26,
+        "cycles": 55,
+        "id": "minmax_rust_size"
+      },
+      {
+        "num_inputs": 27,
+        "cycles": 57,
+        "id": "minmax_rust_size"
+      },
+      {
+        "num_inputs": 28,
+        "cycles": 59,
+        "id": "minmax_rust_size"
+      },
+      {
+        "num_inputs": 29,
+        "cycles": 61,
+        "id": "minmax_rust_size"
+      },
+      {
+        "num_inputs": 30,
+        "cycles": 63,
+        "id": "minmax_rust_size"
+      },
+      {
+        "num_inputs": 31,
+        "cycles": 65,
+        "id": "minmax_rust_size"
+      },
+      {
+        "num_inputs": 32,
+        "cycles": 67,
+        "id": "minmax_rust_size"
+      },
+      {
+        "num_inputs": 33,
+        "cycles": 69,
+        "id": "minmax_rust_size"
+      },
+      {
+        "num_inputs": 34,
+        "cycles": 71,
+        "id": "minmax_rust_size"
+      },
+      {
+        "num_inputs": 35,
+        "cycles": 73,
+        "id": "minmax_rust_size"
+      },
+      {
+        "num_inputs": 36,
+        "cycles": 75,
+        "id": "minmax_rust_size"
+      },
+      {
+        "num_inputs": 37,
+        "cycles": 77,
+        "id": "minmax_rust_size"
+      },
+      {
+        "num_inputs": 38,
+        "cycles": 79,
+        "id": "minmax_rust_size"
+      },
+      {
+        "num_inputs": 39,
+        "cycles": 81,
+        "id": "minmax_rust_size"
+      },
+      {
+        "num_inputs": 40,
+        "cycles": 83,
+        "id": "minmax_rust_size"
+      },
+      {
+        "num_inputs": 41,
+        "cycles": 85,
+        "id": "minmax_rust_size"
+      },
+      {
+        "num_inputs": 42,
+        "cycles": 87,
+        "id": "minmax_rust_size"
+      },
+      {
+        "num_inputs": 43,
+        "cycles": 89,
+        "id": "minmax_rust_size"
+      },
+      {
+        "num_inputs": 44,
+        "cycles": 91,
+        "id": "minmax_rust_size"
+      },
+      {
+        "num_inputs": 45,
+        "cycles": 93,
+        "id": "minmax_rust_size"
+      },
+      {
+        "num_inputs": 46,
+        "cycles": 95,
+        "id": "minmax_rust_size"
+      },
+      {
+        "num_inputs": 47,
+        "cycles": 97,
+        "id": "minmax_rust_size"
+      },
+      {
+        "num_inputs": 48,
+        "cycles": 99,
+        "id": "minmax_rust_size"
+      },
+      {
+        "num_inputs": 49,
+        "cycles": 101,
+        "id": "minmax_rust_size"
+      },
+      {
+        "num_inputs": 50,
+        "cycles": 103,
+        "id": "minmax_rust_size"
+      },
+      {
+        "num_inputs": 0,
+        "cycles": 3,
+        "id": "minmax_rust_speed"
+      },
+      {
+        "num_inputs": 1,
+        "cycles": 7,
+        "id": "minmax_rust_speed"
+      },
+      {
+        "num_inputs": 2,
+        "cycles": 10,
+        "id": "minmax_rust_speed"
+      },
+      {
+        "num_inputs": 3,
+        "cycles": 13,
+        "id": "minmax_rust_speed"
+      },
+      {
+        "num_inputs": 4,
+        "cycles": 9,
+        "id": "minmax_rust_speed"
+      },
+      {
+        "num_inputs": 5,
+        "cycles": 12,
+        "id": "minmax_rust_speed"
+      },
+      {
+        "num_inputs": 6,
+        "cycles": 15,
+        "id": "minmax_rust_speed"
+      },
+      {
+        "num_inputs": 7,
+        "cycles": 18,
+        "id": "minmax_rust_speed"
+      },
+      {
+        "num_inputs": 8,
+        "cycles": 14,
+        "id": "minmax_rust_speed"
+      },
+      {
+        "num_inputs": 9,
+        "cycles": 17,
+        "id": "minmax_rust_speed"
+      },
+      {
+        "num_inputs": 10,
+        "cycles": 20,
+        "id": "minmax_rust_speed"
+      },
+      {
+        "num_inputs": 11,
+        "cycles": 23,
+        "id": "minmax_rust_speed"
+      },
+      {
+        "num_inputs": 12,
+        "cycles": 19,
+        "id": "minmax_rust_speed"
+      },
+      {
+        "num_inputs": 13,
+        "cycles": 22,
+        "id": "minmax_rust_speed"
+      },
+      {
+        "num_inputs": 14,
+        "cycles": 25,
+        "id": "minmax_rust_speed"
+      },
+      {
+        "num_inputs": 15,
+        "cycles": 28,
+        "id": "minmax_rust_speed"
+      },
+      {
+        "num_inputs": 16,
+        "cycles": 24,
+        "id": "minmax_rust_speed"
+      },
+      {
+        "num_inputs": 17,
+        "cycles": 27,
+        "id": "minmax_rust_speed"
+      },
+      {
+        "num_inputs": 18,
+        "cycles": 30,
+        "id": "minmax_rust_speed"
+      },
+      {
+        "num_inputs": 19,
+        "cycles": 33,
+        "id": "minmax_rust_speed"
+      },
+      {
+        "num_inputs": 20,
+        "cycles": 29,
+        "id": "minmax_rust_speed"
+      },
+      {
+        "num_inputs": 21,
+        "cycles": 32,
+        "id": "minmax_rust_speed"
+      },
+      {
+        "num_inputs": 22,
+        "cycles": 35,
+        "id": "minmax_rust_speed"
+      },
+      {
+        "num_inputs": 23,
+        "cycles": 38,
+        "id": "minmax_rust_speed"
+      },
+      {
+        "num_inputs": 24,
+        "cycles": 34,
+        "id": "minmax_rust_speed"
+      },
+      {
+        "num_inputs": 25,
+        "cycles": 37,
+        "id": "minmax_rust_speed"
+      },
+      {
+        "num_inputs": 26,
+        "cycles": 40,
+        "id": "minmax_rust_speed"
+      },
+      {
+        "num_inputs": 27,
+        "cycles": 43,
+        "id": "minmax_rust_speed"
+      },
+      {
+        "num_inputs": 28,
+        "cycles": 39,
+        "id": "minmax_rust_speed"
+      },
+      {
+        "num_inputs": 29,
+        "cycles": 42,
+        "id": "minmax_rust_speed"
+      },
+      {
+        "num_inputs": 30,
+        "cycles": 45,
+        "id": "minmax_rust_speed"
+      },
+      {
+        "num_inputs": 31,
+        "cycles": 48,
+        "id": "minmax_rust_speed"
+      },
+      {
+        "num_inputs": 32,
+        "cycles": 44,
+        "id": "minmax_rust_speed"
+      },
+      {
+        "num_inputs": 33,
+        "cycles": 47,
+        "id": "minmax_rust_speed"
+      },
+      {
+        "num_inputs": 34,
+        "cycles": 50,
+        "id": "minmax_rust_speed"
+      },
+      {
+        "num_inputs": 35,
+        "cycles": 53,
+        "id": "minmax_rust_speed"
+      },
+      {
+        "num_inputs": 36,
+        "cycles": 49,
+        "id": "minmax_rust_speed"
+      },
+      {
+        "num_inputs": 37,
+        "cycles": 52,
+        "id": "minmax_rust_speed"
+      },
+      {
+        "num_inputs": 38,
+        "cycles": 55,
+        "id": "minmax_rust_speed"
+      },
+      {
+        "num_inputs": 39,
+        "cycles": 58,
+        "id": "minmax_rust_speed"
+      },
+      {
+        "num_inputs": 40,
+        "cycles": 54,
+        "id": "minmax_rust_speed"
+      },
+      {
+        "num_inputs": 41,
+        "cycles": 57,
+        "id": "minmax_rust_speed"
+      },
+      {
+        "num_inputs": 42,
+        "cycles": 60,
+        "id": "minmax_rust_speed"
+      },
+      {
+        "num_inputs": 43,
+        "cycles": 63,
+        "id": "minmax_rust_speed"
+      },
+      {
+        "num_inputs": 44,
+        "cycles": 59,
+        "id": "minmax_rust_speed"
+      },
+      {
+        "num_inputs": 45,
+        "cycles": 62,
+        "id": "minmax_rust_speed"
+      },
+      {
+        "num_inputs": 46,
+        "cycles": 65,
+        "id": "minmax_rust_speed"
+      },
+      {
+        "num_inputs": 47,
+        "cycles": 68,
+        "id": "minmax_rust_speed"
+      },
+      {
+        "num_inputs": 48,
+        "cycles": 64,
+        "id": "minmax_rust_speed"
+      },
+      {
+        "num_inputs": 49,
+        "cycles": 67,
+        "id": "minmax_rust_speed"
+      },
+      {
+        "num_inputs": 50,
+        "cycles": 70,
+        "id": "minmax_rust_speed"
+      },
+      {
+        "num_inputs": 0,
+        "cycles": 1,
+        "id": "minmax_idiom_size"
+      },
+      {
+        "num_inputs": 1,
+        "cycles": 3,
+        "id": "minmax_idiom_size"
+      },
+      {
+        "num_inputs": 2,
+        "cycles": 5,
+        "id": "minmax_idiom_size"
+      },
+      {
+        "num_inputs": 3,
+        "cycles": 7,
+        "id": "minmax_idiom_size"
+      },
+      {
+        "num_inputs": 4,
+        "cycles": 9,
+        "id": "minmax_idiom_size"
+      },
+      {
+        "num_inputs": 5,
+        "cycles": 11,
+        "id": "minmax_idiom_size"
+      },
+      {
+        "num_inputs": 6,
+        "cycles": 13,
+        "id": "minmax_idiom_size"
+      },
+      {
+        "num_inputs": 7,
+        "cycles": 15,
+        "id": "minmax_idiom_size"
+      },
+      {
+        "num_inputs": 8,
+        "cycles": 17,
+        "id": "minmax_idiom_size"
+      },
+      {
+        "num_inputs": 9,
+        "cycles": 19,
+        "id": "minmax_idiom_size"
+      },
+      {
+        "num_inputs": 10,
+        "cycles": 21,
+        "id": "minmax_idiom_size"
+      },
+      {
+        "num_inputs": 11,
+        "cycles": 23,
+        "id": "minmax_idiom_size"
+      },
+      {
+        "num_inputs": 12,
+        "cycles": 25,
+        "id": "minmax_idiom_size"
+      },
+      {
+        "num_inputs": 13,
+        "cycles": 27,
+        "id": "minmax_idiom_size"
+      },
+      {
+        "num_inputs": 14,
+        "cycles": 29,
+        "id": "minmax_idiom_size"
+      },
+      {
+        "num_inputs": 15,
+        "cycles": 31,
+        "id": "minmax_idiom_size"
+      },
+      {
+        "num_inputs": 16,
+        "cycles": 33,
+        "id": "minmax_idiom_size"
+      },
+      {
+        "num_inputs": 17,
+        "cycles": 35,
+        "id": "minmax_idiom_size"
+      },
+      {
+        "num_inputs": 18,
+        "cycles": 37,
+        "id": "minmax_idiom_size"
+      },
+      {
+        "num_inputs": 19,
+        "cycles": 39,
+        "id": "minmax_idiom_size"
+      },
+      {
+        "num_inputs": 20,
+        "cycles": 41,
+        "id": "minmax_idiom_size"
+      },
+      {
+        "num_inputs": 21,
+        "cycles": 43,
+        "id": "minmax_idiom_size"
+      },
+      {
+        "num_inputs": 22,
+        "cycles": 45,
+        "id": "minmax_idiom_size"
+      },
+      {
+        "num_inputs": 23,
+        "cycles": 47,
+        "id": "minmax_idiom_size"
+      },
+      {
+        "num_inputs": 24,
+        "cycles": 49,
+        "id": "minmax_idiom_size"
+      },
+      {
+        "num_inputs": 25,
+        "cycles": 51,
+        "id": "minmax_idiom_size"
+      },
+      {
+        "num_inputs": 26,
+        "cycles": 53,
+        "id": "minmax_idiom_size"
+      },
+      {
+        "num_inputs": 27,
+        "cycles": 55,
+        "id": "minmax_idiom_size"
+      },
+      {
+        "num_inputs": 28,
+        "cycles": 57,
+        "id": "minmax_idiom_size"
+      },
+      {
+        "num_inputs": 29,
+        "cycles": 59,
+        "id": "minmax_idiom_size"
+      },
+      {
+        "num_inputs": 30,
+        "cycles": 61,
+        "id": "minmax_idiom_size"
+      },
+      {
+        "num_inputs": 31,
+        "cycles": 63,
+        "id": "minmax_idiom_size"
+      },
+      {
+        "num_inputs": 32,
+        "cycles": 65,
+        "id": "minmax_idiom_size"
+      },
+      {
+        "num_inputs": 33,
+        "cycles": 67,
+        "id": "minmax_idiom_size"
+      },
+      {
+        "num_inputs": 34,
+        "cycles": 69,
+        "id": "minmax_idiom_size"
+      },
+      {
+        "num_inputs": 35,
+        "cycles": 71,
+        "id": "minmax_idiom_size"
+      },
+      {
+        "num_inputs": 36,
+        "cycles": 73,
+        "id": "minmax_idiom_size"
+      },
+      {
+        "num_inputs": 37,
+        "cycles": 75,
+        "id": "minmax_idiom_size"
+      },
+      {
+        "num_inputs": 38,
+        "cycles": 77,
+        "id": "minmax_idiom_size"
+      },
+      {
+        "num_inputs": 39,
+        "cycles": 79,
+        "id": "minmax_idiom_size"
+      },
+      {
+        "num_inputs": 40,
+        "cycles": 81,
+        "id": "minmax_idiom_size"
+      },
+      {
+        "num_inputs": 41,
+        "cycles": 83,
+        "id": "minmax_idiom_size"
+      },
+      {
+        "num_inputs": 42,
+        "cycles": 85,
+        "id": "minmax_idiom_size"
+      },
+      {
+        "num_inputs": 43,
+        "cycles": 87,
+        "id": "minmax_idiom_size"
+      },
+      {
+        "num_inputs": 44,
+        "cycles": 89,
+        "id": "minmax_idiom_size"
+      },
+      {
+        "num_inputs": 45,
+        "cycles": 91,
+        "id": "minmax_idiom_size"
+      },
+      {
+        "num_inputs": 46,
+        "cycles": 93,
+        "id": "minmax_idiom_size"
+      },
+      {
+        "num_inputs": 47,
+        "cycles": 95,
+        "id": "minmax_idiom_size"
+      },
+      {
+        "num_inputs": 48,
+        "cycles": 97,
+        "id": "minmax_idiom_size"
+      },
+      {
+        "num_inputs": 49,
+        "cycles": 99,
+        "id": "minmax_idiom_size"
+      },
+      {
+        "num_inputs": 50,
+        "cycles": 101,
+        "id": "minmax_idiom_size"
+      },
+      {
+        "num_inputs": 0,
+        "cycles": 1,
+        "id": "minmax_idiom_speed"
+      },
+      {
+        "num_inputs": 1,
+        "cycles": 6,
+        "id": "minmax_idiom_speed"
+      },
+      {
+        "num_inputs": 2,
+        "cycles": 9,
+        "id": "minmax_idiom_speed"
+      },
+      {
+        "num_inputs": 3,
+        "cycles": 12,
+        "id": "minmax_idiom_speed"
+      },
+      {
+        "num_inputs": 4,
+        "cycles": 8,
+        "id": "minmax_idiom_speed"
+      },
+      {
+        "num_inputs": 5,
+        "cycles": 11,
+        "id": "minmax_idiom_speed"
+      },
+      {
+        "num_inputs": 6,
+        "cycles": 14,
+        "id": "minmax_idiom_speed"
+      },
+      {
+        "num_inputs": 7,
+        "cycles": 17,
+        "id": "minmax_idiom_speed"
+      },
+      {
+        "num_inputs": 8,
+        "cycles": 13,
+        "id": "minmax_idiom_speed"
+      },
+      {
+        "num_inputs": 9,
+        "cycles": 16,
+        "id": "minmax_idiom_speed"
+      },
+      {
+        "num_inputs": 10,
+        "cycles": 19,
+        "id": "minmax_idiom_speed"
+      },
+      {
+        "num_inputs": 11,
+        "cycles": 22,
+        "id": "minmax_idiom_speed"
+      },
+      {
+        "num_inputs": 12,
+        "cycles": 18,
+        "id": "minmax_idiom_speed"
+      },
+      {
+        "num_inputs": 13,
+        "cycles": 21,
+        "id": "minmax_idiom_speed"
+      },
+      {
+        "num_inputs": 14,
+        "cycles": 24,
+        "id": "minmax_idiom_speed"
+      },
+      {
+        "num_inputs": 15,
+        "cycles": 27,
+        "id": "minmax_idiom_speed"
+      },
+      {
+        "num_inputs": 16,
+        "cycles": 23,
+        "id": "minmax_idiom_speed"
+      },
+      {
+        "num_inputs": 17,
+        "cycles": 26,
+        "id": "minmax_idiom_speed"
+      },
+      {
+        "num_inputs": 18,
+        "cycles": 29,
+        "id": "minmax_idiom_speed"
+      },
+      {
+        "num_inputs": 19,
+        "cycles": 32,
+        "id": "minmax_idiom_speed"
+      },
+      {
+        "num_inputs": 20,
+        "cycles": 28,
+        "id": "minmax_idiom_speed"
+      },
+      {
+        "num_inputs": 21,
+        "cycles": 31,
+        "id": "minmax_idiom_speed"
+      },
+      {
+        "num_inputs": 22,
+        "cycles": 34,
+        "id": "minmax_idiom_speed"
+      },
+      {
+        "num_inputs": 23,
+        "cycles": 37,
+        "id": "minmax_idiom_speed"
+      },
+      {
+        "num_inputs": 24,
+        "cycles": 33,
+        "id": "minmax_idiom_speed"
+      },
+      {
+        "num_inputs": 25,
+        "cycles": 36,
+        "id": "minmax_idiom_speed"
+      },
+      {
+        "num_inputs": 26,
+        "cycles": 39,
+        "id": "minmax_idiom_speed"
+      },
+      {
+        "num_inputs": 27,
+        "cycles": 42,
+        "id": "minmax_idiom_speed"
+      },
+      {
+        "num_inputs": 28,
+        "cycles": 38,
+        "id": "minmax_idiom_speed"
+      },
+      {
+        "num_inputs": 29,
+        "cycles": 41,
+        "id": "minmax_idiom_speed"
+      },
+      {
+        "num_inputs": 30,
+        "cycles": 44,
+        "id": "minmax_idiom_speed"
+      },
+      {
+        "num_inputs": 31,
+        "cycles": 47,
+        "id": "minmax_idiom_speed"
+      },
+      {
+        "num_inputs": 32,
+        "cycles": 43,
+        "id": "minmax_idiom_speed"
+      },
+      {
+        "num_inputs": 33,
+        "cycles": 46,
+        "id": "minmax_idiom_speed"
+      },
+      {
+        "num_inputs": 34,
+        "cycles": 49,
+        "id": "minmax_idiom_speed"
+      },
+      {
+        "num_inputs": 35,
+        "cycles": 52,
+        "id": "minmax_idiom_speed"
+      },
+      {
+        "num_inputs": 36,
+        "cycles": 48,
+        "id": "minmax_idiom_speed"
+      },
+      {
+        "num_inputs": 37,
+        "cycles": 51,
+        "id": "minmax_idiom_speed"
+      },
+      {
+        "num_inputs": 38,
+        "cycles": 54,
+        "id": "minmax_idiom_speed"
+      },
+      {
+        "num_inputs": 39,
+        "cycles": 57,
+        "id": "minmax_idiom_speed"
+      },
+      {
+        "num_inputs": 40,
+        "cycles": 53,
+        "id": "minmax_idiom_speed"
+      },
+      {
+        "num_inputs": 41,
+        "cycles": 56,
+        "id": "minmax_idiom_speed"
+      },
+      {
+        "num_inputs": 42,
+        "cycles": 59,
+        "id": "minmax_idiom_speed"
+      },
+      {
+        "num_inputs": 43,
+        "cycles": 62,
+        "id": "minmax_idiom_speed"
+      },
+      {
+        "num_inputs": 44,
+        "cycles": 58,
+        "id": "minmax_idiom_speed"
+      },
+      {
+        "num_inputs": 45,
+        "cycles": 61,
+        "id": "minmax_idiom_speed"
+      },
+      {
+        "num_inputs": 46,
+        "cycles": 64,
+        "id": "minmax_idiom_speed"
+      },
+      {
+        "num_inputs": 47,
+        "cycles": 67,
+        "id": "minmax_idiom_speed"
+      },
+      {
+        "num_inputs": 48,
+        "cycles": 63,
+        "id": "minmax_idiom_speed"
+      },
+      {
+        "num_inputs": 49,
+        "cycles": 66,
+        "id": "minmax_idiom_speed"
+      },
+      {
+        "num_inputs": 50,
+        "cycles": 69,
+        "id": "minmax_idiom_speed"
+      },
+      {
+        "num_inputs": 0,
+        "cycles": 4,
+        "id": "minmax_clang_speed"
+      },
+      {
+        "num_inputs": 1,
+        "cycles": 9,
+        "id": "minmax_clang_speed"
+      },
+      {
+        "num_inputs": 2,
+        "cycles": 12,
+        "id": "minmax_clang_speed"
+      },
+      {
+        "num_inputs": 3,
+        "cycles": 15,
+        "id": "minmax_clang_speed"
+      },
+      {
+        "num_inputs": 4,
+        "cycles": 11,
+        "id": "minmax_clang_speed"
+      },
+      {
+        "num_inputs": 5,
+        "cycles": 14,
+        "id": "minmax_clang_speed"
+      },
+      {
+        "num_inputs": 6,
+        "cycles": 17,
+        "id": "minmax_clang_speed"
+      },
+      {
+        "num_inputs": 7,
+        "cycles": 20,
+        "id": "minmax_clang_speed"
+      },
+      {
+        "num_inputs": 8,
+        "cycles": 16,
+        "id": "minmax_clang_speed"
+      },
+      {
+        "num_inputs": 9,
+        "cycles": 19,
+        "id": "minmax_clang_speed"
+      },
+      {
+        "num_inputs": 10,
+        "cycles": 22,
+        "id": "minmax_clang_speed"
+      },
+      {
+        "num_inputs": 11,
+        "cycles": 25,
+        "id": "minmax_clang_speed"
+      },
+      {
+        "num_inputs": 12,
+        "cycles": 21,
+        "id": "minmax_clang_speed"
+      },
+      {
+        "num_inputs": 13,
+        "cycles": 24,
+        "id": "minmax_clang_speed"
+      },
+      {
+        "num_inputs": 14,
+        "cycles": 27,
+        "id": "minmax_clang_speed"
+      },
+      {
+        "num_inputs": 15,
+        "cycles": 30,
+        "id": "minmax_clang_speed"
+      },
+      {
+        "num_inputs": 16,
+        "cycles": 26,
+        "id": "minmax_clang_speed"
+      },
+      {
+        "num_inputs": 17,
+        "cycles": 29,
+        "id": "minmax_clang_speed"
+      },
+      {
+        "num_inputs": 18,
+        "cycles": 32,
+        "id": "minmax_clang_speed"
+      },
+      {
+        "num_inputs": 19,
+        "cycles": 35,
+        "id": "minmax_clang_speed"
+      },
+      {
+        "num_inputs": 20,
+        "cycles": 31,
+        "id": "minmax_clang_speed"
+      },
+      {
+        "num_inputs": 21,
+        "cycles": 34,
+        "id": "minmax_clang_speed"
+      },
+      {
+        "num_inputs": 22,
+        "cycles": 37,
+        "id": "minmax_clang_speed"
+      },
+      {
+        "num_inputs": 23,
+        "cycles": 40,
+        "id": "minmax_clang_speed"
+      },
+      {
+        "num_inputs": 24,
+        "cycles": 36,
+        "id": "minmax_clang_speed"
+      },
+      {
+        "num_inputs": 25,
+        "cycles": 39,
+        "id": "minmax_clang_speed"
+      },
+      {
+        "num_inputs": 26,
+        "cycles": 42,
+        "id": "minmax_clang_speed"
+      },
+      {
+        "num_inputs": 27,
+        "cycles": 45,
+        "id": "minmax_clang_speed"
+      },
+      {
+        "num_inputs": 28,
+        "cycles": 41,
+        "id": "minmax_clang_speed"
+      },
+      {
+        "num_inputs": 29,
+        "cycles": 44,
+        "id": "minmax_clang_speed"
+      },
+      {
+        "num_inputs": 30,
+        "cycles": 47,
+        "id": "minmax_clang_speed"
+      },
+      {
+        "num_inputs": 31,
+        "cycles": 50,
+        "id": "minmax_clang_speed"
+      },
+      {
+        "num_inputs": 32,
+        "cycles": 46,
+        "id": "minmax_clang_speed"
+      },
+      {
+        "num_inputs": 33,
+        "cycles": 49,
+        "id": "minmax_clang_speed"
+      },
+      {
+        "num_inputs": 34,
+        "cycles": 52,
+        "id": "minmax_clang_speed"
+      },
+      {
+        "num_inputs": 35,
+        "cycles": 55,
+        "id": "minmax_clang_speed"
+      },
+      {
+        "num_inputs": 36,
+        "cycles": 51,
+        "id": "minmax_clang_speed"
+      },
+      {
+        "num_inputs": 37,
+        "cycles": 54,
+        "id": "minmax_clang_speed"
+      },
+      {
+        "num_inputs": 38,
+        "cycles": 57,
+        "id": "minmax_clang_speed"
+      },
+      {
+        "num_inputs": 39,
+        "cycles": 60,
+        "id": "minmax_clang_speed"
+      },
+      {
+        "num_inputs": 40,
+        "cycles": 56,
+        "id": "minmax_clang_speed"
+      },
+      {
+        "num_inputs": 41,
+        "cycles": 59,
+        "id": "minmax_clang_speed"
+      },
+      {
+        "num_inputs": 42,
+        "cycles": 62,
+        "id": "minmax_clang_speed"
+      },
+      {
+        "num_inputs": 43,
+        "cycles": 65,
+        "id": "minmax_clang_speed"
+      },
+      {
+        "num_inputs": 44,
+        "cycles": 61,
+        "id": "minmax_clang_speed"
+      },
+      {
+        "num_inputs": 45,
+        "cycles": 64,
+        "id": "minmax_clang_speed"
+      },
+      {
+        "num_inputs": 46,
+        "cycles": 67,
+        "id": "minmax_clang_speed"
+      },
+      {
+        "num_inputs": 47,
+        "cycles": 70,
+        "id": "minmax_clang_speed"
+      },
+      {
+        "num_inputs": 48,
+        "cycles": 66,
+        "id": "minmax_clang_speed"
+      },
+      {
+        "num_inputs": 49,
+        "cycles": 69,
+        "id": "minmax_clang_speed"
+      },
+      {
+        "num_inputs": 50,
+        "cycles": 72,
+        "id": "minmax_clang_speed"
+      },
+      {
+        "num_inputs": 0,
+        "cycles": 4,
+        "id": "minmax_gcc_speed"
+      },
+      {
+        "num_inputs": 1,
+        "cycles": 6,
+        "id": "minmax_gcc_speed"
+      },
+      {
+        "num_inputs": 2,
+        "cycles": 8,
+        "id": "minmax_gcc_speed"
+      },
+      {
+        "num_inputs": 3,
+        "cycles": 10,
+        "id": "minmax_gcc_speed"
+      },
+      {
+        "num_inputs": 4,
+        "cycles": 12,
+        "id": "minmax_gcc_speed"
+      },
+      {
+        "num_inputs": 5,
+        "cycles": 14,
+        "id": "minmax_gcc_speed"
+      },
+      {
+        "num_inputs": 6,
+        "cycles": 16,
+        "id": "minmax_gcc_speed"
+      },
+      {
+        "num_inputs": 7,
+        "cycles": 18,
+        "id": "minmax_gcc_speed"
+      },
+      {
+        "num_inputs": 8,
+        "cycles": 20,
+        "id": "minmax_gcc_speed"
+      },
+      {
+        "num_inputs": 9,
+        "cycles": 22,
+        "id": "minmax_gcc_speed"
+      },
+      {
+        "num_inputs": 10,
+        "cycles": 24,
+        "id": "minmax_gcc_speed"
+      },
+      {
+        "num_inputs": 11,
+        "cycles": 26,
+        "id": "minmax_gcc_speed"
+      },
+      {
+        "num_inputs": 12,
+        "cycles": 28,
+        "id": "minmax_gcc_speed"
+      },
+      {
+        "num_inputs": 13,
+        "cycles": 30,
+        "id": "minmax_gcc_speed"
+      },
+      {
+        "num_inputs": 14,
+        "cycles": 32,
+        "id": "minmax_gcc_speed"
+      },
+      {
+        "num_inputs": 15,
+        "cycles": 34,
+        "id": "minmax_gcc_speed"
+      },
+      {
+        "num_inputs": 16,
+        "cycles": 36,
+        "id": "minmax_gcc_speed"
+      },
+      {
+        "num_inputs": 17,
+        "cycles": 38,
+        "id": "minmax_gcc_speed"
+      },
+      {
+        "num_inputs": 18,
+        "cycles": 40,
+        "id": "minmax_gcc_speed"
+      },
+      {
+        "num_inputs": 19,
+        "cycles": 42,
+        "id": "minmax_gcc_speed"
+      },
+      {
+        "num_inputs": 20,
+        "cycles": 44,
+        "id": "minmax_gcc_speed"
+      },
+      {
+        "num_inputs": 21,
+        "cycles": 46,
+        "id": "minmax_gcc_speed"
+      },
+      {
+        "num_inputs": 22,
+        "cycles": 48,
+        "id": "minmax_gcc_speed"
+      },
+      {
+        "num_inputs": 23,
+        "cycles": 50,
+        "id": "minmax_gcc_speed"
+      },
+      {
+        "num_inputs": 24,
+        "cycles": 52,
+        "id": "minmax_gcc_speed"
+      },
+      {
+        "num_inputs": 25,
+        "cycles": 54,
+        "id": "minmax_gcc_speed"
+      },
+      {
+        "num_inputs": 26,
+        "cycles": 56,
+        "id": "minmax_gcc_speed"
+      },
+      {
+        "num_inputs": 27,
+        "cycles": 58,
+        "id": "minmax_gcc_speed"
+      },
+      {
+        "num_inputs": 28,
+        "cycles": 60,
+        "id": "minmax_gcc_speed"
+      },
+      {
+        "num_inputs": 29,
+        "cycles": 62,
+        "id": "minmax_gcc_speed"
+      },
+      {
+        "num_inputs": 30,
+        "cycles": 64,
+        "id": "minmax_gcc_speed"
+      },
+      {
+        "num_inputs": 31,
+        "cycles": 66,
+        "id": "minmax_gcc_speed"
+      },
+      {
+        "num_inputs": 32,
+        "cycles": 68,
+        "id": "minmax_gcc_speed"
+      },
+      {
+        "num_inputs": 33,
+        "cycles": 70,
+        "id": "minmax_gcc_speed"
+      },
+      {
+        "num_inputs": 34,
+        "cycles": 72,
+        "id": "minmax_gcc_speed"
+      },
+      {
+        "num_inputs": 35,
+        "cycles": 74,
+        "id": "minmax_gcc_speed"
+      },
+      {
+        "num_inputs": 36,
+        "cycles": 76,
+        "id": "minmax_gcc_speed"
+      },
+      {
+        "num_inputs": 37,
+        "cycles": 78,
+        "id": "minmax_gcc_speed"
+      },
+      {
+        "num_inputs": 38,
+        "cycles": 80,
+        "id": "minmax_gcc_speed"
+      },
+      {
+        "num_inputs": 39,
+        "cycles": 82,
+        "id": "minmax_gcc_speed"
+      },
+      {
+        "num_inputs": 40,
+        "cycles": 84,
+        "id": "minmax_gcc_speed"
+      },
+      {
+        "num_inputs": 41,
+        "cycles": 86,
+        "id": "minmax_gcc_speed"
+      },
+      {
+        "num_inputs": 42,
+        "cycles": 88,
+        "id": "minmax_gcc_speed"
+      },
+      {
+        "num_inputs": 43,
+        "cycles": 90,
+        "id": "minmax_gcc_speed"
+      },
+      {
+        "num_inputs": 44,
+        "cycles": 92,
+        "id": "minmax_gcc_speed"
+      },
+      {
+        "num_inputs": 45,
+        "cycles": 94,
+        "id": "minmax_gcc_speed"
+      },
+      {
+        "num_inputs": 46,
+        "cycles": 96,
+        "id": "minmax_gcc_speed"
+      },
+      {
+        "num_inputs": 47,
+        "cycles": 98,
+        "id": "minmax_gcc_speed"
+      },
+      {
+        "num_inputs": 48,
+        "cycles": 100,
+        "id": "minmax_gcc_speed"
+      },
+      {
+        "num_inputs": 49,
+        "cycles": 102,
+        "id": "minmax_gcc_speed"
+      },
+      {
+        "num_inputs": 50,
+        "cycles": 104,
+        "id": "minmax_gcc_speed"
+      },
+      {
+        "num_inputs": 0,
+        "cycles": 4,
+        "id": "minmax_clang_size"
+      },
+      {
+        "num_inputs": 1,
+        "cycles": 6,
+        "id": "minmax_clang_size"
+      },
+      {
+        "num_inputs": 2,
+        "cycles": 8,
+        "id": "minmax_clang_size"
+      },
+      {
+        "num_inputs": 3,
+        "cycles": 10,
+        "id": "minmax_clang_size"
+      },
+      {
+        "num_inputs": 4,
+        "cycles": 12,
+        "id": "minmax_clang_size"
+      },
+      {
+        "num_inputs": 5,
+        "cycles": 14,
+        "id": "minmax_clang_size"
+      },
+      {
+        "num_inputs": 6,
+        "cycles": 16,
+        "id": "minmax_clang_size"
+      },
+      {
+        "num_inputs": 7,
+        "cycles": 18,
+        "id": "minmax_clang_size"
+      },
+      {
+        "num_inputs": 8,
+        "cycles": 20,
+        "id": "minmax_clang_size"
+      },
+      {
+        "num_inputs": 9,
+        "cycles": 22,
+        "id": "minmax_clang_size"
+      },
+      {
+        "num_inputs": 10,
+        "cycles": 24,
+        "id": "minmax_clang_size"
+      },
+      {
+        "num_inputs": 11,
+        "cycles": 26,
+        "id": "minmax_clang_size"
+      },
+      {
+        "num_inputs": 12,
+        "cycles": 28,
+        "id": "minmax_clang_size"
+      },
+      {
+        "num_inputs": 13,
+        "cycles": 30,
+        "id": "minmax_clang_size"
+      },
+      {
+        "num_inputs": 14,
+        "cycles": 32,
+        "id": "minmax_clang_size"
+      },
+      {
+        "num_inputs": 15,
+        "cycles": 34,
+        "id": "minmax_clang_size"
+      },
+      {
+        "num_inputs": 16,
+        "cycles": 36,
+        "id": "minmax_clang_size"
+      },
+      {
+        "num_inputs": 17,
+        "cycles": 38,
+        "id": "minmax_clang_size"
+      },
+      {
+        "num_inputs": 18,
+        "cycles": 40,
+        "id": "minmax_clang_size"
+      },
+      {
+        "num_inputs": 19,
+        "cycles": 42,
+        "id": "minmax_clang_size"
+      },
+      {
+        "num_inputs": 20,
+        "cycles": 44,
+        "id": "minmax_clang_size"
+      },
+      {
+        "num_inputs": 21,
+        "cycles": 46,
+        "id": "minmax_clang_size"
+      },
+      {
+        "num_inputs": 22,
+        "cycles": 48,
+        "id": "minmax_clang_size"
+      },
+      {
+        "num_inputs": 23,
+        "cycles": 50,
+        "id": "minmax_clang_size"
+      },
+      {
+        "num_inputs": 24,
+        "cycles": 52,
+        "id": "minmax_clang_size"
+      },
+      {
+        "num_inputs": 25,
+        "cycles": 54,
+        "id": "minmax_clang_size"
+      },
+      {
+        "num_inputs": 26,
+        "cycles": 56,
+        "id": "minmax_clang_size"
+      },
+      {
+        "num_inputs": 27,
+        "cycles": 58,
+        "id": "minmax_clang_size"
+      },
+      {
+        "num_inputs": 28,
+        "cycles": 60,
+        "id": "minmax_clang_size"
+      },
+      {
+        "num_inputs": 29,
+        "cycles": 62,
+        "id": "minmax_clang_size"
+      },
+      {
+        "num_inputs": 30,
+        "cycles": 64,
+        "id": "minmax_clang_size"
+      },
+      {
+        "num_inputs": 31,
+        "cycles": 66,
+        "id": "minmax_clang_size"
+      },
+      {
+        "num_inputs": 32,
+        "cycles": 68,
+        "id": "minmax_clang_size"
+      },
+      {
+        "num_inputs": 33,
+        "cycles": 70,
+        "id": "minmax_clang_size"
+      },
+      {
+        "num_inputs": 34,
+        "cycles": 72,
+        "id": "minmax_clang_size"
+      },
+      {
+        "num_inputs": 35,
+        "cycles": 74,
+        "id": "minmax_clang_size"
+      },
+      {
+        "num_inputs": 36,
+        "cycles": 76,
+        "id": "minmax_clang_size"
+      },
+      {
+        "num_inputs": 37,
+        "cycles": 78,
+        "id": "minmax_clang_size"
+      },
+      {
+        "num_inputs": 38,
+        "cycles": 80,
+        "id": "minmax_clang_size"
+      },
+      {
+        "num_inputs": 39,
+        "cycles": 82,
+        "id": "minmax_clang_size"
+      },
+      {
+        "num_inputs": 40,
+        "cycles": 84,
+        "id": "minmax_clang_size"
+      },
+      {
+        "num_inputs": 41,
+        "cycles": 86,
+        "id": "minmax_clang_size"
+      },
+      {
+        "num_inputs": 42,
+        "cycles": 88,
+        "id": "minmax_clang_size"
+      },
+      {
+        "num_inputs": 43,
+        "cycles": 90,
+        "id": "minmax_clang_size"
+      },
+      {
+        "num_inputs": 44,
+        "cycles": 92,
+        "id": "minmax_clang_size"
+      },
+      {
+        "num_inputs": 45,
+        "cycles": 94,
+        "id": "minmax_clang_size"
+      },
+      {
+        "num_inputs": 46,
+        "cycles": 96,
+        "id": "minmax_clang_size"
+      },
+      {
+        "num_inputs": 47,
+        "cycles": 98,
+        "id": "minmax_clang_size"
+      },
+      {
+        "num_inputs": 48,
+        "cycles": 100,
+        "id": "minmax_clang_size"
+      },
+      {
+        "num_inputs": 49,
+        "cycles": 102,
+        "id": "minmax_clang_size"
+      },
+      {
+        "num_inputs": 50,
+        "cycles": 104,
+        "id": "minmax_clang_size"
+      },
+      {
+        "num_inputs": 0,
+        "cycles": 5,
+        "id": "minmax_gcc_size"
+      },
+      {
+        "num_inputs": 1,
+        "cycles": 8,
+        "id": "minmax_gcc_size"
+      },
+      {
+        "num_inputs": 2,
+        "cycles": 11,
+        "id": "minmax_gcc_size"
+      },
+      {
+        "num_inputs": 3,
+        "cycles": 14,
+        "id": "minmax_gcc_size"
+      },
+      {
+        "num_inputs": 4,
+        "cycles": 17,
+        "id": "minmax_gcc_size"
+      },
+      {
+        "num_inputs": 5,
+        "cycles": 20,
+        "id": "minmax_gcc_size"
+      },
+      {
+        "num_inputs": 6,
+        "cycles": 23,
+        "id": "minmax_gcc_size"
+      },
+      {
+        "num_inputs": 7,
+        "cycles": 26,
+        "id": "minmax_gcc_size"
+      },
+      {
+        "num_inputs": 8,
+        "cycles": 29,
+        "id": "minmax_gcc_size"
+      },
+      {
+        "num_inputs": 9,
+        "cycles": 32,
+        "id": "minmax_gcc_size"
+      },
+      {
+        "num_inputs": 10,
+        "cycles": 35,
+        "id": "minmax_gcc_size"
+      },
+      {
+        "num_inputs": 11,
+        "cycles": 38,
+        "id": "minmax_gcc_size"
+      },
+      {
+        "num_inputs": 12,
+        "cycles": 41,
+        "id": "minmax_gcc_size"
+      },
+      {
+        "num_inputs": 13,
+        "cycles": 44,
+        "id": "minmax_gcc_size"
+      },
+      {
+        "num_inputs": 14,
+        "cycles": 47,
+        "id": "minmax_gcc_size"
+      },
+      {
+        "num_inputs": 15,
+        "cycles": 50,
+        "id": "minmax_gcc_size"
+      },
+      {
+        "num_inputs": 16,
+        "cycles": 53,
+        "id": "minmax_gcc_size"
+      },
+      {
+        "num_inputs": 17,
+        "cycles": 56,
+        "id": "minmax_gcc_size"
+      },
+      {
+        "num_inputs": 18,
+        "cycles": 59,
+        "id": "minmax_gcc_size"
+      },
+      {
+        "num_inputs": 19,
+        "cycles": 62,
+        "id": "minmax_gcc_size"
+      },
+      {
+        "num_inputs": 20,
+        "cycles": 65,
+        "id": "minmax_gcc_size"
+      },
+      {
+        "num_inputs": 21,
+        "cycles": 68,
+        "id": "minmax_gcc_size"
+      },
+      {
+        "num_inputs": 22,
+        "cycles": 71,
+        "id": "minmax_gcc_size"
+      },
+      {
+        "num_inputs": 23,
+        "cycles": 74,
+        "id": "minmax_gcc_size"
+      },
+      {
+        "num_inputs": 24,
+        "cycles": 77,
+        "id": "minmax_gcc_size"
+      },
+      {
+        "num_inputs": 25,
+        "cycles": 80,
+        "id": "minmax_gcc_size"
+      },
+      {
+        "num_inputs": 26,
+        "cycles": 83,
+        "id": "minmax_gcc_size"
+      },
+      {
+        "num_inputs": 27,
+        "cycles": 86,
+        "id": "minmax_gcc_size"
+      },
+      {
+        "num_inputs": 28,
+        "cycles": 89,
+        "id": "minmax_gcc_size"
+      },
+      {
+        "num_inputs": 29,
+        "cycles": 92,
+        "id": "minmax_gcc_size"
+      },
+      {
+        "num_inputs": 30,
+        "cycles": 95,
+        "id": "minmax_gcc_size"
+      },
+      {
+        "num_inputs": 31,
+        "cycles": 98,
+        "id": "minmax_gcc_size"
+      },
+      {
+        "num_inputs": 32,
+        "cycles": 101,
+        "id": "minmax_gcc_size"
+      },
+      {
+        "num_inputs": 33,
+        "cycles": 104,
+        "id": "minmax_gcc_size"
+      },
+      {
+        "num_inputs": 34,
+        "cycles": 107,
+        "id": "minmax_gcc_size"
+      },
+      {
+        "num_inputs": 35,
+        "cycles": 110,
+        "id": "minmax_gcc_size"
+      },
+      {
+        "num_inputs": 36,
+        "cycles": 113,
+        "id": "minmax_gcc_size"
+      },
+      {
+        "num_inputs": 37,
+        "cycles": 116,
+        "id": "minmax_gcc_size"
+      },
+      {
+        "num_inputs": 38,
+        "cycles": 119,
+        "id": "minmax_gcc_size"
+      },
+      {
+        "num_inputs": 39,
+        "cycles": 122,
+        "id": "minmax_gcc_size"
+      },
+      {
+        "num_inputs": 40,
+        "cycles": 125,
+        "id": "minmax_gcc_size"
+      },
+      {
+        "num_inputs": 41,
+        "cycles": 128,
+        "id": "minmax_gcc_size"
+      },
+      {
+        "num_inputs": 42,
+        "cycles": 131,
+        "id": "minmax_gcc_size"
+      },
+      {
+        "num_inputs": 43,
+        "cycles": 134,
+        "id": "minmax_gcc_size"
+      },
+      {
+        "num_inputs": 44,
+        "cycles": 137,
+        "id": "minmax_gcc_size"
+      },
+      {
+        "num_inputs": 45,
+        "cycles": 140,
+        "id": "minmax_gcc_size"
+      },
+      {
+        "num_inputs": 46,
+        "cycles": 143,
+        "id": "minmax_gcc_size"
+      },
+      {
+        "num_inputs": 47,
+        "cycles": 146,
+        "id": "minmax_gcc_size"
+      },
+      {
+        "num_inputs": 48,
+        "cycles": 149,
+        "id": "minmax_gcc_size"
+      },
+      {
+        "num_inputs": 49,
+        "cycles": 152,
+        "id": "minmax_gcc_size"
+      },
+      {
+        "num_inputs": 50,
+        "cycles": 155,
+        "id": "minmax_gcc_size"
+      }
+    ]
+  },
+  "transform": [
+    {
+      "lookup": "id",
+      "from": {
+        "key": "id",
+        "data": {
+          "values":
+          [
+            {
+              "Logic blocks": 735,
+              "Flip-flops": 292,
+              "RAM blocks": 0,
+              "trueDualPortBlockRam": 0,
+              "Multipliers": 0,
+              "otherBlocks": 0,
+              "Area": 1027,
+              "Maximum frequency (MHz)": 103.35916900634766,
+              "Average clock cycles": 53,
+              "id": "minmax_rust_size",
+              "Setup": "Rust -Os",
+              "Scenario": "Rust",
+              "compilerSetup": "rust -Os",
+              "Implementation": "Rust",
+              "Function": "minmax",
+              "Compiler": "Rust",
+              "Optimized for": "size",
+              "Optimization flag": "-Os",
+              "Language": "Rust",
+              "Idiomatic": "false",
+              "From crates.io": "false",
+              "color": "#C1292E"
+            },
+            {
+              "Logic blocks": 2555,
+              "Flip-flops": 862,
+              "RAM blocks": 0,
+              "trueDualPortBlockRam": 0,
+              "Multipliers": 0,
+              "otherBlocks": 0,
+              "Area": 3417,
+              "Maximum frequency (MHz)": 56.06324005126953,
+              "Average clock cycles": 37.77358490566038,
+              "id": "minmax_rust_speed",
+              "Setup": "Rust -O3",
+              "Scenario": "Rust",
+              "compilerSetup": "rust -O3",
+              "Implementation": "Rust",
+              "Function": "minmax",
+              "Compiler": "Rust",
+              "Optimized for": "speed",
+              "Optimization flag": "-O3",
+              "Language": "Rust",
+              "Idiomatic": "false",
+              "From crates.io": "false",
+              "color": "#E2787C"
+            },
+            {
+              "Logic blocks": 394,
+              "Flip-flops": 260,
+              "RAM blocks": 0,
+              "trueDualPortBlockRam": 0,
+              "Multipliers": 0,
+              "otherBlocks": 0,
+              "Area": 654,
+              "Maximum frequency (MHz)": 111.14816284179688,
+              "Average clock cycles": 51,
+              "id": "minmax_idiom_size",
+              "Setup": "Idiomatic Rust -Os",
+              "Scenario": "Idiomatic Rust",
+              "compilerSetup": "rust -Os",
+              "Implementation": "Idiomatic Rust",
+              "Function": "minmax",
+              "Compiler": "Rust",
+              "Optimized for": "size",
+              "Optimization flag": "-Os",
+              "Language": "Rust",
+              "Idiomatic": "true",
+              "From crates.io": "false",
+              "color": "#F65D00"
+            },
+            {
+              "Logic blocks": 2326,
+              "Flip-flops": 865,
+              "RAM blocks": 0,
+              "trueDualPortBlockRam": 0,
+              "Multipliers": 0,
+              "otherBlocks": 0,
+              "Area": 3191,
+              "Maximum frequency (MHz)": 56.217674255371094,
+              "Average clock cycles": 36.75471698113208,
+              "id": "minmax_idiom_speed",
+              "Setup": "Idiomatic Rust -O3",
+              "Scenario": "Idiomatic Rust",
+              "compilerSetup": "rust -O3",
+              "Implementation": "Idiomatic Rust",
+              "Function": "minmax",
+              "Compiler": "Rust",
+              "Optimized for": "speed",
+              "Optimization flag": "-O3",
+              "Language": "Rust",
+              "Idiomatic": "true",
+              "From crates.io": "false",
+              "color": "#FF9A5C"
+            },
+            {
+              "Logic blocks": 2183,
+              "Flip-flops": 827,
+              "RAM blocks": 0,
+              "trueDualPortBlockRam": 0,
+              "Multipliers": 0,
+              "otherBlocks": 0,
+              "Area": 3010,
+              "Maximum frequency (MHz)": 50.643165588378906,
+              "Average clock cycles": 39.75471698113208,
+              "id": "minmax_clang_speed",
+              "Setup": "C++ clang -O3",
+              "Scenario": "C++ clang",
+              "compilerSetup": "clang -O3",
+              "Implementation": "C++",
+              "Function": "minmax",
+              "Compiler": "Clang",
+              "Optimized for": "speed",
+              "Optimization flag": "-O3",
+              "Language": "C++",
+              "Idiomatic": "false",
+              "From crates.io": "false",
+              "color": "#7A8FE1"
+            },
+            {
+              "Logic blocks": 524,
+              "Flip-flops": 165,
+              "RAM blocks": 0,
+              "trueDualPortBlockRam": 0,
+              "Multipliers": 0,
+              "otherBlocks": 0,
+              "Area": 689,
+              "Maximum frequency (MHz)": 103.4768295288086,
+              "Average clock cycles": 54,
+              "id": "minmax_gcc_speed",
+              "Setup": "C++ gcc -O3",
+              "Scenario": "C++ gcc",
+              "compilerSetup": "gcc -O3",
+              "Implementation": "C++",
+              "Function": "minmax",
+              "Compiler": "GCC",
+              "Optimized for": "speed",
+              "Optimization flag": "-O3",
+              "Language": "C++",
+              "Idiomatic": "false",
+              "From crates.io": "false",
+              "color": "#7AE1D5"
+            },
+            {
+              "Logic blocks": 993,
+              "Flip-flops": 229,
+              "RAM blocks": 0,
+              "trueDualPortBlockRam": 0,
+              "Multipliers": 0,
+              "otherBlocks": 0,
+              "Area": 1222,
+              "Maximum frequency (MHz)": 99.20635223388672,
+              "Average clock cycles": 54,
+              "id": "minmax_clang_size",
+              "Setup": "C++ clang -Os",
+              "Scenario": "C++ clang",
+              "compilerSetup": "clang -Os",
+              "Implementation": "C++",
+              "Function": "minmax",
+              "Compiler": "Clang",
+              "Optimized for": "size",
+              "Optimization flag": "-Os",
+              "Language": "C++",
+              "Idiomatic": "false",
+              "From crates.io": "false",
+              "color": "#3454D1"
+            },
+            {
+              "Logic blocks": 439,
+              "Flip-flops": 132,
+              "RAM blocks": 0,
+              "trueDualPortBlockRam": 0,
+              "Multipliers": 0,
+              "otherBlocks": 0,
+              "Area": 571,
+              "Maximum frequency (MHz)": 110.57054901123047,
+              "Average clock cycles": 80,
+              "id": "minmax_gcc_size",
+              "Setup": "C++ gcc -Os",
+              "Scenario": "C++ gcc",
+              "compilerSetup": "gcc -Os",
+              "Implementation": "C++",
+              "Function": "minmax",
+              "Compiler": "GCC",
+              "Optimized for": "size",
+              "Optimization flag": "-Os",
+              "Language": "C++",
+              "Idiomatic": "false",
+              "From crates.io": "false",
+              "color": "#34D1BF"
+            }
+          ]
+        },
+        "fields": [
+          "Scenario",
+          "Optimized for",
+          "Setup",
+          "color"
+        ]
+      }
+    }, {
+      "filter": {
+        "field": "num_inputs",
+        "lte": 30
+      }
+    }
+  ],
+
+  "autosize": "none",
+  "padding": { "left": 140, "top": 30, "right": 140, "bottom": 40 },
+  "width": 600,
+  "height": 300,
+  "encoding": {
+    "x": {
+      "field": "num_inputs",
+      "title": "Input length",
+      "type": "quantitative"
+    }
+  },
+  "layer": [
+    {
+      "encoding": {
+        "y": {
+          "field": "cycles",
+          "title": "Clock cycles",
+          "type": "quantitative",
+          "scale": { "domain": [ 0, 60 ] }
+        },
+        "color": {
+          "field": "Setup",
+          "type": "nominal",
+          "scale": {
+            "range": {
+              "field": "color"
+            }
+          }
+        }
+      },
+      "layer": [
+        {
+          "mark": { "type": "line", "clip": true },
+          "params": [
+            {
+              "name": "selectedSetup",
+              "select": {
+                "type": "point",
+                "fields": [
+                  "Setup"
+                ],
+                "on": "click"
+              },
+              "bind": "legend"
+            }
+          ],
+          "encoding": {
+            "opacity": {
+              "condition": {
+                "param": "selectedSetup",
+                "value": 1
+              },
+              "value": 0.2
+            }
+          }
+        },
+        {
+          "transform": [
+            {
+              "filter": {
+                "param": "hover",
+                "empty": false
+              }
+            }
+          ],
+          "mark": "circle",
+          "encoding": {
+            "size": {
+              "value": 75
+            }
+          }
+        }
+      ]
+    },
+    {
+      "transform": [
+        {
+          "pivot": "Setup",
+          "value": "cycles",
+          "groupby": [
+            "num_inputs"
+          ]
+        }
+      ],
+      "mark": "rule",
+      "encoding": {
+        "opacity": {
+          "condition": {
+            "value": 0.3,
+            "param": "hover",
+            "empty": false
+          },
+          "value": 0
+        },
+        "tooltip": [
+          {
+            "field": "C++ clang -Os",
+            "title": "C++ clang",
+            "type": "quantitative"
+          },
+          {
+            "field": "C++ gcc -Os",
+            "title": "C++ gcc",
+            "type": "quantitative"
+          },
+          {
+            "field": "Rust -Os",
+            "type": "quantitative"
+          },
+          {
+            "field": "Rust -O3",
+            "type": "quantitative"
+          },
+          {
+            "field": "Idiomatic Rust -Os",
+            "type": "quantitative"
+          },
+          {
+            "field": "Idiomatic Rust -O3",
+            "type": "quantitative"
+          }
+        ]
+      },
+      "params": [
+        {
+          "name": "hover",
+          "select": {
+            "type": "point",
+            "fields": [
+              "num_inputs"
+            ],
+            "nearest": true,
+            "on": "mouseover",
+            "clear": "mouseout"
+          }
+        }
+      ]
+    }
+  ]
+}
