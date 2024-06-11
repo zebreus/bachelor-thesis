@@ -1,9 +1,0 @@
-id,value
-min_max_cpp_clang_size,136.40450809582526
-min_max_cpp_clang_speed,103.93134873875212
-min_max_cpp_gcc_size,144.82259232440262
-min_max_cpp_gcc_speed,144.82259232440262
-min_max_rust_idiomatic_size,136.40450809582526
-min_max_rust_idiomatic_speed,103.93134873875212
-min_max_rust_size,136.40450809582526
-min_max_rust_speed,103.93134873875212

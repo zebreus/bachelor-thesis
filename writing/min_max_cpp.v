@@ -1,7 +1,7 @@
 // 
 // Politecnico di Milano
-// Code created using PandA - Version: PandA 0.9.8 - Revision 891ec3caed502474cab0813cc4a9fc678deabaa5 - Date 2023-02-02T20:13:16
-// /nix/store/2hfjp458bdl98q37hzi2aljm30kda30v-bambu-wrapped/bin/bambu executed with: /nix/store/2hfjp458bdl98q37hzi2aljm30kda30v-bambu-wrapped/bin/bambu --top-fname=min_max_rust_idiomatic --generate-tb=src/testbench_rust_idiomatic.xml --simulate --simulator=VERILATOR -v2 --compiler=I386_CLANG12 -Os build/min_max_rust_idiomatic_size.ll 
+// Code created using PandA - Version: PandA 2023.06 - Revision 891ec3caed502474cab0813cc4a9fc678deabaa5 - Date 2023-10-21T00:53:15
+// /nix/store/6s2ahrp3mx2k4jgwwh73kp85c04c12qy-bambu-wrapped/bin/bambu executed with: /nix/store/6s2ahrp3mx2k4jgwwh73kp85c04c12qy-bambu-wrapped/bin/bambu --top-fname=min_max_cpp --generate-tb=src/testbench.xml --simulate --simulator=VERILATOR -v2 --compiler=I386_GCC8 -Os src/min_max_cpp.cpp 
 // 
 // Send any bug to: panda-info@polimi.it
 // ************************************************************************
@@ -21,6 +21,7 @@
 // License along with the PandA framework; see the files COPYING.LIB
 // If not, see <http://www.gnu.org/licenses/>.
 // ************************************************************************
+
 
 `ifdef __ICARUS__
   `define _SIM_HAVE_CLOG2
@@ -45,7 +46,7 @@
 `endif
 
 // This component is part of the BAMBU/PANDA IP LIBRARY
-// Copyright (C) 2004-2022 Politecnico di Milano
+// Copyright (C) 2004-2023 Politecnico di Milano
 // Author(s): Fabrizio Ferrandi <fabrizio.ferrandi@polimi.it>, Christian Pilato <christian.pilato@polimi.it>
 // License: PANDA_LGPLv3
 `timescale 1ns / 1ps
@@ -58,7 +59,7 @@ module constant_value(out1);
 endmodule
 
 // This component is part of the BAMBU/PANDA IP LIBRARY
-// Copyright (C) 2004-2022 Politecnico di Milano
+// Copyright (C) 2004-2023 Politecnico di Milano
 // Author(s): Fabrizio Ferrandi <fabrizio.ferrandi@polimi.it>
 // License: PANDA_LGPLv3
 `timescale 1ns / 1ps
@@ -85,7 +86,7 @@ module register_SE(clock,
 endmodule
 
 // This component is part of the BAMBU/PANDA IP LIBRARY
-// Copyright (C) 2004-2022 Politecnico di Milano
+// Copyright (C) 2004-2023 Politecnico di Milano
 // Author(s): Fabrizio Ferrandi <fabrizio.ferrandi@polimi.it>
 // License: PANDA_LGPLv3
 `timescale 1ns / 1ps
@@ -111,7 +112,32 @@ module register_STD(clock,
 endmodule
 
 // This component is part of the BAMBU/PANDA IP LIBRARY
-// Copyright (C) 2004-2022 Politecnico di Milano
+// Copyright (C) 2004-2023 Politecnico di Milano
+// Author(s): Fabrizio Ferrandi <fabrizio.ferrandi@polimi.it>
+// License: PANDA_LGPLv3
+`timescale 1ns / 1ps
+module IUdata_converter_FU(in1,
+  out1);
+  parameter BITSIZE_in1=1,
+    BITSIZE_out1=1;
+  // IN
+  input signed [BITSIZE_in1-1:0] in1;
+  // OUT
+  output [BITSIZE_out1-1:0] out1;
+  generate
+  if (BITSIZE_out1 <= BITSIZE_in1)
+  begin
+    assign out1 = in1[BITSIZE_out1-1:0];
+  end
+  else
+  begin
+    assign out1 = {{(BITSIZE_out1-BITSIZE_in1){in1[BITSIZE_in1-1]}},in1};
+  end
+  endgenerate
+endmodule
+
+// This component is part of the BAMBU/PANDA IP LIBRARY
+// Copyright (C) 2004-2023 Politecnico di Milano
 // Author(s): Fabrizio Ferrandi <fabrizio.ferrandi@polimi.it>
 // License: PANDA_LGPLv3
 `timescale 1ns / 1ps
@@ -126,57 +152,7 @@ module read_cond_FU(in1,
 endmodule
 
 // This component is part of the BAMBU/PANDA IP LIBRARY
-// Copyright (C) 2004-2022 Politecnico di Milano
-// Author(s): Fabrizio Ferrandi <fabrizio.ferrandi@polimi.it>
-// License: PANDA_LGPLv3
-`timescale 1ns / 1ps
-module UIdata_converter_FU(in1,
-  out1);
-  parameter BITSIZE_in1=1,
-    BITSIZE_out1=1;
-  // IN
-  input [BITSIZE_in1-1:0] in1;
-  // OUT
-  output signed [BITSIZE_out1-1:0] out1;
-  generate
-  if (BITSIZE_out1 <= BITSIZE_in1)
-  begin
-    assign out1 = in1[BITSIZE_out1-1:0];
-  end
-  else
-  begin
-    assign out1 = {{(BITSIZE_out1-BITSIZE_in1){1'b0}},in1};
-  end
-  endgenerate
-endmodule
-
-// This component is part of the BAMBU/PANDA IP LIBRARY
-// Copyright (C) 2004-2022 Politecnico di Milano
-// Author(s): Fabrizio Ferrandi <fabrizio.ferrandi@polimi.it>
-// License: PANDA_LGPLv3
-`timescale 1ns / 1ps
-module UUdata_converter_FU(in1,
-  out1);
-  parameter BITSIZE_in1=1,
-    BITSIZE_out1=1;
-  // IN
-  input [BITSIZE_in1-1:0] in1;
-  // OUT
-  output [BITSIZE_out1-1:0] out1;
-  generate
-  if (BITSIZE_out1 <= BITSIZE_in1)
-  begin
-    assign out1 = in1[BITSIZE_out1-1:0];
-  end
-  else
-  begin
-    assign out1 = {{(BITSIZE_out1-BITSIZE_in1){1'b0}},in1};
-  end
-  endgenerate
-endmodule
-
-// This component is part of the BAMBU/PANDA IP LIBRARY
-// Copyright (C) 2004-2022 Politecnico di Milano
+// Copyright (C) 2004-2023 Politecnico di Milano
 // Author(s): Fabrizio Ferrandi <fabrizio.ferrandi@polimi.it>
 // License: PANDA_LGPLv3
 `timescale 1ns / 1ps
@@ -282,11 +258,11 @@ module BMEMORY_CTRLN(clock,
 endmodule
 
 // This component is part of the BAMBU/PANDA IP LIBRARY
-// Copyright (C) 2004-2022 Politecnico di Milano
+// Copyright (C) 2004-2023 Politecnico di Milano
 // Author(s): Fabrizio Ferrandi <fabrizio.ferrandi@polimi.it>
 // License: PANDA_LGPLv3
 `timescale 1ns / 1ps
-module gt_expr_FU(in1,
+module ge_expr_FU(in1,
   in2,
   out1);
   parameter BITSIZE_in1=1,
@@ -297,15 +273,15 @@ module gt_expr_FU(in1,
   input signed [BITSIZE_in2-1:0] in2;
   // OUT
   output [BITSIZE_out1-1:0] out1;
-  assign out1 = in1 > in2;
+  assign out1 = in1 >= in2;
 endmodule
 
 // This component is part of the BAMBU/PANDA IP LIBRARY
-// Copyright (C) 2004-2022 Politecnico di Milano
+// Copyright (C) 2004-2023 Politecnico di Milano
 // Author(s): Fabrizio Ferrandi <fabrizio.ferrandi@polimi.it>
 // License: PANDA_LGPLv3
 `timescale 1ns / 1ps
-module lt_expr_FU(in1,
+module max_expr_FU(in1,
   in2,
   out1);
   parameter BITSIZE_in1=1,
@@ -315,73 +291,50 @@ module lt_expr_FU(in1,
   input signed [BITSIZE_in1-1:0] in1;
   input signed [BITSIZE_in2-1:0] in2;
   // OUT
-  output [BITSIZE_out1-1:0] out1;
-  assign out1 = in1 < in2;
-
+  output signed [BITSIZE_out1-1:0] out1;
+  assign out1 = in1 > in2 ? in1 : in2;
 endmodule
 
 // This component is part of the BAMBU/PANDA IP LIBRARY
-// Copyright (C) 2004-2022 Politecnico di Milano
+// Copyright (C) 2004-2023 Politecnico di Milano
 // Author(s): Fabrizio Ferrandi <fabrizio.ferrandi@polimi.it>
 // License: PANDA_LGPLv3
 `timescale 1ns / 1ps
-module ui_bit_ior_expr_FU(in1,
+module min_expr_FU(in1,
   in2,
   out1);
   parameter BITSIZE_in1=1,
     BITSIZE_in2=1,
     BITSIZE_out1=1;
   // IN
-  input [BITSIZE_in1-1:0] in1;
-  input [BITSIZE_in2-1:0] in2;
+  input signed [BITSIZE_in1-1:0] in1;
+  input signed [BITSIZE_in2-1:0] in2;
   // OUT
-  output [BITSIZE_out1-1:0] out1;
-  assign out1 = in1 | in2;
+  output signed [BITSIZE_out1-1:0] out1;
+  assign out1 = in1 < in2 ? in1 : in2;
 endmodule
 
 // This component is part of the BAMBU/PANDA IP LIBRARY
-// Copyright (C) 2004-2022 Politecnico di Milano
+// Copyright (C) 2004-2023 Politecnico di Milano
 // Author(s): Fabrizio Ferrandi <fabrizio.ferrandi@polimi.it>
 // License: PANDA_LGPLv3
 `timescale 1ns / 1ps
-module ui_cond_expr_FU(in1,
-  in2,
-  in3,
-  out1);
-  parameter BITSIZE_in1=1,
-    BITSIZE_in2=1,
-    BITSIZE_in3=1,
-    BITSIZE_out1=1;
-  // IN
-  input [BITSIZE_in1-1:0] in1;
-  input [BITSIZE_in2-1:0] in2;
-  input [BITSIZE_in3-1:0] in3;
-  // OUT
-  output [BITSIZE_out1-1:0] out1;
-  assign out1 = in1 != 0 ? in2 : in3;
-endmodule
-
-// This component is part of the BAMBU/PANDA IP LIBRARY
-// Copyright (C) 2004-2022 Politecnico di Milano
-// Author(s): Fabrizio Ferrandi <fabrizio.ferrandi@polimi.it>
-// License: PANDA_LGPLv3
-`timescale 1ns / 1ps
-module ui_eq_expr_FU(in1,
+module plus_expr_FU(in1,
   in2,
   out1);
   parameter BITSIZE_in1=1,
     BITSIZE_in2=1,
     BITSIZE_out1=1;
   // IN
-  input [BITSIZE_in1-1:0] in1;
-  input [BITSIZE_in2-1:0] in2;
+  input signed [BITSIZE_in1-1:0] in1;
+  input signed [BITSIZE_in2-1:0] in2;
   // OUT
-  output [BITSIZE_out1-1:0] out1;
-  assign out1 = in1 == in2;
+  output signed [BITSIZE_out1-1:0] out1;
+  assign out1 = in1 + in2;
 endmodule
 
 // This component is part of the BAMBU/PANDA IP LIBRARY
-// Copyright (C) 2004-2022 Politecnico di Milano
+// Copyright (C) 2004-2023 Politecnico di Milano
 // Author(s): Fabrizio Ferrandi <fabrizio.ferrandi@polimi.it>
 // License: PANDA_LGPLv3
 `timescale 1ns / 1ps
@@ -409,9 +362,9 @@ module ui_lshift_expr_FU(in1,
     endfunction
   `endif
   `ifdef _SIM_HAVE_CLOG2
-    parameter arg2_bitsize = $clog2(PRECISION);
+    localparam arg2_bitsize = $clog2(PRECISION);
   `else
-    parameter arg2_bitsize = log2(PRECISION);
+    localparam arg2_bitsize = log2(PRECISION);
   `endif
   generate
     if(BITSIZE_in2 > arg2_bitsize)
@@ -422,7 +375,7 @@ module ui_lshift_expr_FU(in1,
 endmodule
 
 // This component is part of the BAMBU/PANDA IP LIBRARY
-// Copyright (C) 2004-2022 Politecnico di Milano
+// Copyright (C) 2004-2023 Politecnico di Milano
 // Author(s): Fabrizio Ferrandi <fabrizio.ferrandi@polimi.it>
 // License: PANDA_LGPLv3
 `timescale 1ns / 1ps
@@ -446,23 +399,32 @@ module ui_pointer_plus_expr_FU(in1,
 endmodule
 
 // This component is part of the BAMBU/PANDA IP LIBRARY
-// Copyright (C) 2004-2022 Politecnico di Milano
+// Copyright (C) 2004-2023 Politecnico di Milano
 // Author(s): Fabrizio Ferrandi <fabrizio.ferrandi@polimi.it>
 // License: PANDA_LGPLv3
 `timescale 1ns / 1ps
-module ASSIGN_UNSIGNED_FU(in1,
+module IIdata_converter_FU(in1,
   out1);
   parameter BITSIZE_in1=1,
     BITSIZE_out1=1;
   // IN
-  input [BITSIZE_in1-1:0] in1;
+  input signed [BITSIZE_in1-1:0] in1;
   // OUT
-  output [BITSIZE_out1-1:0] out1;
-  assign out1 = in1;
+  output signed [BITSIZE_out1-1:0] out1;
+  generate
+  if (BITSIZE_out1 <= BITSIZE_in1)
+  begin
+    assign out1 = in1[BITSIZE_out1-1:0];
+  end
+  else
+  begin
+    assign out1 = {{(BITSIZE_out1-BITSIZE_in1){in1[BITSIZE_in1-1]}},in1};
+  end
+  endgenerate
 endmodule
 
 // This component is part of the BAMBU/PANDA IP LIBRARY
-// Copyright (C) 2004-2022 Politecnico di Milano
+// Copyright (C) 2004-2023 Politecnico di Milano
 // Author(s): Fabrizio Ferrandi <fabrizio.ferrandi@polimi.it>, Christian Pilato <christian.pilato@polimi.it>
 // License: PANDA_LGPLv3
 `timescale 1ns / 1ps
@@ -482,16 +444,42 @@ module MUX_GATE(sel,
   assign out1 = sel ? in1 : in2;
 endmodule
 
-// Datapath RTL description for min_max_rust_idiomatic
+// This component is part of the BAMBU/PANDA IP LIBRARY
+// Copyright (C) 2004-2023 Politecnico di Milano
+// Author(s): Fabrizio Ferrandi <fabrizio.ferrandi@polimi.it>
+// License: PANDA_LGPLv3
+`timescale 1ns / 1ps
+module UUdata_converter_FU(in1,
+  out1);
+  parameter BITSIZE_in1=1,
+    BITSIZE_out1=1;
+  // IN
+  input [BITSIZE_in1-1:0] in1;
+  // OUT
+  output [BITSIZE_out1-1:0] out1;
+  generate
+  if (BITSIZE_out1 <= BITSIZE_in1)
+  begin
+    assign out1 = in1[BITSIZE_out1-1:0];
+  end
+  else
+  begin
+    assign out1 = {{(BITSIZE_out1-BITSIZE_in1){1'b0}},in1};
+  end
+  endgenerate
+endmodule
+
+// Datapath RTL description for min_max_cpp
 // This component has been derived from the input source code and so it does not fall under the copyright of PandA framework, but it follows the input source code copyright, and may be aggregated with components of the BAMBU/PANDA IP LIBRARY.
 // Author(s): Component automatically generated by bambu
 // License: THIS COMPONENT IS PROVIDED "AS IS" AND WITHOUT ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 `timescale 1ns / 1ps
-module datapath_min_max_rust_idiomatic(clock,
+module datapath_min_max_cpp(clock,
   reset,
-  in_port_Pd5,
-  in_port_Pd6,
-  return_port,
+  in_port_numbers,
+  in_port_numbers_length,
+  in_port_out_max,
+  in_port_out_min,
   M_Rdata_ram,
   M_DataRdy,
   Min_oe_ram,
@@ -504,26 +492,27 @@ module datapath_min_max_rust_idiomatic(clock,
   Mout_addr_ram,
   Mout_Wdata_ram,
   Mout_data_ram_size,
-  fuselector_BMEMORY_CTRLN_14_i0_LOAD,
-  fuselector_BMEMORY_CTRLN_14_i0_STORE,
-  selector_MUX_11_gimple_return_FU_4_i0_0_0_0,
+  fuselector_BMEMORY_CTRLN_8_i0_LOAD,
+  fuselector_BMEMORY_CTRLN_8_i0_STORE,
+  selector_MUX_0_BMEMORY_CTRLN_8_i0_0_0_0,
+  selector_MUX_18_reg_0_0_0_0,
   selector_MUX_19_reg_1_0_0_0,
+  selector_MUX_1_BMEMORY_CTRLN_8_i0_1_0_0,
+  selector_MUX_1_BMEMORY_CTRLN_8_i0_1_0_1,
+  selector_MUX_1_BMEMORY_CTRLN_8_i0_1_1_0,
   selector_MUX_20_reg_2_0_0_0,
-  selector_MUX_21_reg_3_0_0_0,
   wrenable_reg_0,
   wrenable_reg_1,
   wrenable_reg_2,
   wrenable_reg_3,
-  wrenable_reg_4,
-  wrenable_reg_5,
-  wrenable_reg_6,
-  OUT_CONDITION_min_max_rust_idiomatic_424721_424749,
-  OUT_CONDITION_min_max_rust_idiomatic_424721_424777);
+  OUT_CONDITION_min_max_cpp_31124_31212);
   // IN
   input clock;
   input reset;
-  input [31:0] in_port_Pd5;
-  input [31:0] in_port_Pd6;
+  input [31:0] in_port_numbers;
+  input signed [31:0] in_port_numbers_length;
+  input [31:0] in_port_out_max;
+  input [31:0] in_port_out_min;
   input [63:0] M_Rdata_ram;
   input [1:0] M_DataRdy;
   input [1:0] Min_oe_ram;
@@ -531,81 +520,60 @@ module datapath_min_max_rust_idiomatic(clock,
   input [63:0] Min_addr_ram;
   input [63:0] Min_Wdata_ram;
   input [11:0] Min_data_ram_size;
-  input fuselector_BMEMORY_CTRLN_14_i0_LOAD;
-  input fuselector_BMEMORY_CTRLN_14_i0_STORE;
-  input selector_MUX_11_gimple_return_FU_4_i0_0_0_0;
+  input fuselector_BMEMORY_CTRLN_8_i0_LOAD;
+  input fuselector_BMEMORY_CTRLN_8_i0_STORE;
+  input selector_MUX_0_BMEMORY_CTRLN_8_i0_0_0_0;
+  input selector_MUX_18_reg_0_0_0_0;
   input selector_MUX_19_reg_1_0_0_0;
+  input selector_MUX_1_BMEMORY_CTRLN_8_i0_1_0_0;
+  input selector_MUX_1_BMEMORY_CTRLN_8_i0_1_0_1;
+  input selector_MUX_1_BMEMORY_CTRLN_8_i0_1_1_0;
   input selector_MUX_20_reg_2_0_0_0;
-  input selector_MUX_21_reg_3_0_0_0;
   input wrenable_reg_0;
   input wrenable_reg_1;
   input wrenable_reg_2;
   input wrenable_reg_3;
-  input wrenable_reg_4;
-  input wrenable_reg_5;
-  input wrenable_reg_6;
   // OUT
-  output [63:0] return_port;
   output [1:0] Mout_oe_ram;
   output [1:0] Mout_we_ram;
   output [63:0] Mout_addr_ram;
   output [63:0] Mout_Wdata_ram;
   output [11:0] Mout_data_ram_size;
-  output OUT_CONDITION_min_max_rust_idiomatic_424721_424749;
-  output OUT_CONDITION_min_max_rust_idiomatic_424721_424777;
+  output OUT_CONDITION_min_max_cpp_31124_31212;
   // Component and signal declarations
-  wire [31:0] null_out_signal_BMEMORY_CTRLN_14_i0_out1_1;
-  wire [31:0] out_BMEMORY_CTRLN_14_i0_BMEMORY_CTRLN_14_i0;
-  wire [63:0] out_MUX_11_gimple_return_FU_4_i0_0_0_0;
+  wire [31:0] null_out_signal_BMEMORY_CTRLN_8_i0_out1_1;
+  wire [31:0] out_BMEMORY_CTRLN_8_i0_BMEMORY_CTRLN_8_i0;
+  wire [29:0] out_IUdata_converter_FU_5_i0_fu_min_max_cpp_31124_31190;
+  wire [31:0] out_MUX_0_BMEMORY_CTRLN_8_i0_0_0_0;
+  wire [31:0] out_MUX_18_reg_0_0_0_0;
   wire [31:0] out_MUX_19_reg_1_0_0_0;
+  wire [31:0] out_MUX_1_BMEMORY_CTRLN_8_i0_1_0_0;
+  wire [31:0] out_MUX_1_BMEMORY_CTRLN_8_i0_1_0_1;
+  wire [31:0] out_MUX_1_BMEMORY_CTRLN_8_i0_1_1_0;
   wire [31:0] out_MUX_20_reg_2_0_0_0;
-  wire [31:0] out_MUX_21_reg_3_0_0_0;
-  wire signed [31:0] out_UIdata_converter_FU_10_i0_fu_min_max_rust_idiomatic_424721_424899;
-  wire signed [31:0] out_UIdata_converter_FU_7_i0_fu_min_max_rust_idiomatic_424721_424884;
-  wire signed [31:0] out_UIdata_converter_FU_8_i0_fu_min_max_rust_idiomatic_424721_424886;
-  wire signed [31:0] out_UIdata_converter_FU_9_i0_fu_min_max_rust_idiomatic_424721_424897;
-  wire [31:0] out_UUdata_converter_FU_12_i0_fu_min_max_rust_idiomatic_424721_424820;
-  wire [31:0] out_UUdata_converter_FU_13_i0_fu_min_max_rust_idiomatic_424721_424822;
   wire out_const_0;
-  wire [6:0] out_const_1;
-  wire out_const_2;
-  wire [1:0] out_const_3;
-  wire [2:0] out_const_4;
-  wire [5:0] out_const_5;
-  wire [63:0] out_conv_out_const_0_1_64;
-  wire [5:0] out_conv_out_const_1_7_6;
-  wire [31:0] out_conv_out_u_assign_conn_obj_0_ASSIGN_UNSIGNED_FU_u_assign_0_1_32;
-  wire [31:0] out_conv_out_u_assign_conn_obj_1_ASSIGN_UNSIGNED_FU_u_assign_1_1_32;
-  wire out_gt_expr_FU_32_32_32_15_i0_fu_min_max_rust_idiomatic_424721_424888;
-  wire out_lt_expr_FU_32_32_32_16_i0_fu_min_max_rust_idiomatic_424721_424901;
-  wire out_read_cond_FU_11_i0_fu_min_max_rust_idiomatic_424721_424777;
-  wire out_read_cond_FU_2_i0_fu_min_max_rust_idiomatic_424721_424749;
+  wire [1:0] out_const_1;
+  wire [6:0] out_const_2;
+  wire out_const_3;
+  wire [1:0] out_const_4;
+  wire signed [31:0] out_conv_out_const_0_I_1_I_32;
+  wire [5:0] out_conv_out_const_2_7_6;
+  wire out_ge_expr_FU_32_32_32_9_i0_fu_min_max_cpp_31124_31232;
+  wire signed [31:0] out_ii_conv_conn_obj_0_IIdata_converter_FU_ii_conv_0;
+  wire [31:0] out_iu_conv_conn_obj_1_IUdata_converter_FU_iu_conv_1;
+  wire [31:0] out_iu_conv_conn_obj_2_IUdata_converter_FU_iu_conv_2;
+  wire signed [31:0] out_max_expr_FU_32_32_32_10_i0_fu_min_max_cpp_31124_31172;
+  wire signed [31:0] out_min_expr_FU_32_32_32_11_i0_fu_min_max_cpp_31124_31210;
+  wire signed [31:0] out_plus_expr_FU_32_0_32_12_i0_fu_min_max_cpp_31124_31198;
+  wire out_read_cond_FU_6_i0_fu_min_max_cpp_31124_31212;
   wire [31:0] out_reg_0_reg_0;
   wire [31:0] out_reg_1_reg_1;
   wire [31:0] out_reg_2_reg_2;
   wire [31:0] out_reg_3_reg_3;
-  wire [31:0] out_reg_4_reg_4;
-  wire [31:0] out_reg_5_reg_5;
-  wire out_reg_6_reg_6;
-  wire [0:0] out_u_assign_conn_obj_0_ASSIGN_UNSIGNED_FU_u_assign_0;
-  wire [0:0] out_u_assign_conn_obj_1_ASSIGN_UNSIGNED_FU_u_assign_1;
-  wire [63:0] out_ui_bit_ior_expr_FU_0_64_64_17_i0_fu_min_max_rust_idiomatic_424721_424811;
-  wire [31:0] out_ui_cond_expr_FU_32_32_32_32_18_i0_fu_min_max_rust_idiomatic_424721_424773;
-  wire [31:0] out_ui_cond_expr_FU_32_32_32_32_18_i1_fu_min_max_rust_idiomatic_424721_424775;
-  wire out_ui_eq_expr_FU_32_0_32_19_i0_fu_min_max_rust_idiomatic_424721_424878;
-  wire out_ui_eq_expr_FU_32_32_32_20_i0_fu_min_max_rust_idiomatic_424721_424907;
-  wire [31:0] out_ui_lshift_expr_FU_32_0_32_21_i0_fu_min_max_rust_idiomatic_424721_424869;
-  wire [63:0] out_ui_lshift_expr_FU_64_0_64_22_i0_fu_min_max_rust_idiomatic_424721_424815;
-  wire [31:0] out_ui_pointer_plus_expr_FU_32_0_32_23_i0_fu_min_max_rust_idiomatic_424721_424770;
-  wire [31:0] out_ui_pointer_plus_expr_FU_32_32_32_24_i0_fu_min_max_rust_idiomatic_424721_424746;
+  wire [31:0] out_ui_lshift_expr_FU_32_0_32_13_i0_fu_min_max_cpp_31124_31184;
+  wire [31:0] out_ui_pointer_plus_expr_FU_32_32_32_14_i0_fu_min_max_cpp_31124_31178;
   
-  ASSIGN_UNSIGNED_FU #(.BITSIZE_in1(1),
-    .BITSIZE_out1(1)) ASSIGN_UNSIGNED_FU_u_assign_0 (.out1(out_u_assign_conn_obj_0_ASSIGN_UNSIGNED_FU_u_assign_0),
-    .in1(out_const_0));
-  ASSIGN_UNSIGNED_FU #(.BITSIZE_in1(1),
-    .BITSIZE_out1(1)) ASSIGN_UNSIGNED_FU_u_assign_1 (.out1(out_u_assign_conn_obj_1_ASSIGN_UNSIGNED_FU_u_assign_1),
-    .in1(out_const_0));
-  BMEMORY_CTRLN #(.BITSIZE_in1(1),
+  BMEMORY_CTRLN #(.BITSIZE_in1(32),
     .PORTSIZE_in1(2),
     .BITSIZE_in2(32),
     .PORTSIZE_in2(2),
@@ -642,26 +610,26 @@ module datapath_min_max_rust_idiomatic(clock,
     .BITSIZE_Min_data_ram_size(6),
     .PORTSIZE_Min_data_ram_size(2),
     .BITSIZE_Mout_data_ram_size(6),
-    .PORTSIZE_Mout_data_ram_size(2)) BMEMORY_CTRLN_14_i0 (.out1({null_out_signal_BMEMORY_CTRLN_14_i0_out1_1,
-      out_BMEMORY_CTRLN_14_i0_BMEMORY_CTRLN_14_i0}),
+    .PORTSIZE_Mout_data_ram_size(2)) BMEMORY_CTRLN_8_i0 (.out1({null_out_signal_BMEMORY_CTRLN_8_i0_out1_1,
+      out_BMEMORY_CTRLN_8_i0_BMEMORY_CTRLN_8_i0}),
     .Mout_oe_ram(Mout_oe_ram),
     .Mout_we_ram(Mout_we_ram),
     .Mout_addr_ram(Mout_addr_ram),
     .Mout_Wdata_ram(Mout_Wdata_ram),
     .Mout_data_ram_size(Mout_data_ram_size),
     .clock(clock),
-    .in1({1'b0,
-      1'b0}),
+    .in1({32'b00000000000000000000000000000000,
+      out_MUX_0_BMEMORY_CTRLN_8_i0_0_0_0}),
     .in2({32'b00000000000000000000000000000000,
-      out_reg_3_reg_3}),
+      out_MUX_1_BMEMORY_CTRLN_8_i0_1_1_0}),
     .in3({6'b000000,
-      out_conv_out_const_1_7_6}),
+      out_conv_out_const_2_7_6}),
     .in4({1'b0,
-      out_const_2}),
+      out_const_3}),
     .sel_LOAD({1'b0,
-      fuselector_BMEMORY_CTRLN_14_i0_LOAD}),
+      fuselector_BMEMORY_CTRLN_8_i0_LOAD}),
     .sel_STORE({1'b0,
-      fuselector_BMEMORY_CTRLN_14_i0_STORE}),
+      fuselector_BMEMORY_CTRLN_8_i0_STORE}),
     .Min_oe_ram(Min_oe_ram),
     .Min_we_ram(Min_we_ram),
     .Min_addr_ram(Min_addr_ram),
@@ -669,144 +637,115 @@ module datapath_min_max_rust_idiomatic(clock,
     .Min_Wdata_ram(Min_Wdata_ram),
     .Min_data_ram_size(Min_data_ram_size),
     .M_DataRdy(M_DataRdy));
-  MUX_GATE #(.BITSIZE_in1(64),
-    .BITSIZE_in2(64),
-    .BITSIZE_out1(64)) MUX_11_gimple_return_FU_4_i0_0_0_0 (.out1(out_MUX_11_gimple_return_FU_4_i0_0_0_0),
-    .sel(selector_MUX_11_gimple_return_FU_4_i0_0_0_0),
-    .in1(out_conv_out_const_0_1_64),
-    .in2(out_ui_bit_ior_expr_FU_0_64_64_17_i0_fu_min_max_rust_idiomatic_424721_424811));
+  IIdata_converter_FU #(.BITSIZE_in1(32),
+    .BITSIZE_out1(32)) IIdata_converter_FU_ii_conv_0 (.out1(out_ii_conv_conn_obj_0_IIdata_converter_FU_ii_conv_0),
+    .in1(out_conv_out_const_0_I_1_I_32));
+  IUdata_converter_FU #(.BITSIZE_in1(32),
+    .BITSIZE_out1(32)) IUdata_converter_FU_iu_conv_1 (.out1(out_iu_conv_conn_obj_1_IUdata_converter_FU_iu_conv_1),
+    .in1(out_reg_0_reg_0));
+  IUdata_converter_FU #(.BITSIZE_in1(32),
+    .BITSIZE_out1(32)) IUdata_converter_FU_iu_conv_2 (.out1(out_iu_conv_conn_obj_2_IUdata_converter_FU_iu_conv_2),
+    .in1(out_reg_2_reg_2));
+  MUX_GATE #(.BITSIZE_in1(32),
+    .BITSIZE_in2(32),
+    .BITSIZE_out1(32)) MUX_0_BMEMORY_CTRLN_8_i0_0_0_0 (.out1(out_MUX_0_BMEMORY_CTRLN_8_i0_0_0_0),
+    .sel(selector_MUX_0_BMEMORY_CTRLN_8_i0_0_0_0),
+    .in1(out_iu_conv_conn_obj_1_IUdata_converter_FU_iu_conv_1),
+    .in2(out_iu_conv_conn_obj_2_IUdata_converter_FU_iu_conv_2));
+  MUX_GATE #(.BITSIZE_in1(32),
+    .BITSIZE_in2(32),
+    .BITSIZE_out1(32)) MUX_18_reg_0_0_0_0 (.out1(out_MUX_18_reg_0_0_0_0),
+    .sel(selector_MUX_18_reg_0_0_0_0),
+    .in1(out_BMEMORY_CTRLN_8_i0_BMEMORY_CTRLN_8_i0),
+    .in2(out_max_expr_FU_32_32_32_10_i0_fu_min_max_cpp_31124_31172));
   MUX_GATE #(.BITSIZE_in1(32),
     .BITSIZE_in2(32),
     .BITSIZE_out1(32)) MUX_19_reg_1_0_0_0 (.out1(out_MUX_19_reg_1_0_0_0),
     .sel(selector_MUX_19_reg_1_0_0_0),
-    .in1(out_conv_out_u_assign_conn_obj_0_ASSIGN_UNSIGNED_FU_u_assign_0_1_32),
-    .in2(out_ui_cond_expr_FU_32_32_32_32_18_i0_fu_min_max_rust_idiomatic_424721_424773));
+    .in1(out_ii_conv_conn_obj_0_IIdata_converter_FU_ii_conv_0),
+    .in2(out_plus_expr_FU_32_0_32_12_i0_fu_min_max_cpp_31124_31198));
+  MUX_GATE #(.BITSIZE_in1(32),
+    .BITSIZE_in2(32),
+    .BITSIZE_out1(32)) MUX_1_BMEMORY_CTRLN_8_i0_1_0_0 (.out1(out_MUX_1_BMEMORY_CTRLN_8_i0_1_0_0),
+    .sel(selector_MUX_1_BMEMORY_CTRLN_8_i0_1_0_0),
+    .in1(out_reg_3_reg_3),
+    .in2(in_port_numbers));
+  MUX_GATE #(.BITSIZE_in1(32),
+    .BITSIZE_in2(32),
+    .BITSIZE_out1(32)) MUX_1_BMEMORY_CTRLN_8_i0_1_0_1 (.out1(out_MUX_1_BMEMORY_CTRLN_8_i0_1_0_1),
+    .sel(selector_MUX_1_BMEMORY_CTRLN_8_i0_1_0_1),
+    .in1(in_port_out_max),
+    .in2(in_port_out_min));
+  MUX_GATE #(.BITSIZE_in1(32),
+    .BITSIZE_in2(32),
+    .BITSIZE_out1(32)) MUX_1_BMEMORY_CTRLN_8_i0_1_1_0 (.out1(out_MUX_1_BMEMORY_CTRLN_8_i0_1_1_0),
+    .sel(selector_MUX_1_BMEMORY_CTRLN_8_i0_1_1_0),
+    .in1(out_MUX_1_BMEMORY_CTRLN_8_i0_1_0_0),
+    .in2(out_MUX_1_BMEMORY_CTRLN_8_i0_1_0_1));
   MUX_GATE #(.BITSIZE_in1(32),
     .BITSIZE_in2(32),
     .BITSIZE_out1(32)) MUX_20_reg_2_0_0_0 (.out1(out_MUX_20_reg_2_0_0_0),
     .sel(selector_MUX_20_reg_2_0_0_0),
-    .in1(out_conv_out_u_assign_conn_obj_1_ASSIGN_UNSIGNED_FU_u_assign_1_1_32),
-    .in2(out_ui_cond_expr_FU_32_32_32_32_18_i1_fu_min_max_rust_idiomatic_424721_424775));
-  MUX_GATE #(.BITSIZE_in1(32),
-    .BITSIZE_in2(32),
-    .BITSIZE_out1(32)) MUX_21_reg_3_0_0_0 (.out1(out_MUX_21_reg_3_0_0_0),
-    .sel(selector_MUX_21_reg_3_0_0_0),
-    .in1(in_port_Pd5),
-    .in2(out_ui_pointer_plus_expr_FU_32_0_32_23_i0_fu_min_max_rust_idiomatic_424721_424770));
+    .in1(out_BMEMORY_CTRLN_8_i0_BMEMORY_CTRLN_8_i0),
+    .in2(out_min_expr_FU_32_32_32_11_i0_fu_min_max_cpp_31124_31210));
   constant_value #(.BITSIZE_out1(1),
     .value(1'b0)) const_0 (.out1(out_const_0));
-  constant_value #(.BITSIZE_out1(7),
-    .value(7'b0100000)) const_1 (.out1(out_const_1));
-  constant_value #(.BITSIZE_out1(1),
-    .value(1'b1)) const_2 (.out1(out_const_2));
   constant_value #(.BITSIZE_out1(2),
-    .value(2'b10)) const_3 (.out1(out_const_3));
-  constant_value #(.BITSIZE_out1(3),
-    .value(3'b100)) const_4 (.out1(out_const_4));
-  constant_value #(.BITSIZE_out1(6),
-    .value(6'b100000)) const_5 (.out1(out_const_5));
-  UUdata_converter_FU #(.BITSIZE_in1(1),
-    .BITSIZE_out1(64)) conv_out_const_0_1_64 (.out1(out_conv_out_const_0_1_64),
+    .value(2'b01)) const_1 (.out1(out_const_1));
+  constant_value #(.BITSIZE_out1(7),
+    .value(7'b0100000)) const_2 (.out1(out_const_2));
+  constant_value #(.BITSIZE_out1(1),
+    .value(1'b1)) const_3 (.out1(out_const_3));
+  constant_value #(.BITSIZE_out1(2),
+    .value(2'b10)) const_4 (.out1(out_const_4));
+  IIdata_converter_FU #(.BITSIZE_in1(1),
+    .BITSIZE_out1(32)) conv_out_const_0_I_1_I_32 (.out1(out_conv_out_const_0_I_1_I_32),
     .in1(out_const_0));
   UUdata_converter_FU #(.BITSIZE_in1(7),
-    .BITSIZE_out1(6)) conv_out_const_1_7_6 (.out1(out_conv_out_const_1_7_6),
-    .in1(out_const_1));
-  UUdata_converter_FU #(.BITSIZE_in1(1),
-    .BITSIZE_out1(32)) conv_out_u_assign_conn_obj_0_ASSIGN_UNSIGNED_FU_u_assign_0_1_32 (.out1(out_conv_out_u_assign_conn_obj_0_ASSIGN_UNSIGNED_FU_u_assign_0_1_32),
-    .in1(out_u_assign_conn_obj_0_ASSIGN_UNSIGNED_FU_u_assign_0));
-  UUdata_converter_FU #(.BITSIZE_in1(1),
-    .BITSIZE_out1(32)) conv_out_u_assign_conn_obj_1_ASSIGN_UNSIGNED_FU_u_assign_1_1_32 (.out1(out_conv_out_u_assign_conn_obj_1_ASSIGN_UNSIGNED_FU_u_assign_1_1_32),
-    .in1(out_u_assign_conn_obj_1_ASSIGN_UNSIGNED_FU_u_assign_1));
+    .BITSIZE_out1(6)) conv_out_const_2_7_6 (.out1(out_conv_out_const_2_7_6),
+    .in1(out_const_2));
+  max_expr_FU #(.BITSIZE_in1(32),
+    .BITSIZE_in2(32),
+    .BITSIZE_out1(32)) fu_min_max_cpp_31124_31172 (.out1(out_max_expr_FU_32_32_32_10_i0_fu_min_max_cpp_31124_31172),
+    .in1(out_BMEMORY_CTRLN_8_i0_BMEMORY_CTRLN_8_i0),
+    .in2(out_reg_0_reg_0));
   ui_pointer_plus_expr_FU #(.BITSIZE_in1(32),
     .BITSIZE_in2(32),
     .BITSIZE_out1(32),
-    .LSB_PARAMETER(0)) fu_min_max_rust_idiomatic_424721_424746 (.out1(out_ui_pointer_plus_expr_FU_32_32_32_24_i0_fu_min_max_rust_idiomatic_424721_424746),
-    .in1(in_port_Pd5),
-    .in2(out_ui_lshift_expr_FU_32_0_32_21_i0_fu_min_max_rust_idiomatic_424721_424869));
-  read_cond_FU #(.BITSIZE_in1(1)) fu_min_max_rust_idiomatic_424721_424749 (.out1(out_read_cond_FU_2_i0_fu_min_max_rust_idiomatic_424721_424749),
-    .in1(out_ui_eq_expr_FU_32_0_32_19_i0_fu_min_max_rust_idiomatic_424721_424878));
-  ui_pointer_plus_expr_FU #(.BITSIZE_in1(32),
-    .BITSIZE_in2(3),
-    .BITSIZE_out1(32),
-    .LSB_PARAMETER(0)) fu_min_max_rust_idiomatic_424721_424770 (.out1(out_ui_pointer_plus_expr_FU_32_0_32_23_i0_fu_min_max_rust_idiomatic_424721_424770),
-    .in1(out_reg_3_reg_3),
-    .in2(out_const_4));
-  ui_cond_expr_FU #(.BITSIZE_in1(1),
-    .BITSIZE_in2(32),
-    .BITSIZE_in3(32),
-    .BITSIZE_out1(32)) fu_min_max_rust_idiomatic_424721_424773 (.out1(out_ui_cond_expr_FU_32_32_32_32_18_i0_fu_min_max_rust_idiomatic_424721_424773),
-    .in1(out_gt_expr_FU_32_32_32_15_i0_fu_min_max_rust_idiomatic_424721_424888),
-    .in2(out_BMEMORY_CTRLN_14_i0_BMEMORY_CTRLN_14_i0),
-    .in3(out_reg_1_reg_1));
-  ui_cond_expr_FU #(.BITSIZE_in1(1),
-    .BITSIZE_in2(32),
-    .BITSIZE_in3(32),
-    .BITSIZE_out1(32)) fu_min_max_rust_idiomatic_424721_424775 (.out1(out_ui_cond_expr_FU_32_32_32_32_18_i1_fu_min_max_rust_idiomatic_424721_424775),
-    .in1(out_lt_expr_FU_32_32_32_16_i0_fu_min_max_rust_idiomatic_424721_424901),
-    .in2(out_BMEMORY_CTRLN_14_i0_BMEMORY_CTRLN_14_i0),
-    .in3(out_reg_2_reg_2));
-  read_cond_FU #(.BITSIZE_in1(1)) fu_min_max_rust_idiomatic_424721_424777 (.out1(out_read_cond_FU_11_i0_fu_min_max_rust_idiomatic_424721_424777),
-    .in1(out_reg_6_reg_6));
-  ui_bit_ior_expr_FU #(.BITSIZE_in1(64),
-    .BITSIZE_in2(32),
-    .BITSIZE_out1(64)) fu_min_max_rust_idiomatic_424721_424811 (.out1(out_ui_bit_ior_expr_FU_0_64_64_17_i0_fu_min_max_rust_idiomatic_424721_424811),
-    .in1(out_ui_lshift_expr_FU_64_0_64_22_i0_fu_min_max_rust_idiomatic_424721_424815),
-    .in2(out_UUdata_converter_FU_13_i0_fu_min_max_rust_idiomatic_424721_424822));
-  ui_lshift_expr_FU #(.BITSIZE_in1(32),
-    .BITSIZE_in2(6),
-    .BITSIZE_out1(64),
-    .PRECISION(64)) fu_min_max_rust_idiomatic_424721_424815 (.out1(out_ui_lshift_expr_FU_64_0_64_22_i0_fu_min_max_rust_idiomatic_424721_424815),
-    .in1(out_UUdata_converter_FU_12_i0_fu_min_max_rust_idiomatic_424721_424820),
-    .in2(out_const_5));
-  UUdata_converter_FU #(.BITSIZE_in1(32),
-    .BITSIZE_out1(32)) fu_min_max_rust_idiomatic_424721_424820 (.out1(out_UUdata_converter_FU_12_i0_fu_min_max_rust_idiomatic_424721_424820),
-    .in1(out_reg_2_reg_2));
-  UUdata_converter_FU #(.BITSIZE_in1(32),
-    .BITSIZE_out1(32)) fu_min_max_rust_idiomatic_424721_424822 (.out1(out_UUdata_converter_FU_13_i0_fu_min_max_rust_idiomatic_424721_424822),
-    .in1(out_reg_1_reg_1));
-  ui_lshift_expr_FU #(.BITSIZE_in1(32),
+    .LSB_PARAMETER(0)) fu_min_max_cpp_31124_31178 (.out1(out_ui_pointer_plus_expr_FU_32_32_32_14_i0_fu_min_max_cpp_31124_31178),
+    .in1(in_port_numbers),
+    .in2(out_ui_lshift_expr_FU_32_0_32_13_i0_fu_min_max_cpp_31124_31184));
+  ui_lshift_expr_FU #(.BITSIZE_in1(30),
     .BITSIZE_in2(2),
     .BITSIZE_out1(32),
-    .PRECISION(32)) fu_min_max_rust_idiomatic_424721_424869 (.out1(out_ui_lshift_expr_FU_32_0_32_21_i0_fu_min_max_rust_idiomatic_424721_424869),
-    .in1(in_port_Pd6),
-    .in2(out_const_3));
-  ui_eq_expr_FU #(.BITSIZE_in1(32),
-    .BITSIZE_in2(1),
-    .BITSIZE_out1(1)) fu_min_max_rust_idiomatic_424721_424878 (.out1(out_ui_eq_expr_FU_32_0_32_19_i0_fu_min_max_rust_idiomatic_424721_424878),
-    .in1(in_port_Pd6),
-    .in2(out_const_0));
-  UIdata_converter_FU #(.BITSIZE_in1(32),
-    .BITSIZE_out1(32)) fu_min_max_rust_idiomatic_424721_424884 (.out1(out_UIdata_converter_FU_7_i0_fu_min_max_rust_idiomatic_424721_424884),
-    .in1(out_BMEMORY_CTRLN_14_i0_BMEMORY_CTRLN_14_i0));
-  UIdata_converter_FU #(.BITSIZE_in1(32),
-    .BITSIZE_out1(32)) fu_min_max_rust_idiomatic_424721_424886 (.out1(out_UIdata_converter_FU_8_i0_fu_min_max_rust_idiomatic_424721_424886),
+    .PRECISION(32)) fu_min_max_cpp_31124_31184 (.out1(out_ui_lshift_expr_FU_32_0_32_13_i0_fu_min_max_cpp_31124_31184),
+    .in1(out_IUdata_converter_FU_5_i0_fu_min_max_cpp_31124_31190),
+    .in2(out_const_4));
+  IUdata_converter_FU #(.BITSIZE_in1(32),
+    .BITSIZE_out1(30)) fu_min_max_cpp_31124_31190 (.out1(out_IUdata_converter_FU_5_i0_fu_min_max_cpp_31124_31190),
     .in1(out_reg_1_reg_1));
-  gt_expr_FU #(.BITSIZE_in1(32),
+  plus_expr_FU #(.BITSIZE_in1(32),
+    .BITSIZE_in2(2),
+    .BITSIZE_out1(32)) fu_min_max_cpp_31124_31198 (.out1(out_plus_expr_FU_32_0_32_12_i0_fu_min_max_cpp_31124_31198),
+    .in1(out_reg_1_reg_1),
+    .in2(out_const_1));
+  min_expr_FU #(.BITSIZE_in1(32),
     .BITSIZE_in2(32),
-    .BITSIZE_out1(1)) fu_min_max_rust_idiomatic_424721_424888 (.out1(out_gt_expr_FU_32_32_32_15_i0_fu_min_max_rust_idiomatic_424721_424888),
-    .in1(out_UIdata_converter_FU_7_i0_fu_min_max_rust_idiomatic_424721_424884),
-    .in2(out_reg_4_reg_4));
-  UIdata_converter_FU #(.BITSIZE_in1(32),
-    .BITSIZE_out1(32)) fu_min_max_rust_idiomatic_424721_424897 (.out1(out_UIdata_converter_FU_9_i0_fu_min_max_rust_idiomatic_424721_424897),
-    .in1(out_BMEMORY_CTRLN_14_i0_BMEMORY_CTRLN_14_i0));
-  UIdata_converter_FU #(.BITSIZE_in1(32),
-    .BITSIZE_out1(32)) fu_min_max_rust_idiomatic_424721_424899 (.out1(out_UIdata_converter_FU_10_i0_fu_min_max_rust_idiomatic_424721_424899),
-    .in1(out_reg_2_reg_2));
-  lt_expr_FU #(.BITSIZE_in1(32),
+    .BITSIZE_out1(32)) fu_min_max_cpp_31124_31210 (.out1(out_min_expr_FU_32_32_32_11_i0_fu_min_max_cpp_31124_31210),
+    .in1(out_BMEMORY_CTRLN_8_i0_BMEMORY_CTRLN_8_i0),
+    .in2(out_reg_2_reg_2));
+  read_cond_FU #(.BITSIZE_in1(1)) fu_min_max_cpp_31124_31212 (.out1(out_read_cond_FU_6_i0_fu_min_max_cpp_31124_31212),
+    .in1(out_ge_expr_FU_32_32_32_9_i0_fu_min_max_cpp_31124_31232));
+  ge_expr_FU #(.BITSIZE_in1(32),
     .BITSIZE_in2(32),
-    .BITSIZE_out1(1)) fu_min_max_rust_idiomatic_424721_424901 (.out1(out_lt_expr_FU_32_32_32_16_i0_fu_min_max_rust_idiomatic_424721_424901),
-    .in1(out_UIdata_converter_FU_9_i0_fu_min_max_rust_idiomatic_424721_424897),
-    .in2(out_reg_5_reg_5));
-  ui_eq_expr_FU #(.BITSIZE_in1(32),
-    .BITSIZE_in2(32),
-    .BITSIZE_out1(1)) fu_min_max_rust_idiomatic_424721_424907 (.out1(out_ui_eq_expr_FU_32_32_32_20_i0_fu_min_max_rust_idiomatic_424721_424907),
-    .in1(out_ui_pointer_plus_expr_FU_32_0_32_23_i0_fu_min_max_rust_idiomatic_424721_424770),
-    .in2(out_reg_0_reg_0));
+    .BITSIZE_out1(1)) fu_min_max_cpp_31124_31232 (.out1(out_ge_expr_FU_32_32_32_9_i0_fu_min_max_cpp_31124_31232),
+    .in1(out_reg_1_reg_1),
+    .in2(in_port_numbers_length));
   register_SE #(.BITSIZE_in1(32),
     .BITSIZE_out1(32)) reg_0 (.out1(out_reg_0_reg_0),
     .clock(clock),
     .reset(reset),
-    .in1(out_ui_pointer_plus_expr_FU_32_32_32_24_i0_fu_min_max_rust_idiomatic_424721_424746),
+    .in1(out_MUX_18_reg_0_0_0_0),
     .wenable(wrenable_reg_0));
   register_SE #(.BITSIZE_in1(32),
     .BITSIZE_out1(32)) reg_1 (.out1(out_reg_1_reg_1),
@@ -820,102 +759,83 @@ module datapath_min_max_rust_idiomatic(clock,
     .reset(reset),
     .in1(out_MUX_20_reg_2_0_0_0),
     .wenable(wrenable_reg_2));
-  register_SE #(.BITSIZE_in1(32),
+  register_STD #(.BITSIZE_in1(32),
     .BITSIZE_out1(32)) reg_3 (.out1(out_reg_3_reg_3),
     .clock(clock),
     .reset(reset),
-    .in1(out_MUX_21_reg_3_0_0_0),
+    .in1(out_ui_pointer_plus_expr_FU_32_32_32_14_i0_fu_min_max_cpp_31124_31178),
     .wenable(wrenable_reg_3));
-  register_STD #(.BITSIZE_in1(32),
-    .BITSIZE_out1(32)) reg_4 (.out1(out_reg_4_reg_4),
-    .clock(clock),
-    .reset(reset),
-    .in1(out_UIdata_converter_FU_8_i0_fu_min_max_rust_idiomatic_424721_424886),
-    .wenable(wrenable_reg_4));
-  register_STD #(.BITSIZE_in1(32),
-    .BITSIZE_out1(32)) reg_5 (.out1(out_reg_5_reg_5),
-    .clock(clock),
-    .reset(reset),
-    .in1(out_UIdata_converter_FU_10_i0_fu_min_max_rust_idiomatic_424721_424899),
-    .wenable(wrenable_reg_5));
-  register_STD #(.BITSIZE_in1(1),
-    .BITSIZE_out1(1)) reg_6 (.out1(out_reg_6_reg_6),
-    .clock(clock),
-    .reset(reset),
-    .in1(out_ui_eq_expr_FU_32_32_32_20_i0_fu_min_max_rust_idiomatic_424721_424907),
-    .wenable(wrenable_reg_6));
   // io-signal post fix
-  assign return_port = out_MUX_11_gimple_return_FU_4_i0_0_0_0;
-  assign OUT_CONDITION_min_max_rust_idiomatic_424721_424749 = out_read_cond_FU_2_i0_fu_min_max_rust_idiomatic_424721_424749;
-  assign OUT_CONDITION_min_max_rust_idiomatic_424721_424777 = out_read_cond_FU_11_i0_fu_min_max_rust_idiomatic_424721_424777;
+  assign OUT_CONDITION_min_max_cpp_31124_31212 = out_read_cond_FU_6_i0_fu_min_max_cpp_31124_31212;
 
 endmodule
 
-// FSM based controller description for min_max_rust_idiomatic
+// FSM based controller description for min_max_cpp
 // This component has been derived from the input source code and so it does not fall under the copyright of PandA framework, but it follows the input source code copyright, and may be aggregated with components of the BAMBU/PANDA IP LIBRARY.
 // Author(s): Component automatically generated by bambu
 // License: THIS COMPONENT IS PROVIDED "AS IS" AND WITHOUT ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 `timescale 1ns / 1ps
-module controller_min_max_rust_idiomatic(done_port,
-  fuselector_BMEMORY_CTRLN_14_i0_LOAD,
-  fuselector_BMEMORY_CTRLN_14_i0_STORE,
-  selector_MUX_11_gimple_return_FU_4_i0_0_0_0,
+module controller_min_max_cpp(done_port,
+  fuselector_BMEMORY_CTRLN_8_i0_LOAD,
+  fuselector_BMEMORY_CTRLN_8_i0_STORE,
+  selector_MUX_0_BMEMORY_CTRLN_8_i0_0_0_0,
+  selector_MUX_18_reg_0_0_0_0,
   selector_MUX_19_reg_1_0_0_0,
+  selector_MUX_1_BMEMORY_CTRLN_8_i0_1_0_0,
+  selector_MUX_1_BMEMORY_CTRLN_8_i0_1_0_1,
+  selector_MUX_1_BMEMORY_CTRLN_8_i0_1_1_0,
   selector_MUX_20_reg_2_0_0_0,
-  selector_MUX_21_reg_3_0_0_0,
   wrenable_reg_0,
   wrenable_reg_1,
   wrenable_reg_2,
   wrenable_reg_3,
-  wrenable_reg_4,
-  wrenable_reg_5,
-  wrenable_reg_6,
-  OUT_CONDITION_min_max_rust_idiomatic_424721_424749,
-  OUT_CONDITION_min_max_rust_idiomatic_424721_424777,
+  OUT_CONDITION_min_max_cpp_31124_31212,
   clock,
   reset,
   start_port);
   // IN
-  input OUT_CONDITION_min_max_rust_idiomatic_424721_424749;
-  input OUT_CONDITION_min_max_rust_idiomatic_424721_424777;
+  input OUT_CONDITION_min_max_cpp_31124_31212;
   input clock;
   input reset;
   input start_port;
   // OUT
   output done_port;
-  output fuselector_BMEMORY_CTRLN_14_i0_LOAD;
-  output fuselector_BMEMORY_CTRLN_14_i0_STORE;
-  output selector_MUX_11_gimple_return_FU_4_i0_0_0_0;
+  output fuselector_BMEMORY_CTRLN_8_i0_LOAD;
+  output fuselector_BMEMORY_CTRLN_8_i0_STORE;
+  output selector_MUX_0_BMEMORY_CTRLN_8_i0_0_0_0;
+  output selector_MUX_18_reg_0_0_0_0;
   output selector_MUX_19_reg_1_0_0_0;
+  output selector_MUX_1_BMEMORY_CTRLN_8_i0_1_0_0;
+  output selector_MUX_1_BMEMORY_CTRLN_8_i0_1_0_1;
+  output selector_MUX_1_BMEMORY_CTRLN_8_i0_1_1_0;
   output selector_MUX_20_reg_2_0_0_0;
-  output selector_MUX_21_reg_3_0_0_0;
   output wrenable_reg_0;
   output wrenable_reg_1;
   output wrenable_reg_2;
   output wrenable_reg_3;
-  output wrenable_reg_4;
-  output wrenable_reg_5;
-  output wrenable_reg_6;
-  parameter [4:0] S_0 = 5'b00001,
-    S_4 = 5'b10000,
-    S_1 = 5'b00010,
-    S_2 = 5'b00100,
-    S_3 = 5'b01000;
-  reg [4:0] _present_state=S_0, _next_state;
+  parameter [7:0] S_0 = 8'b00000001,
+    S_1 = 8'b00000010,
+    S_2 = 8'b00000100,
+    S_3 = 8'b00001000,
+    S_4 = 8'b00010000,
+    S_5 = 8'b00100000,
+    S_6 = 8'b01000000,
+    S_7 = 8'b10000000;
+  reg [7:0] _present_state=S_0, _next_state;
   reg done_port;
-  reg fuselector_BMEMORY_CTRLN_14_i0_LOAD;
-  reg fuselector_BMEMORY_CTRLN_14_i0_STORE;
-  reg selector_MUX_11_gimple_return_FU_4_i0_0_0_0;
+  reg fuselector_BMEMORY_CTRLN_8_i0_LOAD;
+  reg fuselector_BMEMORY_CTRLN_8_i0_STORE;
+  reg selector_MUX_0_BMEMORY_CTRLN_8_i0_0_0_0;
+  reg selector_MUX_18_reg_0_0_0_0;
   reg selector_MUX_19_reg_1_0_0_0;
+  reg selector_MUX_1_BMEMORY_CTRLN_8_i0_1_0_0;
+  reg selector_MUX_1_BMEMORY_CTRLN_8_i0_1_0_1;
+  reg selector_MUX_1_BMEMORY_CTRLN_8_i0_1_1_0;
   reg selector_MUX_20_reg_2_0_0_0;
-  reg selector_MUX_21_reg_3_0_0_0;
   reg wrenable_reg_0;
   reg wrenable_reg_1;
   reg wrenable_reg_2;
   reg wrenable_reg_3;
-  reg wrenable_reg_4;
-  reg wrenable_reg_5;
-  reg wrenable_reg_6;
   
   always @(posedge clock)
     if (reset == 1'b0) _present_state <= S_0;
@@ -924,80 +844,83 @@ module controller_min_max_rust_idiomatic(done_port,
   always @(*)
   begin
     done_port = 1'b0;
-    fuselector_BMEMORY_CTRLN_14_i0_LOAD = 1'b0;
-    fuselector_BMEMORY_CTRLN_14_i0_STORE = 1'b0;
-    selector_MUX_11_gimple_return_FU_4_i0_0_0_0 = 1'b0;
+    fuselector_BMEMORY_CTRLN_8_i0_LOAD = 1'b0;
+    fuselector_BMEMORY_CTRLN_8_i0_STORE = 1'b0;
+    selector_MUX_0_BMEMORY_CTRLN_8_i0_0_0_0 = 1'b0;
+    selector_MUX_18_reg_0_0_0_0 = 1'b0;
     selector_MUX_19_reg_1_0_0_0 = 1'b0;
+    selector_MUX_1_BMEMORY_CTRLN_8_i0_1_0_0 = 1'b0;
+    selector_MUX_1_BMEMORY_CTRLN_8_i0_1_0_1 = 1'b0;
+    selector_MUX_1_BMEMORY_CTRLN_8_i0_1_1_0 = 1'b0;
     selector_MUX_20_reg_2_0_0_0 = 1'b0;
-    selector_MUX_21_reg_3_0_0_0 = 1'b0;
     wrenable_reg_0 = 1'b0;
     wrenable_reg_1 = 1'b0;
     wrenable_reg_2 = 1'b0;
     wrenable_reg_3 = 1'b0;
-    wrenable_reg_4 = 1'b0;
-    wrenable_reg_5 = 1'b0;
-    wrenable_reg_6 = 1'b0;
     case (_present_state)
       S_0 :
         if(start_port == 1'b1)
         begin
-          selector_MUX_19_reg_1_0_0_0 = 1'b1;
-          selector_MUX_20_reg_2_0_0_0 = 1'b1;
-          selector_MUX_21_reg_3_0_0_0 = 1'b1;
-          wrenable_reg_0 = 1'b1;
-          wrenable_reg_1 = 1'b1;
-          wrenable_reg_2 = 1'b1;
-          wrenable_reg_3 = 1'b1;
-          if (OUT_CONDITION_min_max_rust_idiomatic_424721_424749 == 1'b0)
-            begin
-              _next_state = S_1;
-            end
-          else
-            begin
-              _next_state = S_4;
-              done_port = 1'b1;
-              selector_MUX_19_reg_1_0_0_0 = 1'b0;
-              selector_MUX_20_reg_2_0_0_0 = 1'b0;
-              selector_MUX_21_reg_3_0_0_0 = 1'b0;
-              wrenable_reg_0 = 1'b0;
-              wrenable_reg_1 = 1'b0;
-              wrenable_reg_2 = 1'b0;
-              wrenable_reg_3 = 1'b0;
-            end
+          fuselector_BMEMORY_CTRLN_8_i0_LOAD = 1'b1;
+          selector_MUX_1_BMEMORY_CTRLN_8_i0_1_1_0 = 1'b1;
+          _next_state = S_1;
         end
         else
         begin
           _next_state = S_0;
         end
-      S_4 :
-        begin
-          selector_MUX_11_gimple_return_FU_4_i0_0_0_0 = 1'b1;
-          _next_state = S_0;
-        end
       S_1 :
         begin
-          fuselector_BMEMORY_CTRLN_14_i0_LOAD = 1'b1;
-          wrenable_reg_3 = 1'b1;
-          wrenable_reg_4 = 1'b1;
-          wrenable_reg_5 = 1'b1;
-          wrenable_reg_6 = 1'b1;
+          selector_MUX_18_reg_0_0_0_0 = 1'b1;
+          selector_MUX_19_reg_1_0_0_0 = 1'b1;
+          selector_MUX_20_reg_2_0_0_0 = 1'b1;
+          wrenable_reg_0 = 1'b1;
+          wrenable_reg_1 = 1'b1;
+          wrenable_reg_2 = 1'b1;
           _next_state = S_2;
         end
       S_2 :
         begin
           wrenable_reg_1 = 1'b1;
-          wrenable_reg_2 = 1'b1;
-          if (OUT_CONDITION_min_max_rust_idiomatic_424721_424777 == 1'b1)
+          wrenable_reg_3 = 1'b1;
+          if (OUT_CONDITION_min_max_cpp_31124_31212 == 1'b1)
             begin
-              _next_state = S_3;
-              done_port = 1'b1;
+              _next_state = S_5;
+              wrenable_reg_1 = 1'b0;
+              wrenable_reg_3 = 1'b0;
             end
           else
             begin
-              _next_state = S_1;
+              _next_state = S_3;
             end
         end
       S_3 :
+        begin
+          fuselector_BMEMORY_CTRLN_8_i0_LOAD = 1'b1;
+          selector_MUX_1_BMEMORY_CTRLN_8_i0_1_0_0 = 1'b1;
+          selector_MUX_1_BMEMORY_CTRLN_8_i0_1_1_0 = 1'b1;
+          _next_state = S_4;
+        end
+      S_4 :
+        begin
+          wrenable_reg_0 = 1'b1;
+          wrenable_reg_2 = 1'b1;
+          _next_state = S_2;
+        end
+      S_5 :
+        begin
+          fuselector_BMEMORY_CTRLN_8_i0_STORE = 1'b1;
+          selector_MUX_0_BMEMORY_CTRLN_8_i0_0_0_0 = 1'b1;
+          selector_MUX_1_BMEMORY_CTRLN_8_i0_1_0_1 = 1'b1;
+          _next_state = S_6;
+        end
+      S_6 :
+        begin
+          fuselector_BMEMORY_CTRLN_8_i0_STORE = 1'b1;
+          _next_state = S_7;
+          done_port = 1'b1;
+        end
+      S_7 :
         begin
           _next_state = S_0;
         end
@@ -1010,7 +933,7 @@ module controller_min_max_rust_idiomatic(done_port,
 endmodule
 
 // This component is part of the BAMBU/PANDA IP LIBRARY
-// Copyright (C) 2004-2022 Politecnico di Milano
+// Copyright (C) 2004-2023 Politecnico di Milano
 // Author(s): Marco Lattuada <marco.lattuada@polimi.it>
 // License: PANDA_LGPLv3
 `timescale 1ns / 1ps
@@ -1036,18 +959,19 @@ module flipflop_AR(clock,
       reg_out1 <= in1;
 endmodule
 
-// Top component for min_max_rust_idiomatic
+// Top component for min_max_cpp
 // This component has been derived from the input source code and so it does not fall under the copyright of PandA framework, but it follows the input source code copyright, and may be aggregated with components of the BAMBU/PANDA IP LIBRARY.
 // Author(s): Component automatically generated by bambu
 // License: THIS COMPONENT IS PROVIDED "AS IS" AND WITHOUT ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 `timescale 1ns / 1ps
-module _min_max_rust_idiomatic(clock,
+module _min_max_cpp(clock,
   reset,
   start_port,
   done_port,
-  Pd5,
-  Pd6,
-  return_port,
+  numbers,
+  numbers_length,
+  out_max,
+  out_min,
   M_Rdata_ram,
   M_DataRdy,
   Min_oe_ram,
@@ -1064,8 +988,10 @@ module _min_max_rust_idiomatic(clock,
   input clock;
   input reset;
   input start_port;
-  input [31:0] Pd5;
-  input [31:0] Pd6;
+  input [31:0] numbers;
+  input signed [31:0] numbers_length;
+  input [31:0] out_max;
+  input [31:0] out_min;
   input [63:0] M_Rdata_ram;
   input [1:0] M_DataRdy;
   input [1:0] Min_oe_ram;
@@ -1075,62 +1001,59 @@ module _min_max_rust_idiomatic(clock,
   input [11:0] Min_data_ram_size;
   // OUT
   output done_port;
-  output [63:0] return_port;
   output [1:0] Mout_oe_ram;
   output [1:0] Mout_we_ram;
   output [63:0] Mout_addr_ram;
   output [63:0] Mout_Wdata_ram;
   output [11:0] Mout_data_ram_size;
   // Component and signal declarations
-  wire OUT_CONDITION_min_max_rust_idiomatic_424721_424749;
-  wire OUT_CONDITION_min_max_rust_idiomatic_424721_424777;
+  wire OUT_CONDITION_min_max_cpp_31124_31212;
   wire done_delayed_REG_signal_in;
   wire done_delayed_REG_signal_out;
-  wire fuselector_BMEMORY_CTRLN_14_i0_LOAD;
-  wire fuselector_BMEMORY_CTRLN_14_i0_STORE;
-  wire selector_MUX_11_gimple_return_FU_4_i0_0_0_0;
+  wire fuselector_BMEMORY_CTRLN_8_i0_LOAD;
+  wire fuselector_BMEMORY_CTRLN_8_i0_STORE;
+  wire selector_MUX_0_BMEMORY_CTRLN_8_i0_0_0_0;
+  wire selector_MUX_18_reg_0_0_0_0;
   wire selector_MUX_19_reg_1_0_0_0;
+  wire selector_MUX_1_BMEMORY_CTRLN_8_i0_1_0_0;
+  wire selector_MUX_1_BMEMORY_CTRLN_8_i0_1_0_1;
+  wire selector_MUX_1_BMEMORY_CTRLN_8_i0_1_1_0;
   wire selector_MUX_20_reg_2_0_0_0;
-  wire selector_MUX_21_reg_3_0_0_0;
   wire wrenable_reg_0;
   wire wrenable_reg_1;
   wire wrenable_reg_2;
   wire wrenable_reg_3;
-  wire wrenable_reg_4;
-  wire wrenable_reg_5;
-  wire wrenable_reg_6;
   
-  controller_min_max_rust_idiomatic Controller_i (.done_port(done_delayed_REG_signal_in),
-    .fuselector_BMEMORY_CTRLN_14_i0_LOAD(fuselector_BMEMORY_CTRLN_14_i0_LOAD),
-    .fuselector_BMEMORY_CTRLN_14_i0_STORE(fuselector_BMEMORY_CTRLN_14_i0_STORE),
-    .selector_MUX_11_gimple_return_FU_4_i0_0_0_0(selector_MUX_11_gimple_return_FU_4_i0_0_0_0),
+  controller_min_max_cpp Controller_i (.done_port(done_delayed_REG_signal_in),
+    .fuselector_BMEMORY_CTRLN_8_i0_LOAD(fuselector_BMEMORY_CTRLN_8_i0_LOAD),
+    .fuselector_BMEMORY_CTRLN_8_i0_STORE(fuselector_BMEMORY_CTRLN_8_i0_STORE),
+    .selector_MUX_0_BMEMORY_CTRLN_8_i0_0_0_0(selector_MUX_0_BMEMORY_CTRLN_8_i0_0_0_0),
+    .selector_MUX_18_reg_0_0_0_0(selector_MUX_18_reg_0_0_0_0),
     .selector_MUX_19_reg_1_0_0_0(selector_MUX_19_reg_1_0_0_0),
+    .selector_MUX_1_BMEMORY_CTRLN_8_i0_1_0_0(selector_MUX_1_BMEMORY_CTRLN_8_i0_1_0_0),
+    .selector_MUX_1_BMEMORY_CTRLN_8_i0_1_0_1(selector_MUX_1_BMEMORY_CTRLN_8_i0_1_0_1),
+    .selector_MUX_1_BMEMORY_CTRLN_8_i0_1_1_0(selector_MUX_1_BMEMORY_CTRLN_8_i0_1_1_0),
     .selector_MUX_20_reg_2_0_0_0(selector_MUX_20_reg_2_0_0_0),
-    .selector_MUX_21_reg_3_0_0_0(selector_MUX_21_reg_3_0_0_0),
     .wrenable_reg_0(wrenable_reg_0),
     .wrenable_reg_1(wrenable_reg_1),
     .wrenable_reg_2(wrenable_reg_2),
     .wrenable_reg_3(wrenable_reg_3),
-    .wrenable_reg_4(wrenable_reg_4),
-    .wrenable_reg_5(wrenable_reg_5),
-    .wrenable_reg_6(wrenable_reg_6),
-    .OUT_CONDITION_min_max_rust_idiomatic_424721_424749(OUT_CONDITION_min_max_rust_idiomatic_424721_424749),
-    .OUT_CONDITION_min_max_rust_idiomatic_424721_424777(OUT_CONDITION_min_max_rust_idiomatic_424721_424777),
+    .OUT_CONDITION_min_max_cpp_31124_31212(OUT_CONDITION_min_max_cpp_31124_31212),
     .clock(clock),
     .reset(reset),
     .start_port(start_port));
-  datapath_min_max_rust_idiomatic Datapath_i (.return_port(return_port),
-    .Mout_oe_ram(Mout_oe_ram),
+  datapath_min_max_cpp Datapath_i (.Mout_oe_ram(Mout_oe_ram),
     .Mout_we_ram(Mout_we_ram),
     .Mout_addr_ram(Mout_addr_ram),
     .Mout_Wdata_ram(Mout_Wdata_ram),
     .Mout_data_ram_size(Mout_data_ram_size),
-    .OUT_CONDITION_min_max_rust_idiomatic_424721_424749(OUT_CONDITION_min_max_rust_idiomatic_424721_424749),
-    .OUT_CONDITION_min_max_rust_idiomatic_424721_424777(OUT_CONDITION_min_max_rust_idiomatic_424721_424777),
+    .OUT_CONDITION_min_max_cpp_31124_31212(OUT_CONDITION_min_max_cpp_31124_31212),
     .clock(clock),
     .reset(reset),
-    .in_port_Pd5(Pd5),
-    .in_port_Pd6(Pd6),
+    .in_port_numbers(numbers),
+    .in_port_numbers_length(numbers_length),
+    .in_port_out_max(out_max),
+    .in_port_out_min(out_min),
     .M_Rdata_ram(M_Rdata_ram),
     .M_DataRdy(M_DataRdy),
     .Min_oe_ram(Min_oe_ram),
@@ -1138,19 +1061,19 @@ module _min_max_rust_idiomatic(clock,
     .Min_addr_ram(Min_addr_ram),
     .Min_Wdata_ram(Min_Wdata_ram),
     .Min_data_ram_size(Min_data_ram_size),
-    .fuselector_BMEMORY_CTRLN_14_i0_LOAD(fuselector_BMEMORY_CTRLN_14_i0_LOAD),
-    .fuselector_BMEMORY_CTRLN_14_i0_STORE(fuselector_BMEMORY_CTRLN_14_i0_STORE),
-    .selector_MUX_11_gimple_return_FU_4_i0_0_0_0(selector_MUX_11_gimple_return_FU_4_i0_0_0_0),
+    .fuselector_BMEMORY_CTRLN_8_i0_LOAD(fuselector_BMEMORY_CTRLN_8_i0_LOAD),
+    .fuselector_BMEMORY_CTRLN_8_i0_STORE(fuselector_BMEMORY_CTRLN_8_i0_STORE),
+    .selector_MUX_0_BMEMORY_CTRLN_8_i0_0_0_0(selector_MUX_0_BMEMORY_CTRLN_8_i0_0_0_0),
+    .selector_MUX_18_reg_0_0_0_0(selector_MUX_18_reg_0_0_0_0),
     .selector_MUX_19_reg_1_0_0_0(selector_MUX_19_reg_1_0_0_0),
+    .selector_MUX_1_BMEMORY_CTRLN_8_i0_1_0_0(selector_MUX_1_BMEMORY_CTRLN_8_i0_1_0_0),
+    .selector_MUX_1_BMEMORY_CTRLN_8_i0_1_0_1(selector_MUX_1_BMEMORY_CTRLN_8_i0_1_0_1),
+    .selector_MUX_1_BMEMORY_CTRLN_8_i0_1_1_0(selector_MUX_1_BMEMORY_CTRLN_8_i0_1_1_0),
     .selector_MUX_20_reg_2_0_0_0(selector_MUX_20_reg_2_0_0_0),
-    .selector_MUX_21_reg_3_0_0_0(selector_MUX_21_reg_3_0_0_0),
     .wrenable_reg_0(wrenable_reg_0),
     .wrenable_reg_1(wrenable_reg_1),
     .wrenable_reg_2(wrenable_reg_2),
-    .wrenable_reg_3(wrenable_reg_3),
-    .wrenable_reg_4(wrenable_reg_4),
-    .wrenable_reg_5(wrenable_reg_5),
-    .wrenable_reg_6(wrenable_reg_6));
+    .wrenable_reg_3(wrenable_reg_3));
   flipflop_AR #(.BITSIZE_in1(1),
     .BITSIZE_out1(1)) done_delayed_REG (.out1(done_delayed_REG_signal_out),
     .clock(clock),
@@ -1161,36 +1084,21 @@ module _min_max_rust_idiomatic(clock,
 
 endmodule
 
-// This component is part of the BAMBU/PANDA IP LIBRARY
-// Copyright (C) 2004-2022 Politecnico di Milano
-// Author(s): Fabrizio Ferrandi <fabrizio.ferrandi@polimi.it>
-// License: PANDA_LGPLv3
-`timescale 1ns / 1ps
-module ui_view_convert_expr_FU(in1,
-  out1);
-  parameter BITSIZE_in1=1,
-    BITSIZE_out1=1;
-  // IN
-  input [BITSIZE_in1-1:0] in1;
-  // OUT
-  output [BITSIZE_out1-1:0] out1;
-  assign out1 = in1;
-endmodule
-
-// Minimal interface for function: min_max_rust_idiomatic
+// Minimal interface for function: min_max_cpp
 // This component has been derived from the input source code and so it does not fall under the copyright of PandA framework, but it follows the input source code copyright, and may be aggregated with components of the BAMBU/PANDA IP LIBRARY.
 // Author(s): Component automatically generated by bambu
 // License: THIS COMPONENT IS PROVIDED "AS IS" AND WITHOUT ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 `timescale 1ns / 1ps
-module min_max_rust_idiomatic(clock,
+module min_max_cpp(clock,
   reset,
   start_port,
-  Pd5,
-  Pd6,
+  numbers,
+  numbers_length,
+  out_max,
+  out_min,
   M_Rdata_ram,
   M_DataRdy,
   done_port,
-  return_port,
   Mout_oe_ram,
   Mout_we_ram,
   Mout_addr_ram,
@@ -1200,23 +1108,22 @@ module min_max_rust_idiomatic(clock,
   input clock;
   input reset;
   input start_port;
-  input [31:0] Pd5;
-  input [31:0] Pd6;
+  input [31:0] numbers;
+  input [31:0] numbers_length;
+  input [31:0] out_max;
+  input [31:0] out_min;
   input [63:0] M_Rdata_ram;
   input [1:0] M_DataRdy;
   // OUT
   output done_port;
-  output [63:0] return_port;
   output [1:0] Mout_oe_ram;
   output [1:0] Mout_we_ram;
   output [63:0] Mout_addr_ram;
   output [63:0] Mout_Wdata_ram;
   output [11:0] Mout_data_ram_size;
   // Component and signal declarations
-  wire [63:0] out_return_port_ui_view_convert_expr_FU;
   
-  _min_max_rust_idiomatic _min_max_rust_idiomatic_i0 (.done_port(done_port),
-    .return_port(out_return_port_ui_view_convert_expr_FU),
+  _min_max_cpp _min_max_cpp_i0 (.done_port(done_port),
     .Mout_oe_ram(Mout_oe_ram),
     .Mout_we_ram(Mout_we_ram),
     .Mout_addr_ram(Mout_addr_ram),
@@ -1225,8 +1132,10 @@ module min_max_rust_idiomatic(clock,
     .clock(clock),
     .reset(reset),
     .start_port(start_port),
-    .Pd5(Pd5),
-    .Pd6(Pd6),
+    .numbers(numbers),
+    .numbers_length(numbers_length),
+    .out_max(out_max),
+    .out_min(out_min),
     .M_Rdata_ram(M_Rdata_ram),
     .M_DataRdy(M_DataRdy),
     .Min_oe_ram({1'b0,
@@ -1239,9 +1148,6 @@ module min_max_rust_idiomatic(clock,
       32'b00000000000000000000000000000000}),
     .Min_data_ram_size({6'b000000,
       6'b000000}));
-  ui_view_convert_expr_FU #(.BITSIZE_in1(64),
-    .BITSIZE_out1(64)) return_port_ui_view_convert_expr_FU (.out1(return_port),
-    .in1(out_return_port_ui_view_convert_expr_FU));
 
 endmodule
 

@@ -1,18 +1,15 @@
-$ rustc --emit=llvm-ir --crate-type=lib -C overflow-checks=off -C no-vectorize-loops -C target-cpu=generic -C panic=abort -C opt-level=s src/min_max_rust_idiomatic.rs -o build/min_max_rust_idiomatic_size.ll
-$ nix run github:zebreus/bachelor-thesis#bambu -- build/min_max_rust_idiomatic_size.ll --top-fname=min_max_rust_idiomatic --generate-tb=src/testbench_rust_idiomatic.xml --simulate --simulator=VERILATOR -v2 --compiler=I386_CLANG12 -Os
+$ rustc --emit=llvm-ir --crate-type=lib -C overflow-checks=off -C no-vectorize-loops -C target-cpu=generic -C panic=abort -C llvm-args=--opaque-pointers=false -C opt-level=s src/min_max_rust_idiomatic.rs -o build/min_max_rust_idiomatic_size.ll
+$ nix run  git+file:///home/lennart/Documents/nixpkgs#bambu -- build/min_max_rust_idiomatic_size.ll --top-fname=min_max_rust_idiomatic --generate-tb=src/testbench_rust_idiomatic.xml --simulate --simulator=VERILATOR -v2 --compiler=I386_CLANG16 -Os
   Scheduling Information of function min_max_rust_idiomatic:
     Number of control steps: 7
-    Minimum slack: 2.6688639990000045
-    Estimated max frequency (MHz): 136.40450809582526
+    Minimum slack: 3.0949999980000076
+    Estimated max frequency (MHz): 144.82259228245559
 
   Module binding information for function min_max_rust_idiomatic:
-    Number of modules instantiated: 27
+    Number of modules instantiated: 26
     Number of performance conflicts: 0
-    Estimated resources area (no Muxes and address logic): 202
+    Estimated resources area (no Muxes and address logic): 183
     Estimated area of MUX21: 0
-    Total estimated area: 202
+    Total estimated area: 183
     Estimated number of DSPs: 0
 
-  Total cycles             : 462 cycles
-  Number of executions     : 21
-  Average execution        : 22 cycles
